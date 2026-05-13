@@ -16,7 +16,7 @@ export default function ActionPanel({ onAction, disabled, soundEnabled = true, e
         const Icon = item.id === "sound" && !soundEnabled ? VolumeX : item.id === "fullscreen" && expanded ? Minimize : item.icon;
         const className = `action-button${item.id === "sound" && !soundEnabled ? " muted" : ""}${item.id === "fullscreen" && expanded ? " active" : ""}`;
         return (
-          <button key={item.id} className={className} type="button" disabled={disabled} onClick={() => onAction(item.id)} title={item.id === "fullscreen" && expanded ? "Exit fullscreen view" : item.label}>
+          <button key={item.id} className={className} data-action={item.id} type="button" disabled={disabled} onClick={() => onAction(item.id)} title={item.id === "fullscreen" && expanded ? "Exit fullscreen view" : item.label}>
             <Icon size={22} />
           </button>
         );

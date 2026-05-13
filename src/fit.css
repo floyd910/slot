@@ -499,8 +499,8 @@ textarea {
 
 .game-menu-panel {
   width: min(760px, 92vw) !important;
-  max-height: min(520px, 86vh) !important;
-  overflow: auto !important;
+  height: min(520px, 86vh) !important;
+  overflow: hidden !important;
   border: 2px solid #b88700 !important;
   border-radius: 7px !important;
   background: linear-gradient(180deg, rgba(13, 18, 18, 0.98), rgba(0, 0, 0, 0.98)) !important;
@@ -565,11 +565,13 @@ textarea {
 }
 
 .game-menu-body {
+  height: 350px !important;
+  overflow: auto !important;
   padding: 14px !important;
 }
 
 .game-menu-section {
-  min-height: 210px !important;
+  min-height: 100% !important;
 }
 
 .game-menu-grid section {
@@ -638,8 +640,50 @@ textarea {
     gap: 8px !important;
   }
 
+  .game-menu-layer {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 14px !important;
+  }
+
+  .game-menu-panel {
+    width: min(92vw, 440px) !important;
+    height: min(74vh, 520px) !important;
+    max-height: min(74vh, 520px) !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
+  .game-menu-head {
+    min-height: 45px !important;
+    padding: 8px 10px !important;
+  }
+
+  .game-menu-tabs {
+    padding: 10px 10px 0 !important;
+  }
+
+  .game-menu-body {
+    height: calc(min(74vh, 520px) - 103px) !important;
+    padding: 10px !important;
+    overflow: auto !important;
+  }
+
+  .game-menu-section {
+    min-height: 100% !important;
+  }
+
   .game-menu-grid {
     grid-template-columns: 1fr !important;
+  }
+
+  .history-row {
+    grid-template-columns: 38px minmax(0, 1fr) 46px !important;
+  }
+
+  .history-row em {
+    display: none !important;
   }
 }
 
@@ -739,6 +783,10 @@ textarea {
     margin: 4px 10px 0 0 !important;
     gap: clamp(10px, 3.2vw, 20px) !important;
     background: transparent !important;
+  }
+
+  .action-button[data-action="fullscreen"] {
+    display: none !important;
   }
 
   .action-button {
