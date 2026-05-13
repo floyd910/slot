@@ -1,5 +1,3 @@
-import SymbolIcon from "./SymbolIcon.jsx";
-
 export default function Paytable({ rows, onClose, loading, error }) {
   return (
     <section className="modal-layer">
@@ -21,8 +19,7 @@ export default function Paytable({ rows, onClose, loading, error }) {
             <table>
               <thead>
                 <tr>
-                  <th>Match</th>
-                  <th>Scatter</th>
+                  <th />
                   <th>x1</th>
                   <th>x2</th>
                   <th>x3</th>
@@ -32,18 +29,11 @@ export default function Paytable({ rows, onClose, loading, error }) {
               </thead>
               <tbody>
                 {rows.map((row) => (
-                  <tr key={row.match}>
-                    <td>{row.match}</td>
-                    <td>
-                      <span className="scatter-cell">
-                        <SymbolIcon value={0} /> {row.bag}
-                      </span>
-                    </td>
-                    <td>{row.base}</td>
-                    <td>{row.x2}</td>
-                    <td>{row.x3}</td>
-                    <td>{row.x4}</td>
-                    <td>{row.x5}</td>
+                  <tr key={row.symbol}>
+                    <th>{row.symbol}</th>
+                    {[1, 2, 3, 4, 5].map((count) => (
+                      <td key={count}>{row[`x${count}`] == null ? "" : Number(row[`x${count}`]).toFixed(2)}</td>
+                    ))}
                   </tr>
                 ))}
               </tbody>

@@ -90,10 +90,16 @@ export const combinations = [
 export const stakeOptions = [0.1, 0.2, 0.3, 0.4, 0.5, 1, 2, 3, 5, 10, 15, 20, 25];
 
 export const paytable = [
-  { match: "2x", bag: 2, base: 2, x2: 4, x3: 6, x4: 8, x5: 10 },
-  { match: "3x", bag: 3, base: 5, x2: 10, x3: 15, x4: 20, x5: 25 },
-  { match: "4x", bag: 4, base: 20, x2: 40, x3: 60, x4: 80, x5: 100 },
-  { match: "5x", bag: 5, base: 500, x2: 1000, x3: 1500, x4: 2000, x5: 2500 },
+  { symbol: 0, x1: null, x2: null, x3: 0.2, x4: 1.5, x5: 5 },
+  { symbol: 1, x1: null, x2: null, x3: 0.5, x4: 2, x5: 10 },
+  { symbol: 2, x1: null, x2: null, x3: 0.5, x4: 2, x5: 10 },
+  { symbol: 3, x1: null, x2: null, x3: 0.5, x4: 2, x5: 10 },
+  { symbol: 4, x1: null, x2: null, x3: 1, x4: 4, x5: 20 },
+  { symbol: 5, x1: null, x2: null, x3: 1, x4: 4, x5: 20 },
+  { symbol: 6, x1: null, x2: 0.5, x3: 1.5, x4: 6.5, x5: 25 },
+  { symbol: 7, x1: null, x2: 0.5, x3: 2.5, x4: 10, x5: 50 },
+  { symbol: 8, x1: null, x2: 0.5, x3: 3, x4: 20, x5: 100 },
+  { symbol: 9, x1: null, x2: 1, x3: 8, x4: 100, x5: 500 },
 ];
 
 export const symbolMap = {
@@ -116,5 +122,5 @@ export const initialGrid = {
   A: [4, 12, 4, 0, 4],
   B: [1, 0, 5, 8, 6],
   C: [2, 1, 1, 1, 6],
-  D: ["X2", "", "X0", "", "X2"],
+  D: ["", "", "SCATTER", "", ""],
 };

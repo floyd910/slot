@@ -11,7 +11,6 @@ export default function DoubleMode({ winSum, step, status, onPick, onCollect, lo
         ))}
       </aside>
       <div className="double-scene">
-        <div className="double-character">WILD</div>
         <button type="button" className="chest left" disabled={loading} onClick={() => onPick("left")}>
           Left
         </button>

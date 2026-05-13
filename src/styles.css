@@ -50,6 +50,24 @@ button {
     linear-gradient(135deg, #171811, #201a12 46%, #101411);
 }
 
+.frame-app.headerless {
+  grid-template-rows: minmax(0, 1fr) 74px;
+}
+
+.frame-app.headerless .frame-content {
+  min-height: 0;
+}
+
+.frame-app.theme-light {
+  color-scheme: light;
+  --bg: #f4f1e8;
+  --panel: #ffffff;
+  --panel-strong: #eee1c6;
+  --line: rgba(29, 33, 24, 0.16);
+  --text: #171711;
+  --muted: #655f50;
+}
+
 .top-bar,
 .bottom-bar {
   z-index: 5;
@@ -544,6 +562,42 @@ button:disabled {
   color: #ffd1d1;
 }
 
+.inline-alert.neutral {
+  border-color: rgba(97, 214, 255, 0.45);
+  color: #d8f4ff;
+}
+
+.runtime-state {
+  display: grid;
+  min-height: 100%;
+  place-items: center;
+  align-content: center;
+  gap: 14px;
+  padding: 24px;
+  text-align: center;
+}
+
+.runtime-state h1,
+.runtime-state p {
+  max-width: 520px;
+  margin: 0;
+}
+
+.runtime-state p {
+  color: var(--muted);
+}
+
+.state-icon {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--gold);
+}
+
 .state-panel {
   display: grid;
   min-height: 120px;
@@ -841,4 +895,3126 @@ th {
   .collect-button {
     grid-column: auto;
   }
+}
+
+/* FINAL Eldorado alignment overrides. */
+.frame-app {
+  grid-template-rows: 48px minmax(0, 1fr) !important;
+  background: #18303a !important;
+}
+
+.top-bar {
+  grid-template-columns: 1fr auto !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  padding: 0 12px 0 68px !important;
+  background: #263f49 !important;
+}
+
+.login-button {
+  height: 48px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #ffd339 !important;
+}
+
+.frame-content {
+  display: grid !important;
+  grid-template-columns: 48px minmax(0, 1fr) !important;
+  background: #18303a !important;
+  overflow: hidden !important;
+}
+
+.action-panel {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  width: 48px !important;
+  height: 100% !important;
+  align-items: center !important;
+  gap: 20px !important;
+  padding: 17px 0 0 !important;
+  border: 0 !important;
+  background: #142b35 !important;
+}
+
+.action-button {
+  display: grid !important;
+  width: 48px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  place-items: center !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.game-shell {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-template-rows: minmax(0, 1fr) !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background-color: #102832 !important;
+  background-image:
+    radial-gradient(circle at 15px 15px, rgba(255,255,255,.018) 2px, transparent 3px),
+    radial-gradient(circle at 55px 55px, rgba(255,255,255,.014) 2px, transparent 3px),
+    linear-gradient(135deg, rgba(255,255,255,.015) 25%, transparent 25% 50%, rgba(255,255,255,.012) 50% 75%, transparent 75%) !important;
+  background-size: 80px 80px, 80px 80px, 160px 160px !important;
+  overflow: hidden !important;
+}
+
+.combination-panel,
+.win-table {
+  display: none !important;
+}
+
+.center-stage {
+  display: grid !important;
+  grid-template-rows: minmax(0, 1fr) auto auto !important;
+  width: min(760px, calc(100vw - 112px)) !important;
+  max-height: calc(100vh - 86px) !important;
+  align-self: center !important;
+  justify-self: center !important;
+  gap: 10px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  overflow: visible !important;
+}
+
+.lottery-machine {
+  width: 100% !important;
+  align-self: center !important;
+  background: rgba(14, 31, 39, .92) !important;
+  border: 1px solid rgba(231, 193, 93, .22) !important;
+}
+
+.bottom-bar {
+  display: none !important;
+}
+
+/* Restore Eldorado-style in-game menus, payout table, and bottom bar. */
+.frame-app {
+  grid-template-rows: 48px minmax(0, 1fr) 64px !important;
+}
+
+.game-shell {
+  grid-template-columns: minmax(0, 1fr) 230px !important;
+  gap: 14px !important;
+  padding: 28px !important;
+}
+
+.center-stage {
+  width: min(760px, calc(100vw - 390px)) !important;
+  justify-self: end !important;
+}
+
+.win-table {
+  display: flex !important;
+  flex-direction: column !important;
+  align-self: center !important;
+  width: 230px !important;
+  max-height: 520px !important;
+  padding: 0 !important;
+  border: 1px solid rgba(231, 193, 93, .18) !important;
+  background: rgba(14, 31, 39, .94) !important;
+}
+
+.win-table h3 {
+  margin: 0 !important;
+  padding: 12px !important;
+  border-bottom: 1px solid rgba(231, 193, 93, .16) !important;
+  background: rgba(20, 43, 53, .98) !important;
+  color: #e7c15d !important;
+  font-size: .88rem !important;
+  text-transform: uppercase !important;
+}
+
+.win-table span {
+  padding: 11px 12px !important;
+  border-top: 1px solid rgba(255,255,255,.055) !important;
+  color: #b9d5df !important;
+  font-size: .82rem !important;
+}
+
+.bottom-bar {
+  display: grid !important;
+  grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
+  gap: 0 !important;
+  height: 64px !important;
+  padding-left: 48px !important;
+  border-top: 1px solid rgba(231, 193, 93, .14) !important;
+  background: #071015 !important;
+}
+
+.info-cell {
+  display: grid !important;
+  align-content: center !important;
+  min-width: 0 !important;
+  padding: 8px 12px !important;
+  border-right: 1px solid rgba(255,255,255,.06) !important;
+  background: rgba(20, 43, 53, .45) !important;
+}
+
+.info-cell small {
+  color: #7f9aa5 !important;
+  font-size: .64rem !important;
+  text-transform: uppercase !important;
+}
+
+.info-cell strong {
+  color: #ffffff !important;
+  font-size: .86rem !important;
+}
+
+.action-panel {
+  gap: 14px !important;
+  padding-top: 14px !important;
+}
+
+.action-button {
+  height: 34px !important;
+  min-height: 34px !important;
+}
+
+@media (max-width: 1040px) {
+  .game-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .center-stage {
+    width: min(760px, calc(100vw - 100px)) !important;
+    justify-self: center !important;
+  }
+
+  .win-table {
+    display: none !important;
+  }
+}
+
+/* Final pixel tune against the captured LotoSport shell. */
+.brand-glyph {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  background: #ffffff !important;
+}
+
+.brand-glyph::before {
+  display: block !important;
+  inset: 9px 10px 8px 13px !important;
+  width: auto !important;
+  border-radius: 14px 3px 14px 3px !important;
+  background: #223a44 !important;
+  transform: skew(-12deg) !important;
+}
+
+.brand-glyph::after {
+  display: block !important;
+  right: 0 !important;
+  top: 4px !important;
+  width: 18px !important;
+  height: 18px !important;
+  background: #ffd339 !important;
+  clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 92%, 50% 70%, 21% 92%, 32% 57%, 2% 35%, 39% 35%) !important;
+}
+
+.brand-lockup strong {
+  font-size: 1.5rem !important;
+}
+
+.action-button {
+  grid-template-columns: 1fr !important;
+  justify-items: center !important;
+}
+
+/* Screenshot-target game surface: left combinations, center ticket, right payouts, bottom controls. */
+.frame-app {
+  grid-template-rows: 74px minmax(0, 1fr) 118px !important;
+  background: #071015 !important;
+}
+
+.top-bar {
+  height: 74px !important;
+  min-height: 74px !important;
+  padding: 0 14px !important;
+}
+
+.top-actions {
+  height: 74px !important;
+}
+
+.top-balance {
+  color: #ffd36b;
+  font-size: 1.28rem;
+  font-weight: 800;
+}
+
+/* Fit the whole Eldorado interface into one viewport and simplify header. */
+.frame-app {
+  grid-template-rows: 58px minmax(0, 1fr) 106px !important;
+  height: 100vh !important;
+  min-height: 620px !important;
+  overflow: hidden !important;
+}
+
+.top-bar {
+  height: 58px !important;
+  min-height: 58px !important;
+  padding: 0 22px !important;
+}
+
+.brand-lockup {
+  height: 58px !important;
+}
+
+.brand-lockup strong {
+  color: #ffd339 !important;
+  font-size: 1.55rem !important;
+  text-transform: none !important;
+}
+
+.top-actions {
+  height: 58px !important;
+}
+
+.top-balance {
+  font-size: 1.18rem !important;
+}
+
+.frame-content {
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.game-shell {
+  grid-template-columns: 300px minmax(500px, 1fr) 360px !important;
+  gap: 20px !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  padding: 12px 24px 10px !important;
+  overflow: hidden !important;
+}
+
+.action-panel {
+  top: 76px !important;
+  right: 18px !important;
+  gap: 18px !important;
+}
+
+.action-button,
+.action-button svg {
+  width: 34px !important;
+  height: 34px !important;
+}
+
+.combination-panel {
+  gap: 12px !important;
+  align-self: start !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+.combination-panel::before {
+  margin: 0 0 8px 16px !important;
+  font-size: 1rem !important;
+}
+
+.combination-panel button {
+  min-height: 82px !important;
+  padding: 10px 58px 10px 13px !important;
+}
+
+.combination-panel strong {
+  font-size: 2.35rem !important;
+}
+
+.combination-panel span::before {
+  font-size: 1.05rem !important;
+  margin-bottom: 5px !important;
+}
+
+.center-stage {
+  align-self: start !important;
+  gap: 7px !important;
+}
+
+.center-stage::before {
+  font-size: clamp(2.4rem, 4.1vw, 3.7rem) !important;
+  line-height: .95 !important;
+}
+
+.lottery-machine {
+  width: min(100%, 520px) !important;
+}
+
+.lottery-board {
+  min-height: 374px !important;
+  grid-template-columns: 30px repeat(5, 1fr) !important;
+  grid-template-rows: 24px repeat(3, 76px) 66px !important;
+  gap: 6px !important;
+  padding: 8px 12px 14px !important;
+}
+
+.column-head,
+.row-head {
+  font-size: 1.28rem !important;
+}
+
+.grid-cell {
+  font-size: 2.5rem !important;
+}
+
+.result-panel {
+  width: min(100%, 520px) !important;
+}
+
+.win-table {
+  align-self: start !important;
+  width: 360px !important;
+  max-height: 520px !important;
+}
+
+.inline-paytable {
+  font-size: .78rem !important;
+}
+
+.inline-paytable th,
+.inline-paytable td {
+  padding: 2px 5px !important;
+}
+
+.draw-info {
+  margin-top: 54px !important;
+  padding: 15px 18px !important;
+}
+
+.bottom-bar {
+  height: 106px !important;
+  min-height: 106px !important;
+  gap: 12px !important;
+  padding: 8px 22px !important;
+  overflow: visible !important;
+}
+
+.round-info,
+.double-button {
+  width: 78px !important;
+  height: 78px !important;
+  min-width: 78px !important;
+  flex-basis: 78px !important;
+}
+
+.control-cell {
+  grid-template-columns: 46px 118px 46px !important;
+  gap: 7px !important;
+}
+
+.control-cell button {
+  width: 46px !important;
+  height: 46px !important;
+}
+
+.control-cell div,
+.info-cell {
+  min-width: 118px !important;
+  height: 54px !important;
+  padding: 5px 8px !important;
+}
+
+.control-cell small,
+.info-cell small {
+  font-size: .72rem !important;
+  line-height: 1.05 !important;
+}
+
+.control-cell strong,
+.info-cell strong {
+  font-size: .9rem !important;
+  line-height: 1.05 !important;
+}
+
+.auto-button,
+.prize-button,
+.buy-ticket-button {
+  min-height: 58px !important;
+  height: 58px !important;
+  padding: 6px 10px !important;
+  line-height: 1.05 !important;
+  white-space: normal !important;
+}
+
+.auto-button {
+  min-width: 64px !important;
+}
+
+.prize-button {
+  width: 92px !important;
+}
+
+.buy-ticket-button {
+  min-width: 126px !important;
+}
+
+/* ABSOLUTE EOF OVERRIDE - component shrink must win over all duplicate rules above. */
+.frame-app { grid-template-rows: 38px minmax(0, 1fr) 68px !important; }
+.top-bar, .brand-lockup, .top-actions { height: 38px !important; min-height: 38px !important; }
+.top-bar { padding: 0 18px !important; }
+.brand-glyph, .hotline, .language-flag, .language-code, .login-button { display: none !important; }
+.brand-lockup strong { font-size: 1.12rem !important; }
+.top-balance { font-size: .96rem !important; }
+.game-shell { grid-template-columns: 220px minmax(360px, 1fr) 286px !important; gap: 12px !important; padding: 2px 18px 4px !important; }
+.combination-panel { gap: 5px !important; }
+.combination-panel::before { font-size: .72rem !important; margin: 0 0 1px 10px !important; }
+.combination-panel button { min-height: 50px !important; padding: 5px 38px 5px 8px !important; border-width: 2px !important; border-radius: 6px !important; }
+.combination-panel strong { font-size: 1.55rem !important; right: 7px !important; top: 3px !important; }
+.combination-panel span { font-size: .49rem !important; }
+.combination-panel span::before { font-size: .74rem !important; margin-bottom: 2px !important; }
+.center-stage { gap: 2px !important; transform: translateY(4px) !important; }
+.center-stage::before { font-size: clamp(1.45rem, 2.35vw, 2.05rem) !important; line-height: .9 !important; }
+.lottery-machine { width: min(100%, 360px) !important; box-shadow: 0 0 0 2px #d6b211, inset 0 0 0 4px #fff8d6 !important; }
+.lottery-board { min-height: 224px !important; grid-template-columns: 18px repeat(5, 1fr) !important; grid-template-rows: 16px repeat(3, 45px) 38px !important; gap: 3px !important; padding: 5px 7px 8px !important; }
+.column-head, .row-head { font-size: .78rem !important; }
+.grid-cell { font-size: 1.38rem !important; text-shadow: 2px 2px 0 #000 !important; }
+.result-panel { width: min(100%, 360px) !important; min-height: 16px !important; padding: 0 8px !important; font-size: .6rem !important; }
+.win-table { width: 286px !important; border-width: 2px !important; }
+.win-table h3 { min-height: 22px !important; font-size: .62rem !important; }
+.inline-paytable { font-size: .52rem !important; }
+.inline-paytable th, .inline-paytable td { padding: 0 3px !important; }
+.draw-info { margin-top: 10px !important; padding: 7px 10px !important; font-size: .62rem !important; }
+.draw-info strong { margin-bottom: 4px !important; }
+.bottom-bar { height: 68px !important; min-height: 68px !important; gap: 6px !important; padding: 4px 14px !important; }
+.round-info, .double-button { width: 50px !important; height: 50px !important; min-width: 50px !important; flex: 0 0 50px !important; }
+.round-info svg, .double-button svg { width: 22px !important; height: 22px !important; }
+.control-cell { grid-template-columns: 30px 84px 30px !important; gap: 4px !important; }
+.control-cell button { width: 30px !important; height: 30px !important; border-width: 2px !important; }
+.control-cell div, .info-cell { min-width: 84px !important; height: 36px !important; padding: 3px 5px !important; }
+.control-cell small, .info-cell small { font-size: .48rem !important; }
+.control-cell strong, .info-cell strong { font-size: .62rem !important; }
+.auto-button, .prize-button, .buy-ticket-button { height: 38px !important; min-height: 38px !important; padding: 3px 6px !important; font-size: .62rem !important; border-width: 2px !important; }
+.auto-button { min-width: 50px !important; }
+.prize-button { width: 68px !important; }
+.buy-ticket-button { min-width: 92px !important; }
+.auto-button span, .prize-button span { font-size: .42rem !important; }
+
+/* DEFINITIVE LAST RULES - short viewport component fit. */
+.frame-app { grid-template-rows: 38px minmax(0, 1fr) 68px !important; }
+.top-bar,
+.brand-lockup,
+.top-actions { height: 38px !important; min-height: 38px !important; }
+.top-bar { padding: 0 18px !important; }
+.brand-glyph,
+.hotline,
+.language-flag,
+.language-code,
+.login-button { display: none !important; }
+.brand-lockup strong { font-size: 1.12rem !important; }
+.top-balance { font-size: .96rem !important; }
+.game-shell {
+  grid-template-columns: 220px minmax(360px, 1fr) 286px !important;
+  gap: 12px !important;
+  padding: 2px 18px 4px !important;
+}
+.combination-panel { gap: 5px !important; }
+.combination-panel::before { font-size: .72rem !important; margin: 0 0 1px 10px !important; }
+.combination-panel button {
+  min-height: 50px !important;
+  padding: 5px 38px 5px 8px !important;
+  border-width: 2px !important;
+  border-radius: 6px !important;
+}
+.combination-panel strong { font-size: 1.55rem !important; right: 7px !important; top: 3px !important; }
+.combination-panel span { font-size: .49rem !important; }
+.combination-panel span::before { font-size: .74rem !important; margin-bottom: 2px !important; }
+.center-stage { gap: 2px !important; transform: translateY(4px) !important; }
+.center-stage::before { font-size: clamp(1.45rem, 2.35vw, 2.05rem) !important; line-height: .9 !important; }
+.lottery-machine { width: min(100%, 360px) !important; box-shadow: 0 0 0 2px #d6b211, inset 0 0 0 4px #fff8d6 !important; }
+.lottery-board {
+  min-height: 224px !important;
+  grid-template-columns: 18px repeat(5, 1fr) !important;
+  grid-template-rows: 16px repeat(3, 45px) 38px !important;
+  gap: 3px !important;
+  padding: 5px 7px 8px !important;
+}
+.column-head,
+.row-head { font-size: .78rem !important; }
+.grid-cell { font-size: 1.38rem !important; text-shadow: 2px 2px 0 #000 !important; }
+.result-panel { width: min(100%, 360px) !important; min-height: 16px !important; padding: 0 8px !important; font-size: .6rem !important; }
+.win-table { width: 286px !important; border-width: 2px !important; }
+.win-table h3 { min-height: 22px !important; font-size: .62rem !important; }
+.inline-paytable { font-size: .52rem !important; }
+.inline-paytable th,
+.inline-paytable td { padding: 0 3px !important; }
+.draw-info { margin-top: 10px !important; padding: 7px 10px !important; font-size: .62rem !important; }
+.draw-info strong { margin-bottom: 4px !important; }
+.bottom-bar {
+  height: 68px !important;
+  min-height: 68px !important;
+  gap: 6px !important;
+  padding: 4px 14px !important;
+}
+.round-info,
+.double-button { width: 50px !important; height: 50px !important; min-width: 50px !important; flex: 0 0 50px !important; }
+.round-info svg,
+.double-button svg { width: 22px !important; height: 22px !important; }
+.control-cell { grid-template-columns: 30px 84px 30px !important; gap: 4px !important; }
+.control-cell button { width: 30px !important; height: 30px !important; border-width: 2px !important; }
+.control-cell div,
+.info-cell { min-width: 84px !important; height: 36px !important; padding: 3px 5px !important; }
+.control-cell small,
+.info-cell small { font-size: .48rem !important; }
+.control-cell strong,
+.info-cell strong { font-size: .62rem !important; }
+.auto-button,
+.prize-button,
+.buy-ticket-button {
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 3px 6px !important;
+  font-size: .62rem !important;
+  border-width: 2px !important;
+}
+.auto-button { min-width: 50px !important; }
+.prize-button { width: 68px !important; }
+.buy-ticket-button { min-width: 92px !important; }
+.auto-button span,
+.prize-button span { font-size: .42rem !important; }
+
+/* TRUE EOF MICRO-FIT: this must stay last. */
+.frame-app {
+  grid-template-rows: 38px minmax(0, 1fr) 68px !important;
+}
+
+.top-bar,
+.brand-lockup,
+.top-actions {
+  height: 38px !important;
+  min-height: 38px !important;
+}
+
+.top-bar {
+  padding: 0 18px !important;
+}
+
+.brand-lockup strong {
+  font-size: 1.12rem !important;
+}
+
+.top-balance {
+  font-size: .96rem !important;
+}
+
+.game-shell {
+  grid-template-columns: 220px minmax(360px, 1fr) 286px !important;
+  gap: 12px !important;
+  padding: 2px 18px 4px !important;
+  align-items: center !important;
+}
+
+.combination-panel {
+  gap: 5px !important;
+}
+
+.combination-panel::before {
+  font-size: .72rem !important;
+  margin: 0 0 1px 10px !important;
+}
+
+.combination-panel button {
+  min-height: 50px !important;
+  padding: 5px 38px 5px 8px !important;
+  border-width: 2px !important;
+  border-radius: 6px !important;
+}
+
+.combination-panel strong {
+  font-size: 1.55rem !important;
+  right: 7px !important;
+  top: 3px !important;
+}
+
+.combination-panel span {
+  font-size: .49rem !important;
+}
+
+.combination-panel span::before {
+  font-size: .74rem !important;
+  margin-bottom: 2px !important;
+}
+
+.center-stage {
+  gap: 2px !important;
+  transform: translateY(4px) !important;
+}
+
+.center-stage::before {
+  font-size: clamp(1.45rem, 2.35vw, 2.05rem) !important;
+  line-height: .9 !important;
+}
+
+.lottery-machine {
+  width: min(100%, 360px) !important;
+  box-shadow: 0 0 0 2px #d6b211, inset 0 0 0 4px #fff8d6 !important;
+}
+
+.lottery-board {
+  min-height: 224px !important;
+  grid-template-columns: 18px repeat(5, 1fr) !important;
+  grid-template-rows: 16px repeat(3, 45px) 38px !important;
+  gap: 3px !important;
+  padding: 5px 7px 8px !important;
+}
+
+.column-head,
+.row-head {
+  font-size: .78rem !important;
+}
+
+.grid-cell {
+  font-size: 1.38rem !important;
+  text-shadow: 2px 2px 0 #000 !important;
+}
+
+.result-panel {
+  width: min(100%, 360px) !important;
+  min-height: 16px !important;
+  padding: 0 8px !important;
+  font-size: .6rem !important;
+}
+
+.win-table {
+  width: 286px !important;
+  border-width: 2px !important;
+}
+
+.win-table h3 {
+  min-height: 22px !important;
+  font-size: .62rem !important;
+}
+
+.inline-paytable {
+  font-size: .52rem !important;
+}
+
+.inline-paytable th,
+.inline-paytable td {
+  padding: 0 3px !important;
+}
+
+.draw-info {
+  margin-top: 10px !important;
+  padding: 7px 10px !important;
+  font-size: .62rem !important;
+}
+
+.draw-info strong {
+  margin-bottom: 4px !important;
+}
+
+.bottom-bar {
+  height: 68px !important;
+  min-height: 68px !important;
+  gap: 6px !important;
+  padding: 4px 14px !important;
+}
+
+.round-info,
+.double-button {
+  width: 50px !important;
+  height: 50px !important;
+  min-width: 50px !important;
+  flex: 0 0 50px !important;
+}
+
+.round-info svg,
+.double-button svg {
+  width: 22px !important;
+  height: 22px !important;
+}
+
+.control-cell {
+  grid-template-columns: 30px 84px 30px !important;
+  gap: 4px !important;
+}
+
+.control-cell button {
+  width: 30px !important;
+  height: 30px !important;
+  border-width: 2px !important;
+}
+
+.control-cell div,
+.info-cell {
+  min-width: 84px !important;
+  height: 36px !important;
+  padding: 3px 5px !important;
+}
+
+.control-cell small,
+.info-cell small {
+  font-size: .48rem !important;
+}
+
+.control-cell strong,
+.info-cell strong {
+  font-size: .62rem !important;
+}
+
+.auto-button,
+.prize-button,
+.buy-ticket-button {
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 3px 6px !important;
+  font-size: .62rem !important;
+  border-width: 2px !important;
+}
+
+.auto-button {
+  min-width: 50px !important;
+}
+
+.prize-button {
+  width: 68px !important;
+}
+
+.buy-ticket-button {
+  min-width: 92px !important;
+}
+
+.auto-button span,
+.prize-button span {
+  font-size: .42rem !important;
+}
+
+.action-panel {
+  display: none !important;
+}
+
+/* Ultra-fit: every game component visible above the fixed bottom bar. */
+.frame-app {
+  grid-template-rows: 46px minmax(0, 1fr) 86px !important;
+}
+
+.top-bar,
+.brand-lockup,
+.top-actions {
+  height: 46px !important;
+  min-height: 46px !important;
+}
+
+.brand-lockup strong {
+  font-size: 1.35rem !important;
+}
+
+.top-balance {
+  font-size: 1.05rem !important;
+}
+
+.game-shell {
+  grid-template-columns: 246px minmax(400px, 1fr) 316px !important;
+  gap: 14px !important;
+  padding: 6px 22px !important;
+}
+
+.combination-panel {
+  gap: 7px !important;
+}
+
+.combination-panel::before {
+  margin: 0 0 1px 14px !important;
+  font-size: .82rem !important;
+  line-height: 1 !important;
+}
+
+.combination-panel button {
+  min-height: 62px !important;
+  padding: 7px 45px 7px 10px !important;
+  border-width: 3px !important;
+}
+
+.combination-panel strong {
+  right: 8px !important;
+  top: 4px !important;
+  font-size: 1.9rem !important;
+}
+
+.combination-panel span {
+  font-size: .57rem !important;
+  line-height: 1.05 !important;
+}
+
+.combination-panel span::before {
+  font-size: .88rem !important;
+  margin-bottom: 3px !important;
+}
+
+.center-stage {
+  gap: 4px !important;
+}
+
+.center-stage::before {
+  font-size: clamp(1.9rem, 3vw, 2.75rem) !important;
+}
+
+.lottery-machine {
+  width: min(100%, 440px) !important;
+}
+
+.lottery-board {
+  min-height: 292px !important;
+  grid-template-columns: 24px repeat(5, 1fr) !important;
+  grid-template-rows: 20px repeat(3, 58px) 50px !important;
+  gap: 4px !important;
+  padding: 7px 10px 11px !important;
+}
+
+.column-head,
+.row-head {
+  font-size: 1.02rem !important;
+}
+
+.grid-cell {
+  font-size: 1.9rem !important;
+}
+
+.result-panel {
+  width: min(100%, 440px) !important;
+  min-height: 22px !important;
+  padding: 1px 14px !important;
+  font-size: .78rem !important;
+}
+
+.win-table {
+  width: 316px !important;
+  border-width: 3px !important;
+}
+
+.win-table h3 {
+  min-height: 28px !important;
+  font-size: .78rem !important;
+}
+
+.inline-paytable {
+  font-size: .65rem !important;
+}
+
+.inline-paytable th,
+.inline-paytable td {
+  padding: 1px 4px !important;
+}
+
+.draw-info {
+  margin-top: 24px !important;
+  padding: 10px 13px !important;
+  font-size: .8rem !important;
+}
+
+.bottom-bar {
+  height: 86px !important;
+  min-height: 86px !important;
+  gap: 8px !important;
+  padding: 6px 18px !important;
+}
+
+.round-info,
+.double-button {
+  width: 64px !important;
+  height: 64px !important;
+  min-width: 64px !important;
+  flex-basis: 64px !important;
+}
+
+.round-info svg,
+.double-button svg {
+  width: 30px !important;
+  height: 30px !important;
+}
+
+.control-cell {
+  grid-template-columns: 38px 104px 38px !important;
+  gap: 6px !important;
+}
+
+.control-cell button {
+  width: 38px !important;
+  height: 38px !important;
+}
+
+.control-cell div,
+.info-cell {
+  min-width: 104px !important;
+  height: 44px !important;
+  padding: 4px 7px !important;
+}
+
+.control-cell small,
+.info-cell small {
+  font-size: .62rem !important;
+}
+
+.control-cell strong,
+.info-cell strong {
+  font-size: .78rem !important;
+}
+
+.auto-button,
+.prize-button,
+.buy-ticket-button {
+  height: 48px !important;
+  min-height: 48px !important;
+  padding: 5px 8px !important;
+  font-size: .78rem !important;
+}
+
+.auto-button {
+  min-width: 58px !important;
+}
+
+.prize-button {
+  width: 84px !important;
+}
+
+.buy-ticket-button {
+  min-width: 112px !important;
+}
+
+/* MICRO-FIT: aggressive shrink for shorter in-app browser viewports. */
+.frame-app {
+  grid-template-rows: 38px minmax(0, 1fr) 72px !important;
+}
+
+.top-bar,
+.brand-lockup,
+.top-actions {
+  height: 38px !important;
+  min-height: 38px !important;
+}
+
+.top-bar {
+  padding: 0 18px !important;
+}
+
+.brand-lockup strong {
+  font-size: 1.12rem !important;
+}
+
+.top-balance {
+  font-size: .96rem !important;
+}
+
+.game-shell {
+  grid-template-columns: 220px minmax(360px, 1fr) 286px !important;
+  gap: 12px !important;
+  padding: 4px 18px !important;
+}
+
+.combination-panel {
+  gap: 5px !important;
+}
+
+.combination-panel::before {
+  font-size: .72rem !important;
+  margin: 0 0 1px 10px !important;
+}
+
+.combination-panel button {
+  min-height: 50px !important;
+  padding: 5px 38px 5px 8px !important;
+  border-width: 2px !important;
+  border-radius: 6px !important;
+}
+
+.combination-panel strong {
+  font-size: 1.55rem !important;
+  right: 7px !important;
+  top: 3px !important;
+}
+
+.combination-panel span {
+  font-size: .49rem !important;
+}
+
+.combination-panel span::before {
+  font-size: .74rem !important;
+  margin-bottom: 2px !important;
+}
+
+.center-stage {
+  gap: 3px !important;
+}
+
+.center-stage::before {
+  font-size: clamp(1.55rem, 2.55vw, 2.25rem) !important;
+}
+
+.lottery-machine {
+  width: min(100%, 380px) !important;
+  box-shadow: 0 0 0 2px #d6b211, inset 0 0 0 5px #fff8d6 !important;
+}
+
+.lottery-board {
+  min-height: 246px !important;
+  grid-template-columns: 20px repeat(5, 1fr) !important;
+  grid-template-rows: 18px repeat(3, 49px) 42px !important;
+  gap: 3px !important;
+  padding: 6px 8px 9px !important;
+}
+
+.column-head,
+.row-head {
+  font-size: .86rem !important;
+}
+
+.grid-cell {
+  font-size: 1.55rem !important;
+  text-shadow: 2px 2px 0 #000 !important;
+}
+
+.result-panel {
+  width: min(100%, 380px) !important;
+  min-height: 18px !important;
+  padding: 0 10px !important;
+  font-size: .66rem !important;
+}
+
+.win-table {
+  width: 286px !important;
+  border-width: 2px !important;
+}
+
+.win-table h3 {
+  min-height: 24px !important;
+  font-size: .66rem !important;
+}
+
+.inline-paytable {
+  font-size: .56rem !important;
+}
+
+.inline-paytable th,
+.inline-paytable td {
+  padding: 0 3px !important;
+}
+
+.draw-info {
+  margin-top: 16px !important;
+  padding: 8px 10px !important;
+  font-size: .68rem !important;
+}
+
+.draw-info strong {
+  margin-bottom: 6px !important;
+}
+
+.bottom-bar {
+  height: 72px !important;
+  min-height: 72px !important;
+  gap: 6px !important;
+  padding: 4px 14px !important;
+}
+
+.round-info,
+.double-button {
+  width: 54px !important;
+  height: 54px !important;
+  min-width: 54px !important;
+  flex-basis: 54px !important;
+}
+
+.round-info svg,
+.double-button svg {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+.control-cell {
+  grid-template-columns: 32px 88px 32px !important;
+  gap: 4px !important;
+}
+
+.control-cell button {
+  width: 32px !important;
+  height: 32px !important;
+  border-width: 2px !important;
+}
+
+.control-cell div,
+.info-cell {
+  min-width: 88px !important;
+  height: 38px !important;
+  padding: 3px 5px !important;
+}
+
+.control-cell small,
+.info-cell small {
+  font-size: .52rem !important;
+}
+
+.control-cell strong,
+.info-cell strong {
+  font-size: .66rem !important;
+}
+
+.auto-button,
+.prize-button,
+.buy-ticket-button {
+  height: 40px !important;
+  min-height: 40px !important;
+  padding: 3px 6px !important;
+  font-size: .66rem !important;
+  border-width: 2px !important;
+}
+
+.auto-button {
+  min-width: 52px !important;
+}
+
+.prize-button {
+  width: 72px !important;
+}
+
+.buy-ticket-button {
+  min-width: 96px !important;
+}
+
+.auto-button span,
+.prize-button span {
+  font-size: .44rem !important;
+}
+
+.auto-button span,
+.prize-button span {
+  font-size: .52rem !important;
+}
+
+.auto-button span,
+.prize-button span {
+  font-size: .6rem !important;
+  line-height: 1.05 !important;
+}
+
+/* Absolute final viewport-fit overrides. */
+html,
+body,
+#root {
+  height: 100vh !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.frame-app {
+  height: 100vh !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.frame-content {
+  height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.game-shell {
+  height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  align-items: center !important;
+  grid-template-columns: 292px minmax(470px, 1fr) 348px !important;
+  gap: 18px !important;
+  padding: 8px 24px !important;
+}
+
+.combination-panel {
+  align-self: stretch !important;
+  gap: 9px !important;
+}
+
+.combination-panel::before {
+  margin-bottom: 4px !important;
+  font-size: .95rem !important;
+}
+
+.combination-panel button {
+  min-height: 75px !important;
+}
+
+.center-stage::before {
+  font-size: clamp(2.2rem, 3.5vw, 3.25rem) !important;
+}
+
+.lottery-machine {
+  width: min(100%, 500px) !important;
+}
+
+.lottery-board {
+  min-height: 344px !important;
+  grid-template-rows: 22px repeat(3, 70px) 58px !important;
+  gap: 5px !important;
+}
+
+.grid-cell {
+  font-size: 2.25rem !important;
+}
+
+.win-table {
+  width: 348px !important;
+  align-self: center !important;
+}
+
+.draw-info {
+  margin-top: 36px !important;
+  padding: 13px 16px !important;
+}
+
+.bottom-bar {
+  height: 106px !important;
+}
+
+.frame-content {
+  grid-template-columns: minmax(0, 1fr) !important;
+  background:
+    linear-gradient(rgba(6, 16, 18, .36), rgba(6, 16, 18, .52)),
+    radial-gradient(circle at 24% 46%, rgba(210, 164, 45, .22), transparent 16%),
+    radial-gradient(circle at 84% 70%, rgba(231, 193, 93, .22), transparent 18%),
+    linear-gradient(135deg, #102027, #1e3740 45%, #0c171b) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+.action-panel {
+  position: absolute !important;
+  right: 18px !important;
+  top: 102px !important;
+  z-index: 5 !important;
+  width: auto !important;
+  height: 46px !important;
+  flex-direction: row !important;
+  gap: 22px !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+.action-button {
+  width: 44px !important;
+  height: 44px !important;
+  color: #ffd719 !important;
+}
+
+.action-button svg {
+  width: 36px !important;
+  height: 36px !important;
+  color: #ffd719 !important;
+}
+
+.game-shell {
+  grid-column: 1 !important;
+  display: grid !important;
+  grid-template-columns: 320px minmax(520px, 1fr) 378px !important;
+  gap: 26px !important;
+  padding: 24px 26px 16px !important;
+  background: transparent !important;
+  min-height: 720px !important;
+  overflow: visible !important;
+}
+
+.combination-panel {
+  display: grid !important;
+  gap: 18px !important;
+  align-self: center !important;
+  max-height: none !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.combination-panel::before {
+  content: "Выбор лотерейной\Aкомбинации";
+  white-space: pre;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.1rem;
+  line-height: 1.08;
+  margin: 0 0 34px 16px;
+}
+
+.combination-panel button {
+  position: relative;
+  display: block !important;
+  min-height: 96px !important;
+  padding: 13px 64px 12px 14px !important;
+  border: 4px solid #c99500 !important;
+  border-radius: 9px !important;
+  background: rgba(0, 0, 0, .82) !important;
+  color: #fff !important;
+  box-shadow: 0 0 18px rgba(212, 151, 0, .32), inset 0 0 26px rgba(212, 151, 0, .08) !important;
+}
+
+.combination-panel button.active {
+  background: rgba(8, 8, 5, .9) !important;
+  box-shadow: 0 0 22px rgba(255, 205, 0, .44), inset 0 0 0 1px rgba(255,255,255,.08) !important;
+}
+
+.combination-panel strong {
+  position: absolute;
+  right: 10px;
+  top: 4px;
+  width: auto !important;
+  height: auto !important;
+  background: transparent !important;
+  color: #ffe100 !important;
+  font-size: 2.7rem;
+  line-height: 1;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.combination-panel span {
+  display: block;
+  color: #fff5bd !important;
+  font-size: .68rem !important;
+  line-height: 1.18;
+}
+
+.combination-panel span::before {
+  content: "КОМБИНАЦИЯ\A";
+  white-space: pre;
+  display: block;
+  color: #fff;
+  font-size: 1.18rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+
+.center-stage {
+  width: 100% !important;
+  max-height: none !important;
+  justify-self: center !important;
+  align-self: center !important;
+  grid-template-rows: auto auto auto !important;
+  overflow: visible !important;
+}
+
+.center-stage::before {
+  content: "EL DORADO";
+  justify-self: center;
+  color: #f2bd36;
+  font-size: clamp(2.8rem, 5vw, 4.4rem);
+  font-weight: 1000;
+  letter-spacing: .04em;
+  text-shadow: 0 2px 0 #6b3f06, 0 5px 8px rgba(0,0,0,.7);
+}
+
+.lottery-machine {
+  width: min(100%, 568px) !important;
+  justify-self: center !important;
+  border: 0 !important;
+  background: #f7eedb !important;
+  box-shadow: 0 0 0 3px #d6b211, inset 0 0 0 7px #fff8d6 !important;
+}
+
+.machine-title {
+  display: none !important;
+}
+
+.lottery-board {
+  min-height: 440px !important;
+  padding: 10px 14px 18px !important;
+  gap: 8px !important;
+  grid-template-columns: 34px repeat(5, 1fr) !important;
+  grid-template-rows: 28px repeat(3, 90px) 82px !important;
+}
+
+.column-head,
+.row-head {
+  background: transparent !important;
+  color: #111 !important;
+  font-size: 1.6rem !important;
+  font-weight: 900 !important;
+}
+
+.grid-cell {
+  border: 0 !important;
+  border-radius: 4px !important;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(255,255,255,.45), transparent 28%),
+    linear-gradient(135deg, #ffe069, #bf7b00 55%, #8e5100) !important;
+  color: #fff !important;
+  font-size: 3rem !important;
+  font-weight: 1000 !important;
+  text-shadow: 3px 3px 0 #000 !important;
+}
+
+.grid-cell.modifier {
+  color: transparent !important;
+  text-shadow: none !important;
+}
+
+.grid-cell.modifier.danger {
+  color: transparent !important;
+}
+
+.result-panel {
+  width: min(100%, 568px) !important;
+  justify-self: center !important;
+  min-height: 24px !important;
+  padding: 2px 18px !important;
+  border-radius: 14px !important;
+  background: rgba(0, 0, 0, .72) !important;
+  color: #fff !important;
+}
+
+.result-panel.muted {
+  text-align: center;
+}
+
+.spin-controls {
+  display: none !important;
+}
+
+.win-table {
+  display: block !important;
+  align-self: center !important;
+  width: 378px !important;
+  border: 4px solid #c99500 !important;
+  border-radius: 10px !important;
+  background: #f7efd9 !important;
+  color: #000 !important;
+  box-shadow: 0 0 18px rgba(0,0,0,.45) !important;
+}
+
+.win-table h3 {
+  margin: 0 !important;
+  display: flex !important;
+  min-height: 36px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 8px !important;
+  border: 0 !important;
+  background: #ffd719 !important;
+  color: #000 !important;
+  text-align: center;
+  font-size: .95rem !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+}
+
+.inline-paytable {
+  width: 100% !important;
+  min-width: 0 !important;
+  border-collapse: collapse !important;
+  background: #f7efd9 !important;
+  color: #000 !important;
+  font-size: .86rem !important;
+}
+
+.inline-paytable th,
+.inline-paytable td {
+  padding: 3px 6px !important;
+  border: 1px solid #111 !important;
+  text-align: center !important;
+}
+
+.inline-paytable thead th {
+  position: static !important;
+  background: #ffd719 !important;
+  color: #000 !important;
+}
+
+.draw-info {
+  margin: 78px 0 0 !important;
+  padding: 18px 22px !important;
+  border-radius: 9px !important;
+  background: rgba(0,0,0,.88) !important;
+  color: #fff !important;
+}
+
+.draw-info strong,
+.draw-info span {
+  display: block;
+}
+
+.draw-info strong {
+  margin-bottom: 10px;
+}
+
+.draw-info span {
+  font-size: .8rem;
+}
+
+.bottom-bar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 18px !important;
+  height: 118px !important;
+  padding: 10px 32px !important;
+  border: 0 !important;
+  background: linear-gradient(90deg, rgba(21,24,23,.98), rgba(25,34,35,.94), rgba(21,24,23,.98)) !important;
+  box-shadow: inset 0 2px 0 rgba(255,255,190,.25), 0 -8px 18px rgba(0,0,0,.45) !important;
+}
+
+.round-info,
+.double-button {
+  display: grid;
+  width: 92px;
+  height: 92px;
+  min-width: 92px;
+  flex: 0 0 92px;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 2px solid rgba(0,0,0,.6);
+  border-radius: 50%;
+  background: radial-gradient(circle, #f7df78, #a17010);
+  color: #000;
+}
+
+.double-button svg {
+  width: 42px;
+  height: 42px;
+}
+
+.control-cell {
+  display: grid;
+  grid-template-columns: 52px 120px 52px;
+  align-items: end;
+  gap: 8px;
+}
+
+.control-cell button {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border: 3px solid #111;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffd95b, #b8730c);
+  color: #000;
+}
+
+.control-cell div,
+.info-cell {
+  display: grid !important;
+  align-content: center !important;
+  min-width: 112px !important;
+  height: 48px !important;
+  padding: 5px 10px !important;
+  border: 0 !important;
+  border-radius: 6px !important;
+  background: rgba(0,0,0,.46) !important;
+  text-align: center !important;
+}
+
+.control-cell small,
+.info-cell small {
+  color: #ffe100 !important;
+  font-size: .78rem !important;
+  line-height: .95 !important;
+}
+
+.control-cell strong,
+.info-cell strong {
+  color: #ffd66b !important;
+  font-size: .92rem !important;
+}
+
+.auto-button,
+.prize-button,
+.buy-ticket-button {
+  min-height: 62px;
+  border: 3px solid #222;
+  border-radius: 8px;
+  background: linear-gradient(#d9d0b9, #8d8370);
+  color: #111;
+  font-weight: 900;
+}
+
+.auto-button span,
+.prize-button span {
+  display: block;
+  font-size: .64rem;
+}
+
+.prize-button {
+  width: 84px;
+  color: #c1b49a;
+  background: linear-gradient(#1c1e1d, #050505);
+}
+
+.buy-ticket-button {
+  background: linear-gradient(#ffd95b, #b8730c);
+}
+
+@media (max-width: 1280px) {
+  .game-shell {
+    grid-template-columns: 270px minmax(500px, 1fr) 320px !important;
+    gap: 16px !important;
+  }
+
+  .bottom-bar {
+    gap: 10px !important;
+  }
+}
+
+/* LotoSport Eldorado shell clone: header, icon rail, dark patterned canvas. */
+.frame-app {
+  display: grid;
+  grid-template-rows: 48px minmax(0, 1fr);
+  min-height: 100vh;
+  height: 100vh;
+  background: #18303a;
+  overflow: hidden;
+}
+
+.top-bar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  height: 48px;
+  min-height: 48px;
+  padding: 0 12px 0 68px;
+  border: 0;
+  background: #263f49;
+  box-shadow: none;
+}
+
+.brand-lockup {
+  height: 48px;
+  gap: 9px;
+}
+
+.brand-glyph {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.brand-glyph::before {
+  position: absolute;
+  content: "";
+  inset: 9px 10px 8px 13px;
+  width: auto;
+  border-radius: 14px 3px 14px 3px;
+  background: #223a44;
+  transform: skew(-12deg);
+  box-shadow: none;
+}
+
+.brand-glyph::after {
+  position: absolute;
+  display: block;
+  content: "";
+  right: 0;
+  top: 4px;
+  width: 18px;
+  height: 18px;
+  background: #ffd339;
+  clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 92%, 50% 70%, 21% 92%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.brand-star {
+  display: none;
+}
+
+.brand-lockup strong {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  color: #ffd339;
+  font-family: Ubuntu, "Segoe UI", Arial, sans-serif;
+  font-size: 1.46rem;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.brand-lockup strong span {
+  color: #ffffff;
+}
+
+.top-actions {
+  height: 48px;
+  gap: 8px;
+}
+
+.hotline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #e5c15f;
+  font-size: 1.28rem;
+  font-weight: 700;
+}
+
+.hotline svg {
+  fill: currentColor;
+  stroke-width: 0;
+}
+
+.language-flag {
+  width: 20px;
+  height: 13px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.22);
+  background: linear-gradient(#fff 0 33%, #244aa5 33% 66%, #d51f2a 66%);
+}
+
+.language-code {
+  color: #ffffff;
+  font-size: .84rem;
+}
+
+.login-button {
+  min-height: auto;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #ffd339;
+  font-weight: 700;
+}
+
+.frame-content {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  min-height: 0;
+  background: #18303a;
+}
+
+.action-panel {
+  grid-column: 1;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 17px 0 0;
+  border: 0;
+  border-right: 1px solid rgba(12, 24, 29, .22);
+  background: #142b35;
+}
+
+.action-button {
+  display: grid;
+  width: 48px;
+  height: 28px;
+  min-height: 28px;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #e7c15d;
+}
+
+.action-button svg {
+  color: #e7c15d;
+  stroke-width: 2.2;
+}
+
+.action-button:hover {
+  background: transparent;
+  color: #ffd339;
+}
+
+.game-shell {
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: 170px minmax(320px, 1fr) 190px;
+  gap: 14px;
+  min-height: 0;
+  padding: 28px;
+  background-color: #102832;
+  background-image:
+    radial-gradient(circle at 15px 15px, rgba(255,255,255,.018) 2px, transparent 3px),
+    radial-gradient(circle at 55px 55px, rgba(255,255,255,.014) 2px, transparent 3px),
+    linear-gradient(135deg, rgba(255,255,255,.018) 25%, transparent 25% 50%, rgba(255,255,255,.012) 50% 75%, transparent 75%);
+  background-size: 80px 80px, 80px 80px, 160px 160px;
+  overflow: hidden;
+}
+
+.combination-panel,
+.win-table,
+.center-stage,
+.lottery-machine,
+.result-panel,
+.inline-alert {
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.combination-panel,
+.win-table {
+  align-self: center;
+  max-height: 520px;
+  background: rgba(20, 43, 53, .86);
+  border: 1px solid rgba(231, 193, 93, .15);
+}
+
+.combination-panel {
+  display: grid;
+  gap: 1px;
+  padding: 0;
+}
+
+.combination-panel button {
+  min-height: 54px;
+  border: 0;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  border-radius: 0;
+  background: rgba(15, 34, 42, .9);
+  color: #ffffff;
+}
+
+.combination-panel button.active {
+  background: rgba(231, 193, 93, .2);
+  box-shadow: inset 3px 0 0 #e7c15d;
+}
+
+.combination-panel strong {
+  background: #e7c15d;
+  color: #142b35;
+  border-radius: 0;
+}
+
+.combination-panel span {
+  color: #9db2bb;
+}
+
+.center-stage {
+  display: grid;
+  grid-template-rows: minmax(260px, 1fr) auto auto;
+  gap: 10px;
+  align-self: center;
+  max-height: 620px;
+  padding: 0;
+  background: transparent;
+  overflow: visible;
+}
+
+.lottery-machine {
+  align-self: center;
+  width: 100%;
+  padding: 0;
+  background: rgba(14, 31, 39, .92);
+  border: 1px solid rgba(231, 193, 93, .22);
+}
+
+.machine-title {
+  height: 40px;
+  min-height: 40px;
+  padding: 0 12px;
+  border-bottom: 1px solid rgba(231, 193, 93, .18);
+  background: rgba(20, 43, 53, .96);
+}
+
+.machine-title span {
+  color: #e7c15d;
+}
+
+.machine-title strong {
+  color: #ffffff;
+}
+
+.lottery-board {
+  min-height: 338px;
+  padding: 8px;
+  gap: 4px;
+}
+
+.column-head,
+.row-head {
+  border-radius: 0;
+  background: rgba(8, 21, 27, .95);
+  color: #e7c15d;
+}
+
+.grid-cell {
+  border: 1px solid rgba(231, 193, 93, .13);
+  border-radius: 0;
+  background: rgba(26, 55, 67, .94);
+  color: #ffffff;
+  box-shadow: none;
+}
+
+.grid-cell.highlighted {
+  border-color: #e7c15d;
+  background: rgba(96, 78, 33, .9);
+  box-shadow: inset 0 0 0 1px rgba(231, 193, 93, .3);
+}
+
+.result-panel {
+  background: rgba(20, 43, 53, .86);
+  color: #ffffff;
+}
+
+.primary-button {
+  background: #e7c15d;
+  border-color: #e7c15d;
+  color: #102832;
+}
+
+.secondary-button,
+.collect-button {
+  background: rgba(20, 43, 53, .92);
+  border-color: rgba(231, 193, 93, .18);
+}
+
+.win-table {
+  padding: 0;
+}
+
+.win-table h3 {
+  margin: 0;
+  padding: 12px;
+  color: #e7c15d;
+  background: rgba(15, 34, 42, .95);
+}
+
+.win-table span {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 0;
+  background: transparent;
+  border-top: 1px solid rgba(255,255,255,.05);
+}
+
+.bottom-bar {
+  display: none;
+}
+
+@media (max-width: 1040px) {
+  .game-shell {
+    grid-template-columns: 150px minmax(0, 1fr);
+  }
+
+  .win-table {
+    display: none;
+  }
+}
+
+@media (max-width: 720px) {
+  .frame-app {
+    grid-template-rows: 48px minmax(0, 1fr);
+  }
+
+  .top-bar {
+    grid-template-columns: 1fr auto;
+    padding-left: 56px;
+  }
+
+  .brand-lockup strong {
+    font-size: 1rem;
+  }
+
+  .hotline {
+    display: none;
+  }
+
+  .game-shell {
+    display: block;
+    padding: 10px;
+    overflow: auto;
+  }
+
+  .combination-panel {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    margin-bottom: 10px;
+  }
+}
+
+/* Dark lotto cabinet skin, built as original assets/styles for this iframe. */
+:root {
+  --bg: #070908;
+  --panel: #151c1d;
+  --panel-strong: #202829;
+  --line: rgba(191, 157, 76, 0.34);
+  --text: #f8f4e9;
+  --muted: #8fa7b2;
+  --gold: #bf9d4c;
+  --gold-bright: #ffd769;
+  --green: #24d900;
+  --red: #d90004;
+  --blue: #33b7ff;
+}
+
+body {
+  font-family: Ubuntu, "Segoe UI", Arial, sans-serif;
+  background: #070908;
+}
+
+.frame-app {
+  grid-template-rows: 58px minmax(0, 1fr) 70px;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 72px),
+    linear-gradient(180deg, #111819 0%, #070908 52%, #0d1111 100%);
+}
+
+.top-bar {
+  min-height: 58px;
+  padding: 8px 18px;
+  border-bottom: 1px solid rgba(191, 157, 76, 0.42);
+  background: linear-gradient(180deg, rgba(31, 39, 40, 0.98), rgba(9, 12, 12, 0.97));
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+.brand-lockup {
+  gap: 10px;
+}
+
+.brand-glyph {
+  position: relative;
+  width: 46px;
+  height: 32px;
+  border-color: rgba(255, 215, 105, 0.7);
+  border-radius: 4px;
+  background: linear-gradient(180deg, #ffd769, #9f792b 58%, #4d3412);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 0 18px rgba(191, 157, 76, 0.24);
+}
+
+.brand-glyph::before,
+.brand-glyph::after {
+  position: absolute;
+  content: "";
+  inset: 5px auto 5px 7px;
+  width: 5px;
+  border-radius: 2px;
+  background: #20180a;
+  box-shadow: 11px 0 #20180a, 22px 0 #20180a;
+}
+
+.brand-glyph span {
+  position: relative;
+  z-index: 1;
+  color: #080808;
+  font-size: 0.82rem;
+  letter-spacing: 0;
+}
+
+.brand-lockup strong {
+  color: #fff7dc;
+  font-size: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.brand-lockup small {
+  color: #bf9d4c;
+}
+
+.icon-button,
+.balance-pill {
+  border-color: rgba(143, 167, 178, 0.35);
+  border-radius: 6px;
+  background: linear-gradient(180deg, #202829, #101515);
+}
+
+.balance-pill {
+  color: #fff;
+  font-family: "PT Mono", Consolas, monospace;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.frame-content {
+  grid-template-columns: minmax(0, 1fr) 168px;
+  background:
+    linear-gradient(90deg, rgba(217, 0, 4, 0.12), transparent 18%, transparent 82%, rgba(191, 157, 76, 0.12)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent);
+}
+
+.game-shell {
+  grid-template-columns: 172px minmax(0, 1fr) 192px;
+  gap: 12px;
+  padding: 12px;
+}
+
+.combination-panel {
+  padding: 8px;
+  border: 1px solid rgba(191, 157, 76, 0.22);
+  border-radius: 6px;
+  background: linear-gradient(180deg, rgba(32, 40, 41, 0.86), rgba(8, 10, 10, 0.72));
+}
+
+.combination-panel button {
+  min-height: 58px;
+  border-color: rgba(143, 167, 178, 0.28);
+  border-radius: 5px;
+  background: linear-gradient(180deg, #202829, #111616);
+}
+
+.combination-panel button.active {
+  border-color: #ffd769;
+  background: linear-gradient(180deg, #4f3e19, #1a1710);
+  box-shadow: inset 3px 0 0 #ffd769, 0 0 18px rgba(191, 157, 76, 0.18);
+}
+
+.combination-panel strong {
+  border-radius: 4px;
+  background: #bf9d4c;
+  color: #090909;
+}
+
+.center-stage {
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid rgba(191, 157, 76, 0.2);
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(32, 40, 41, 0.7), rgba(7, 9, 8, 0.62)),
+    repeating-linear-gradient(0deg, transparent 0 28px, rgba(255, 255, 255, 0.018) 28px 29px);
+}
+
+.lottery-machine {
+  display: grid;
+  gap: 8px;
+  width: min(100%, 780px);
+  align-self: center;
+  justify-self: center;
+  padding: 12px;
+  border: 1px solid rgba(255, 215, 105, 0.38);
+  border-radius: 6px;
+  background: linear-gradient(180deg, #202829, #101414 58%, #090b0b);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 18px 45px rgba(0, 0, 0, 0.35);
+}
+
+.machine-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 34px;
+  padding: 0 6px 8px;
+  border-bottom: 1px solid rgba(191, 157, 76, 0.24);
+  text-transform: uppercase;
+}
+
+.machine-title span {
+  color: #bf9d4c;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.machine-title strong {
+  color: #fff7dc;
+  font-size: 1rem;
+}
+
+.lottery-board {
+  width: 100%;
+  min-height: 360px;
+}
+
+.column-head,
+.row-head {
+  border-radius: 4px;
+  background: #101515;
+  color: #bf9d4c;
+  font-family: "PT Mono", Consolas, monospace;
+}
+
+.grid-cell {
+  border-color: rgba(143, 167, 178, 0.28);
+  border-radius: 5px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 30%),
+    radial-gradient(circle at 50% 20%, rgba(191, 157, 76, 0.2), transparent 44%),
+    linear-gradient(180deg, #242d2e, #0c1010);
+  color: #fff;
+  font-family: "PT Mono", Consolas, monospace;
+  text-shadow: 0 2px 0 #000;
+}
+
+.grid-cell.highlighted {
+  border-color: #ffd769;
+  background:
+    linear-gradient(180deg, rgba(255, 215, 105, 0.24), transparent 34%),
+    linear-gradient(180deg, #4b3913, #13100a);
+  box-shadow: inset 0 0 0 1px rgba(255, 215, 105, 0.32), 0 0 24px rgba(255, 215, 105, 0.24);
+}
+
+.grid-cell.modifier {
+  border-color: rgba(36, 217, 0, 0.45);
+  color: #8cff75;
+}
+
+.grid-cell.modifier.danger {
+  border-color: rgba(217, 0, 4, 0.62);
+  color: #ff7779;
+}
+
+.symbol-icon {
+  border-width: 1px;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.24), 0 4px 12px rgba(0, 0, 0, 0.28);
+}
+
+.result-panel,
+.win-table,
+.paytable-panel,
+.prize-box,
+.state-panel,
+.inline-alert {
+  border-color: rgba(191, 157, 76, 0.26);
+  border-radius: 6px;
+  background: linear-gradient(180deg, rgba(32, 40, 41, 0.94), rgba(12, 16, 16, 0.92));
+}
+
+.result-panel {
+  border-left: 4px solid #bf9d4c;
+}
+
+.result-panel strong,
+.info-cell strong {
+  color: #fff7dc;
+  font-family: "PT Mono", Consolas, monospace;
+}
+
+.primary-button,
+.secondary-button,
+.collect-button,
+.action-button,
+.chest {
+  border-radius: 6px;
+  transition: transform 140ms ease, border-color 140ms ease, filter 140ms ease;
+}
+
+.primary-button {
+  min-width: 170px;
+  border-color: #ffd769;
+  background: linear-gradient(180deg, #ffe07d, #bf9d4c 52%, #7b5818);
+  color: #070908;
+  box-shadow: 0 8px 18px rgba(191, 157, 76, 0.2);
+}
+
+.secondary-button,
+.collect-button {
+  border-color: rgba(143, 167, 178, 0.35);
+  background: linear-gradient(180deg, #202829, #101515);
+}
+
+button:not(:disabled):hover {
+  filter: brightness(1.12);
+}
+
+button:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.win-table {
+  border-top: 4px solid #bf9d4c;
+}
+
+.win-table h3 {
+  color: #fff7dc;
+  text-transform: uppercase;
+}
+
+.win-table span,
+.rules-strip span {
+  border: 1px solid rgba(143, 167, 178, 0.18);
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.action-panel {
+  padding: 12px;
+  border-left-color: rgba(191, 157, 76, 0.3);
+  background: linear-gradient(180deg, #202829, #080a0a);
+}
+
+.action-button {
+  min-height: 48px;
+  border-color: rgba(143, 167, 178, 0.28);
+  border-radius: 5px;
+  background: linear-gradient(180deg, #1d2526, #111515);
+  color: #d9e2e6;
+}
+
+.action-button svg {
+  color: #bf9d4c;
+}
+
+.bottom-bar {
+  border-top-color: rgba(191, 157, 76, 0.42);
+  background: linear-gradient(180deg, #151c1d, #080a0a);
+}
+
+.info-cell {
+  border: 1px solid rgba(143, 167, 178, 0.16);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.info-cell small {
+  color: #8fa7b2;
+  text-transform: uppercase;
+}
+
+.lobby-screen {
+  background:
+    linear-gradient(180deg, rgba(191, 157, 76, 0.08), transparent 38%),
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 96px);
+}
+
+.game-card {
+  border-color: rgba(191, 157, 76, 0.28);
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--accent), #202829 76%), #0c1010),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.04) 0 6px, transparent 6px 16px);
+}
+
+.game-art {
+  border-radius: 5px;
+  background:
+    radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--accent), transparent 62%), transparent 42%),
+    linear-gradient(180deg, #202829, #0b0d0d);
+}
+
+.play-chip {
+  border: 1px solid rgba(191, 157, 76, 0.34);
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.28);
+  color: #fff7dc;
+}
+
+.double-stage {
+  background:
+    linear-gradient(180deg, rgba(191, 157, 76, 0.08), transparent 32%),
+    #070908;
+}
+
+.double-levels span {
+  border-color: rgba(143, 167, 178, 0.25);
+  border-radius: 5px;
+  background: linear-gradient(180deg, #202829, #101515);
+  font-family: "PT Mono", Consolas, monospace;
+}
+
+.double-levels .active {
+  border-color: #ffd769;
+  background: linear-gradient(180deg, #4f3e19, #14110a);
+}
+
+.double-scene {
+  border-color: rgba(191, 157, 76, 0.34);
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(51, 183, 255, 0.1), transparent 44%),
+    linear-gradient(135deg, #202829, #090b0b);
+}
+
+.double-character,
+.chest {
+  border-radius: 6px;
+}
+
+.double-character {
+  border-color: #ffd769;
+  background: linear-gradient(180deg, #ffe07d, #7b5818);
+  color: #070908;
+}
+
+.chest {
+  border-color: #ffd769;
+  background: linear-gradient(180deg, #e0b75a, #7b3d16);
+  color: #070908;
+}
+
+@media (max-width: 1040px) {
+  .frame-content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .game-shell {
+    grid-template-columns: 158px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .frame-app {
+    grid-template-rows: auto minmax(0, 1fr) auto;
+  }
+
+  .top-bar {
+    min-height: 54px;
+  }
+
+  .game-shell,
+  .lobby-screen,
+  .double-stage {
+    padding: 10px;
+  }
+
+  .center-stage {
+    padding: 8px;
+  }
+
+  .lottery-machine {
+    padding: 8px;
+  }
+
+  .lottery-board {
+    min-height: 280px;
+  }
+}
+
+/* One-to-one LotoSport-style web shell pass. Keep this layer last. */
+:root {
+  --lotto-bg: #050606;
+  --lotto-panel: #111718;
+  --lotto-panel-2: #1c2426;
+  --lotto-line: #303b40;
+  --lotto-gold: #bf9d4c;
+  --lotto-red: #d90004;
+  --lotto-text: #e7eef1;
+  --lotto-muted: #8fa7b2;
+}
+
+.frame-app {
+  grid-template-rows: 56px minmax(0, 1fr) 58px;
+  min-height: 560px;
+  background: var(--lotto-bg);
+  color: var(--lotto-text);
+}
+
+.top-bar {
+  display: grid;
+  grid-template-columns: 252px minmax(360px, 1fr) auto;
+  gap: 16px;
+  min-height: 56px;
+  padding: 0 14px;
+  border-bottom: 1px solid #263035;
+  background: #101617;
+  box-shadow: none;
+}
+
+.brand-lockup {
+  height: 56px;
+}
+
+.brand-glyph {
+  width: 38px;
+  height: 28px;
+  border: 0;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #ffd760, #bf9d4c);
+  box-shadow: none;
+}
+
+.brand-glyph::before {
+  inset: 7px 6px;
+  width: auto;
+  border-radius: 1px;
+  background:
+    linear-gradient(90deg, #161616 0 4px, transparent 4px 8px, #161616 8px 12px, transparent 12px 16px, #161616 16px 20px);
+  box-shadow: none;
+}
+
+.brand-glyph::after {
+  display: none;
+}
+
+.brand-lockup strong {
+  color: #ffcc33;
+  font-size: 1.04rem;
+  line-height: 1;
+}
+
+.brand-lockup small {
+  color: var(--lotto-muted);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.site-nav {
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: 0;
+  height: 56px;
+  min-width: 0;
+}
+
+.site-nav button {
+  min-width: 84px;
+  border: 0;
+  border-left: 1px solid #222c30;
+  background: transparent;
+  color: var(--lotto-muted);
+  cursor: pointer;
+  font: 700 0.82rem Ubuntu, "Segoe UI", Arial, sans-serif;
+}
+
+.site-nav button.active {
+  background: #1a2224;
+  color: #fff;
+  box-shadow: inset 0 -3px 0 var(--lotto-red);
+}
+
+.top-actions {
+  height: 56px;
+  gap: 8px;
+}
+
+.balance-pill,
+.icon-button,
+.login-button {
+  min-height: 34px;
+  border: 1px solid #344146;
+  border-radius: 3px;
+  background: #151c1e;
+  color: var(--lotto-text);
+}
+
+.balance-pill {
+  padding: 6px 10px;
+  font-size: 0.84rem;
+}
+
+.login-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 12px;
+  background: var(--lotto-red);
+  border-color: var(--lotto-red);
+  color: #fff;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.frame-content {
+  grid-template-columns: minmax(0, 1fr) 142px;
+  background: #070909;
+}
+
+.game-shell {
+  grid-template-columns: 220px minmax(0, 1fr) 230px;
+  gap: 8px;
+  padding: 8px;
+  background: #070909;
+}
+
+.combination-panel,
+.center-stage,
+.win-table,
+.action-panel,
+.lottery-machine,
+.result-panel,
+.info-cell {
+  border: 1px solid var(--lotto-line);
+  border-radius: 0;
+  background: var(--lotto-panel);
+  box-shadow: none;
+}
+
+.combination-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  overflow: hidden auto;
+}
+
+.side-title {
+  display: grid;
+  gap: 2px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--lotto-line);
+  background: #0d1112;
+}
+
+.side-title.compact {
+  margin-top: 8px;
+  border-top: 1px solid var(--lotto-line);
+}
+
+.side-title small {
+  color: var(--lotto-muted);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+}
+
+.side-title strong {
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.combination-panel button,
+.side-menu {
+  width: 100%;
+  min-height: 42px;
+  border: 0;
+  border-bottom: 1px solid #263035;
+  border-radius: 0;
+  background: #151c1e;
+  color: var(--lotto-text);
+  text-align: left;
+}
+
+.combination-panel button {
+  grid-template-columns: 34px 1fr;
+  padding: 8px 12px;
+}
+
+.side-menu,
+.side-menu.active {
+  display: block;
+  padding: 0 14px;
+  font-weight: 700;
+}
+
+.side-menu.active,
+.combination-panel button.active {
+  background: #20292c;
+  box-shadow: inset 4px 0 0 var(--lotto-red);
+}
+
+.combination-panel strong {
+  width: 26px;
+  height: 26px;
+  border-radius: 2px;
+  background: var(--lotto-gold);
+}
+
+.combination-panel span {
+  color: var(--lotto-muted);
+}
+
+.center-stage {
+  grid-template-rows: auto minmax(230px, 1fr) auto auto;
+  gap: 8px;
+  padding: 8px;
+  overflow: hidden auto;
+}
+
+.lottery-machine {
+  width: 100%;
+  max-width: none;
+  padding: 0;
+}
+
+.machine-title {
+  height: 42px;
+  min-height: 42px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--lotto-line);
+  background: #0d1112;
+}
+
+.machine-title span {
+  color: var(--lotto-red);
+  font-size: 0.78rem;
+}
+
+.machine-title strong {
+  color: #fff;
+  font-size: 0.94rem;
+}
+
+.lottery-board {
+  min-height: 338px;
+  padding: 8px;
+  gap: 4px;
+}
+
+.column-head,
+.row-head {
+  border-radius: 0;
+  background: #0b0e0f;
+  color: var(--lotto-muted);
+}
+
+.grid-cell {
+  border-color: #344146;
+  border-radius: 0;
+  background: #20292c;
+  color: #fff;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.35);
+  font-size: clamp(1.2rem, 2.2vw, 2rem);
+}
+
+.grid-cell.highlighted {
+  border-color: var(--lotto-gold);
+  background: #3a3019;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.35);
+}
+
+.result-panel {
+  border-left: 1px solid var(--lotto-line);
+  padding: 8px;
+  background: #0f1415;
+}
+
+.result-panel.muted {
+  color: var(--lotto-muted);
+}
+
+.spin-controls {
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.primary-button,
+.secondary-button,
+.collect-button {
+  min-height: 38px;
+  border-radius: 3px;
+  padding: 8px 14px;
+}
+
+.primary-button {
+  background: var(--lotto-red);
+  border-color: var(--lotto-red);
+  color: #fff;
+  box-shadow: none;
+}
+
+.secondary-button,
+.collect-button {
+  border-color: #344146;
+  background: #1a2224;
+  color: var(--lotto-text);
+}
+
+.win-table {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  border-top: 1px solid var(--lotto-line);
+}
+
+.win-table h3 {
+  margin: 0;
+  padding: 12px;
+  border-bottom: 1px solid var(--lotto-line);
+  background: #0d1112;
+  font-size: 0.9rem;
+}
+
+.slip-amount {
+  padding: 16px 12px 2px;
+  color: #fff;
+  font: 700 1.7rem "PT Mono", Consolas, monospace;
+}
+
+.win-table > small {
+  padding: 0 12px 12px;
+  color: var(--lotto-muted);
+}
+
+.win-table span {
+  margin: 0;
+  padding: 10px 12px;
+  border: 0;
+  border-top: 1px solid #263035;
+  border-radius: 0;
+  background: transparent;
+}
+
+.action-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
+  border-left: 1px solid var(--lotto-line);
+}
+
+.panel-title {
+  height: 42px;
+  padding: 12px;
+  border-bottom: 1px solid var(--lotto-line);
+  background: #0d1112;
+  color: #fff;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.action-button {
+  grid-template-columns: 20px 1fr;
+  min-height: 44px;
+  border: 0;
+  border-bottom: 1px solid #263035;
+  border-radius: 0;
+  background: #151c1e;
+  color: var(--lotto-text);
+}
+
+.action-button svg {
+  color: var(--lotto-gold);
+}
+
+.action-button:hover,
+.combination-panel button:hover,
+.side-menu:hover,
+.site-nav button:hover {
+  filter: none;
+  background-color: #20292c;
+}
+
+.bottom-bar {
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 0;
+  padding: 0;
+  border-top: 1px solid var(--lotto-line);
+  background: #101617;
+}
+
+.info-cell {
+  gap: 2px;
+  padding: 8px 10px;
+  border-width: 0 1px 0 0;
+  background: #101617;
+}
+
+.info-cell small {
+  color: var(--lotto-muted);
+  font-size: 0.66rem;
+}
+
+.info-cell strong {
+  color: #fff;
+  font-size: 0.84rem;
+}
+
+.inline-alert {
+  border-radius: 0;
+  background: #161b1d;
+}
+
+.modal-layer {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.paytable-panel {
+  border-radius: 0;
+  background: #111718;
+}
+
+@media (max-width: 1040px) {
+  .top-bar {
+    grid-template-columns: 220px minmax(0, 1fr);
+  }
+
+  .site-nav {
+    display: none;
+  }
+
+  .game-shell {
+    grid-template-columns: 190px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .top-bar {
+    grid-template-columns: 1fr;
+    height: auto;
+    padding: 8px;
+  }
+
+  .top-actions {
+    height: auto;
+    justify-content: space-between;
+  }
+
+  .frame-content,
+  .game-shell {
+    display: block;
+  }
+
+  .combination-panel {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-bottom: 8px;
+  }
+
+  .side-title {
+    grid-column: 1 / -1;
+  }
+
+  .combination-panel button {
+    min-height: 40px;
+  }
+
+  .lottery-board {
+    min-height: 270px;
+  }
+}
+
+/* LAST OVERRIDE: viewport-fit requested by user. Keep at EOF. */
+html,
+body,
+#root {
+  height: 100vh !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.frame-app {
+  grid-template-rows: 58px minmax(0, 1fr) 106px !important;
+  height: 100vh !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.top-bar {
+  height: 58px !important;
+  min-height: 58px !important;
+  padding: 0 22px !important;
+}
+
+.brand-lockup,
+.top-actions {
+  height: 58px !important;
+}
+
+.brand-glyph,
+.hotline,
+.language-flag,
+.language-code,
+.login-button {
+  display: none !important;
+}
+
+.brand-lockup strong {
+  color: #ffd339 !important;
+  font-size: 1.55rem !important;
+  text-transform: none !important;
+}
+
+.frame-content {
+  min-height: 0 !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+.game-shell {
+  display: grid !important;
+  grid-template-columns: 292px minmax(470px, 1fr) 348px !important;
+  gap: 18px !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  padding: 8px 24px !important;
+  overflow: hidden !important;
+  align-items: center !important;
+}
+
+.action-panel {
+  top: 76px !important;
+  right: 18px !important;
+  gap: 18px !important;
+}
+
+.action-button,
+.action-button svg {
+  width: 34px !important;
+  height: 34px !important;
+}
+
+.combination-panel {
+  align-self: stretch !important;
+  gap: 9px !important;
+  overflow: hidden !important;
+}
+
+.combination-panel::before {
+  margin: 0 0 4px 16px !important;
+  font-size: .95rem !important;
+}
+
+.combination-panel button {
+  min-height: 75px !important;
+}
+
+.center-stage {
+  gap: 6px !important;
+}
+
+.center-stage::before {
+  font-size: clamp(2.2rem, 3.5vw, 3.25rem) !important;
+  line-height: .95 !important;
+}
+
+.lottery-machine {
+  width: min(100%, 500px) !important;
+}
+
+.lottery-board {
+  min-height: 344px !important;
+  grid-template-columns: 30px repeat(5, 1fr) !important;
+  grid-template-rows: 22px repeat(3, 70px) 58px !important;
+  gap: 5px !important;
+}
+
+.grid-cell {
+  font-size: 2.25rem !important;
+}
+
+.win-table {
+  width: 348px !important;
+}
+
+.draw-info {
+  margin-top: 36px !important;
+  padding: 13px 16px !important;
+}
+
+.bottom-bar {
+  height: 106px !important;
+  min-height: 106px !important;
+  gap: 12px !important;
+  padding: 8px 22px !important;
+  overflow: visible !important;
+}
+
+.round-info,
+.double-button {
+  width: 78px !important;
+  height: 78px !important;
+  min-width: 78px !important;
+  flex: 0 0 78px !important;
+  aspect-ratio: 1 !important;
+}
+
+.control-cell {
+  grid-template-columns: 46px 118px 46px !important;
+  gap: 7px !important;
+}
+
+.control-cell button {
+  width: 46px !important;
+  height: 46px !important;
+}
+
+.control-cell div,
+.info-cell {
+  min-width: 118px !important;
+  height: 54px !important;
+}
+
+.auto-button,
+.prize-button,
+.buy-ticket-button {
+  height: 58px !important;
+  min-height: 58px !important;
+  padding: 6px 10px !important;
+  line-height: 1.05 !important;
+  white-space: normal !important;
+}
+
+.auto-button {
+  min-width: 64px !important;
+}
+
+.prize-button {
+  width: 92px !important;
+}
+
+.buy-ticket-button {
+  min-width: 126px !important;
 }

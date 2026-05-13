@@ -1,0 +1,1034 @@
+html,
+body,
+#root {
+  height: 100vh !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.frame-app {
+  grid-template-rows: 38px minmax(0, 1fr) 68px !important;
+  height: 100vh !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.top-bar,
+.brand-lockup,
+.top-actions {
+  height: 38px !important;
+  min-height: 38px !important;
+}
+
+.top-bar {
+  padding: 0 18px !important;
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.brand-glyph,
+.hotline,
+.language-flag,
+.language-code,
+.login-button {
+  display: none !important;
+}
+
+.brand-lockup strong {
+  font-size: 1.12rem !important;
+}
+
+.top-balance {
+  font-size: 0.96rem !important;
+}
+
+.frame-content,
+.game-shell {
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+.game-shell {
+  grid-template-columns: 220px minmax(360px, 1fr) 286px !important;
+  gap: 12px !important;
+  height: 100% !important;
+  padding: 2px 18px 4px !important;
+  align-items: center !important;
+}
+
+.combination-panel {
+  gap: 5px !important;
+}
+
+.combination-panel::before {
+  margin: 0 0 1px 10px !important;
+  font-size: 0.72rem !important;
+}
+
+.combination-panel button {
+  min-height: 50px !important;
+  padding: 5px 38px 5px 8px !important;
+  border-width: 2px !important;
+  border-radius: 6px !important;
+}
+
+.combination-panel button.active {
+  border-color: #ffef42 !important;
+  background:
+    linear-gradient(90deg, rgba(255, 215, 25, 0.36), rgba(0, 0, 0, 0.72) 54%),
+    rgba(0, 0, 0, 0.82) !important;
+  box-shadow:
+    0 0 0 2px rgba(255, 215, 25, 0.55),
+    0 0 18px rgba(255, 215, 25, 0.72),
+    inset 0 0 18px rgba(255, 215, 25, 0.22) !important;
+}
+
+.combination-panel button.active span::before,
+.combination-panel button.active strong {
+  color: #fff43b !important;
+  text-shadow: 0 2px 0 #000, 0 0 10px rgba(255, 215, 25, 0.9) !important;
+}
+
+.combination-panel strong {
+  top: 3px !important;
+  right: 7px !important;
+  font-size: 1.55rem !important;
+}
+
+.combination-panel span {
+  font-size: 0.49rem !important;
+}
+
+.combination-panel span::before {
+  margin-bottom: 2px !important;
+  font-size: 0.74rem !important;
+}
+
+.center-stage {
+  gap: 2px !important;
+  transform: translateY(4px) !important;
+}
+
+.center-stage::before {
+  content: "EL DORADO" !important;
+  margin-bottom: 7px !important;
+  font-family: Impact, "Arial Black", Arial, Helvetica, sans-serif !important;
+  font-size: clamp(1.45rem, 2.35vw, 2.05rem) !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+  line-height: 0.9 !important;
+  color: #ffd866 !important;
+  -webkit-text-stroke: 1px #7a4303 !important;
+  text-shadow:
+    0 1px 0 #fff5a0,
+    0 3px 0 #8b5207,
+    0 5px 0 #4d2600,
+    0 8px 10px rgba(0, 0, 0, 0.78) !important;
+}
+
+.lottery-machine {
+  width: min(100%, 360px) !important;
+  box-shadow: 0 0 0 2px #d6b211, inset 0 0 0 4px #fff8d6 !important;
+}
+
+.lottery-board {
+  min-height: 224px !important;
+  grid-template-columns: 18px repeat(5, 1fr) !important;
+  grid-template-rows: 16px repeat(3, 45px) 38px !important;
+  gap: 3px !important;
+  padding: 5px 7px 8px !important;
+}
+
+.column-head,
+.row-head {
+  font-size: 0.78rem !important;
+}
+
+.grid-cell {
+  font-size: 1.38rem !important;
+  text-shadow: 2px 2px 0 #000 !important;
+}
+
+.cell-reveal {
+  animation: cellReveal 360ms cubic-bezier(0.2, 0.85, 0.24, 1.18) both !important;
+  animation-delay: var(--cell-delay, 0ms) !important;
+}
+
+@keyframes cellReveal {
+  0% {
+    color: transparent;
+    opacity: 0.08;
+    filter: brightness(0.75) blur(1px);
+    transform: scale(0.86);
+    text-shadow: none;
+  }
+  55% {
+    opacity: 1;
+    filter: brightness(1.25) blur(0);
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    filter: brightness(1) blur(0);
+    transform: scale(1);
+  }
+}
+
+.grid-cell.modifier {
+  color: transparent !important;
+  text-shadow: none !important;
+}
+
+.grid-cell.modifier.bonus-scatter {
+  color: transparent !important;
+  background:
+    radial-gradient(circle at 50% 52%, #fff4a8 0 10%, #ffcf3d 16%, #ff7a00 34%, #dc2300 58%, transparent 62%),
+    radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.5), transparent 26%),
+    linear-gradient(135deg, #ffe069, #bf7b00 55%, #8e5100) !important;
+  box-shadow: inset 0 0 18px rgba(255, 236, 78, 0.52), 0 0 12px rgba(255, 106, 0, 0.65) !important;
+}
+
+.grid-cell.modifier.bonus-scatter::after {
+  content: "" !important;
+  width: 52% !important;
+  height: 72% !important;
+  border-radius: 56% 44% 58% 42% / 68% 52% 48% 32% !important;
+  background:
+    radial-gradient(circle at 48% 64%, #fff8a8 0 18%, #ffc928 28%, transparent 31%),
+    linear-gradient(160deg, #fff26c 0 15%, #ff9418 38%, #e22a00 68%, #8f0800 100%) !important;
+  filter: drop-shadow(0 0 6px rgba(255, 191, 0, 0.9)) !important;
+  transform: rotate(8deg) !important;
+}
+
+.result-panel {
+  width: min(100%, 360px) !important;
+  height: 22px !important;
+  min-height: 22px !important;
+  max-height: 22px !important;
+  padding: 0 8px !important;
+  font-size: 0.6rem !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  flex-wrap: nowrap !important;
+}
+
+.result-panel > div,
+.result-panel > button {
+  flex: 0 0 auto !important;
+}
+
+.result-panel small {
+  display: none !important;
+}
+
+.result-panel .secondary-button {
+  height: 18px !important;
+  min-height: 18px !important;
+  padding: 0 7px !important;
+  font-size: 0.55rem !important;
+}
+
+.win-table {
+  width: 286px !important;
+  border-width: 2px !important;
+}
+
+.win-table h3 {
+  min-height: 22px !important;
+  font-size: 0.62rem !important;
+}
+
+.inline-paytable {
+  font-size: 0.52rem !important;
+}
+
+.inline-paytable th,
+.inline-paytable td {
+  padding: 0 3px !important;
+}
+
+.inline-paytable tbody th {
+  background: #ffd719 !important;
+  color: #000 !important;
+}
+
+.draw-info {
+  margin-top: 10px !important;
+  padding: 7px 10px !important;
+  font-size: 0.62rem !important;
+}
+
+.draw-info strong {
+  margin-bottom: 4px !important;
+}
+
+.bottom-bar {
+  height: 68px !important;
+  min-height: 68px !important;
+  gap: 6px !important;
+  padding: 4px 14px !important;
+}
+
+.round-info,
+.double-button {
+  width: 50px !important;
+  height: 50px !important;
+  min-width: 50px !important;
+  flex: 0 0 50px !important;
+}
+
+.round-info svg,
+.double-button svg {
+  width: 22px !important;
+  height: 22px !important;
+}
+
+.control-cell {
+  grid-template-columns: 30px 84px 30px !important;
+  gap: 4px !important;
+}
+
+.control-cell button {
+  display: grid !important;
+  place-items: center !important;
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  border-width: 2px !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  font-size: clamp(0.78rem, 1.4vw, 1.05rem) !important;
+  overflow: hidden !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+}
+
+.control-cell button svg {
+  width: min(18px, 66%) !important;
+  height: min(18px, 66%) !important;
+  stroke-width: 4 !important;
+  flex: 0 0 auto !important;
+}
+
+.control-cell div,
+.info-cell {
+  min-width: 84px !important;
+  height: 36px !important;
+  padding: 3px 5px !important;
+}
+
+.active-control div {
+  border-color: #fff43b !important;
+  background:
+    linear-gradient(180deg, rgba(255, 215, 25, 0.46), rgba(132, 85, 0, 0.42)),
+    rgba(0, 0, 0, 0.72) !important;
+  box-shadow:
+    0 0 0 2px rgba(255, 215, 25, 0.45),
+    0 0 16px rgba(255, 215, 25, 0.6),
+    inset 0 0 16px rgba(255, 244, 59, 0.22) !important;
+}
+
+.active-control small,
+.active-control strong {
+  color: #fff43b !important;
+  text-shadow: 0 2px 0 #000, 0 0 9px rgba(255, 215, 25, 0.85) !important;
+}
+
+.control-cell small,
+.info-cell small {
+  font-size: 0.48rem !important;
+}
+
+.control-cell strong,
+.info-cell strong {
+  font-size: 0.62rem !important;
+}
+
+.auto-button,
+.prize-button,
+.buy-ticket-button {
+  height: 38px !important;
+  min-height: 38px !important;
+  padding: 3px 6px !important;
+  border-width: 2px !important;
+  font-size: 0.62rem !important;
+}
+
+.auto-button {
+  min-width: 50px !important;
+}
+
+.prize-button {
+  width: 68px !important;
+}
+
+.buy-ticket-button {
+  min-width: 92px !important;
+}
+
+.auto-button span,
+.prize-button span {
+  font-size: 0.42rem !important;
+}
+
+.action-panel {
+  display: flex !important;
+  position: absolute !important;
+  top: 48px !important;
+  right: 46px !important;
+  z-index: 18 !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 14px !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.action-button {
+  display: grid !important;
+  place-items: center !important;
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  max-width: 34px !important;
+  flex: 0 0 34px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 4px !important;
+  color: #ffd719 !important;
+  background: rgba(0, 0, 0, 0.12) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transition: color 140ms ease, background-color 140ms ease !important;
+}
+
+.action-button svg {
+  width: 31px !important;
+  height: 31px !important;
+  min-width: 31px !important;
+  min-height: 31px !important;
+  display: block !important;
+  stroke-width: 3.2 !important;
+  transform: none !important;
+}
+
+.action-button:hover:not(:disabled) {
+  color: #fff4a8 !important;
+  background: rgba(0, 0, 0, 0.28) !important;
+}
+
+.action-button:active,
+.action-button:focus,
+.action-button:focus-visible,
+.action-button:hover,
+.action-button:disabled {
+  transform: none !important;
+}
+
+.action-button.muted {
+  color: #b6c0c6 !important;
+}
+
+.action-button.active {
+  color: #fff43b !important;
+  background: rgba(255, 215, 25, 0.18) !important;
+}
+
+.expanded-board .game-shell {
+  grid-template-columns: minmax(0, 1fr) !important;
+  padding-left: 70px !important;
+  padding-right: 70px !important;
+}
+
+.expanded-board .combination-panel,
+.expanded-board .win-table {
+  display: none !important;
+}
+
+.expanded-board .center-stage {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.expanded-board .lottery-machine {
+  width: min(100%, 680px) !important;
+}
+
+.expanded-board .lottery-board {
+  min-height: 390px !important;
+  grid-template-columns: 30px repeat(5, 1fr) !important;
+  grid-template-rows: 24px repeat(3, 76px) 62px !important;
+  gap: 7px !important;
+  padding: 10px 14px 14px !important;
+}
+
+.expanded-board .grid-cell {
+  font-size: 2.35rem !important;
+}
+
+.expanded-board .result-panel {
+  width: min(100%, 680px) !important;
+}
+
+.game-menu-layer {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 60 !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: 28px !important;
+  background: rgba(0, 0, 0, 0.6) !important;
+}
+
+.game-menu-panel {
+  width: min(760px, 92vw) !important;
+  max-height: min(520px, 86vh) !important;
+  overflow: auto !important;
+  border: 2px solid #b88700 !important;
+  border-radius: 7px !important;
+  background: linear-gradient(180deg, rgba(13, 18, 18, 0.98), rgba(0, 0, 0, 0.98)) !important;
+  box-shadow: 0 0 0 2px rgba(255, 220, 28, 0.22), 0 18px 50px rgba(0, 0, 0, 0.62) !important;
+  color: #fff !important;
+}
+
+.game-menu-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+  padding: 10px 14px !important;
+  border-bottom: 1px solid rgba(255, 215, 25, 0.55) !important;
+  background: #ffd719 !important;
+  color: #000 !important;
+}
+
+.game-menu-head strong {
+  font-size: 0.95rem !important;
+}
+
+.game-menu-head button {
+  border: 1px solid rgba(0, 0, 0, 0.45) !important;
+  border-radius: 4px !important;
+  padding: 5px 10px !important;
+  background: #121212 !important;
+  color: #ffd719 !important;
+  font-weight: 800 !important;
+}
+
+.game-menu-grid {
+  display: grid !important;
+  grid-template-columns: minmax(230px, 0.8fr) minmax(280px, 1.2fr) !important;
+  gap: 14px !important;
+  padding: 14px !important;
+}
+
+.game-menu-tabs {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 8px !important;
+  padding: 12px 14px 0 !important;
+}
+
+.game-menu-tabs button {
+  height: 38px !important;
+  border: 1px solid rgba(255, 215, 25, 0.58) !important;
+  border-radius: 5px !important;
+  background: rgba(0, 0, 0, 0.68) !important;
+  color: #ffd719 !important;
+  font-size: 0.82rem !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+}
+
+.game-menu-tabs button.active {
+  border-color: #fff43b !important;
+  background: linear-gradient(180deg, #ffe466, #b77800) !important;
+  color: #050505 !important;
+  box-shadow: 0 0 14px rgba(255, 215, 25, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.62) !important;
+}
+
+.game-menu-body {
+  padding: 14px !important;
+}
+
+.game-menu-section {
+  min-height: 210px !important;
+}
+
+.game-menu-grid section {
+  min-width: 0 !important;
+}
+
+.game-menu-grid h4,
+.game-menu-section h4 {
+  margin: 0 0 8px !important;
+  color: #ffd719 !important;
+  font-size: 0.84rem !important;
+  text-transform: uppercase !important;
+}
+
+.history-list {
+  display: grid !important;
+  gap: 6px !important;
+}
+
+.history-list p {
+  margin: 0 !important;
+  padding: 12px !important;
+  border: 1px solid rgba(255, 215, 25, 0.35) !important;
+  border-radius: 5px !important;
+  color: #dce6eb !important;
+  font-size: 0.72rem !important;
+}
+
+.history-row {
+  display: grid !important;
+  grid-template-columns: 42px 1fr 72px 58px !important;
+  align-items: center !important;
+  gap: 7px !important;
+  padding: 7px 8px !important;
+  border: 1px solid rgba(255, 215, 25, 0.35) !important;
+  border-radius: 5px !important;
+  background: rgba(255, 215, 25, 0.06) !important;
+  font-size: 0.68rem !important;
+}
+
+.history-row em {
+  color: #b9c8cf !important;
+  font-style: normal !important;
+}
+
+.history-row b {
+  justify-self: end !important;
+  color: #ffd719 !important;
+}
+
+.rules-list {
+  margin: 0 !important;
+  padding-left: 18px !important;
+  color: #edf5f7 !important;
+  font-size: 0.72rem !important;
+  line-height: 1.48 !important;
+}
+
+.rules-list li {
+  margin-bottom: 6px !important;
+}
+
+@media (max-width: 760px) {
+  .action-panel {
+    right: 20px !important;
+    gap: 8px !important;
+  }
+
+  .game-menu-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 920px) {
+  html,
+  body,
+  #root {
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  .frame-app {
+    display: block !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow: visible !important;
+    background-position: center top !important;
+  }
+
+  .top-bar {
+    display: flex !important;
+    position: static !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    padding: 0 12px !important;
+    z-index: 1 !important;
+  }
+
+  .brand-lockup,
+  .top-actions {
+    height: 44px !important;
+    min-height: 44px !important;
+  }
+
+  .brand-lockup strong {
+    font-size: 1rem !important;
+  }
+
+  .top-balance {
+    font-size: 0.9rem !important;
+  }
+
+  .frame-content,
+  .game-shell {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  .frame-content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 6px !important;
+    padding-top: 8px !important;
+  }
+
+  .game-shell {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    padding: 0 10px 0 !important;
+  }
+
+  .combination-panel,
+  .win-table {
+    display: none !important;
+  }
+
+  .center-stage {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    transform: none !important;
+  }
+
+  .center-stage::before {
+    position: static !important;
+    z-index: 30 !important;
+    align-self: flex-start !important;
+    margin: 0 0 2px 8px !important;
+    font-size: clamp(1.4rem, 6.6vw, 2.35rem) !important;
+    line-height: 1 !important;
+    pointer-events: none !important;
+  }
+
+  .action-panel {
+    position: static !important;
+    z-index: 31 !important;
+    align-self: flex-end !important;
+    margin: 4px 10px 0 0 !important;
+    gap: clamp(10px, 3.2vw, 20px) !important;
+    background: transparent !important;
+  }
+
+  .action-button {
+    width: clamp(34px, 8vw, 48px) !important;
+    height: clamp(34px, 8vw, 48px) !important;
+    min-width: clamp(34px, 8vw, 48px) !important;
+    max-width: clamp(34px, 8vw, 48px) !important;
+    flex-basis: clamp(34px, 8vw, 48px) !important;
+    color: #ffd719 !important;
+    transform: none !important;
+  }
+
+  .expanded-board .lottery-machine,
+  .expanded-board .result-panel,
+  .expanded-board .spin-controls {
+    width: min(96vw, 760px) !important;
+  }
+
+  .expanded-board .lottery-board {
+    min-height: 0 !important;
+    grid-template-columns: 28px repeat(5, 1fr) !important;
+    grid-template-rows: 24px repeat(3, 1fr) 0.78fr !important;
+  }
+
+  .action-button svg {
+    width: 100% !important;
+    height: 100% !important;
+    stroke-width: 3.4 !important;
+  }
+
+  .lottery-machine {
+    width: min(92vw, 650px) !important;
+    margin-top: 0 !important;
+    border-radius: 10px !important;
+  }
+
+  .lottery-board {
+    min-height: 0 !important;
+    aspect-ratio: 1.34 / 1 !important;
+    grid-template-columns: 28px repeat(5, 1fr) !important;
+    grid-template-rows: 24px repeat(3, 1fr) 0.78fr !important;
+    gap: clamp(4px, 1.2vw, 10px) !important;
+    padding: clamp(8px, 2vw, 18px) clamp(10px, 2.5vw, 22px) clamp(10px, 2.5vw, 20px) !important;
+  }
+
+  .column-head,
+  .row-head {
+    font-size: clamp(0.78rem, 2.2vw, 1.1rem) !important;
+  }
+
+  .grid-cell {
+    border-radius: 6px !important;
+    font-size: clamp(1.45rem, 7vw, 3.25rem) !important;
+    line-height: 1 !important;
+  }
+
+  .grid-cell.scatter {
+    font-size: 0 !important;
+  }
+
+  .result-panel {
+    width: min(92vw, 650px) !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    flex-wrap: nowrap !important;
+    padding: 8px 12px !important;
+    border-radius: 5px !important;
+    background: rgba(0, 0, 0, 0.72) !important;
+    color: #ffd719 !important;
+    font-size: clamp(0.76rem, 2.2vw, 1rem) !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+    overflow: hidden !important;
+  }
+
+  .result-panel .secondary-button {
+    height: 30px !important;
+    min-height: 30px !important;
+    padding: 0 12px !important;
+    font-size: 0.72rem !important;
+  }
+
+  .result-panel.muted {
+    color: #ffd719 !important;
+  }
+
+  .spin-controls {
+    display: flex !important;
+    width: min(92vw, 650px) !important;
+    margin: 0 auto !important;
+    gap: 0 !important;
+    justify-content: center !important;
+    order: 4 !important;
+  }
+
+  .spin-controls .secondary-button {
+    display: none !important;
+  }
+
+  .spin-controls .primary-button {
+    width: 100% !important;
+    height: clamp(64px, 13vw, 84px) !important;
+    border-radius: 7px !important;
+    background: linear-gradient(180deg, rgba(82, 150, 61, 0.98), rgba(34, 95, 35, 0.98)) !important;
+    border-color: rgba(198, 239, 174, 0.5) !important;
+    color: #fff !important;
+    font-size: clamp(1.05rem, 4.8vw, 1.75rem) !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+  }
+
+  .bottom-bar {
+    position: relative !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    align-items: stretch !important;
+    width: min(92vw, 650px) !important;
+    height: auto !important;
+    min-height: 0 !important;
+    margin: 8px auto 16px !important;
+    padding: 12px 10px 10px !important;
+    gap: 12px 14px !important;
+    border: 0 !important;
+    border-radius: 16px 16px 0 0 !important;
+    background: linear-gradient(180deg, rgba(1, 8, 7, 0.7), rgba(0, 0, 0, 0.82)) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 215, 25, 0.22) !important;
+    overflow: visible !important;
+  }
+
+  .round-info {
+    display: none !important;
+  }
+
+  .control-cell {
+    display: grid !important;
+    grid-template-columns: 34px minmax(0, 1fr) 34px !important;
+    align-items: center !important;
+    gap: 6px !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  .control-cell button {
+    display: grid !important;
+    place-items: center !important;
+    width: 34px !important;
+    height: 42px !important;
+    min-width: 34px !important;
+    border: 2px solid rgba(255, 215, 25, 0.76) !important;
+    border-radius: 6px !important;
+    padding: 0 !important;
+    background: linear-gradient(180deg, #ffe466, #b97900) !important;
+    color: #050505 !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.62), 0 0 10px rgba(255, 215, 25, 0.28) !important;
+  }
+
+  .control-cell button svg {
+    width: 18px !important;
+    height: 18px !important;
+    stroke-width: 4 !important;
+  }
+
+  .control-cell div,
+  .info-cell {
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 42px !important;
+    padding: 4px 8px !important;
+    border: 2px solid rgba(35, 120, 38, 0.82) !important;
+    border-radius: 5px !important;
+    background: rgba(0, 0, 0, 0.58) !important;
+    box-shadow: inset 0 0 18px rgba(16, 84, 19, 0.22) !important;
+  }
+
+  .control-cell small,
+  .info-cell small {
+    display: block !important;
+    margin-bottom: 3px !important;
+    color: #ffd719 !important;
+    font-size: clamp(0.58rem, 2vw, 0.82rem) !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+    text-transform: uppercase !important;
+  }
+
+  .control-cell strong,
+  .info-cell strong {
+    display: block !important;
+    min-height: 12px !important;
+    color: #fff !important;
+    font-size: clamp(0.72rem, 2.2vw, 0.92rem) !important;
+    text-align: center !important;
+  }
+
+  .control-cell:nth-of-type(1),
+  .control-cell:nth-of-type(2),
+  .info-cell:nth-of-type(3),
+  .info-cell:nth-of-type(4),
+  .info-cell:nth-of-type(5) {
+    display: block !important;
+  }
+
+  .control-cell:nth-of-type(1),
+  .control-cell:nth-of-type(2) {
+    display: grid !important;
+  }
+
+  .control-cell:nth-of-type(1),
+  .control-cell:nth-of-type(2) {
+    order: 1 !important;
+    grid-column: auto !important;
+  }
+
+  .info-cell:nth-of-type(3),
+  .info-cell:nth-of-type(4) {
+    order: 2 !important;
+  }
+
+  .info-cell:nth-of-type(5) {
+    display: none !important;
+  }
+
+  .auto-button,
+  .prize-button {
+    min-width: 0 !important;
+    width: 100% !important;
+    height: clamp(60px, 12vw, 76px) !important;
+    min-height: 0 !important;
+    border-radius: 7px !important;
+    padding: 6px 8px !important;
+    font-size: clamp(0.78rem, 2.8vw, 1.1rem) !important;
+    line-height: 1.15 !important;
+    white-space: normal !important;
+  }
+
+  .auto-button {
+    order: 4 !important;
+  }
+
+  .prize-button {
+    order: 4 !important;
+  }
+
+  .double-button {
+    display: none !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .frame-content {
+    padding-top: 8px !important;
+  }
+
+  .center-stage::before {
+    max-width: 36vw !important;
+  }
+
+  .action-panel {
+    gap: 8px !important;
+    margin-right: 8px !important;
+  }
+
+  .lottery-machine,
+  .result-panel,
+  .bottom-bar {
+    width: 94vw !important;
+  }
+
+  .lottery-board {
+    grid-template-columns: 24px repeat(5, 1fr) !important;
+    gap: 4px !important;
+    padding: 8px 8px 10px !important;
+  }
+
+  .bottom-bar {
+    gap: 10px 10px !important;
+    padding: 10px 8px 8px !important;
+  }
+
+  .control-cell {
+    grid-template-columns: 30px minmax(0, 1fr) 30px !important;
+    gap: 5px !important;
+  }
+
+  .control-cell button {
+    width: 30px !important;
+    height: 40px !important;
+    min-width: 30px !important;
+  }
+}

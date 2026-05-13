@@ -1,38 +1,23 @@
-import { CircleDollarSign, Info, List, Menu, Play, Shuffle, Sparkles, Table2 } from "lucide-react";
+import { Eye, Maximize, Menu, Minimize, Volume2, VolumeX } from "lucide-react";
 
 const actions = [
-  { id: "cashout", label: "Take Money", icon: CircleDollarSign },
-  { id: "info", label: "Info", icon: Info },
-  { id: "points", label: "Points", icon: List },
+  { id: "visual", label: "Visualization", icon: Eye },
+  { id: "fullscreen", label: "Fullscreen", icon: Maximize },
+  { id: "sound", label: "Sound", icon: Volume2 },
   { id: "menu", label: "Menu", icon: Menu },
-  { id: "visual", label: "Visualization", icon: Sparkles },
-  { id: "stake", label: "Stake", icon: Table2 },
-  { id: "combo", label: "Lottery Combination", icon: Shuffle },
-  { id: "auto", label: "Auto Express", icon: Play },
 ];
 
-export default function ActionPanel({ onAction, disabled, inDoubleMode }) {
-  const items = inDoubleMode
-    ? [
-        actions[0],
-        actions[1],
-        actions[2],
-        actions[3],
-        actions[4],
-        { id: "double-left", label: "Left", icon: Shuffle },
-        { id: "double-right", label: "Right", icon: Shuffle },
-        actions[7],
-      ]
-    : actions;
+export default function ActionPanel({ onAction, disabled, soundEnabled = true, expanded = false }) {
+  const items = actions;
 
   return (
     <aside className="action-panel">
       {items.map((item) => {
-        const Icon = item.icon;
+        const Icon = item.id === "sound" && !soundEnabled ? VolumeX : item.id === "fullscreen" && expanded ? Minimize : item.icon;
+        const className = `action-button${item.id === "sound" && !soundEnabled ? " muted" : ""}${item.id === "fullscreen" && expanded ? " active" : ""}`;
         return (
-          <button key={item.id} className="action-button" type="button" disabled={disabled} onClick={() => onAction(item.id)}>
-            <Icon size={18} />
-            <span>{item.label}</span>
+          <button key={item.id} className={className} type="button" disabled={disabled} onClick={() => onAction(item.id)} title={item.id === "fullscreen" && expanded ? "Exit fullscreen view" : item.label}>
+            <Icon size={22} />
           </button>
         );
       })}
