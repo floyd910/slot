@@ -59,10 +59,11 @@ textarea {
   gap: 12px !important;
   height: 100% !important;
   padding: 2px 18px 4px !important;
-  align-items: center !important;
+  align-items: start !important;
 }
 
 .combination-panel {
+  margin-top: 110px !important;
   gap: 5px !important;
 }
 
@@ -238,6 +239,7 @@ textarea {
 }
 
 .win-table {
+  margin-top: 110px !important;
   width: 286px !important;
   border-width: 2px !important;
 }
