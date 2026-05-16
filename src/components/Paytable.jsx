@@ -1,3 +1,5 @@
+import "./Paytable.css";
+
 export default function Paytable({ rows, onClose, loading, error }) {
   return (
     <section className="modal-layer">

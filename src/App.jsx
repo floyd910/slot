@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { flushSync } from "react-dom";
 import { AlertTriangle, Play, RotateCcw, WifiOff } from "lucide-react";
 import { frameApi } from "./api/frameApi.js";
 import ActionPanel from "./components/ActionPanel.jsx";
 import BottomBar from "./components/BottomBar.jsx";
 import DoubleMode from "./components/DoubleMode.jsx";
+import GameMenu from "./components/GameMenu.jsx";
 import Lobby from "./components/Lobby.jsx";
 import LotteryGrid from "./components/LotteryGrid.jsx";
 import Paytable from "./components/Paytable.jsx";
@@ -21,6 +23,15 @@ import { useGameAudio } from "./hooks/useGameAudio.js";
 const initialContext = readFrameParams();
 const REQUEST_TIMEOUT_MS = 9000;
 const RETRYABLE_CODES = new Set(["NETWORK_ERROR", "TIMEOUT"]);
+const emptyDoubling = {
+  active: false,
+  loading: false,
+  step: 0,
+  marks: ["", "", "", "", ""],
+  currentAmount: 0,
+  revealKey: 0,
+  changedIndex: -1,
+};
 
 const stateCopy = {
   "initial-loading": "Preparing module...",
@@ -50,6 +61,8 @@ const withTimeout = (promise, label) =>
     }),
   ]);
 
+const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
+
 const normalizeRuntimeStatus = (error) => {
   if (!navigator.onLine) return "network-error";
   if (error?.code === "MAINTENANCE") return "maintenance";
@@ -73,6 +86,7 @@ export default function App() {
   const [selectedCombinationId, setSelectedCombinationId] = useState(3);
   const [grid, setGrid] = useState({ A: [], B: [], C: [], D: [] });
   const [gridRevealKey, setGridRevealKey] = useState(0);
+  const [gridAnimation, setGridAnimation] = useState("idle");
   const [stake, setStake] = useState(10);
   const [visualMode, setVisualMode] = useState(false);
   const [expandedBoard, setExpandedBoard] = useState(false);
@@ -83,13 +97,14 @@ export default function App() {
   const [paytableRows, setPaytableRows] = useState([]);
   const [paytableStatus, setPaytableStatus] = useState("idle");
   const [doubleState, setDoubleState] = useState({ active: false, loading: false, step: 1, status: "Choose left or right" });
+  const [doublingState, setDoublingState] = useState(emptyDoubling);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [showGameMenu, setShowGameMenu] = useState(false);
   const [spinHistory, setSpinHistory] = useState([]);
   const playSound = useGameAudio();
   const emitSound = useCallback(
-    (event) => {
-      if (soundEnabled) playSound(event);
+    (event, payload) => {
+      if (soundEnabled) playSound(event, payload);
     },
     [playSound, soundEnabled],
   );
@@ -241,10 +256,11 @@ export default function App() {
   };
 
   const handleSpin = async ({ demo = false } = {}) => {
-    if (!selectedCombination || status === "processing" || doubleState.loading) return;
+    if (!selectedCombination || status === "processing" || doubleState.loading || doublingState.loading) return;
     const isFreeSpin = freeSpinsLeft > 0;
     const totalStake = stake * selectedCombination.groups.length;
     const requestId = buildRequestId("spin");
+    const spinStartedAt = performance.now();
 
     if (!demo && !isFreeSpin && player.balance < totalStake) {
       reportError(Object.assign(new Error("Insufficient balance for selected combination"), { code: "ACCESS_DENIED" }));
@@ -252,8 +268,9 @@ export default function App() {
     }
 
     try {
-      emitSound("spin");
+      if (visualMode) emitSound("spin");
       setStatus("processing");
+      setGridAnimation("spinning");
       setLastKnownState("spin-submitted");
       setError("");
       setPlayer((current) =>
@@ -270,10 +287,37 @@ export default function App() {
         }),
         "Spin",
       );
-      const shouldCreditWin = !demo && result.WinSum > 0;
-      setGrid(result.grid);
-      setGridRevealKey((key) => key + 1);
+      const closeTimeLeft = visualMode ? Math.max(0, 1500 - (performance.now() - spinStartedAt)) : 0;
+      if (closeTimeLeft > 0) await wait(closeTimeLeft);
+      const isDigitWin = !visualMode && result.WinSum > 0;
+      const shouldCreditWin = !demo && result.WinSum > 0 && !isDigitWin;
+      if (visualMode) {
+        setGrid(result.grid);
+        setGridRevealKey((key) => key + 1);
+        setGridAnimation("revealing");
+      } else {
+        flushSync(() => {
+          setGrid(result.grid);
+          setGridRevealKey((key) => key + 1);
+          setGridAnimation("revealing");
+        });
+        window.requestAnimationFrame(() => emitSound("reveal"));
+      }
+      window.setTimeout(() => setGridAnimation("settled"), 1500);
       setSpinResult({ ...result, creditedToBalance: shouldCreditWin });
+      setDoublingState(
+        isDigitWin
+          ? {
+              active: true,
+              loading: false,
+              step: 0,
+              marks: ["", "", "", "", ""],
+              currentAmount: result.WinSum,
+              revealKey: 0,
+              changedIndex: -1,
+            }
+          : emptyDoubling,
+      );
       if (shouldCreditWin) {
         setPlayer((current) => ({ ...current, balance: Number((current.balance + result.WinSum).toFixed(2)) }));
       }
@@ -293,11 +337,13 @@ export default function App() {
       } else if (result.FreeSpin) {
         setFreeSpinsTotal(15);
         setFreeSpinsLeft(15);
+        emitSound("freeTickets");
       }
 
+      await wait(1500);
       setStatus("ready");
       setLastKnownState(result.WinSum > 0 ? "win" : "lose");
-      emitSound(result.WinSum > 0 ? "win" : "lose");
+      emitSound(result.WinSum > 0 ? "win" : "lose", result);
       postEvent("LOADED", { requestId, state: "spin-complete" });
       postEvent("UPDATE_BALANCE", {
         balance: Number((player.balance - (demo || isFreeSpin ? 0 : totalStake) + (shouldCreditWin ? result.WinSum : 0)).toFixed(2)),
@@ -308,6 +354,7 @@ export default function App() {
   };
 
   const cycleStake = (direction) => {
+    emitSound("amount");
     const index = stakeOptions.indexOf(stake);
     const nextIndex = (index + direction + stakeOptions.length) % stakeOptions.length;
     setStake(stakeOptions[nextIndex]);
@@ -315,6 +362,7 @@ export default function App() {
 
   const cycleCombination = (direction) => {
     if (!combinations.length) return;
+    emitSound("buttonPress");
     const index = combinations.findIndex((item) => item.id === selectedCombinationId);
     const nextIndex = (index + direction + combinations.length) % combinations.length;
     setSelectedCombinationId(combinations[nextIndex].id);
@@ -333,6 +381,7 @@ export default function App() {
         setPlayer((current) => ({ ...current, balance: Number((current.balance + payout).toFixed(2)) }));
       }
       setDoubleState({ active: false, loading: false, step: 1, status: "Choose left or right" });
+      setDoublingState(emptyDoubling);
       setSpinResult(null);
       setStatus("ready");
       setLastKnownState("paid");
@@ -353,6 +402,49 @@ export default function App() {
       }
       setDoubleState({ active: true, loading: false, step: 1, status: "Choose left or right" });
       setLastKnownState("double");
+    }
+  };
+
+  const playFooterDouble = async () => {
+    if (!spinResult?.idCard || !doublingState.active || doublingState.loading || status === "processing") return;
+    if (doublingState.step >= 5 || doublingState.currentAmount <= 0) return;
+    const step = doublingState.step;
+    try {
+      emitSound("double");
+      setStatus("processing");
+      setDoublingState((current) => ({ ...current, loading: true, changedIndex: step }));
+      const result = await withTimeout(
+        frameApi.double({
+          idCard: spinResult.idCard,
+          wasDouble: step + 1,
+          sum: doublingState.currentAmount,
+          side: "x2",
+          requestId: buildRequestId("double"),
+        }),
+        "Double",
+      );
+      const won = result.status === "win" && result.WinSum > 0;
+      setSpinResult((current) => (current ? { ...current, WinSum: result.WinSum, creditedToBalance: false } : current));
+      setDoublingState((current) => {
+        const marks = [...current.marks];
+        marks[step] = won ? "x2" : "x0";
+        return {
+          ...current,
+          active: won && step + 1 < 5,
+          loading: false,
+          step: step + 1,
+          marks,
+          currentAmount: result.WinSum,
+          revealKey: current.revealKey + 1,
+          changedIndex: step,
+        };
+      });
+      setStatus("ready");
+      setLastKnownState(won ? "double-win" : "double-lose");
+      emitSound(won ? "win" : "lose", result);
+    } catch (doubleError) {
+      setDoublingState((current) => ({ ...current, loading: false }));
+      reportError(doubleError, "Double result is unknown. Check status before retrying.");
     }
   };
 
@@ -452,19 +544,49 @@ export default function App() {
     />
   ) : (
     <main className="game-shell">
-      <aside className="combination-panel">
-        {combinations.map((combo) => (
-          <button
-            key={combo.id}
-            className={combo.id === selectedCombinationId ? "active" : ""}
-            type="button"
-            disabled={isBusy}
-            onClick={() => setSelectedCombinationId(combo.id)}
-          >
-            <strong>{combo.title}</strong>
-            <span>{combo.label}</span>
-          </button>
-        ))}
+      <aside className="main-container__left">
+        <div className="main-header combination-main-header">
+          <div className="main-header__text">
+            Выбор лотерейной
+            <br />
+            комбинации
+          </div>
+        </div>
+        <div className={`combination-group${isBusy ? " --disabled" : ""}`}>
+          {combinations.map((combo) => (
+            <div
+              key={combo.id}
+              className={`combination-item${combo.id === selectedCombinationId ? " --glow" : ""}`}
+              id={`combi-${combo.id}`}
+              role="button"
+              tabIndex={isBusy ? -1 : 0}
+              onClick={() => {
+                if (isBusy) return;
+                emitSound("buttonPress");
+                setSelectedCombinationId(combo.id);
+              }}
+              onKeyDown={(event) => {
+                if (isBusy || (event.key !== "Enter" && event.key !== " ")) return;
+                event.preventDefault();
+                emitSound("buttonPress");
+                setSelectedCombinationId(combo.id);
+              }}
+            >
+              <h4 className="combination-item__title">Комбинация</h4>
+              <span className="combination-item__count">{combo.title}</span>
+              <p className="combination-item__subTitle">включающая группу координат:</p>
+              <div className="combination-item__wrapper">
+                {getCombinationTexts(combo).map((text, index, list) => (
+                  <span key={text} className="combination-item__text">
+                    {text}
+                    {index < list.length - 1 ? "," : ""}
+                  </span>
+                ))}
+                {combo.id !== 1 && <span className="combination-item__subTitle"> или их сочетание</span>}
+              </div>
+            </div>
+          ))}
+        </div>
       </aside>
       <section className="center-stage" aria-busy={isBusy}>
         {error && (
@@ -476,11 +598,13 @@ export default function App() {
         <LotteryGrid
           grid={grid}
           revealKey={gridRevealKey}
+          animationState={gridAnimation}
           visualMode={visualMode}
           winningCells={spinResult?.winningCells}
           scatterCells={spinResult?.scatterCells}
+          doublingState={doublingState}
         />
-        <ResultPanel result={spinResult} freeSpinsTotal={freeSpinsTotal} freeSpinsLeft={freeSpinsLeft} onDouble={enterDouble} />
+        <ResultPanel result={spinResult} freeSpinsTotal={freeSpinsTotal} freeSpinsLeft={freeSpinsLeft} />
         <div className="spin-controls">
           <button type="button" className="secondary-button" disabled={spinButtonDisabled} onClick={() => handleSpin({ demo: true })}>
             <RotateCcw size={18} />
@@ -493,7 +617,6 @@ export default function App() {
         </div>
       </section>
       <aside className="win-table">
-        <h3>Таблица выигрышей</h3>
         <PayoutTable rows={paytableRows} />
         <div className="draw-info">
           <strong>Тираж № {spinResult?.idCard ?? "4155974"}</strong>
@@ -507,7 +630,9 @@ export default function App() {
     <div className={shellClass} data-module-mode={context.mode}>
       {!hideHeader && <TopBar player={player} mode={modeLabel} context={context} onBack={handleBack} onFullscreen={requestFullscreen} />}
       <div className="frame-content">
-        {currentGame && !runtimeState && <ActionPanel onAction={handleAction} disabled={isBusy} soundEnabled={soundEnabled} expanded={expandedBoard} />}
+        {currentGame && !runtimeState && (
+          <ActionPanel onAction={handleAction} disabled={isBusy} soundEnabled={soundEnabled} expanded={expandedBoard} visualMode={visualMode} />
+        )}
         {content}
       </div>
       {!runtimeState && (
@@ -520,12 +645,14 @@ export default function App() {
           freeSpinsLeft={freeSpinsLeft}
           multiplier={freeSpinsLeft > 0 ? 3 : 1}
           disabled={isBusy}
+          doublingState={doublingState}
           onDecreaseCombination={() => cycleCombination(-1)}
           onIncreaseCombination={() => cycleCombination(1)}
           onDecreaseStake={() => cycleStake(-1)}
           onIncreaseStake={() => cycleStake(1)}
           onSpin={() => handleSpin()}
-          onBuyPrizeGame={enterDouble}
+          onDouble={playFooterDouble}
+          onTakeMoney={collectWin}
         />
       )}
       {showPaytable && (
@@ -541,90 +668,42 @@ export default function App() {
   );
 }
 
-function GameMenu({ history, onClose }) {
-  const [view, setView] = useState("history");
-
-  return (
-    <div className="game-menu-layer" role="dialog" aria-modal="true" aria-label="Game history and rules">
-      <div className="game-menu-panel">
-        <div className="game-menu-head">
-          <strong>Меню игры</strong>
-          <button type="button" onClick={onClose}>Закрыть</button>
-        </div>
-        <div className="game-menu-tabs" role="tablist" aria-label="Game menu sections">
-          <button className={view === "history" ? "active" : ""} type="button" role="tab" aria-selected={view === "history"} onClick={() => setView("history")}>
-            История
-          </button>
-          <button className={view === "rules" ? "active" : ""} type="button" role="tab" aria-selected={view === "rules"} onClick={() => setView("rules")}>
-            Правила
-          </button>
-        </div>
-        <div className="game-menu-body">
-          {view === "history" ? <HistoryView history={history} /> : <RulesView />}
-        </div>
-      </div>
-    </div>
-  );
+function getCombinationTexts(combo) {
+  if (Array.isArray(combo.displayGroups)) return combo.displayGroups;
+  return (combo.groups ?? []).map((group) => group.map(formatCoordinate).join("-"));
 }
 
-function HistoryView({ history }) {
-  return (
-    <section className="game-menu-section">
-      <h4>История спинов</h4>
-      <div className="history-list">
-        {history.length ? history.map((item) => (
-          <div key={`${item.id}-${item.time}`} className="history-row">
-            <span>{item.time}</span>
-            <strong>№ {item.id}</strong>
-            <em>{item.combination}</em>
-            <b>{Number(item.win).toFixed(2)}</b>
-          </div>
-        )) : <p>Пока нет сыгранных тиражей.</p>}
-      </div>
-    </section>
-  );
-}
-
-function RulesView() {
-  return (
-    <section className="game-menu-section">
-      <h4>Правила</h4>
-      <ol className="rules-list">
-        <li>Выберите комбинацию слева: 1, 3, 5 или 7 групп координат.</li>
-        <li>Выберите ставку. Сумма покупки считается как ставка на каждую группу.</li>
-        <li>После покупки билет участвует в тираже, а выигрыш считается по таблице выплат.</li>
-        <li>Совпадение 4 одинаковых чисел в выбранной группе дает выигрыш по строке числа и колонке x4.</li>
-        <li>Скаттеры запускают призовые спины с множителем x3, когда правило активируется в результате.</li>
-        <li>После выигрыша можно забрать деньги или попробовать удвоение.</li>
-      </ol>
-    </section>
-  );
+function formatCoordinate(coord) {
+  return String(coord).replace(/^A/, "А").replace(/^B/, "В").replace(/^C/, "С");
 }
 
 function PayoutTable({ rows }) {
   return (
-    <table className="inline-paytable">
-      <thead>
-        <tr>
-          <th />
-          <th>x1</th>
-          <th>x2</th>
-          <th>x3</th>
-          <th>x4</th>
-          <th>x5</th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((row) => (
-          <tr key={row.symbol}>
-            <th>{row.symbol}</th>
-            {[1, 2, 3, 4, 5].map((count) => (
-              <td key={count}>{row[`x${count}`] == null ? "" : Number(row[`x${count}`]).toFixed(2)}</td>
-            ))}
+    <div className="winnings-table">
+      <h2 className="winnings-table__title">Таблица выигрышей</h2>
+      <table className="winnings-table__container">
+        <thead>
+          <tr>
+            <th />
+            <th>x1</th>
+            <th>x2</th>
+            <th>x3</th>
+            <th>x4</th>
+            <th>x5</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.symbol}>
+              <td>{row.symbol}</td>
+              {[1, 2, 3, 4, 5].map((count) => (
+                <td key={count}>{row[`x${count}`] == null ? "" : Number(row[`x${count}`]).toFixed(2)}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
@@ -645,46 +724,21 @@ function RuntimeState({ status, error, mode, onRetry }) {
   );
 }
 
-function ResultPanel({ result, freeSpinsTotal, freeSpinsLeft, onDouble }) {
-  if (!result) {
-    return <div className="result-panel muted">Waiting for the next draw</div>;
-  }
+function ResultPanel({ result, freeSpinsTotal, freeSpinsLeft }) {
+  const message = result ? getResultMessage(result, freeSpinsTotal, freeSpinsLeft) : "Выберите лотерейную комбинацию и сумму лотерейной ставки.";
 
   return (
-    <div className="result-panel">
-      <div>
-        <small>Spin ID</small>
-        <strong>{result.idCard}</strong>
+    <div className="main-container__wrapper">
+      <div className="main-container__info">
+        <span>{message}</span>
       </div>
-      <div>
-        <small>Win</small>
-        <strong>{result.BaseWinSum?.toFixed(2) ?? result.WinSum.toFixed(2)}</strong>
-      </div>
-      {result.multiplier > 1 && (
-        <div>
-          <small>Free Spins x3</small>
-          <strong>{result.WinSum.toFixed(2)}</strong>
-        </div>
-      )}
-      {result.scatterCount >= 2 && (
-        <div>
-          <small>Scatters</small>
-          <strong>{result.scatterCount}</strong>
-        </div>
-      )}
-      {freeSpinsTotal > 0 && (
-        <div>
-          <small>Free Spins</small>
-          <strong>
-            {freeSpinsLeft}/{freeSpinsTotal}
-          </strong>
-        </div>
-      )}
-      {result.WinSum > 0 && (
-        <button type="button" className="secondary-button" onClick={onDouble}>
-          Double
-        </button>
-      )}
     </div>
   );
+}
+
+function getResultMessage(result, freeSpinsTotal, freeSpinsLeft) {
+  if (freeSpinsTotal > 0) return `Призовые спины: ${freeSpinsLeft}/${freeSpinsTotal}. Выигрыш: ${result.WinSum.toFixed(2)}.`;
+  if (result.scatterCount >= 2) return `Скаттеры: ${result.scatterCount}. Выигрыш: ${result.WinSum.toFixed(2)}.`;
+  if (result.WinSum > 0) return `Поздравляем! Ваш выигрыш: ${result.WinSum.toFixed(2)}.`;
+  return "Билет не выиграл. Выберите комбинацию и попробуйте еще раз.";
 }

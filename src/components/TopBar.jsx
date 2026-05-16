@@ -1,3 +1,5 @@
+import "./TopBar.css";
+
 export default function TopBar({ player }) {
   return (
     <header className="top-bar">

@@ -32,11 +32,12 @@ export const games = [
 ];
 
 export const combinations = [
-  { id: 1, title: "1", label: "B1-B2-B3-B4-B5", groups: [["B1", "B2", "B3", "B4", "B5"]] },
+  { id: 1, title: "1", label: "B1-B2-B3-B4-B5", displayGroups: ["В1-В2-В3-В4-В5"], groups: [["B1", "B2", "B3", "B4", "B5"]] },
   {
     id: 3,
     title: "3",
     label: "A1-A5 / B1-B5 / C1-C5",
+    displayGroups: ["А1-А2-А3-А4-А5", "В1-В2-В3-В4-В5", "С1-С2-С3-С4-С5"],
     groups: [
       ["A1", "A2", "A3", "A4", "A5"],
       ["B1", "B2", "B3", "B4", "B5"],
@@ -47,6 +48,7 @@ export const combinations = [
     id: 5,
     title: "5",
     label: "Horizontal and diagonal groups",
+    displayGroups: ["А1-А2-А3-А4-А5", "В1-В2-В3-В4-В5", "С1-С2-С3-С4-С5", "А1-В2-С3-В4-А5", "С1-В2-А3-В4-С5"],
     groups: [
       ["A1", "A2", "A3", "A4", "A5"],
       ["B1", "B2", "B3", "B4", "B5"],
@@ -59,6 +61,7 @@ export const combinations = [
     id: 7,
     title: "7",
     label: "Expanded coordinate groups",
+    displayGroups: ["А1-А2-А3-А4-А5", "В1-В2-В3-В4-В5", "С1-С2-С3-С4-С5", "А1-В2-С3-В4-А5", "С1-В2-А3-В4-С5", "B1-A2-A3-A4-B5", "B1-C2-C3-C4-B5"],
     groups: [
       ["A1", "A2", "A3", "A4", "A5"],
       ["B1", "B2", "B3", "B4", "B5"],
@@ -73,6 +76,7 @@ export const combinations = [
     id: 9,
     title: "9",
     label: "Full express coordinate set",
+    displayGroups: ["А1-А2-А3-А4-А5", "В1-В2-В3-В4-В5", "С1-С2-С3-С4-С5", "А1-В2-С3-В4-А5", "С1-В2-А3-В4-С5", "B1-A2-A3-A4-B5", "B1-C2-C3-C4-B5", "A1-A2-B3-C4-C5", "C1-C2-B3-A4-A5"],
     groups: [
       ["A1", "A2", "A3", "A4", "A5"],
       ["B1", "B2", "B3", "B4", "B5"],

@@ -1,0 +1,708 @@
+.center-stage {
+  display: grid !important;
+  grid-template-rows: auto auto auto auto !important;
+  justify-items: center !important;
+  gap: 8px !important;
+  transform: none !important;
+}
+
+.center-stage::before {
+  content: "" !important;
+  width: 22rem !important;
+  max-width: 74% !important;
+  height: 92px !important;
+  margin: 3px 0 12px !important;
+  background: url("https://lotogame.lotosport.tj/img/eldorado-logo.31ee1229.webp") center / contain no-repeat !important;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.72)) !important;
+}
+
+.lottery-machine.scoreboard-wrapper {
+  box-sizing: border-box !important;
+  position: relative !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: min(29.5rem, 100%) !important;
+  height: auto !important;
+  aspect-ratio: 1500 / 1165 !important;
+  max-width: 100% !important;
+  margin-top: -5px !important;
+  overflow: visible !important;
+  border: 0 !important;
+  border-radius: 0.5rem !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  z-index: 1 !important;
+}
+
+.digital-scoreboard {
+  box-sizing: border-box !important;
+  position: relative !important;
+  z-index: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  height: auto !important;
+  border-radius: 0.5rem !important;
+  background-image: url("https://lotogame.lotosport.tj/img/digit-scoreboard-gold-bg.ea005927.webp") !important;
+  background-size: 100% 100% !important;
+  background-position: 50% !important;
+  background-repeat: no-repeat !important;
+  filter: drop-shadow(0 0.1666666667rem 0.2083333333rem rgba(0, 0, 0, 0.5)) !important;
+}
+
+.lottery-machine.scoreboard-wrapper.--eldorado-view {
+  aspect-ratio: 1500 / 960 !important;
+}
+
+.eldorado-scoreboard {
+  box-sizing: border-box !important;
+  position: relative !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  padding: 3% 0 !important;
+  border: 0.0833333333rem solid hsla(0, 0%, 100%, 0.5) !important;
+  border-radius: 0.8333333333rem !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
+.eldorado-scoreboard::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: 0.8333333333rem !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8) !important;
+  filter: blur(0.2px) !important;
+}
+
+.eldorado-cell {
+  box-sizing: border-box !important;
+  position: relative !important;
+  z-index: 1 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 19% !important;
+  height: auto !important;
+  border-radius: 0.3333333333rem !important;
+  transition: all 0.2s linear !important;
+}
+
+.eldorado-cell.--opacity {
+  opacity: 0.3 !important;
+}
+
+.eldorado-cell__container {
+  position: relative !important;
+  width: 100% !important;
+  padding-bottom: 100% !important;
+}
+
+.eldorado-cell__item {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  height: 100% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.eldorado-cell__item.--0 {
+  height: 160% !important;
+}
+
+.eldorado-cell__item.--1,
+.eldorado-cell__item.--2,
+.eldorado-cell__item.--3,
+.eldorado-cell__item.--4,
+.eldorado-cell__item.--5,
+.eldorado-cell__item.--6 {
+  height: 110% !important;
+}
+
+.eldorado-cell__item.--7,
+.eldorado-cell__item.--8,
+.eldorado-cell__item.--10 {
+  height: 130% !important;
+}
+
+.eldorado-cell__item.--9 {
+  height: 140% !important;
+}
+
+.carpet-nice {
+  position: absolute !important;
+  top: -0.3333333333rem !important;
+  left: -0.7916666667rem !important;
+  right: -0.5rem !important;
+  bottom: -0.5rem !important;
+  z-index: 4 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+.carpet-nice__hidden {
+  opacity: 0 !important;
+}
+
+.carpet-nice__item {
+  position: absolute !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 4 !important;
+  background-image: url("https://lotogame.lotosport.tj/img/eldorado-carpet.ffad4c92.webp") !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+}
+
+.carpet-nice__item.--close {
+  animation: carpet-close-eldorado 1.5s linear forwards !important;
+}
+
+.carpet-nice__item.--open {
+  animation: carpet-open-eldorado 1s linear forwards !important;
+}
+
+.carpet-nice__roll {
+  position: absolute !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  z-index: 5 !important;
+  border-radius: 0.0833333333rem !important;
+  background:
+    linear-gradient(90deg, #302222, #443129 25%, #50433e 44.27%, #2e2d2d 79.17%, #171716),
+    url("https://lotogame.lotosport.tj/img/carpet-roll-bg.39df8d16.png") !important;
+  background-blend-mode: overlay, normal !important;
+}
+
+.carpet-nice__roll.--close {
+  animation: carpet-close-roll-eldorado 1.5s linear forwards !important;
+}
+
+.carpet-nice__roll.--open {
+  animation: carpet-open-roll-eldorado 1s linear forwards !important;
+}
+
+.digital-scoreboard__top {
+  display: flex !important;
+  position: relative !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 1.5% !important;
+  width: 100% !important;
+  margin-left: 3% !important;
+  margin-top: 7.5% !important;
+  transform: none !important;
+}
+
+.digital-scoreboard__bottom {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 2% !important;
+  width: 100% !important;
+  margin: 3% 0 !important;
+  transform: none !important;
+}
+
+.gold-cell {
+  box-sizing: border-box !important;
+  position: relative !important;
+  width: 16% !important;
+  height: auto !important;
+  margin-bottom: 1.5% !important;
+  border-radius: 7% !important;
+  color: #000 !important;
+  font-family: Inter, Arial, Helvetica, sans-serif !important;
+  font-style: normal !important;
+  font-size: 3rem !important;
+  line-height: 3.3333333333rem !important;
+  font-weight: 600 !important;
+  transition: all 0.2s linear !important;
+}
+
+.gold-cell.--small {
+  width: 10.3% !important;
+  padding-top: 5px !important;
+  font-size: 2.5rem !important;
+  line-height: 2.5rem !important;
+}
+
+.gold-cell__wrapper {
+  position: relative !important;
+  width: 100% !important;
+  height: 100% !important;
+  border-radius: 7% !important;
+  background-image: url("/img/eldorado-gold-cell.webp") !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+  transition: all 0.3s linear !important;
+}
+
+.gold-cell__wrapper.--glow {
+  box-shadow: 0 0 0.3333333333rem 0.1666666667rem gold !important;
+}
+
+.gold-cell__wrapper.--opacity {
+  opacity: 0.5 !important;
+}
+
+.gold-cell__container,
+.gold-cell__wrapper::before {
+  content: "" !important;
+  display: block !important;
+  width: 100% !important;
+  padding-bottom: 100% !important;
+  border-radius: 7% !important;
+}
+
+.gold-cell__img {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 65% !important;
+  height: 65% !important;
+  transform: translate(-50%, -50%) !important;
+  background-image: url("/img/gold-cell-inner.webp") !important;
+  background-position: 50% !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+  -webkit-mask-image: url("/img/circle.736c8716.svg") !important;
+  mask-image: url("/img/circle.736c8716.svg") !important;
+  -webkit-mask-position: -300% 600%;
+  mask-position: -300% 600%;
+  -webkit-mask-repeat: no-repeat !important;
+  mask-repeat: no-repeat !important;
+  -webkit-mask-size: 120% !important;
+  mask-size: 120% !important;
+}
+
+.digital-scoreboard.--closing .gold-cell__img {
+  -webkit-mask-position: -300% 600%;
+  mask-position: -300% 600%;
+}
+
+.gold-cell__img.--show {
+  -webkit-mask-position: 50% 50%;
+  mask-position: 50% 50%;
+}
+
+.gold-cell__img.--first {
+  animation: eraser-eldorado 0.5s linear forwards !important;
+}
+
+.gold-cell__img.--second {
+  animation: eraser-eldorado 0.5s linear 0.25s forwards !important;
+}
+
+.gold-cell__img.--third {
+  animation: eraser-eldorado 0.5s linear 0.5s forwards !important;
+}
+
+.gold-cell__img.--fourth {
+  animation: eraser-eldorado 0.5s linear 0.75s forwards !important;
+}
+
+.gold-cell__img.--fifth {
+  animation: eraser-eldorado 0.5s linear 1s forwards !important;
+}
+
+.gold-cell.--small .gold-cell__img {
+  width: 80% !important;
+  height: 80% !important;
+}
+
+.gold-cell__item {
+  color: #000 !important;
+  font: inherit !important;
+  line-height: 1 !important;
+  text-shadow: none !important;
+  transform: translateY(-1px) !important;
+}
+
+.gold-cell__item.--doubling {
+  font-size: 0.85em !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+  text-transform: uppercase !important;
+}
+
+.gold-cell__loader {
+  width: 42% !important;
+  height: 42% !important;
+  border: 0.1666666667rem solid rgba(0, 0, 0, 0.25) !important;
+  border-top-color: #000 !important;
+  border-radius: 50% !important;
+  animation: gold-cell-loader 0.45s linear infinite !important;
+}
+
+@keyframes gold-cell-loader {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.gold-cell__idx-number {
+  position: absolute !important;
+  top: -1.4166666667rem !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  color: #000 !important;
+  font-family: Inter, Arial, Helvetica, sans-serif !important;
+  font-style: normal !important;
+  font-weight: 600 !important;
+  font-size: 1.25rem !important;
+  line-height: 1.25rem !important;
+  text-shadow: none !important;
+}
+
+.gold-cell.--small .gold-cell__idx-number {
+  top: -0.8333333333rem !important;
+  font-size: 0.625rem !important;
+  line-height: 0.625rem !important;
+}
+
+.gold-cell__idx-string {
+  position: absolute !important;
+  top: 54% !important;
+  left: -1.25rem !important;
+  transform: translateY(-50%) !important;
+  color: #000 !important;
+  font-family: Inter, Arial, Helvetica, sans-serif !important;
+  font-style: normal !important;
+  font-weight: 600 !important;
+  font-size: 1.25rem !important;
+  line-height: 1.25rem !important;
+  text-shadow: none !important;
+}
+
+.flame {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 12 !important;
+  border-radius: 7% !important;
+  background-image: url("https://lotogame.lotosport.tj/img/flame-animation-cell.996d8ac9.webp") !important;
+  background-position: 50% !important;
+  background-size: 110% 110% !important;
+  background-repeat: no-repeat !important;
+  opacity: 0.95 !important;
+}
+
+@keyframes eraser-eldorado {
+  0% {
+    -webkit-mask-position: -300% 600%;
+    mask-position: -300% 600%;
+  }
+  100% {
+    -webkit-mask-position: 50% 50%;
+    mask-position: 50% 50%;
+  }
+}
+
+@keyframes carpet-close-eldorado {
+  0% {
+    background-position: 0;
+    right: 100%;
+    left: 0;
+  }
+  100% {
+    background-position: 0;
+    right: 0;
+    left: 0;
+  }
+}
+
+@keyframes carpet-open-eldorado {
+  0% {
+    background-position: 100%;
+    right: 0;
+    left: 0;
+  }
+  100% {
+    background-position: 100%;
+    right: 0;
+    left: 100%;
+  }
+}
+
+@keyframes carpet-open-roll-eldorado {
+  0% {
+    width: 0;
+    left: 0;
+  }
+  100% {
+    width: 10%;
+    left: 100%;
+  }
+}
+
+@keyframes carpet-close-roll-eldorado {
+  0% {
+    width: 10%;
+    left: 0;
+  }
+  100% {
+    width: 0;
+    left: 100%;
+  }
+}
+
+.result-panel {
+  width: 547.5px !important;
+  max-width: 100% !important;
+  height: 24px !important;
+  min-height: 24px !important;
+  max-height: 24px !important;
+  padding: 0 18px !important;
+  overflow: hidden !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  flex-wrap: nowrap !important;
+  font-size: 0.78rem !important;
+}
+
+.main-container__wrapper {
+  width: min(29.5rem, 100%) !important;
+  height: 2rem !important;
+  z-index: 1 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin-top: 10px !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.main-container__info {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+  align-items: center !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  font-size: 0.6666666667rem !important;
+  line-height: 100% !important;
+  color: #fff !important;
+}
+
+.main-container__info > span {
+  font-family: Ubuntu, "Alegreya Sans", serif !important;
+  border-radius: 0.8333333333rem !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  padding: 0.1666666667rem 0.8333333333rem !important;
+}
+
+.main-container__double {
+  position: absolute !important;
+  right: 0.3333333333rem !important;
+  height: 1.3333333333rem !important;
+  padding: 0 0.5rem !important;
+  border: 0.0416666667rem solid rgba(255, 255, 255, 0.42) !important;
+  border-radius: 0.1666666667rem !important;
+  background: rgba(0, 0, 0, 0.35) !important;
+  color: #fff !important;
+  font-family: Ubuntu, "Alegreya Sans", serif !important;
+  font-size: 0.5833333333rem !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+}
+
+.result-panel > div,
+.result-panel > button {
+  flex: 0 0 auto !important;
+}
+
+.result-panel small {
+  display: none !important;
+}
+
+.result-panel .secondary-button {
+  height: 20px !important;
+  min-height: 20px !important;
+  padding: 0 10px !important;
+  font-size: 0.65rem !important;
+}
+
+.expanded-board .lottery-machine.scoreboard-wrapper {
+  width: min(100%, 38rem, calc((100vh - 48px - 104px - 7rem) * 1.58)) !important;
+  height: auto !important;
+  max-height: calc(100vh - 48px - 104px - 7rem - 50px) !important;
+  aspect-ratio: 1500 / 1035 !important;
+  margin-top: -5px !important;
+}
+
+.expanded-board .lottery-machine.scoreboard-wrapper.--eldorado-view {
+  aspect-ratio: 1500 / 960 !important;
+}
+
+.expanded-board .digital-scoreboard {
+  height: 100% !important;
+  transform: none !important;
+}
+
+.expanded-board .digital-scoreboard__top,
+.expanded-board .digital-scoreboard__bottom {
+  width: min(29.5rem, 100%) !important;
+}
+
+@media (max-width: 920px) {
+  .center-stage {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    transform: none !important;
+  }
+
+  .center-stage::before {
+    position: static !important;
+    z-index: 30 !important;
+    align-self: flex-start !important;
+    margin: 0 0 2px 8px !important;
+    width: min(240px, 48vw) !important;
+    height: 58px !important;
+    pointer-events: none !important;
+  }
+
+  .lottery-machine.scoreboard-wrapper,
+  .result-panel,
+  .spin-controls {
+    width: min(92vw, 650px) !important;
+  }
+
+  .lottery-machine.scoreboard-wrapper {
+    height: auto !important;
+    aspect-ratio: 547.5 / 441.75 !important;
+    margin-top: -5px !important;
+    border-radius: 8px !important;
+  }
+
+  .lottery-machine.scoreboard-wrapper.--eldorado-view {
+    aspect-ratio: 1500 / 960 !important;
+  }
+
+  .eldorado-scoreboard {
+    background: unset !important;
+    backdrop-filter: unset !important;
+    border: unset !important;
+    border-radius: unset !important;
+  }
+
+  .eldorado-scoreboard::before {
+    top: -0.1666666667rem !important;
+    bottom: -0.1666666667rem !important;
+    box-shadow: unset !important;
+    filter: unset !important;
+    border-radius: unset !important;
+  }
+
+  .digital-scoreboard__top {
+    width: 100% !important;
+    gap: 2% !important;
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+  }
+
+  .gold-cell {
+    font-size: clamp(1.45rem, 7vw, 3.25rem) !important;
+    line-height: 1 !important;
+  }
+
+  .gold-cell__idx-number,
+  .gold-cell__idx-string {
+    font-size: clamp(0.72rem, 2.4vw, 1.1rem) !important;
+    line-height: 1 !important;
+  }
+
+  .gold-cell__idx-number {
+    top: -1.05rem !important;
+  }
+
+  .gold-cell.--small .gold-cell__idx-number {
+    top: -0.58rem !important;
+    font-size: clamp(0.42rem, 1.8vw, 0.72rem) !important;
+  }
+
+  .result-panel {
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    background: rgba(0, 0, 0, 0.72) !important;
+    color: #ffd719 !important;
+    font-size: clamp(0.76rem, 2.2vw, 1rem) !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+  }
+
+  .result-panel .secondary-button {
+    height: 30px !important;
+    min-height: 30px !important;
+    padding: 0 12px !important;
+    font-size: 0.72rem !important;
+  }
+
+  .result-panel.muted {
+    color: #ffd719 !important;
+  }
+
+  .spin-controls {
+    display: flex !important;
+    margin: 0 auto !important;
+    gap: 0 !important;
+    justify-content: center !important;
+    order: 4 !important;
+  }
+
+  .spin-controls .secondary-button {
+    display: none !important;
+  }
+
+  .spin-controls .primary-button {
+    width: 100% !important;
+    height: clamp(64px, 13vw, 84px) !important;
+    border-radius: 8px !important;
+    background: linear-gradient(180deg, rgba(82, 150, 61, 0.98), rgba(34, 95, 35, 0.98)) !important;
+    border-color: rgba(198, 239, 174, 0.5) !important;
+    color: #fff !important;
+    font-size: clamp(1.05rem, 4.8vw, 1.75rem) !important;
+    font-weight: 900 !important;
+    text-transform: uppercase !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .center-stage::before {
+    width: min(190px, 42vw) !important;
+    height: 46px !important;
+  }
+
+  .lottery-machine.scoreboard-wrapper,
+  .result-panel {
+    width: 94vw !important;
+  }
+}

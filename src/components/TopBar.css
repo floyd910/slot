@@ -1,0 +1,53 @@
+.top-bar,
+.brand-lockup,
+.top-actions {
+  box-sizing: border-box !important;
+  height: 48px !important;
+  min-height: 48px !important;
+}
+
+.top-bar {
+  padding: 0 28px !important;
+}
+
+.brand-glyph,
+.hotline,
+.language-flag,
+.language-code,
+.login-button {
+  display: none !important;
+}
+
+.brand-lockup strong {
+  font-size: 1.35rem !important;
+}
+
+.top-balance {
+  font-size: 1.08rem !important;
+  font-weight: 900 !important;
+}
+
+@media (max-width: 920px) {
+  .top-bar {
+    display: none !important;
+    position: static !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    padding: 0 12px !important;
+    z-index: 1 !important;
+  }
+
+  .brand-lockup,
+  .top-actions {
+    height: 44px !important;
+    min-height: 44px !important;
+  }
+
+  .brand-lockup strong {
+    font-size: 1rem !important;
+  }
+
+  .top-balance {
+    font-size: 0.9rem !important;
+  }
+}

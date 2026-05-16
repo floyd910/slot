@@ -1,0 +1,140 @@
+.win-table {
+  margin-top: clamp(-63px, -5.8vh, -24px) !important;
+  margin-right: 35px !important;
+  justify-self: end !important;
+  width: 388px !important;
+  max-width: 100% !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.winnings-table {
+  box-sizing: border-box !important;
+  position: relative !important;
+  min-width: 282px !important;
+  max-width: 388px !important;
+  width: 100% !important;
+  min-height: 94px !important;
+  box-shadow:
+    0 3.76px 4.7px 1.88px rgba(0, 0, 0, 0.5),
+    inset -2.82px -2.82px 0.94px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 11.28px !important;
+  padding: 4.7px 4.7px 5.64px !important;
+}
+
+.winnings-table::before {
+  position: absolute !important;
+  content: "" !important;
+  inset: 0 !important;
+  box-shadow: inset 6.58px 6.58px 4.7px rgba(0, 0, 0, 0.8) !important;
+  border-radius: 11.28px !important;
+  pointer-events: none !important;
+  z-index: 2 !important;
+}
+
+.winnings-table::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  border-radius: 11.28px !important;
+  border: 5.64px solid transparent !important;
+  background: url("/img/eldorado-winnings-table-bg.webp") border-box !important;
+  background-size: cover !important;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) padding-box,
+    linear-gradient(#fff 0 0) !important;
+  -webkit-mask-composite: destination-out !important;
+  mask-composite: exclude !important;
+  pointer-events: none !important;
+  z-index: 3 !important;
+}
+
+.winnings-table__title {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  margin: 0 !important;
+  width: 100% !important;
+  height: 35.72px !important;
+  font-family: "Alegreya Sans", serif !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+  font-size: 20.68px !important;
+  line-height: 24.44px !important;
+  text-align: center !important;
+  text-transform: uppercase !important;
+  color: #000 !important;
+  background-image: url("/img/eldorado-winnings-title-bg.webp") !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  background-position: 50% !important;
+}
+
+.winnings-table__container {
+  width: 100% !important;
+  min-width: 0 !important;
+  border-collapse: collapse !important;
+  table-layout: auto !important;
+  font-family: Ubuntu, sans-serif !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  font-size: 16.92px !important;
+  line-height: 19.74px !important;
+  color: #000 !important;
+  z-index: -2 !important;
+}
+
+.winnings-table__container thead,
+.winnings-table__container tbody,
+.winnings-table__container tr {
+  box-sizing: border-box !important;
+}
+
+.winnings-table__container th,
+.winnings-table__container td {
+  position: static !important;
+  padding: 2px 2px !important;
+  border: 0.94px solid #000 !important;
+  color: #000 !important;
+  font-family: Ubuntu, sans-serif !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  font-size: 16.92px !important;
+  line-height: 19.74px !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+  text-shadow: none !important;
+}
+
+.winnings-table__container thead th {
+  font-weight: 400 !important;
+  background-color: #ffde26 !important;
+}
+
+.winnings-table__container thead th:first-child,
+.winnings-table__container tbody td:first-child {
+  background-color: #ffde26 !important;
+}
+
+.winnings-table__container tbody tr:nth-child(odd) {
+  background-color: #ebe7df !important;
+}
+
+.winnings-table__container tbody tr:nth-child(even) {
+  background-color: #fff !important;
+}
+
+.draw-info {
+  margin-top: clamp(24px, 7vh, 76px) !important;
+  min-height: 92px !important;
+  padding: 22px 18px !important;
+  border-radius: 8px !important;
+  font-size: 0.78rem !important;
+}
+
+.draw-info strong {
+  margin-bottom: 10px !important;
+  font-size: 0.92rem !important;
+}

@@ -1,62 +1,112 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
-const AudioContextCtor = () => window.AudioContext || window.webkitAudioContext;
+const media = {
+  click: "/media/pressing-bet-amount-button.8819b8f6.mp3",
+  buttonPress: "/media/button-press-sound.mp3",
+  amount: "/media/pressing-bet-amount-button.8819b8f6.mp3",
+  spin: "/media/eldorado-carpet-sound.a486c07e.mp3",
+  reveal: "/media/receipt-erase.6a92056f.mp3",
+  receiptWin: "/media/receipt-win-drop-sound.11ff43ce.mp3",
+  digitShort: "/media/digit-short.82a63348.mp3",
+  cashout: "/media/eldorado-breakdown-chests-win.d57fe223.mp3",
+  double: "/media/eldorado-breakdown-chests-win.d57fe223.mp3",
+  lose: "/media/eldorado-breakdown-chests-loss.3f504635.mp3",
+  freeTickets: "/media/eldorado-getting-free-tickets.e179cf46.mp3",
+  afterBonus: "/media/eldorado-after-bonus-game.e179cf46.mp3",
+  win0: "/media/eldorado-win-sound-0.af398794.mp3",
+  win12: "/media/eldorado-win-sound-12.feef7474.mp3",
+  win3: "/media/eldorado-win-sound-3.93572e53.mp3",
+  win4: "/media/eldorado-win-sound-4.3552ce60.mp3",
+  win5: "/media/eldorado-win-sound-5.6a8b0cf6.mp3",
+  win6: "/media/eldorado-win-sound-6.ca0cf425.mp3",
+  win7: "/media/eldorado-win-sound-7.924ed6af.mp3",
+  win8: "/media/eldorado-win-sound-8.131fcfc1.mp3",
+};
+
+const winSoundBySymbol = {
+  0: media.win0,
+  1: media.win12,
+  2: media.win12,
+  3: media.win3,
+  4: media.win4,
+  5: media.win5,
+  6: media.win6,
+  7: media.win7,
+  8: media.win8,
+  12: media.win12,
+};
 
 export function useGameAudio() {
-  const contextRef = useRef(null);
+  const cacheRef = useRef(new Map());
+  const backgroundRef = useRef(null);
 
-  const getContext = useCallback(() => {
-    const Context = AudioContextCtor();
-    if (!Context) return null;
-    if (!contextRef.current) contextRef.current = new Context();
-    if (contextRef.current.state === "suspended") contextRef.current.resume();
-    return contextRef.current;
+  const getAudio = useCallback((src) => {
+    if (!cacheRef.current.has(src)) {
+      const audio = new Audio(src);
+      audio.preload = "auto";
+      cacheRef.current.set(src, audio);
+    }
+    return cacheRef.current.get(src);
   }, []);
 
-  const tone = useCallback(
-    ({ frequency, duration = 0.12, type = "sine", gain = 0.045, delay = 0 }) => {
-      const audio = getContext();
-      if (!audio) return;
-
-      const startsAt = audio.currentTime + delay;
-      const oscillator = audio.createOscillator();
-      const envelope = audio.createGain();
-
-      oscillator.type = type;
-      oscillator.frequency.setValueAtTime(frequency, startsAt);
-      envelope.gain.setValueAtTime(0.0001, startsAt);
-      envelope.gain.exponentialRampToValueAtTime(gain, startsAt + 0.015);
-      envelope.gain.exponentialRampToValueAtTime(0.0001, startsAt + duration);
-
-      oscillator.connect(envelope);
-      envelope.connect(audio.destination);
-      oscillator.start(startsAt);
-      oscillator.stop(startsAt + duration + 0.03);
+  const playSrc = useCallback(
+    (src, { volume = 1, loop = false, restart = true } = {}) => {
+      if (!src) return;
+      const base = getAudio(src);
+      const audio = restart ? base.cloneNode(true) : base;
+      audio.volume = volume;
+      audio.loop = loop;
+      if (restart) audio.currentTime = 0;
+      const playback = audio.play();
+      if (playback?.catch) playback.catch(() => {});
+      return audio;
     },
-    [getContext],
+    [getAudio],
   );
 
-  return useCallback(
-    (event) => {
-      if (event === "click") tone({ frequency: 220, duration: 0.06, type: "square", gain: 0.025 });
-      if (event === "spin") {
-        [180, 240, 320, 420].forEach((frequency, index) => {
-          tone({ frequency, duration: 0.07, type: "triangle", gain: 0.03, delay: index * 0.055 });
-        });
+  const playBackground = useCallback(
+    (src) => {
+      if (backgroundRef.current?.src?.includes(src)) return;
+      if (backgroundRef.current) {
+        backgroundRef.current.pause();
+        backgroundRef.current = null;
       }
-      if (event === "win") {
-        [440, 554, 659, 880].forEach((frequency, index) => {
-          tone({ frequency, duration: 0.13, gain: 0.05, delay: index * 0.08 });
-        });
-      }
-      if (event === "lose") tone({ frequency: 120, duration: 0.18, type: "sawtooth", gain: 0.035 });
-      if (event === "cashout") {
-        [523, 659, 784].forEach((frequency, index) => {
-          tone({ frequency, duration: 0.16, gain: 0.055, delay: index * 0.075 });
-        });
-      }
-      if (event === "double") tone({ frequency: 330, duration: 0.1, type: "triangle", gain: 0.04 });
+      backgroundRef.current = playSrc(src, { loop: true, volume: 0.28, restart: false });
     },
-    [tone],
+    [playSrc],
+  );
+
+  useEffect(() => {
+    [media.reveal, media.spin].forEach((src) => {
+      const audio = getAudio(src);
+      audio.load();
+    });
+  }, [getAudio]);
+
+  return useCallback(
+    (event, payload) => {
+      if (event === "background") playBackground("/media/eldorado-main-theme.39d363ed.mp3");
+      if (event === "click") playSrc(media.click, { volume: 0.65 });
+      if (event === "buttonPress") playSrc(media.buttonPress, { volume: 1 });
+      if (event === "amount") playSrc(media.amount, { volume: 0.75 });
+      if (event === "spin") playSrc(media.spin, { volume: 0.9 });
+      if (event === "reveal") {
+        const receipt = getAudio(media.reveal);
+        receipt.pause();
+        receipt.currentTime = 0;
+        receipt.volume = 0.8;
+        const playback = receipt.play();
+        if (playback?.catch) playback.catch(() => {});
+      }
+      if (event === "cashout") playSrc(media.cashout, { volume: 0.85 });
+      if (event === "double") playSrc(media.double, { volume: 0.8 });
+      if (event === "lose") playSrc(media.lose, { volume: 0.65 });
+      if (event === "freeTickets") playSrc(media.freeTickets, { volume: 0.9 });
+      if (event === "win") {
+        const firstSymbol = payload?.lineWins?.[0]?.symbol;
+        playSrc(winSoundBySymbol[firstSymbol] ?? media.receiptWin, { volume: 0.85 });
+      }
+    },
+    [getAudio, playBackground, playSrc],
   );
 }

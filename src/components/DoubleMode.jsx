@@ -1,3 +1,5 @@
+import "./DoubleMode.css";
+
 export default function DoubleMode({ winSum, step, status, onPick, onCollect, loading }) {
   const levels = [0.2, 0.4, 0.8, 1.6, 3.2, 6.4, 12.8, 25.6];
 
