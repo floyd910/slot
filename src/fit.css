@@ -128,33 +128,17 @@ body {
   background: transparent !important;
 }
 
-.game-shell {
-  position: relative !important;
-  grid-template-columns: 19% 54% 23% !important;
-  gap: 2% !important;
-  height: 100% !important;
-  padding: 18px 0 8px 0 !important;
-  align-items: start !important;
-}
-
-.center-stage {
-  align-self: start !important;
-  justify-self: center !important;
-  margin-top: -15px !important;
-  transform: none !important;
-}
 
 .main-container__left {
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: flex-start !important;
-  align-items: flex-end !important;
-  width: 100% !important;
-  text-align: right !important;
-  height: calc(100vh - 12.5rem) !important;
-  overflow: hidden !important;
-  overflow-x: hidden !important;
-  transform: none !important;
+     display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-end;
+    width: 19%;
+    text-align: right;
+    height: calc(100vh - 12.5rem);
+    overflow-y: scroll;
+    visibility: visible;
 }
 
 .combination-group::-webkit-scrollbar {
@@ -171,27 +155,20 @@ body {
 }
 
 .combination-main-header {
-  box-sizing: border-box !important;
-  position: relative !important;
-  display: flex !important;
-  flex-direction: row !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-  width: 100% !important;
   min-height: 2.6666666667rem !important;
-  align-self: stretch !important;
 }
 
 .main-header__text {
-  width: 10rem !important;
-  font-weight: 500 !important;
-  font-size: 0.9166666667rem !important;
-  line-height: 100% !important;
-  text-shadow: 0 0.0833333333rem 0.0416666667rem rgba(0, 0, 0, 0.6) !important;
-  color: #fff !important;
-  text-align: left !important;
-  padding-left: 2% !important;
-  margin-left: 15px !important;
+      width: 10rem;
+    font-weight: 500;
+    font-size: .9166666667rem;
+    line-height: 100%;
+    text-shadow: 0 .0833333333rem .0416666667rem rgba(0, 0, 0, .6);
+    color: #fff;
+    text-align: left;
+    padding-left: 2%;
+    margin-left: 22px;
+    margin-top: 0.7rem;
 }
 
 .combination-group {
@@ -323,10 +300,44 @@ body {
   display: inline-flex !important;
 }
 
+.expanded-board > .top-bar,
+.expanded-board .main-header,
 .expanded-board .main-container__left,
+.expanded-board .main-container__right,
+.expanded-board .winnings-table,
 .expanded-board .win-table {
+  display: none !important;
   visibility: hidden !important;
   pointer-events: none !important;
+}
+
+.expanded-board .top_bar {
+  min-height: 4.25rem !important;
+  justify-content: flex-end !important;
+}
+
+.expanded-board .main-header__image {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: none !important;
+}
+
+.expanded-board .frame-content {
+  justify-content: center !important;
+  align-items: flex-start !important;
+}
+
+.expanded-board .main-container__center {
+  width: 100% !important;
+  flex: 1 1 auto !important;
+}
+
+.view-2 .scoreboard-wrapper.--eldorado-view {
+  margin-top: 0 !important;
+}
+
+.view-2 .eldorado-scoreboard > .eldorado-cell {
+  width: 19% !important;
 }
 
 @media (max-width: 920px) {
@@ -364,21 +375,11 @@ body {
     align-items: center !important;
     gap: 6px !important;
     padding-top: 8px !important;
+    margin-top: .5rem;
   }
 
-  .game-shell {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 10px !important;
-    width: 100% !important;
-    padding: 0 0 0 10px !important;
-  }
 
-  .main-container__left,
-  .win-table {
-    display: none !important;
-  }
+  
 
   .expanded-board .lottery-machine,
   .expanded-board .result-panel,

@@ -1,46 +1,35 @@
-.action-panel.menu-top {
-  box-sizing: border-box !important;
-  display: flex !important;
-  position: absolute !important;
-  top: 25px !important;
-  right: 20px !important;
-  z-index: 18 !important;
-  flex-direction: row !important;
-  align-items: center !important;
-  justify-content: flex-end !important;
-  gap: 1.25rem !important;
-  min-width: 0 !important;
-  min-height: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  overflow: visible !important;
-  pointer-events: auto !important;
+.action-panel{
+    min-height: 2.0833333333rem;
+    width: 100%;
+    background: transparent;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-start;
+    gap: .8333333333rem;
+    padding-right: .2083333333rem;
 }
 
 .menu-top__control {
-  box-sizing: border-box !important;
   position: relative !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: auto !important;
-  min-width: 0 !important;
-  height: 2.5rem !important;
-  min-height: 0 !important;
-  padding: 0 !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  color: #fff !important;
-  cursor: pointer !important;
-  line-height: 0 !important;
-  opacity: 1 !important;
-  outline: 0 !important;
-  transition: opacity 0.12s linear !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: auto !important;
+    min-width: 0 !important;
+    height: 2.5rem !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #fff !important;
+    cursor: pointer !important;
+    line-height: 0 !important;
+    opacity: 1 !important;
+    outline: 0 !important;
+    transition: opacity 0.12s linear !important;
 }
 
 .menu-top__control:hover,

@@ -10,14 +10,6 @@
   padding: 0 28px !important;
 }
 
-.brand-glyph,
-.hotline,
-.language-flag,
-.language-code,
-.login-button {
-  display: none !important;
-}
-
 .brand-lockup strong {
   font-size: 1.35rem !important;
 }

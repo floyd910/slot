@@ -87,9 +87,11 @@ const actions = [
 ];
 
 export default function ActionPanel({ onAction, disabled, soundEnabled = true, expanded = false, visualMode = false }) {
+  const visibleActions = visualMode ? actions.filter((item) => item.id !== "fullscreen") : actions;
+
   return (
     <aside className="action-panel menu-top">
-      {actions.map((item) => {
+      {visibleActions.map((item) => {
         const className = `action-button menu-top__control${item.id === "sound" && !soundEnabled ? " muted" : ""}${item.id === "fullscreen" && expanded ? " active" : ""}`;
         return (
           <button

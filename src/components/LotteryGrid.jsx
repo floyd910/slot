@@ -40,43 +40,43 @@ export default function LotteryGrid({ grid, revealKey = 0, animationState = "idl
 
   if (!visualMode) {
     return (
-    <section className="lottery-machine scoreboard-wrapper">
-      <div className={`digital-scoreboard${isRevealing ? " --opening" : ""}`}>
-        <div className="digital-scoreboard__top">
-          {topCells.map((cell, index) => (
-            <GoldCell
-              key={`${cell.coord}-${revealKey}`}
-              digit={cell.value}
-              idxNumber={index}
-              idxString={idxString(index)}
-              highlighted={marked.has(cell.coord)}
-              dimmed={isSettled && hasMarkedCells && !marked.has(cell.coord)}
-              eraser={isRevealing}
-            />
-          ))}
-        </div>
-        <div className="digital-scoreboard__bottom">
-          {dRow.map((value, index) => (
-            <GoldCell
-              key={`D${index}-${hasDoublingMarks ? doublingState.revealKey : revealKey}-${value}`}
-              digit={value}
-              idxNumber={index}
-              idxString={index === 0 ? "D" : ""}
-              size="small"
-              highlighted={hasDoublingMarks ? value === "x2" && index === doublingState.step - 1 : value === "SCATTER"}
-              dimmed={hasDoublingMarks ? index > doublingState.step : isSettled && value !== "SCATTER" && scatterCells.length > 0}
-              eraser={hasDoublingMarks ? doublingState.changedIndex === index && Boolean(value) : isRevealing}
-              loading={hasDoublingMarks && doublingState.loading && index === doublingState.step}
-            />
-          ))}
+      <div className="scoreboard-wrapper">
+        <div className={`digital-scoreboard${isRevealing ? " --closing" : ""}`}>
+          <div className="digital-scoreboard__top">
+            {topCells.map((cell, index) => (
+              <GoldCell
+                key={`${cell.coord}-${revealKey}`}
+                digit={cell.value}
+                idxNumber={index}
+                idxString={idxString(index)}
+                highlighted={marked.has(cell.coord)}
+                dimmed={isSettled && hasMarkedCells && !marked.has(cell.coord)}
+                eraser={isRevealing}
+              />
+            ))}
+          </div>
+          <div className="digital-scoreboard__bottom">
+            {dRow.map((value, index) => (
+              <GoldCell
+                key={`D${index}-${hasDoublingMarks ? doublingState.revealKey : revealKey}-${value}`}
+                digit={value}
+                idxNumber={index}
+                idxString={index === 0 ? "D" : ""}
+                size="small"
+                highlighted={hasDoublingMarks ? value === "x2" && index === doublingState.step - 1 : value === "SCATTER"}
+                dimmed={hasDoublingMarks ? index > doublingState.step : isSettled && value !== "SCATTER" && scatterCells.length > 0}
+                eraser={hasDoublingMarks ? doublingState.changedIndex === index && Boolean(value) : isRevealing}
+                loading={hasDoublingMarks && doublingState.loading && index === doublingState.step}
+              />
+            ))}
+          </div>
         </div>
       </div>
-    </section>
     );
   }
 
   return (
-    <section className="lottery-machine scoreboard-wrapper --eldorado-view">
+    <div className="scoreboard-wrapper --eldorado-view">
       <div className="eldorado-scoreboard">
         {topCells.map((cell, index) => (
           <EldoradoCell
@@ -85,11 +85,12 @@ export default function LotteryGrid({ grid, revealKey = 0, animationState = "idl
             idxNumber={index}
             animated={isSettled && marked.has(cell.coord)}
             dimmed={isSettled && hasMarkedCells && !marked.has(cell.coord)}
+            showFire={isSettled && marked.has(cell.coord)}
           />
         ))}
         <CarpetNice animationState={animationState} />
       </div>
-    </section>
+    </div>
   );
 }
 
@@ -105,12 +106,12 @@ function CarpetNice({ animationState }) {
   );
 }
 
-function EldoradoCell({ digit, animated = false, dimmed = false }) {
+function EldoradoCell({ digit, animated = false, dimmed = false, showFire = false }) {
   const symbol = normalizeEldoradoDigit(digit);
   const image = animated ? eldoradoAnim[symbol] : eldoradoStatic[symbol];
 
   return (
-    <div className={`eldorado-cell${animated ? " --glow" : ""}${dimmed ? " --opacity" : ""}`}>
+    <div className={`eldorado-cell${animated ? " --glow" : ""}${dimmed ? " --opacity" : ""}${showFire ? " --fire" : ""}`}>
       <div className="eldorado-cell__container">
         <img alt="image" src={`https://lotogame.lotosport.tj/img/${image}`} className={`eldorado-cell__item --${symbol}`} />
       </div>
@@ -118,7 +119,7 @@ function EldoradoCell({ digit, animated = false, dimmed = false }) {
   );
 }
 
-function GoldCell({ digit, idxNumber, idxString, size = "", highlighted = false, dimmed = false, eraser = false, loading = false }) {
+function GoldCell({ digit, idxNumber, idxString, showFlame = false, size = "", highlighted = false, dimmed = false, eraser = false, loading = false }) {
   const isScatter = digit === "SCATTER";
   const isDoublingMark = typeof digit === "string" && /^x[02]$/i.test(digit);
   const eraserClass = eraser ? eraserPhase(idxNumber, size) : "";
@@ -128,18 +129,27 @@ function GoldCell({ digit, idxNumber, idxString, size = "", highlighted = false,
   return (
     <div className={`gold-cell${size === "small" ? " --small" : ""}${dimmed ? " --opacity" : ""}`}>
       <div className={`gold-cell__wrapper${highlighted ? " --glow" : ""}${dimmed ? " --opacity" : ""}`}>
+        <div className="gold-cell__container" />
         <div className={`gold-cell__img${showClass}${eraserClass ? ` ${eraserClass}` : ""}${isScatter ? " --stepFire" : ""}`}>
-          {loading ? (
-            <div className="gold-cell__loader" />
-          ) : isScatter ? (
-            <div className="flame" />
-          ) : (
+          {!loading && !isScatter && (
             <div className={`gold-cell__item${isDoublingMark ? " --doubling" : ""}`}>{displayDigit}</div>
           )}
         </div>
       </div>
       {idxNumber < 5 && <div className="gold-cell__idx-number">{idxNumber + 1}</div>}
       {idxString && <div className="gold-cell__idx-string">{idxString}</div>}
+      {showFlame && <div className="flame" />}
+      {loading && <SpinnerLoad />}
+    </div>
+  );
+}
+
+function SpinnerLoad() {
+  return (
+    <div className="spinner-load">
+      {Array.from({ length: 12 }, (_, index) => (
+        <div key={index} />
+      ))}
     </div>
   );
 }

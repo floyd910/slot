@@ -1,7 +1,5 @@
 import { symbolMap } from "../data/mockData.js";
 
-import "./SymbolIcon.css";
-
 export default function SymbolIcon({ value, large = false }) {
   const symbol = symbolMap[value] ?? { label: String(value), role: "regular", color: "#ffffff" };
   const className = `symbol-icon symbol-${symbol.role}${large ? " symbol-large" : ""}`;

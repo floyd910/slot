@@ -1,0 +1,181 @@
+.main-container__right {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 23% !important;
+  height: 100% !important;
+  min-width: 17.25rem !important;
+  padding-top: 1.15rem !important;
+  padding-bottom: 2.85rem !important;
+}
+
+.winnings-table {
+  box-sizing: border-box !important;
+  position: relative !important;
+  width: min(100%, 18rem) !important;
+  min-height: 5.875rem !important;
+  padding: 0.1958333333rem 0.1958333333rem 0.235rem !important;
+  border-radius: 0.47rem !important;
+  box-shadow:
+    0 0.1566666667rem 0.1958333333rem 0.0783333333rem rgba(0, 0, 0, 0.5),
+    inset -0.1175rem -0.1175rem 0.0391666667rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.winnings-table::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 2 !important;
+  border-radius: 0.47rem !important;
+  box-shadow: inset 0.2741666667rem 0.2741666667rem 0.1958333333rem rgba(0, 0, 0, 0.8) !important;
+  pointer-events: none !important;
+}
+
+.winnings-table::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 3 !important;
+  border: 0.235rem solid transparent !important;
+  border-radius: 0.47rem !important;
+  background: url("/img/eldorado-winnings-table-bg.webp") border-box !important;
+  background-size: cover !important;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) padding-box,
+    linear-gradient(#fff 0 0) !important;
+  -webkit-mask-composite: destination-out !important;
+  mask-composite: exclude !important;
+  pointer-events: none !important;
+}
+
+.winnings-table__title {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 1.4883333333rem !important;
+  margin: 0 !important;
+  background-image: url("/img/eldorado-winnings-title-bg.webp") !important;
+  background-position: 50% !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  color: #000 !important;
+  font-family: "Alegreya Sans", serif !important;
+  font-size: 0.8616666667rem !important;
+  font-style: normal !important;
+  font-weight: 700 !important;
+  line-height: 1.0183333333rem !important;
+  text-align: center !important;
+  text-transform: uppercase !important;
+}
+
+.winnings-table__container {
+  position: relative !important;
+  z-index: 1 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  border-collapse: collapse !important;
+  table-layout: fixed !important;
+  color: #000 !important;
+  font-family: Ubuntu, sans-serif !important;
+  font-size: 0.705rem !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 0.8225rem !important;
+}
+
+.winnings-table__container th,
+.winnings-table__container td {
+  box-sizing: border-box !important;
+  height: 0.9375rem !important;
+  padding: 0.03rem 0.08rem !important;
+  border: 0.0391666667rem solid #000 !important;
+  color: #000 !important;
+  font-family: Ubuntu, sans-serif !important;
+  font-size: 0.705rem !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 0.8225rem !important;
+  text-align: center !important;
+  text-shadow: none !important;
+  vertical-align: middle !important;
+  white-space: nowrap !important;
+}
+
+.winnings-table__container th:first-child,
+.winnings-table__container td:first-child {
+  width: 1.58rem !important;
+  background-color: #ffde26 !important;
+}
+
+.winnings-table__container thead th {
+  background-color: #ffde26 !important;
+}
+
+.winnings-table__container tbody tr:nth-child(odd) {
+  background-color: #ebe7df !important;
+}
+
+.winnings-table__container tbody tr:nth-child(even) {
+  background-color: #fff !important;
+}
+
+.simple-info {
+  box-sizing: border-box !important;
+  position: relative !important;
+  display: flex !important;
+  width: min(100%, 18rem) !important;
+  min-height: 5.75rem !important;
+  padding: 1.0416666667rem 0.8333333333rem 0.8333333333rem !important;
+  border-radius: 0.4166666667rem !important;
+  background: rgba(0, 0, 0, 0.78) !important;
+  box-shadow: 0 0.1666666667rem 0.3333333333rem rgba(0, 0, 0, 0.45) !important;
+  color: #fff !important;
+}
+
+.simple-info__icon {
+  display: none !important;
+}
+
+.simple-info__container {
+  width: 100% !important;
+  font-family: Ubuntu, sans-serif !important;
+}
+
+.simple-info__loto {
+  display: none !important;
+}
+
+.simple-info__draw {
+  display: block !important;
+  margin-bottom: 0.75rem !important;
+  padding-bottom: 0.6666666667rem !important;
+  border-bottom: 0.0416666667rem solid rgba(255, 255, 255, 0.12) !important;
+  color: #fff !important;
+  font-family: "Alegreya Sans", serif !important;
+  font-size: 0.8333333333rem !important;
+  font-weight: 700 !important;
+  line-height: 1rem !important;
+}
+
+.simple-info__wrapper {
+  display: flex !important;
+  align-items: center !important;
+  min-height: 1rem !important;
+}
+
+.simple-info__text {
+  color: #fff !important;
+  font-family: Ubuntu, sans-serif !important;
+  font-size: 0.5833333333rem !important;
+  font-weight: 400 !important;
+  line-height: 1rem !important;
+}
+
+@media (max-width: 920px) {
+  .main-container__right {
+    display: none !important;
+  }
+}

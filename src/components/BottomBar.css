@@ -44,6 +44,12 @@
   pointer-events: none !important;
 }
 
+.control-panel.--doubling {
+  gap: 0.5833333333rem !important;
+  padding-left: 3.3333333333rem !important;
+  padding-right: 3.3333333333rem !important;
+}
+
 .combination-control,
 .nominal-control {
   box-sizing: border-box !important;
@@ -221,6 +227,10 @@
   text-align: right !important;
 }
 
+.display-field__value.--center {
+  text-align: center !important;
+}
+
 .auto-game {
   box-sizing: border-box !important;
   position: relative !important;
@@ -286,53 +296,98 @@
   font-weight: 700 !important;
 }
 
-.simple-button.--buyIn {
+.split-button,
+.apply-doubling {
+  box-sizing: border-box !important;
   position: relative !important;
   display: flex !important;
   flex-direction: row !important;
   justify-content: center !important;
-  align-items: end !important;
+  align-items: center !important;
   cursor: pointer !important;
   z-index: 10 !important;
-  min-width: 4rem !important;
-  height: 2.8333333333rem !important;
-  padding: 0.0833333333rem !important;
-  background: none !important;
-  background-image: url("https://lotogame.lotosport.tj/img/bonus-coin.b5495d93.webp") !important;
-  background-repeat: no-repeat !important;
-  background-position: 50% !important;
-  background-size: contain !important;
-  border: none !important;
-  border-radius: 0 !important;
+  min-width: 3rem !important;
+  height: 3rem !important;
+  background-blend-mode: overlay !important;
+  background: radial-gradient(
+    118.69% 481.36% at 54.58% 52.92%,
+    rgba(255, 255, 255, 0.1) 0,
+    rgba(255, 255, 255, 0.1) 15.73%,
+    rgba(255, 255, 255, 0) 16.36%,
+    rgba(255, 255, 255, 0.1) 63.9%,
+    rgba(255, 255, 255, 0) 63.91%,
+    rgba(255, 255, 255, 0.1) 100%
+  ) !important;
+  border: 0.1666666667rem solid #000 !important;
+  border-radius: 0.5rem !important;
   color: #000 !important;
   text-transform: uppercase !important;
   user-select: none !important;
 }
 
-.simple-button.--disabled {
+.split-button::before,
+.apply-doubling::before {
+  content: "" !important;
+  position: absolute !important;
+  inset: 0 !important;
+  box-shadow:
+    inset -0.0416666667rem -0.1666666667rem 0.0416666667rem rgba(255, 255, 255, 0.25),
+    inset 0.0833333333rem 0.1666666667rem 0.0416666667rem rgba(255, 255, 255, 0.25) !important;
+  background: radial-gradient(174.96% 90% at 31.25% 15%, #fff9d2 0, #fadf49 38%, #c07919 87%) !important;
+  border-radius: 0.2916666667rem !important;
+}
+
+.split-button.--disabled,
+.apply-doubling.--disabled {
   mix-blend-mode: luminosity !important;
   pointer-events: none !important;
   opacity: 0.5 !important;
 }
 
-.simple-button__content {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  font-family: Ubuntu, serif !important;
+.split-button__content,
+.apply-doubling__text {
+  font-family: Ubuntu, "Alegreya Sans", serif !important;
   font-style: normal !important;
-  font-weight: 500 !important;
-  font-size: 1rem !important;
-  line-height: 1rem !important;
-  z-index: 2 !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  z-index: 5 !important;
 }
 
-.simple-button__content.--buyIn {
-  font-size: 0.3541666667rem !important;
-  line-height: 0.5rem !important;
-  color: gold !important;
-  margin-bottom: 0.125rem !important;
-  width: 80% !important;
+.split-button__content {
+  font-size: 1rem !important;
+  line-height: 1rem !important;
+}
+
+.apply-doubling__text {
+  font-size: 1.3333333333rem !important;
+  line-height: 1.3333333333rem !important;
+}
+
+.split-button__brush {
+  position: relative !important;
+  width: 1.2916666667rem !important;
+  height: 1.0833333333rem !important;
+  z-index: 5 !important;
+  color: #000 !important;
+}
+
+.apply-doubling.--blink::after {
+  content: "" !important;
+  position: absolute !important;
+  inset: -0.25rem !important;
+  border-radius: 0.6666666667rem !important;
+  box-shadow: 0 0 0.5rem #ffde26 !important;
+  animation: footerButtonBlink 0.95s infinite alternate !important;
+  pointer-events: none !important;
+}
+
+@keyframes footerButtonBlink {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .basic-button {

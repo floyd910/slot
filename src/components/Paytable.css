@@ -1,140 +1,249 @@
-.win-table {
-  margin-top: clamp(-63px, -5.8vh, -24px) !important;
-  margin-right: 35px !important;
-  justify-self: end !important;
-  width: 388px !important;
-  max-width: 100% !important;
+.info-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  background-color: rgba(0, 0, 0, 0.8) !important;
+  z-index: 100 !important;
+}
+
+.info-modal__container {
+  position: absolute !important;
+  box-sizing: border-box !important;
+  right: 50% !important;
+  top: 50% !important;
+  transform: translate(50%, -50%) !important;
+  max-height: 33.3333333333rem !important;
+  max-width: 54.1666666667rem !important;
+  width: 90% !important;
+  height: 90% !important;
+  background-image: url("/img/info-modal-bg.4db5972c.jpg") !important;
+  background-size: cover !important;
+  box-shadow: 0 0.4166666667rem 0.4166666667rem rgba(0, 0, 0, 0.5) !important;
+  border-radius: 0.5rem !important;
+  padding: 3.75rem 1rem 2.6666666667rem !important;
+  z-index: 101 !important;
+}
+
+.info-modal__close {
+  position: absolute !important;
+  top: 1.0416666667rem !important;
+  right: 1rem !important;
+  height: 0.5833333333rem !important;
+  width: 0.5833333333rem !important;
+  padding: 0 !important;
   border: 0 !important;
   border-radius: 0 !important;
-  background: transparent !important;
+  background-color: transparent !important;
+  background-image: url("/img/close-icon-info.b4b687d1.svg") !important;
+  background-position: 50% !important;
+  background-repeat: no-repeat !important;
+  background-size: contain !important;
   box-shadow: none !important;
+  cursor: pointer !important;
 }
 
-.winnings-table {
+.modal-payments {
   box-sizing: border-box !important;
-  position: relative !important;
-  min-width: 282px !important;
-  max-width: 388px !important;
+  white-space: pre-line !important;
   width: 100% !important;
-  min-height: 94px !important;
-  box-shadow:
-    0 3.76px 4.7px 1.88px rgba(0, 0, 0, 0.5),
-    inset -2.82px -2.82px 0.94px rgba(0, 0, 0, 0.15) !important;
-  border-radius: 11.28px !important;
-  padding: 4.7px 4.7px 5.64px !important;
+  height: 100% !important;
+  overflow: auto !important;
+  padding: 0 1rem !important;
 }
 
-.winnings-table::before {
-  position: absolute !important;
-  content: "" !important;
-  inset: 0 !important;
-  box-shadow: inset 6.58px 6.58px 4.7px rgba(0, 0, 0, 0.8) !important;
-  border-radius: 11.28px !important;
-  pointer-events: none !important;
-  z-index: 2 !important;
+.modal-payments::-webkit-scrollbar {
+  width: 0.4166666667rem !important;
 }
 
-.winnings-table::after {
-  content: "" !important;
-  position: absolute !important;
-  inset: 0 !important;
-  border-radius: 11.28px !important;
-  border: 5.64px solid transparent !important;
-  background: url("/img/eldorado-winnings-table-bg.webp") border-box !important;
-  background-size: cover !important;
-  -webkit-mask:
-    linear-gradient(#fff 0 0) padding-box,
-    linear-gradient(#fff 0 0) !important;
-  -webkit-mask-composite: destination-out !important;
-  mask-composite: exclude !important;
-  pointer-events: none !important;
-  z-index: 3 !important;
+.modal-payments::-webkit-scrollbar-thumb {
+  background-color: #bf9d4c !important;
+  border-radius: 0.4166666667rem !important;
 }
 
-.winnings-table__title {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  margin: 0 !important;
-  width: 100% !important;
-  height: 35.72px !important;
-  font-family: "Alegreya Sans", serif !important;
+.modal-payments__title {
+  font-family: Ubuntu, sans-serif !important;
   font-style: normal !important;
   font-weight: 700 !important;
-  font-size: 20.68px !important;
-  line-height: 24.44px !important;
-  text-align: center !important;
-  text-transform: uppercase !important;
+  font-size: 1rem !important;
+  line-height: 146% !important;
   color: #000 !important;
-  background-image: url("/img/eldorado-winnings-title-bg.webp") !important;
-  background-repeat: no-repeat !important;
-  background-size: cover !important;
-  background-position: 50% !important;
+  margin: 0 0 0.5rem !important;
 }
 
-.winnings-table__container {
+.mevaho-payments {
   width: 100% !important;
-  min-width: 0 !important;
-  border-collapse: collapse !important;
-  table-layout: auto !important;
+  border-spacing: 0 !important;
+}
+
+.mevaho-payments tr:first-child th:last-child {
+  border-top-right-radius: 0.3333333333rem !important;
+}
+
+.mevaho-payments tr:first-child th:first-child {
+  border-top-left-radius: 0.3333333333rem !important;
+}
+
+.mevaho-payments__designations {
+  overflow-wrap: anywhere !important;
+}
+
+.mevaho-payments__img {
+  height: 1.25rem !important;
+  width: 1.25rem !important;
+}
+
+.mevaho-payments th {
+  border: 0.0416666667rem solid #000 !important;
+  background-color: #8c0009 !important;
+  font-weight: 400 !important;
+  color: #fff !important;
+  font-family: Ubuntu, sans-serif !important;
+  font-style: normal !important;
+  font-size: 0.75rem !important;
+  line-height: 0.875rem !important;
+  padding: 0.25rem !important;
+}
+
+.--gambusaki .mevaho-payments th {
+  background-color: #2a414c !important;
+}
+
+.mevaho-payments td {
+  border: 0.0416666667rem solid #000 !important;
   font-family: Ubuntu, sans-serif !important;
   font-style: normal !important;
   font-weight: 400 !important;
-  font-size: 16.92px !important;
-  line-height: 19.74px !important;
-  color: #000 !important;
-  z-index: -2 !important;
-}
-
-.winnings-table__container thead,
-.winnings-table__container tbody,
-.winnings-table__container tr {
-  box-sizing: border-box !important;
-}
-
-.winnings-table__container th,
-.winnings-table__container td {
-  position: static !important;
-  padding: 2px 2px !important;
-  border: 0.94px solid #000 !important;
-  color: #000 !important;
-  font-family: Ubuntu, sans-serif !important;
-  font-style: normal !important;
-  font-weight: 400 !important;
-  font-size: 16.92px !important;
-  line-height: 19.74px !important;
+  font-size: 0.75rem !important;
+  line-height: 0.875rem !important;
+  padding: 0.25rem !important;
   text-align: center !important;
   vertical-align: middle !important;
-  text-shadow: none !important;
 }
 
-.winnings-table__container thead th {
-  font-weight: 400 !important;
-  background-color: #ffde26 !important;
+.--gambusaki .mevaho-payments td {
+  color: #000 !important;
 }
 
-.winnings-table__container thead th:first-child,
-.winnings-table__container tbody td:first-child {
-  background-color: #ffde26 !important;
+.mevaho-payments tbody tr:nth-child(2n) {
+  background-color: transparent !important;
 }
 
-.winnings-table__container tbody tr:nth-child(odd) {
+.mevaho-payments tbody tr:nth-child(odd) {
   background-color: #ebe7df !important;
 }
 
-.winnings-table__container tbody tr:nth-child(even) {
-  background-color: #fff !important;
+.mevaho-payments__combination {
+  margin: 0 !important;
+  font-family: Ubuntu, sans-serif !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
 }
 
-.draw-info {
-  margin-top: clamp(24px, 7vh, 76px) !important;
-  min-height: 92px !important;
-  padding: 22px 18px !important;
-  border-radius: 8px !important;
-  font-size: 0.78rem !important;
+.modal-payments__mobile {
+  display: none !important;
 }
 
-.draw-info strong {
-  margin-bottom: 10px !important;
-  font-size: 0.92rem !important;
+.mobile-payments {
+  display: none !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: center !important;
+  gap: 0.4166666667rem !important;
+}
+
+.mobile-payments table {
+  color: #000 !important;
+  z-index: -2 !important;
+  border-spacing: 0 !important;
+  width: 100% !important;
+}
+
+.mobile-payments tr:last-child td:first-child {
+  border-bottom-left-radius: 0.3333333333rem !important;
+}
+
+.mobile-payments tr:last-child td:last-child {
+  border-bottom-right-radius: 0.3333333333rem !important;
+}
+
+.mobile-payments tr:first-child th:last-child {
+  border-top-right-radius: 0.3333333333rem !important;
+}
+
+.mobile-payments tr:first-child th:first-child {
+  border-top-left-radius: 0.3333333333rem !important;
+}
+
+.mobile-payments th {
+  border: 0.0416666667rem solid #000 !important;
+  background-color: #8c0009 !important;
+  font-weight: 400 !important;
+  color: #fff !important;
+  font-family: Ubuntu, sans-serif !important;
+  font-style: normal !important;
+  padding: 0.25rem !important;
+  font-size: 0.5833333333rem !important;
+  line-height: 0.6666666667rem !important;
+}
+
+.--gambusaki .mobile-payments th {
+  background-color: #2a414c !important;
+}
+
+.mobile-payments td {
+  border: 0.0416666667rem solid #000 !important;
+  font-family: Ubuntu, sans-serif !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  padding: 0.25rem !important;
+  font-size: 0.5833333333rem !important;
+  line-height: 0.6666666667rem !important;
+  background-color: #ebe7df !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+
+.info-modal .state-panel {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  font-family: Ubuntu, "Alegreya Sans", sans-serif !important;
+  font-size: 0.75rem !important;
+  color: #000 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+@media (max-width: 920px) {
+  .info-modal__container {
+    padding: 1.5rem 0.5rem 1rem !important;
+  }
+
+  .info-modal__close {
+    top: 0.5rem !important;
+    right: 0.5rem !important;
+  }
+
+  .modal-payments {
+    padding: 0 0.1666666667rem 0 0 !important;
+  }
+
+  .modal-payments__title {
+    font-size: 0.75rem !important;
+  }
+
+  .modal-payments__desktop {
+    display: none !important;
+  }
+
+  .modal-payments__mobile {
+    display: flex !important;
+  }
+
+  .mobile-payments {
+    display: flex !important;
+  }
 }
