@@ -1,0 +1,4962 @@
+﻿[
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_001_1282x1026_at_1_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_001_1282x1026_at_1_1.png",
+        "width":  1282,
+        "height":  1026,
+        "bytes":  1762880
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_002_201x653_at_1289_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_002_201x653_at_1289_1.png",
+        "width":  201,
+        "height":  653,
+        "bytes":  245984
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_003_398x172_at_1492_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_003_398x172_at_1492_1.png",
+        "width":  398,
+        "height":  172,
+        "bytes":  86981
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_004_394x155_at_1492_177.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_004_394x155_at_1492_177.png",
+        "width":  394,
+        "height":  155,
+        "bytes":  18932
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_005_202x202_at_1492_334.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_005_202x202_at_1492_334.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  40786
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_006_202x202_at_1696_334.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_006_202x202_at_1696_334.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  41953
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_007_202x202_at_1492_538.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_007_202x202_at_1492_538.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  48676
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_008_202x202_at_1696_538.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_008_202x202_at_1696_538.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  72185
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_009_202x202_at_1285_656.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_009_202x202_at_1285_656.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  40033
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_010_202x202_at_1489_742.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_010_202x202_at_1489_742.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  72255
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_011_202x202_at_1693_742.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_011_202x202_at_1693_742.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  72579
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_012_202x202_at_1285_860.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_012_202x202_at_1285_860.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  37778
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_013_202x202_at_1560_946.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_013_202x202_at_1560_946.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  72672
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_014_202x202_at_1764_946.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_014_202x202_at_1764_946.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73148
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_015_1282x196_at_1_1029.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_015_1282x196_at_1_1029.png",
+        "width":  1282,
+        "height":  196,
+        "bytes":  279552
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_016_202x202_at_1356_1064.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_016_202x202_at_1356_1064.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  72468
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_017_202x202_at_1560_1150.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_017_202x202_at_1560_1150.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  72852
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_018_202x202_at_1764_1150.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_018_202x202_at_1764_1150.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73691
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_019_202x202_at_1152_1227.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_019_202x202_at_1152_1227.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  72225
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_020_1145x666_at_3_1229.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_020_1145x666_at_3_1229.png",
+        "width":  1145,
+        "height":  666,
+        "bytes":  1862866
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_021_202x202_at_1356_1268.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_021_202x202_at_1356_1268.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  72753
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_022_202x202_at_1560_1354.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_022_202x202_at_1560_1354.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73605
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_023_202x202_at_1764_1354.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_023_202x202_at_1764_1354.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73404
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_024_202x202_at_1152_1431.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_024_202x202_at_1152_1431.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  72403
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_025_202x202_at_1356_1472.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_025_202x202_at_1356_1472.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  72820
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_026_202x202_at_1560_1558.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_026_202x202_at_1560_1558.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73604
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_027_202x202_at_1764_1558.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_027_202x202_at_1764_1558.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73676
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_028_202x202_at_1152_1635.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_028_202x202_at_1152_1635.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  72641
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_029_202x202_at_1356_1676.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_029_202x202_at_1356_1676.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73427
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_030_202x202_at_1560_1762.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_030_202x202_at_1560_1762.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73563
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_031_202x202_at_1764_1762.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_031_202x202_at_1764_1762.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73610
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_032_202x202_at_1152_1839.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_032_202x202_at_1152_1839.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  72770
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_033_394x54_at_1_1899.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_0",
+        "file":  "sprite_033_394x54_at_1_1899.png",
+        "width":  394,
+        "height":  54,
+        "bytes":  13476
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_001_960x318_at_1_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_001_960x318_at_1_1.png",
+        "width":  960,
+        "height":  318,
+        "bytes":  228397
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_002_202x202_at_963_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_002_202x202_at_963_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73715
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_003_202x202_at_1167_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_003_202x202_at_1167_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73745
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_004_202x202_at_1371_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_004_202x202_at_1371_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73652
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_005_202x202_at_1575_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_005_202x202_at_1575_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73728
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_006_202x202_at_1779_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_006_202x202_at_1779_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73742
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_007_202x202_at_963_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_007_202x202_at_963_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  74568
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_008_202x202_at_1167_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_008_202x202_at_1167_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73763
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_009_202x202_at_1371_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_009_202x202_at_1371_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  74083
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_010_202x202_at_1575_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_010_202x202_at_1575_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  74088
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_011_202x202_at_1779_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_011_202x202_at_1779_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  74303
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_012_202x202_at_1_321.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_012_202x202_at_1_321.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73644
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_013_202x202_at_205_321.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_013_202x202_at_205_321.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  74494
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_014_202x202_at_409_321.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_014_202x202_at_409_321.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  75034
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_015_202x202_at_613_321.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_015_202x202_at_613_321.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  75009
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_016_202x202_at_817_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_016_202x202_at_817_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73870
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_017_202x202_at_1021_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_017_202x202_at_1021_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73886
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_018_202x202_at_1225_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_018_202x202_at_1225_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73766
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_019_202x202_at_1429_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_019_202x202_at_1429_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73534
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_020_202x202_at_1633_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_020_202x202_at_1633_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  72965
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_021_202x202_at_1837_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_021_202x202_at_1837_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  107172
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_022_202x202_at_1_525.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_022_202x202_at_1_525.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73502
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_023_202x202_at_205_525.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_023_202x202_at_205_525.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  74577
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_024_202x202_at_409_525.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_024_202x202_at_409_525.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  75301
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_025_202x202_at_613_525.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_025_202x202_at_613_525.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73672
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_026_202x202_at_817_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_026_202x202_at_817_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73912
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_027_202x202_at_1021_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_027_202x202_at_1021_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  74039
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_028_202x202_at_1225_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_028_202x202_at_1225_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  72793
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_029_202x202_at_1429_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_029_202x202_at_1429_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  106503
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_030_202x202_at_1633_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_030_202x202_at_1633_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  107794
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_031_202x202_at_1837_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_031_202x202_at_1837_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108793
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_032_202x202_at_1_729.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_032_202x202_at_1_729.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73635
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_033_202x202_at_205_729.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_033_202x202_at_205_729.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  74527
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_034_202x202_at_409_729.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_034_202x202_at_409_729.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  74940
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_035_202x202_at_613_729.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_035_202x202_at_613_729.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73600
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_036_202x202_at_817_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_036_202x202_at_817_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73731
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_037_202x202_at_1021_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_037_202x202_at_1021_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73107
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_038_202x202_at_1225_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_038_202x202_at_1225_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  106592
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_039_202x202_at_1429_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_039_202x202_at_1429_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108257
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_040_202x202_at_1633_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_040_202x202_at_1633_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108592
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_041_202x202_at_1837_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_041_202x202_at_1837_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108169
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_042_202x202_at_1_933.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_042_202x202_at_1_933.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73617
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_043_202x202_at_205_933.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_043_202x202_at_205_933.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  74577
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_044_202x202_at_409_933.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_044_202x202_at_409_933.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  74923
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_045_202x202_at_613_933.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_045_202x202_at_613_933.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73955
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_046_202x202_at_817_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_046_202x202_at_817_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  74144
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_047_202x202_at_1021_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_047_202x202_at_1021_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  72669
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_048_202x202_at_1225_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_048_202x202_at_1225_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  107406
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_049_202x202_at_1429_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_049_202x202_at_1429_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  109087
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_050_202x202_at_1633_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_050_202x202_at_1633_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108415
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_051_202x202_at_1837_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_051_202x202_at_1837_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  104922
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_052_202x202_at_1_1137.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_052_202x202_at_1_1137.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73806
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_053_202x202_at_205_1137.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_053_202x202_at_205_1137.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  74929
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_054_202x202_at_409_1137.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_054_202x202_at_409_1137.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73948
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_055_202x202_at_613_1137.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_055_202x202_at_613_1137.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73951
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_056_202x202_at_817_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_056_202x202_at_817_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73794
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_057_202x202_at_1021_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_057_202x202_at_1021_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  106932
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_058_202x202_at_1225_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_058_202x202_at_1225_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108716
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_059_202x202_at_1429_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_059_202x202_at_1429_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108473
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_060_202x202_at_1633_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_060_202x202_at_1633_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  106199
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_061_202x202_at_1837_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_061_202x202_at_1837_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  103477
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_062_202x202_at_1_1341.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_062_202x202_at_1_1341.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  74523
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_063_202x202_at_205_1341.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_063_202x202_at_205_1341.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  75438
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_064_202x202_at_409_1341.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_064_202x202_at_409_1341.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73532
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_065_202x202_at_613_1341.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_065_202x202_at_613_1341.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73948
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_066_202x202_at_817_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_066_202x202_at_817_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  72448
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_067_202x202_at_1021_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_067_202x202_at_1021_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  107046
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_068_202x202_at_1225_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_068_202x202_at_1225_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108736
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_069_202x202_at_1429_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_069_202x202_at_1429_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  106944
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_070_202x202_at_1633_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_070_202x202_at_1633_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  103931
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_071_202x202_at_1837_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_071_202x202_at_1837_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  103343
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_072_202x202_at_1_1545.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_072_202x202_at_1_1545.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  74559
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_073_202x202_at_205_1545.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_073_202x202_at_205_1545.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  75470
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_074_202x202_at_409_1545.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_074_202x202_at_409_1545.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73664
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_075_202x202_at_613_1545.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_075_202x202_at_613_1545.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  73916
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_076_202x202_at_817_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_076_202x202_at_817_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  106139
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_077_202x202_at_1021_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_077_202x202_at_1021_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108580
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_078_202x202_at_1225_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_078_202x202_at_1225_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108485
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_079_202x202_at_1429_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_079_202x202_at_1429_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  105200
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_080_202x202_at_1633_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_080_202x202_at_1633_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  103689
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_081_202x202_at_1837_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_081_202x202_at_1837_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  102337
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_082_202x202_at_1_1749.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_082_202x202_at_1_1749.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  74527
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_083_202x202_at_205_1749.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_083_202x202_at_205_1749.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  75565
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_084_202x202_at_409_1749.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_084_202x202_at_409_1749.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  74111
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_085_202x202_at_613_1749.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_085_202x202_at_613_1749.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  74530
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_086_202x202_at_817_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_086_202x202_at_817_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  106581
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_087_202x202_at_1021_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_087_202x202_at_1021_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108996
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_088_202x202_at_1225_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_088_202x202_at_1225_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  107772
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_089_202x202_at_1429_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_089_202x202_at_1429_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  104273
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_090_202x202_at_1633_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_090_202x202_at_1633_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  103036
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_1/sprite_091_202x202_at_1837_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_1",
+        "file":  "sprite_091_202x202_at_1837_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  101801
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_001_202x202_at_1_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_001_202x202_at_1_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  101139
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_002_202x202_at_205_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_002_202x202_at_205_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100544
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_003_202x202_at_409_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_003_202x202_at_409_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  101227
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_004_202x202_at_613_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_004_202x202_at_613_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  101755
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_005_202x202_at_817_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_005_202x202_at_817_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  102349
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_006_202x202_at_1021_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_006_202x202_at_1021_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  102878
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_007_202x202_at_1225_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_007_202x202_at_1225_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  103286
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_008_202x202_at_1429_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_008_202x202_at_1429_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  103693
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_009_202x202_at_1633_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_009_202x202_at_1633_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  103615
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_010_202x202_at_1837_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_010_202x202_at_1837_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  104173
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_011_202x202_at_1_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_011_202x202_at_1_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  104545
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_012_202x202_at_205_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_012_202x202_at_205_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108554
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_013_202x202_at_409_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_013_202x202_at_409_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108842
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_014_202x202_at_613_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_014_202x202_at_613_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  107021
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_015_202x202_at_817_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_015_202x202_at_817_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100975
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_016_202x202_at_1021_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_016_202x202_at_1021_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  103264
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_017_202x202_at_1225_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_017_202x202_at_1225_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100269
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_018_202x202_at_1429_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_018_202x202_at_1429_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100002
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_019_202x202_at_1633_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_019_202x202_at_1633_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100524
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_020_202x202_at_1837_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_020_202x202_at_1837_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100537
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_021_202x202_at_1_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_021_202x202_at_1_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  105131
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_022_202x202_at_205_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_022_202x202_at_205_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108739
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_023_202x202_at_409_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_023_202x202_at_409_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  107961
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_024_202x202_at_613_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_024_202x202_at_613_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100794
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_025_202x202_at_817_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_025_202x202_at_817_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100171
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_026_202x202_at_1021_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_026_202x202_at_1021_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  101433
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_027_202x202_at_1225_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_027_202x202_at_1225_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100454
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_028_202x202_at_1429_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_028_202x202_at_1429_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100491
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_029_202x202_at_1633_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_029_202x202_at_1633_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  101281
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_030_202x202_at_1837_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_030_202x202_at_1837_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100470
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_031_202x202_at_1_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_031_202x202_at_1_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  105785
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_032_202x202_at_205_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_032_202x202_at_205_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  109055
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_033_202x202_at_409_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_033_202x202_at_409_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  106925
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_034_202x202_at_613_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_034_202x202_at_613_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100764
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_035_202x202_at_817_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_035_202x202_at_817_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  98837
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_036_202x202_at_1021_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_036_202x202_at_1021_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100423
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_037_202x202_at_1225_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_037_202x202_at_1225_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  101092
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_038_202x202_at_1429_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_038_202x202_at_1429_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  101150
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_039_202x202_at_1633_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_039_202x202_at_1633_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100358
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_040_202x202_at_1837_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_040_202x202_at_1837_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  96928
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_041_202x202_at_1_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_041_202x202_at_1_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  106947
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_042_202x202_at_205_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_042_202x202_at_205_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  109002
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_043_202x202_at_409_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_043_202x202_at_409_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100878
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_044_202x202_at_613_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_044_202x202_at_613_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99560
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_045_202x202_at_817_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_045_202x202_at_817_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100607
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_046_202x202_at_1021_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_046_202x202_at_1021_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100959
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_047_202x202_at_1225_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_047_202x202_at_1225_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100967
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_048_202x202_at_1429_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_048_202x202_at_1429_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100141
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_049_202x202_at_1633_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_049_202x202_at_1633_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  98990
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_050_202x202_at_1837_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_050_202x202_at_1837_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  101924
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_051_202x202_at_1_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_051_202x202_at_1_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  107595
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_052_202x202_at_205_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_052_202x202_at_205_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108873
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_053_202x202_at_409_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_053_202x202_at_409_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100905
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_054_202x202_at_613_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_054_202x202_at_613_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  98880
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_055_202x202_at_817_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_055_202x202_at_817_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100861
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_056_202x202_at_1021_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_056_202x202_at_1021_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100956
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_057_202x202_at_1225_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_057_202x202_at_1225_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100451
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_058_202x202_at_1429_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_058_202x202_at_1429_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  96442
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_059_202x202_at_1633_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_059_202x202_at_1633_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  101522
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_060_202x202_at_1837_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_060_202x202_at_1837_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  101171
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_061_202x202_at_1_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_061_202x202_at_1_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108032
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_062_202x202_at_205_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_062_202x202_at_205_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108447
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_063_202x202_at_409_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_063_202x202_at_409_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  101298
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_064_202x202_at_613_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_064_202x202_at_613_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99500
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_065_202x202_at_817_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_065_202x202_at_817_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100058
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_066_202x202_at_1021_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_066_202x202_at_1021_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100549
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_067_202x202_at_1225_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_067_202x202_at_1225_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  98850
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_068_202x202_at_1429_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_068_202x202_at_1429_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100927
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_069_202x202_at_1633_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_069_202x202_at_1633_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100309
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_070_202x202_at_1837_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_070_202x202_at_1837_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  105294
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_071_202x202_at_1_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_071_202x202_at_1_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108236
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_072_202x202_at_205_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_072_202x202_at_205_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108267
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_073_202x202_at_409_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_073_202x202_at_409_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100340
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_074_202x202_at_613_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_074_202x202_at_613_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99135
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_075_202x202_at_817_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_075_202x202_at_817_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  101038
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_076_202x202_at_1021_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_076_202x202_at_1021_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100039
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_077_202x202_at_1225_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_077_202x202_at_1225_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  98070
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_078_202x202_at_1429_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_078_202x202_at_1429_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100112
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_079_202x202_at_1633_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_079_202x202_at_1633_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  105274
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_080_202x202_at_1837_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_080_202x202_at_1837_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  106975
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_081_202x202_at_1_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_081_202x202_at_1_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108488
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_082_202x202_at_205_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_082_202x202_at_205_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  107316
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_083_202x202_at_409_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_083_202x202_at_409_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  101585
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_084_202x202_at_613_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_084_202x202_at_613_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100590
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_085_202x202_at_817_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_085_202x202_at_817_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  101288
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_086_202x202_at_1021_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_086_202x202_at_1021_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99678
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_087_202x202_at_1225_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_087_202x202_at_1225_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99959
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_088_202x202_at_1429_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_088_202x202_at_1429_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100686
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_089_202x202_at_1633_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_089_202x202_at_1633_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  105627
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_090_202x202_at_1837_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_090_202x202_at_1837_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  105497
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_091_202x202_at_1_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_091_202x202_at_1_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108612
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_092_202x202_at_205_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_092_202x202_at_205_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  107253
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_093_202x202_at_409_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_093_202x202_at_409_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99095
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_094_202x202_at_613_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_094_202x202_at_613_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99792
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_095_202x202_at_817_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_095_202x202_at_817_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100911
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_096_202x202_at_1021_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_096_202x202_at_1021_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  97888
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_097_202x202_at_1225_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_097_202x202_at_1225_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100758
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_098_202x202_at_1429_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_098_202x202_at_1429_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  104882
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_099_202x202_at_1633_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_099_202x202_at_1633_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  105733
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_2/sprite_100_202x202_at_1837_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_2",
+        "file":  "sprite_100_202x202_at_1837_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  106131
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_001_202x202_at_1_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_001_202x202_at_1_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  106752
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_002_202x202_at_205_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_002_202x202_at_205_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  107255
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_003_202x202_at_409_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_003_202x202_at_409_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  107745
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_004_202x202_at_613_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_004_202x202_at_613_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108038
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_005_202x202_at_817_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_005_202x202_at_817_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108805
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_006_202x202_at_1021_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_006_202x202_at_1021_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108923
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_007_202x202_at_1225_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_007_202x202_at_1225_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  109008
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_008_202x202_at_1429_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_008_202x202_at_1429_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  109602
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_009_202x202_at_1633_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_009_202x202_at_1633_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  110197
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_010_202x202_at_1837_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_010_202x202_at_1837_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  110231
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_011_202x202_at_1_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_011_202x202_at_1_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  110688
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_012_202x202_at_205_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_012_202x202_at_205_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  112772
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_013_202x202_at_409_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_013_202x202_at_409_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  113133
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_014_202x202_at_613_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_014_202x202_at_613_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  109812
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_015_202x202_at_817_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_015_202x202_at_817_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  110033
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_016_202x202_at_1021_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_016_202x202_at_1021_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  110058
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_017_202x202_at_1225_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_017_202x202_at_1225_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108509
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_018_202x202_at_1429_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_018_202x202_at_1429_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  106368
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_019_202x202_at_1633_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_019_202x202_at_1633_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  113059
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_020_202x202_at_1837_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_020_202x202_at_1837_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  113771
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_021_202x202_at_1_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_021_202x202_at_1_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  110697
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_022_202x202_at_205_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_022_202x202_at_205_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  112702
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_023_202x202_at_409_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_023_202x202_at_409_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  110095
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_024_202x202_at_613_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_024_202x202_at_613_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  110779
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_025_202x202_at_817_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_025_202x202_at_817_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  109285
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_026_202x202_at_1021_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_026_202x202_at_1021_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  105369
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_027_202x202_at_1225_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_027_202x202_at_1225_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  113177
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_028_202x202_at_1429_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_028_202x202_at_1429_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  114963
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_029_202x202_at_1633_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_029_202x202_at_1633_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  113186
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_030_202x202_at_1837_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_030_202x202_at_1837_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  113153
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_031_202x202_at_1_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_031_202x202_at_1_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  110077
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_032_202x202_at_205_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_032_202x202_at_205_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  112891
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_033_202x202_at_409_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_033_202x202_at_409_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  109553
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_034_202x202_at_613_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_034_202x202_at_613_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  109685
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_035_202x202_at_817_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_035_202x202_at_817_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  106380
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_036_202x202_at_1021_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_036_202x202_at_1021_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  113660
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_037_202x202_at_1225_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_037_202x202_at_1225_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  115452
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_038_202x202_at_1429_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_038_202x202_at_1429_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  113098
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_039_202x202_at_1633_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_039_202x202_at_1633_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  112067
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_040_202x202_at_1837_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_040_202x202_at_1837_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99681
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_041_202x202_at_1_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_041_202x202_at_1_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  110177
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_042_202x202_at_205_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_042_202x202_at_205_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  113477
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_043_202x202_at_409_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_043_202x202_at_409_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  110006
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_044_202x202_at_613_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_044_202x202_at_613_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108069
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_045_202x202_at_817_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_045_202x202_at_817_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  113046
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_046_202x202_at_1021_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_046_202x202_at_1021_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  115081
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_047_202x202_at_1225_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_047_202x202_at_1225_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  112233
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_048_202x202_at_1429_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_048_202x202_at_1429_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  112396
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_049_202x202_at_1633_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_049_202x202_at_1633_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99392
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_050_202x202_at_1837_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_050_202x202_at_1837_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99613
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_051_202x202_at_1_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_051_202x202_at_1_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  109428
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_052_202x202_at_205_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_052_202x202_at_205_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  113491
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_053_202x202_at_409_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_053_202x202_at_409_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  110403
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_054_202x202_at_613_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_054_202x202_at_613_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  107138
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_055_202x202_at_817_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_055_202x202_at_817_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  113775
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_056_202x202_at_1021_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_056_202x202_at_1021_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  114301
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_057_202x202_at_1225_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_057_202x202_at_1225_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  112265
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_058_202x202_at_1429_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_058_202x202_at_1429_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99562
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_059_202x202_at_1633_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_059_202x202_at_1633_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99524
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_060_202x202_at_1837_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_060_202x202_at_1837_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99781
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_061_202x202_at_1_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_061_202x202_at_1_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  110336
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_062_202x202_at_205_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_062_202x202_at_205_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  111410
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_063_202x202_at_409_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_063_202x202_at_409_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  110397
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_064_202x202_at_613_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_064_202x202_at_613_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  112648
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_065_202x202_at_817_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_065_202x202_at_817_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  114479
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_066_202x202_at_1021_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_066_202x202_at_1021_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  113272
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_067_202x202_at_1225_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_067_202x202_at_1225_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  112546
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_068_202x202_at_1429_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_068_202x202_at_1429_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99382
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_069_202x202_at_1633_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_069_202x202_at_1633_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99536
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_070_202x202_at_1837_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_070_202x202_at_1837_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99741
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_071_202x202_at_1_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_071_202x202_at_1_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  110708
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_072_202x202_at_205_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_072_202x202_at_205_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  110955
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_073_202x202_at_409_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_073_202x202_at_409_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  109115
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_074_202x202_at_613_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_074_202x202_at_613_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  112821
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_075_202x202_at_817_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_075_202x202_at_817_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  115836
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_076_202x202_at_1021_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_076_202x202_at_1021_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  112689
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_077_202x202_at_1225_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_077_202x202_at_1225_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99444
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_078_202x202_at_1429_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_078_202x202_at_1429_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99505
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_079_202x202_at_1633_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_079_202x202_at_1633_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99750
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_080_202x202_at_1837_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_080_202x202_at_1837_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99682
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_081_202x202_at_1_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_081_202x202_at_1_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  110942
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_082_202x202_at_205_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_082_202x202_at_205_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  110316
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_083_202x202_at_409_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_083_202x202_at_409_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  108899
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_084_202x202_at_613_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_084_202x202_at_613_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  113345
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_085_202x202_at_817_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_085_202x202_at_817_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  112202
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_086_202x202_at_1021_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_086_202x202_at_1021_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  112375
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_087_202x202_at_1225_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_087_202x202_at_1225_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99394
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_088_202x202_at_1429_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_088_202x202_at_1429_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99610
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_089_202x202_at_1633_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_089_202x202_at_1633_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99544
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_090_202x202_at_1837_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_090_202x202_at_1837_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99443
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_091_202x202_at_1_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_091_202x202_at_1_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  111675
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_092_202x202_at_205_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_092_202x202_at_205_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  110043
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_093_202x202_at_409_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_093_202x202_at_409_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  107679
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_094_202x202_at_613_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_094_202x202_at_613_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  114089
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_095_202x202_at_817_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_095_202x202_at_817_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  112543
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_096_202x202_at_1021_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_096_202x202_at_1021_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99737
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_097_202x202_at_1225_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_097_202x202_at_1225_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99444
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_098_202x202_at_1429_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_098_202x202_at_1429_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99644
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_099_202x202_at_1633_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_099_202x202_at_1633_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99547
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_3/sprite_100_202x202_at_1837_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_3",
+        "file":  "sprite_100_202x202_at_1837_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99377
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_001_202x202_at_1_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_001_202x202_at_1_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99281
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_002_202x202_at_205_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_002_202x202_at_205_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99359
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_003_202x202_at_409_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_003_202x202_at_409_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99380
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_004_202x202_at_613_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_004_202x202_at_613_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99578
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_005_202x202_at_817_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_005_202x202_at_817_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99528
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_006_202x202_at_1021_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_006_202x202_at_1021_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99553
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_007_202x202_at_1225_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_007_202x202_at_1225_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99673
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_008_202x202_at_1429_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_008_202x202_at_1429_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99448
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_009_202x202_at_1633_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_009_202x202_at_1633_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99679
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_010_202x202_at_1837_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_010_202x202_at_1837_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99693
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_011_202x202_at_1_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_011_202x202_at_1_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99739
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_012_202x202_at_205_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_012_202x202_at_205_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99397
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_013_202x202_at_409_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_013_202x202_at_409_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  96870
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_014_202x202_at_613_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_014_202x202_at_613_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  98120
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_015_202x202_at_817_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_015_202x202_at_817_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  98942
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_016_202x202_at_1021_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_016_202x202_at_1021_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99902
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_017_202x202_at_1225_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_017_202x202_at_1225_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100686
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_018_202x202_at_1429_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_018_202x202_at_1429_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  101168
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_019_202x202_at_1633_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_019_202x202_at_1633_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100133
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_020_202x202_at_1837_205.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_020_202x202_at_1837_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  98373
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_021_202x202_at_1_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_021_202x202_at_1_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99413
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_022_202x202_at_205_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_022_202x202_at_205_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99582
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_023_202x202_at_409_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_023_202x202_at_409_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  97757
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_024_202x202_at_613_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_024_202x202_at_613_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99171
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_025_202x202_at_817_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_025_202x202_at_817_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100286
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_026_202x202_at_1021_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_026_202x202_at_1021_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100976
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_027_202x202_at_1225_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_027_202x202_at_1225_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99639
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_028_202x202_at_1429_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_028_202x202_at_1429_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  97942
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_029_202x202_at_1633_409.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_029_202x202_at_1633_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  97312
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_030_202x202_at_1_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_030_202x202_at_1_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99478
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_031_202x202_at_205_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_031_202x202_at_205_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99653
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_032_202x202_at_409_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_032_202x202_at_409_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100328
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_033_202x202_at_613_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_033_202x202_at_613_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100089
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_034_202x202_at_817_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_034_202x202_at_817_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  101651
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_035_202x202_at_1021_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_035_202x202_at_1021_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99064
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_036_202x202_at_1225_613.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_036_202x202_at_1225_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  97467
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_037_202x202_at_1_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_037_202x202_at_1_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99470
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_038_202x202_at_205_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_038_202x202_at_205_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  97293
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_039_202x202_at_409_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_039_202x202_at_409_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  98973
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_040_202x202_at_613_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_040_202x202_at_613_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  101188
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_041_202x202_at_817_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_041_202x202_at_817_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99952
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_042_202x202_at_1021_817.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_042_202x202_at_1021_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  97646
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_043_202x202_at_1_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_043_202x202_at_1_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99467
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_044_202x202_at_205_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_044_202x202_at_205_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  97384
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_045_202x202_at_409_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_045_202x202_at_409_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99178
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_046_202x202_at_613_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_046_202x202_at_613_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  101938
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_047_202x202_at_817_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_047_202x202_at_817_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  98896
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_048_202x202_at_1021_1021.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_048_202x202_at_1021_1021.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  97405
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_049_202x202_at_1_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_049_202x202_at_1_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99374
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_050_202x202_at_205_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_050_202x202_at_205_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  97415
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_051_202x202_at_409_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_051_202x202_at_409_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99339
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_052_202x202_at_613_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_052_202x202_at_613_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100394
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_053_202x202_at_817_1225.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_053_202x202_at_817_1225.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  97891
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_054_202x202_at_1_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_054_202x202_at_1_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99350
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_055_202x202_at_205_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_055_202x202_at_205_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  97501
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_056_202x202_at_409_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_056_202x202_at_409_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100325
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_057_202x202_at_613_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_057_202x202_at_613_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100319
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_058_202x202_at_817_1429.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_058_202x202_at_817_1429.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  97484
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_059_202x202_at_1_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_059_202x202_at_1_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99380
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_060_202x202_at_205_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_060_202x202_at_205_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  97784
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_061_202x202_at_409_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_061_202x202_at_409_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  100435
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_062_202x202_at_613_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_062_202x202_at_613_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99144
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_063_202x202_at_817_1633.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_063_202x202_at_817_1633.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  37105
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_064_202x202_at_1_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_064_202x202_at_1_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  99322
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_065_202x202_at_205_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_065_202x202_at_205_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  98689
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_066_202x202_at_409_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_066_202x202_at_409_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  101486
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-игры-1_4/sprite_067_202x202_at_613_1837.png",
+        "sourceFolder":  "игра-Хушкол-элементы-игры-1_4",
+        "file":  "sprite_067_202x202_at_613_1837.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  98227
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-таблица-выигрышей-1_0/sprite_001_1282x1026_at_1_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-таблица-выигрышей-1_0",
+        "file":  "sprite_001_1282x1026_at_1_1.png",
+        "width":  1282,
+        "height":  1026,
+        "bytes":  87492
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-таблица-выигрышей-1_0/sprite_002_1258x1012_at_15_1031.png",
+        "sourceFolder":  "игра-Хушкол-элементы-таблица-выигрышей-1_0",
+        "file":  "sprite_002_1258x1012_at_15_1031.png",
+        "width":  1258,
+        "height":  1012,
+        "bytes":  988023
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-таблица-выигрышей-1_0/sprite_003_179x179_at_1_1045.png",
+        "sourceFolder":  "игра-Хушкол-элементы-таблица-выигрышей-1_0",
+        "file":  "sprite_003_179x179_at_1_1045.png",
+        "width":  179,
+        "height":  179,
+        "bytes":  82319
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-таблица-выигрышей-1_0/sprite_004_178x179_at_1089_1045.png",
+        "sourceFolder":  "игра-Хушкол-элементы-таблица-выигрышей-1_0",
+        "file":  "sprite_004_178x179_at_1089_1045.png",
+        "width":  178,
+        "height":  179,
+        "bytes":  71593
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-таблица-выигрышей-1_0/sprite_005_859x492_at_3_1517.png",
+        "sourceFolder":  "игра-Хушкол-элементы-таблица-выигрышей-1_0",
+        "file":  "sprite_005_859x492_at_3_1517.png",
+        "width":  859,
+        "height":  492,
+        "bytes":  264741
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-таблица-выигрышей-1_0/sprite_006_411x215_at_1_1778.png",
+        "sourceFolder":  "игра-Хушкол-элементы-таблица-выигрышей-1_0",
+        "file":  "sprite_006_411x215_at_1_1778.png",
+        "width":  411,
+        "height":  215,
+        "bytes":  54339
+    },
+    {
+        "path":  "/img/extracted/игра-Хушкол-элементы-таблица-выигрышей-1_1/sprite_001_1282x1026_at_1_1.png",
+        "sourceFolder":  "игра-Хушкол-элементы-таблица-выигрышей-1_1",
+        "file":  "sprite_001_1282x1026_at_1_1.png",
+        "width":  1282,
+        "height":  1026,
+        "bytes":  1762880
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_0/sprite_001_598x34_at_1_1.png",
+        "sourceFolder":  "Линии-и-Кости-1_0",
+        "file":  "sprite_001_598x34_at_1_1.png",
+        "width":  598,
+        "height":  34,
+        "bytes":  1119
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_0/sprite_002_598x34_at_1_37.png",
+        "sourceFolder":  "Линии-и-Кости-1_0",
+        "file":  "sprite_002_598x34_at_1_37.png",
+        "width":  598,
+        "height":  34,
+        "bytes":  1338
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_0/sprite_003_598x34_at_1_73.png",
+        "sourceFolder":  "Линии-и-Кости-1_0",
+        "file":  "sprite_003_598x34_at_1_73.png",
+        "width":  598,
+        "height":  34,
+        "bytes":  1397
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_0/sprite_004_598x323_at_1_109.png",
+        "sourceFolder":  "Линии-и-Кости-1_0",
+        "file":  "sprite_004_598x323_at_1_109.png",
+        "width":  598,
+        "height":  323,
+        "bytes":  5815
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_0/sprite_005_598x323_at_1_434.png",
+        "sourceFolder":  "Линии-и-Кости-1_0",
+        "file":  "sprite_005_598x323_at_1_434.png",
+        "width":  598,
+        "height":  323,
+        "bytes":  5241
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_00/sprite_001_1282x1026_at_1_1.png",
+        "sourceFolder":  "Линии-и-Кости-1_00",
+        "file":  "sprite_001_1282x1026_at_1_1.png",
+        "width":  1282,
+        "height":  1026,
+        "bytes":  219122
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_00/sprite_002_201x653_at_1289_1.png",
+        "sourceFolder":  "Линии-и-Кости-1_00",
+        "file":  "sprite_002_201x653_at_1289_1.png",
+        "width":  201,
+        "height":  653,
+        "bytes":  245984
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_00/sprite_003_397x157_at_1492_1.png",
+        "sourceFolder":  "Линии-и-Кости-1_00",
+        "file":  "sprite_003_397x157_at_1492_1.png",
+        "width":  397,
+        "height":  157,
+        "bytes":  19479
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_00/sprite_004_371x119_at_1492_160.png",
+        "sourceFolder":  "Линии-и-Кости-1_00",
+        "file":  "sprite_004_371x119_at_1492_160.png",
+        "width":  371,
+        "height":  119,
+        "bytes":  82412
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_00/sprite_005_102x102_at_1847_432.png",
+        "sourceFolder":  "Линии-и-Кости-1_00",
+        "file":  "sprite_005_102x102_at_1847_432.png",
+        "width":  102,
+        "height":  102,
+        "bytes":  909
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_00/sprite_006_102x102_at_1728_503.png",
+        "sourceFolder":  "Линии-и-Кости-1_00",
+        "file":  "sprite_006_102x102_at_1728_503.png",
+        "width":  102,
+        "height":  102,
+        "bytes":  886
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_00/sprite_007_102x102_at_1625_607.png",
+        "sourceFolder":  "Линии-и-Кости-1_00",
+        "file":  "sprite_007_102x102_at_1625_607.png",
+        "width":  102,
+        "height":  102,
+        "bytes":  855
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_00/sprite_008_102x102_at_1521_631.png",
+        "sourceFolder":  "Линии-и-Кости-1_00",
+        "file":  "sprite_008_102x102_at_1521_631.png",
+        "width":  102,
+        "height":  102,
+        "bytes":  930
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_00/sprite_009_102x102_at_1521_735.png",
+        "sourceFolder":  "Линии-и-Кости-1_00",
+        "file":  "sprite_009_102x102_at_1521_735.png",
+        "width":  102,
+        "height":  102,
+        "bytes":  875
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_00/sprite_010_102x102_at_1403_824.png",
+        "sourceFolder":  "Линии-и-Кости-1_00",
+        "file":  "sprite_010_102x102_at_1403_824.png",
+        "width":  102,
+        "height":  102,
+        "bytes":  850
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_00/sprite_011_102x102_at_1285_909.png",
+        "sourceFolder":  "Линии-и-Кости-1_00",
+        "file":  "sprite_011_102x102_at_1285_909.png",
+        "width":  102,
+        "height":  102,
+        "bytes":  852
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_00/sprite_012_102x102_at_1285_1013.png",
+        "sourceFolder":  "Линии-и-Кости-1_00",
+        "file":  "sprite_012_102x102_at_1285_1013.png",
+        "width":  102,
+        "height":  102,
+        "bytes":  865
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_00/sprite_013_1282x204_at_1_1031.png",
+        "sourceFolder":  "Линии-и-Кости-1_00",
+        "file":  "sprite_013_1282x204_at_1_1031.png",
+        "width":  1282,
+        "height":  204,
+        "bytes":  64585
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_00/sprite_014_102x102_at_1195_1237.png",
+        "sourceFolder":  "Линии-и-Кости-1_00",
+        "file":  "sprite_014_102x102_at_1195_1237.png",
+        "width":  102,
+        "height":  102,
+        "bytes":  874
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_00/sprite_015_1188x694_at_3_1239.png",
+        "sourceFolder":  "Линии-и-Кости-1_00",
+        "file":  "sprite_015_1188x694_at_3_1239.png",
+        "width":  1188,
+        "height":  694,
+        "bytes":  662131
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_00/sprite_016_397x55_at_1_1937.png",
+        "sourceFolder":  "Линии-и-Кости-1_00",
+        "file":  "sprite_016_397x55_at_1_1937.png",
+        "width":  397,
+        "height":  55,
+        "bytes":  13457
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_00/sprite_017_102x102_at_951_1937.png",
+        "sourceFolder":  "Линии-и-Кости-1_00",
+        "file":  "sprite_017_102x102_at_951_1937.png",
+        "width":  102,
+        "height":  102,
+        "bytes":  863
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-1_00/sprite_018_358x41_at_1_1994.png",
+        "sourceFolder":  "Линии-и-Кости-1_00",
+        "file":  "sprite_018_358x41_at_1_1994.png",
+        "width":  358,
+        "height":  41,
+        "bytes":  511
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_001_202x202_at_1_1.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_001_202x202_at_1_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  37778
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_002_202x202_at_205_1.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_002_202x202_at_205_1.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  40033
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_003_84x83_at_413_6.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_003_84x83_at_413_6.png",
+        "width":  84,
+        "height":  83,
+        "bytes":  7483
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_004_70x73_at_412_103.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_004_70x73_at_412_103.png",
+        "width":  70,
+        "height":  73,
+        "bytes":  6142
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_005_202x202_at_1_205.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_005_202x202_at_1_205.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  37105
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_006_144x166_at_205_207.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_006_144x166_at_205_207.png",
+        "width":  144,
+        "height":  166,
+        "bytes":  28848
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_007_143x165_at_355_207.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_007_143x165_at_355_207.png",
+        "width":  143,
+        "height":  165,
+        "bytes":  30147
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_008_143x169_at_356_376.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_008_143x169_at_356_376.png",
+        "width":  143,
+        "height":  169,
+        "bytes":  30014
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_009_143x165_at_207_379.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_009_143x165_at_207_379.png",
+        "width":  143,
+        "height":  165,
+        "bytes":  27865
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_010_202x202_at_1_409.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_010_202x202_at_1_409.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  41953
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_011_142x167_at_356_549.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_011_142x167_at_356_549.png",
+        "width":  142,
+        "height":  167,
+        "bytes":  33772
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_012_143x165_at_207_550.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_012_143x165_at_207_550.png",
+        "width":  143,
+        "height":  165,
+        "bytes":  31665
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_013_202x202_at_1_613.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_013_202x202_at_1_613.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  40786
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_014_143x164_at_356_720.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_014_143x164_at_356_720.png",
+        "width":  143,
+        "height":  164,
+        "bytes":  33221
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_015_143x165_at_207_721.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_015_143x165_at_207_721.png",
+        "width":  143,
+        "height":  165,
+        "bytes":  30522
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_016_202x202_at_1_817.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_016_202x202_at_1_817.png",
+        "width":  202,
+        "height":  202,
+        "bytes":  48676
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_017_143x167_at_300_892.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_017_143x167_at_300_892.png",
+        "width":  143,
+        "height":  167,
+        "bytes":  33730
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_018_52x52_at_449_892.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_018_52x52_at_449_892.png",
+        "width":  52,
+        "height":  52,
+        "bytes":  3796
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_019_62x66_at_208_895.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_019_62x66_at_208_895.png",
+        "width":  62,
+        "height":  66,
+        "bytes":  5312
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_020_48x50_at_449_953.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_020_48x50_at_449_953.png",
+        "width":  48,
+        "height":  50,
+        "bytes":  3368
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_021_44x44_at_208_971.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_021_44x44_at_208_971.png",
+        "width":  44,
+        "height":  44,
+        "bytes":  2770
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_022_47x50_at_450_1013.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_022_47x50_at_450_1013.png",
+        "width":  47,
+        "height":  50,
+        "bytes":  3391
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_023_144x166_at_1_1023.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_023_144x166_at_1_1023.png",
+        "width":  144,
+        "height":  166,
+        "bytes":  27537
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_024_143x165_at_151_1023.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_024_143x165_at_151_1023.png",
+        "width":  143,
+        "height":  165,
+        "bytes":  27006
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_025_142x166_at_300_1061.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_025_142x166_at_300_1061.png",
+        "width":  142,
+        "height":  166,
+        "bytes":  31595
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_026_48x49_at_448_1072.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_026_48x49_at_448_1072.png",
+        "width":  48,
+        "height":  49,
+        "bytes":  3346
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_027_44x46_at_449_1130.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_027_44x46_at_449_1130.png",
+        "width":  44,
+        "height":  46,
+        "bytes":  3053
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_028_43x45_at_449_1185.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_028_43x45_at_449_1185.png",
+        "width":  43,
+        "height":  45,
+        "bytes":  2924
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_029_144x165_at_150_1194.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_029_144x165_at_150_1194.png",
+        "width":  144,
+        "height":  165,
+        "bytes":  29509
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_030_143x166_at_3_1195.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_030_143x166_at_3_1195.png",
+        "width":  143,
+        "height":  166,
+        "bytes":  26563
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_031_142x166_at_300_1231.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_031_142x166_at_300_1231.png",
+        "width":  142,
+        "height":  166,
+        "bytes":  31339
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_032_142x169_at_152_1363.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_032_142x169_at_152_1363.png",
+        "width":  142,
+        "height":  169,
+        "bytes":  31465
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_033_143x166_at_3_1367.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_033_143x166_at_3_1367.png",
+        "width":  143,
+        "height":  166,
+        "bytes":  29942
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_034_144x168_at_298_1401.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_034_144x168_at_298_1401.png",
+        "width":  144,
+        "height":  168,
+        "bytes":  33238
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_035_143x169_at_151_1537.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_035_143x169_at_151_1537.png",
+        "width":  143,
+        "height":  169,
+        "bytes":  30725
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_036_144x166_at_1_1539.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_036_144x166_at_1_1539.png",
+        "width":  144,
+        "height":  166,
+        "bytes":  30173
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_037_143x168_at_300_1571.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_037_143x168_at_300_1571.png",
+        "width":  143,
+        "height":  168,
+        "bytes":  33063
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_038_144x169_at_149_1708.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_038_144x169_at_149_1708.png",
+        "width":  144,
+        "height":  169,
+        "bytes":  29204
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_039_142x166_at_3_1711.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_039_142x166_at_3_1711.png",
+        "width":  142,
+        "height":  166,
+        "bytes":  28608
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_040_41x43_at_370_1743.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_040_41x43_at_370_1743.png",
+        "width":  41,
+        "height":  43,
+        "bytes":  2667
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_041_63x66_at_300_1744.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_041_63x66_at_300_1744.png",
+        "width":  63,
+        "height":  66,
+        "bytes":  5199
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_042_57x57_at_301_1820.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_042_57x57_at_301_1820.png",
+        "width":  57,
+        "height":  57,
+        "bytes":  4152
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_043_144x164_at_149_1881.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_043_144x164_at_149_1881.png",
+        "width":  144,
+        "height":  164,
+        "bytes":  32677
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_044_74x76_at_4_1885.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_044_74x76_at_4_1885.png",
+        "width":  74,
+        "height":  76,
+        "bytes":  6608
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_045_58x57_at_87_1885.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_045_58x57_at_87_1885.png",
+        "width":  58,
+        "height":  57,
+        "bytes":  4200
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_046_55x58_at_300_1886.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_046_55x58_at_300_1886.png",
+        "width":  55,
+        "height":  58,
+        "bytes":  4299
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_047_54x57_at_300_1953.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_047_54x57_at_300_1953.png",
+        "width":  54,
+        "height":  57,
+        "bytes":  4185
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_048_59x61_at_83_1971.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_048_59x61_at_83_1971.png",
+        "width":  59,
+        "height":  61,
+        "bytes":  4630
+    },
+    {
+        "path":  "/img/extracted/Линии-и-Кости-2_0/sprite_049_70x69_at_5_1972.png",
+        "sourceFolder":  "Линии-и-Кости-2_0",
+        "file":  "sprite_049_70x69_at_5_1972.png",
+        "width":  70,
+        "height":  69,
+        "bytes":  5729
+    },
+    {
+        "path":  "/img/extracted/Слот_Интерфейс-ковер-для-розыгрыша-визуализации/sprite_001_1145x666_at_3_3.png",
+        "sourceFolder":  "Слот_Интерфейс-ковер-для-розыгрыша-визуализации",
+        "file":  "sprite_001_1145x666_at_3_3.png",
+        "width":  1145,
+        "height":  666,
+        "bytes":  1862866
+    },
+    {
+        "path":  "/img/extracted/тут-кнопки-справа-1_0/sprite_001_284x152_at_1_1.png",
+        "sourceFolder":  "тут-кнопки-справа-1_0",
+        "file":  "sprite_001_284x152_at_1_1.png",
+        "width":  284,
+        "height":  152,
+        "bytes":  21615
+    },
+    {
+        "path":  "/img/extracted/тут-кнопки-справа-1_0/sprite_002_284x152_at_1_155.png",
+        "sourceFolder":  "тут-кнопки-справа-1_0",
+        "file":  "sprite_002_284x152_at_1_155.png",
+        "width":  284,
+        "height":  152,
+        "bytes":  34869
+    },
+    {
+        "path":  "/img/extracted/тут-кнопки-справа-1_0/sprite_003_284x152_at_1_309.png",
+        "sourceFolder":  "тут-кнопки-справа-1_0",
+        "file":  "sprite_003_284x152_at_1_309.png",
+        "width":  284,
+        "height":  152,
+        "bytes":  26283
+    },
+    {
+        "path":  "/img/extracted/тут-кнопки-справа-1_0/sprite_004_284x102_at_1_463.png",
+        "sourceFolder":  "тут-кнопки-справа-1_0",
+        "file":  "sprite_004_284x102_at_1_463.png",
+        "width":  284,
+        "height":  102,
+        "bytes":  15546
+    },
+    {
+        "path":  "/img/extracted/тут-кнопки-справа-1_0/sprite_005_284x102_at_1_567.png",
+        "sourceFolder":  "тут-кнопки-справа-1_0",
+        "file":  "sprite_005_284x102_at_1_567.png",
+        "width":  284,
+        "height":  102,
+        "bytes":  25879
+    },
+    {
+        "path":  "/img/extracted/тут-кнопки-справа-1_0/sprite_006_284x102_at_1_671.png",
+        "sourceFolder":  "тут-кнопки-справа-1_0",
+        "file":  "sprite_006_284x102_at_1_671.png",
+        "width":  284,
+        "height":  102,
+        "bytes":  18982
+    },
+    {
+        "path":  "/img/extracted/тут-кнопки-справа-1_0/sprite_007_284x152_at_1_775.png",
+        "sourceFolder":  "тут-кнопки-справа-1_0",
+        "file":  "sprite_007_284x152_at_1_775.png",
+        "width":  284,
+        "height":  152,
+        "bytes":  19962
+    },
+    {
+        "path":  "/img/extracted/тут-кнопки-справа-1_0/sprite_008_284x152_at_1_929.png",
+        "sourceFolder":  "тут-кнопки-справа-1_0",
+        "file":  "sprite_008_284x152_at_1_929.png",
+        "width":  284,
+        "height":  152,
+        "bytes":  29142
+    },
+    {
+        "path":  "/img/extracted/тут-кнопки-справа-1_0/sprite_009_284x152_at_1_1083.png",
+        "sourceFolder":  "тут-кнопки-справа-1_0",
+        "file":  "sprite_009_284x152_at_1_1083.png",
+        "width":  284,
+        "height":  152,
+        "bytes":  23369
+    },
+    {
+        "path":  "/img/extracted/тут-кнопки-справа-1_0/sprite_010_284x102_at_1_1237.png",
+        "sourceFolder":  "тут-кнопки-справа-1_0",
+        "file":  "sprite_010_284x102_at_1_1237.png",
+        "width":  284,
+        "height":  102,
+        "bytes":  16669
+    },
+    {
+        "path":  "/img/extracted/тут-кнопки-справа-1_0/sprite_011_284x102_at_1_1341.png",
+        "sourceFolder":  "тут-кнопки-справа-1_0",
+        "file":  "sprite_011_284x102_at_1_1341.png",
+        "width":  284,
+        "height":  102,
+        "bytes":  25562
+    },
+    {
+        "path":  "/img/extracted/тут-кнопки-справа-1_0/sprite_012_284x102_at_1_1445.png",
+        "sourceFolder":  "тут-кнопки-справа-1_0",
+        "file":  "sprite_012_284x102_at_1_1445.png",
+        "width":  284,
+        "height":  102,
+        "bytes":  19619
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0/sprite_001_1922x1082_at_1_1.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0",
+        "file":  "sprite_001_1922x1082_at_1_1.png",
+        "width":  1922,
+        "height":  1082,
+        "bytes":  2870187
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0/sprite_002_115x63_at_1927_1.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0",
+        "file":  "sprite_002_115x63_at_1927_1.png",
+        "width":  115,
+        "height":  63,
+        "bytes":  6101
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0/sprite_003_1163x101_at_4_1085.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0",
+        "file":  "sprite_003_1163x101_at_4_1085.png",
+        "width":  1163,
+        "height":  101,
+        "bytes":  80610
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0/sprite_004_1163x99_at_4_1194.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0",
+        "file":  "sprite_004_1163x99_at_4_1194.png",
+        "width":  1163,
+        "height":  99,
+        "bytes":  41550
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0/sprite_005_752x344_at_1_1295.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0",
+        "file":  "sprite_005_752x344_at_1_1295.png",
+        "width":  752,
+        "height":  344,
+        "bytes":  6575
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0/sprite_006_319x52_at_1_1641.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0",
+        "file":  "sprite_006_319x52_at_1_1641.png",
+        "width":  319,
+        "height":  52,
+        "bytes":  1074
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0/sprite_007_82x85_at_322_1641.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0",
+        "file":  "sprite_007_82x85_at_322_1641.png",
+        "width":  82,
+        "height":  85,
+        "bytes":  17057
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0/sprite_008_319x52_at_1_1695.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0",
+        "file":  "sprite_008_319x52_at_1_1695.png",
+        "width":  319,
+        "height":  52,
+        "bytes":  1059
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0/sprite_009_82x85_at_295_1749.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0",
+        "file":  "sprite_009_82x85_at_295_1749.png",
+        "width":  82,
+        "height":  85,
+        "bytes":  17353
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0/sprite_010_213x82_at_3_1751.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0",
+        "file":  "sprite_010_213x82_at_3_1751.png",
+        "width":  213,
+        "height":  82,
+        "bytes":  11043
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0/sprite_011_69x102_at_222_1751.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0",
+        "file":  "sprite_011_69x102_at_222_1751.png",
+        "width":  69,
+        "height":  102,
+        "bytes":  16209
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0/sprite_012_82x85_at_295_1836.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0",
+        "file":  "sprite_012_82x85_at_295_1836.png",
+        "width":  82,
+        "height":  85,
+        "bytes":  16008
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0/sprite_013_213x82_at_3_1837.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0",
+        "file":  "sprite_013_213x82_at_3_1837.png",
+        "width":  213,
+        "height":  82,
+        "bytes":  8631
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0/sprite_014_69x102_at_222_1859.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0",
+        "file":  "sprite_014_69x102_at_222_1859.png",
+        "width":  69,
+        "height":  102,
+        "bytes":  15009
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0/sprite_015_213x82_at_3_1923.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0",
+        "file":  "sprite_015_213x82_at_3_1923.png",
+        "width":  213,
+        "height":  82,
+        "bytes":  12572
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0/sprite_016_82x85_at_324_1923.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0",
+        "file":  "sprite_016_82x85_at_324_1923.png",
+        "width":  82,
+        "height":  85,
+        "bytes":  15498
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0/sprite_017_95x40_at_224_1969.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-1_0",
+        "file":  "sprite_017_95x40_at_224_1969.png",
+        "width":  95,
+        "height":  40,
+        "bytes":  4002
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-2_0/sprite_001_649x556_at_1_1.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-2_0",
+        "file":  "sprite_001_649x556_at_1_1.png",
+        "width":  649,
+        "height":  556,
+        "bytes":  143240
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-2_0/sprite_002_331x330_at_652_1.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-2_0",
+        "file":  "sprite_002_331x330_at_652_1.png",
+        "width":  331,
+        "height":  330,
+        "bytes":  31052
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-2_0/sprite_003_314x63_at_3_561.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-2_0",
+        "file":  "sprite_003_314x63_at_3_561.png",
+        "width":  314,
+        "height":  63,
+        "bytes":  29353
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-2_0/sprite_004_314x63_at_3_628.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-2_0",
+        "file":  "sprite_004_314x63_at_3_628.png",
+        "width":  314,
+        "height":  63,
+        "bytes":  28000
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_001_343x196_at_1_1.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_001_343x196_at_1_1.png",
+        "width":  343,
+        "height":  196,
+        "bytes":  95935
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_002_289x258_at_346_3.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_002_289x258_at_346_3.png",
+        "width":  289,
+        "height":  258,
+        "bytes":  151061
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_003_285x258_at_637_3.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_003_285x258_at_637_3.png",
+        "width":  285,
+        "height":  258,
+        "bytes":  147368
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_004_285x258_at_927_3.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_004_285x258_at_927_3.png",
+        "width":  285,
+        "height":  258,
+        "bytes":  147368
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_005_268x258_at_1234_3.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_005_268x258_at_1234_3.png",
+        "width":  268,
+        "height":  258,
+        "bytes":  128574
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_006_283x258_at_1504_3.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_006_283x258_at_1504_3.png",
+        "width":  283,
+        "height":  258,
+        "bytes":  150885
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_007_256x261_at_1789_4.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_007_256x261_at_1789_4.png",
+        "width":  256,
+        "height":  261,
+        "bytes":  138911
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_008_269x258_at_6_201.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_008_269x258_at_6_201.png",
+        "width":  269,
+        "height":  258,
+        "bytes":  150811
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_009_256x258_at_280_267.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_009_256x258_at_280_267.png",
+        "width":  256,
+        "height":  258,
+        "bytes":  120591
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_010_256x258_at_538_267.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_010_256x258_at_538_267.png",
+        "width":  256,
+        "height":  258,
+        "bytes":  127979
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_011_256x258_at_796_267.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_011_256x258_at_796_267.png",
+        "width":  256,
+        "height":  258,
+        "bytes":  147687
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_012_264x261_at_3_472.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_012_264x261_at_3_472.png",
+        "width":  264,
+        "height":  261,
+        "bytes":  159061
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_013_256x258_at_272_531.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_013_256x258_at_272_531.png",
+        "width":  256,
+        "height":  258,
+        "bytes":  133626
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_014_256x258_at_530_531.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_014_256x258_at_530_531.png",
+        "width":  256,
+        "height":  258,
+        "bytes":  148162
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_015_261x258_at_6_739.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_015_261x258_at_6_739.png",
+        "width":  261,
+        "height":  258,
+        "bytes":  137960
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_016_256x258_at_269_795.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_016_256x258_at_269_795.png",
+        "width":  256,
+        "height":  258,
+        "bytes":  133044
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_017_256x258_at_527_795.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_017_256x258_at_527_795.png",
+        "width":  256,
+        "height":  258,
+        "bytes":  148317
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_018_256x258_at_1_1003.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_018_256x258_at_1_1003.png",
+        "width":  256,
+        "height":  258,
+        "bytes":  117974
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_019_256x258_at_259_1059.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_019_256x258_at_259_1059.png",
+        "width":  256,
+        "height":  258,
+        "bytes":  133499
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_020_256x258_at_1_1267.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_020_256x258_at_1_1267.png",
+        "width":  256,
+        "height":  258,
+        "bytes":  120159
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_021_256x258_at_259_1323.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_021_256x258_at_259_1323.png",
+        "width":  256,
+        "height":  258,
+        "bytes":  136392
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_022_256x258_at_1_1531.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_022_256x258_at_1_1531.png",
+        "width":  256,
+        "height":  258,
+        "bytes":  120837
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0/sprite_023_255x258_at_259_1587.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-3_0",
+        "file":  "sprite_023_255x258_at_259_1587.png",
+        "width":  255,
+        "height":  258,
+        "bytes":  141705
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0/sprite_001_1252x885_at_1_1.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0",
+        "file":  "sprite_001_1252x885_at_1_1.png",
+        "width":  1252,
+        "height":  885,
+        "bytes":  27750
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0/sprite_002_57x97_at_1971_3.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0",
+        "file":  "sprite_002_57x97_at_1971_3.png",
+        "width":  57,
+        "height":  97,
+        "bytes":  5328
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0/sprite_003_635x405_at_1269_36.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0",
+        "file":  "sprite_003_635x405_at_1269_36.png",
+        "width":  635,
+        "height":  405,
+        "bytes":  50168
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0/sprite_004_58x97_at_1986_107.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0",
+        "file":  "sprite_004_58x97_at_1986_107.png",
+        "width":  58,
+        "height":  97,
+        "bytes":  5188
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0/sprite_005_59x97_at_1923_108.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0",
+        "file":  "sprite_005_59x97_at_1923_108.png",
+        "width":  59,
+        "height":  97,
+        "bytes":  5201
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0/sprite_006_889x431_at_1_888.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0",
+        "file":  "sprite_006_889x431_at_1_888.png",
+        "width":  889,
+        "height":  431,
+        "bytes":  117780
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0/sprite_007_829x413_at_1_1321.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0",
+        "file":  "sprite_007_829x413_at_1_1321.png",
+        "width":  829,
+        "height":  413,
+        "bytes":  148124
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0/sprite_008_570x77_at_1_1736.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0",
+        "file":  "sprite_008_570x77_at_1_1736.png",
+        "width":  570,
+        "height":  77,
+        "bytes":  1330
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0/sprite_009_48x94_at_617_1738.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0",
+        "file":  "sprite_009_48x94_at_617_1738.png",
+        "width":  48,
+        "height":  94,
+        "bytes":  3671
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0/sprite_010_532x77_at_1_1815.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0",
+        "file":  "sprite_010_532x77_at_1_1815.png",
+        "width":  532,
+        "height":  77,
+        "bytes":  1240
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0/sprite_011_59x96_at_554_1817.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0",
+        "file":  "sprite_011_59x96_at_554_1817.png",
+        "width":  59,
+        "height":  96,
+        "bytes":  5050
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0/sprite_012_202x52_at_1_1894.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0",
+        "file":  "sprite_012_202x52_at_1_1894.png",
+        "width":  202,
+        "height":  52,
+        "bytes":  850
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0/sprite_013_156x28_at_205_1894.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0",
+        "file":  "sprite_013_156x28_at_205_1894.png",
+        "width":  156,
+        "height":  28,
+        "bytes":  457
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0/sprite_014_58x97_at_365_1896.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0",
+        "file":  "sprite_014_58x97_at_365_1896.png",
+        "width":  58,
+        "height":  97,
+        "bytes":  5363
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0/sprite_015_59x97_at_427_1896.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0",
+        "file":  "sprite_015_59x97_at_427_1896.png",
+        "width":  59,
+        "height":  97,
+        "bytes":  4723
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0/sprite_016_56x96_at_492_1896.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0",
+        "file":  "sprite_016_56x96_at_492_1896.png",
+        "width":  56,
+        "height":  96,
+        "bytes":  10253
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0/sprite_017_62x95_at_552_1917.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0",
+        "file":  "sprite_017_62x95_at_552_1917.png",
+        "width":  62,
+        "height":  95,
+        "bytes":  4545
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0/sprite_018_156x66_at_205_1934.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0",
+        "file":  "sprite_018_156x66_at_205_1934.png",
+        "width":  156,
+        "height":  66,
+        "bytes":  560
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0/sprite_019_152x52_at_1_1948.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0",
+        "file":  "sprite_019_152x52_at_1_1948.png",
+        "width":  152,
+        "height":  52,
+        "bytes":  835
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0/sprite_020_45x96_at_158_1948.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-4_0",
+        "file":  "sprite_020_45x96_at_158_1948.png",
+        "width":  45,
+        "height":  96,
+        "bytes":  3369
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_001_1336x542_at_1_1.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_001_1336x542_at_1_1.png",
+        "width":  1336,
+        "height":  542,
+        "bytes":  1159310
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_002_21x194_at_1339_1.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_002_21x194_at_1339_1.png",
+        "width":  21,
+        "height":  194,
+        "bytes":  8896
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_003_21x194_at_1419_1.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_003_21x194_at_1419_1.png",
+        "width":  21,
+        "height":  194,
+        "bytes":  8860
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_004_159x351_at_1447_1.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_004_159x351_at_1447_1.png",
+        "width":  159,
+        "height":  351,
+        "bytes":  70038
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_005_250x305_at_1611_1.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_005_250x305_at_1611_1.png",
+        "width":  250,
+        "height":  305,
+        "bytes":  118776
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_006_144x160_at_1866_1.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_006_144x160_at_1866_1.png",
+        "width":  144,
+        "height":  160,
+        "bytes":  40407
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_007_17x140_at_1343_196.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_007_17x140_at_1343_196.png",
+        "width":  17,
+        "height":  140,
+        "bytes":  7882
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_008_18x139_at_1422_197.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_008_18x139_at_1422_197.png",
+        "width":  18,
+        "height":  139,
+        "bytes":  7999
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_009_1336x396_at_1_545.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_009_1336x396_at_1_545.png",
+        "width":  1336,
+        "height":  396,
+        "bytes":  471735
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_010_1336x542_at_1_947.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_010_1336x542_at_1_947.png",
+        "width":  1336,
+        "height":  542,
+        "bytes":  1003973
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_011_160x59_at_211_1491.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_011_160x59_at_211_1491.png",
+        "width":  160,
+        "height":  59,
+        "bytes":  6989
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_012_203x57_at_4_1494.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_012_203x57_at_4_1494.png",
+        "width":  203,
+        "height":  57,
+        "bytes":  14105
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_013_144x137_at_333_1554.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_013_144x137_at_333_1554.png",
+        "width":  144,
+        "height":  137,
+        "bytes":  39185
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_014_164x160_at_1_1558.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_014_164x160_at_1_1558.png",
+        "width":  164,
+        "height":  160,
+        "bytes":  50997
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_015_160x56_at_169_1558.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_015_160x56_at_169_1558.png",
+        "width":  160,
+        "height":  56,
+        "bytes":  7039
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_016_160x56_at_169_1616.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_016_160x56_at_169_1616.png",
+        "width":  160,
+        "height":  56,
+        "bytes":  6831
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_017_160x57_at_169_1674.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_017_160x57_at_169_1674.png",
+        "width":  160,
+        "height":  57,
+        "bytes":  6756
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_018_160x58_at_1_1767.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_018_160x58_at_1_1767.png",
+        "width":  160,
+        "height":  58,
+        "bytes":  7214
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_019_160x57_at_163_1767.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_019_160x57_at_163_1767.png",
+        "width":  160,
+        "height":  57,
+        "bytes":  7146
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_020_160x58_at_163_1826.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_020_160x58_at_163_1826.png",
+        "width":  160,
+        "height":  58,
+        "bytes":  7353
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_021_160x58_at_1_1827.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_021_160x58_at_1_1827.png",
+        "width":  160,
+        "height":  58,
+        "bytes":  6871
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_022_160x58_at_163_1886.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_022_160x58_at_163_1886.png",
+        "width":  160,
+        "height":  58,
+        "bytes":  6960
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_023_160x57_at_1_1887.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_023_160x57_at_1_1887.png",
+        "width":  160,
+        "height":  57,
+        "bytes":  7284
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_024_160x57_at_1_1946.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_024_160x57_at_1_1946.png",
+        "width":  160,
+        "height":  57,
+        "bytes":  6795
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0/sprite_025_160x59_at_163_1946.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-5_0",
+        "file":  "sprite_025_160x59_at_163_1946.png",
+        "width":  160,
+        "height":  59,
+        "bytes":  7251
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_0/sprite_001_1282x1052_at_1_1.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_0",
+        "file":  "sprite_001_1282x1052_at_1_1.png",
+        "width":  1282,
+        "height":  1052,
+        "bytes":  10664
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_0/sprite_002_284x77_at_1285_1.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_0",
+        "file":  "sprite_002_284x77_at_1285_1.png",
+        "width":  284,
+        "height":  77,
+        "bytes":  20029
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_0/sprite_003_284x77_at_1571_1.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_0",
+        "file":  "sprite_003_284x77_at_1571_1.png",
+        "width":  284,
+        "height":  77,
+        "bytes":  15370
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_0/sprite_004_284x77_at_1285_80.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_0",
+        "file":  "sprite_004_284x77_at_1285_80.png",
+        "width":  284,
+        "height":  77,
+        "bytes":  14080
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_0/sprite_005_284x77_at_1571_80.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_0",
+        "file":  "sprite_005_284x77_at_1571_80.png",
+        "width":  284,
+        "height":  77,
+        "bytes":  11223
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_0/sprite_006_284x77_at_1285_159.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_0",
+        "file":  "sprite_006_284x77_at_1285_159.png",
+        "width":  284,
+        "height":  77,
+        "bytes":  16571
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_0/sprite_007_284x77_at_1571_159.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_0",
+        "file":  "sprite_007_284x77_at_1571_159.png",
+        "width":  284,
+        "height":  77,
+        "bytes":  12724
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_0/sprite_008_1252x932_at_1_1055.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_0",
+        "file":  "sprite_008_1252x932_at_1_1055.png",
+        "width":  1252,
+        "height":  932,
+        "bytes":  11714
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_1/sprite_001_1252x932_at_1_1.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_1",
+        "file":  "sprite_001_1252x932_at_1_1.png",
+        "width":  1252,
+        "height":  932,
+        "bytes":  7099
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_1/sprite_002_1252x177_at_1_935.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_1",
+        "file":  "sprite_002_1252x177_at_1_935.png",
+        "width":  1252,
+        "height":  177,
+        "bytes":  56223
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_1/sprite_003_1252x67_at_1_1114.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_1",
+        "file":  "sprite_003_1252x67_at_1_1114.png",
+        "width":  1252,
+        "height":  67,
+        "bytes":  27176
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_1/sprite_004_1252x576_at_1_1183.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_1",
+        "file":  "sprite_004_1252x576_at_1_1183.png",
+        "width":  1252,
+        "height":  576,
+        "bytes":  191553
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_1/sprite_005_1252x172_at_1_1761.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_1",
+        "file":  "sprite_005_1252x172_at_1_1761.png",
+        "width":  1252,
+        "height":  172,
+        "bytes":  42378
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_2/sprite_001_1252x521_at_1_1.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_2",
+        "file":  "sprite_001_1252x521_at_1_1.png",
+        "width":  1252,
+        "height":  521,
+        "bytes":  245158
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_2/sprite_002_1252x174_at_1_524.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_2",
+        "file":  "sprite_002_1252x174_at_1_524.png",
+        "width":  1252,
+        "height":  174,
+        "bytes":  51300
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_2/sprite_003_1252x177_at_1_700.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_2",
+        "file":  "sprite_003_1252x177_at_1_700.png",
+        "width":  1252,
+        "height":  177,
+        "bytes":  57285
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_2/sprite_004_1252x206_at_1_879.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_2",
+        "file":  "sprite_004_1252x206_at_1_879.png",
+        "width":  1252,
+        "height":  206,
+        "bytes":  85746
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_2/sprite_005_1252x176_at_1_1087.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_2",
+        "file":  "sprite_005_1252x176_at_1_1087.png",
+        "width":  1252,
+        "height":  176,
+        "bytes":  75551
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_2/sprite_006_1252x175_at_1_1265.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-6_2",
+        "file":  "sprite_006_1252x175_at_1_1265.png",
+        "width":  1252,
+        "height":  175,
+        "bytes":  37067
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_001_690x603_at_1_1.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_001_690x603_at_1_1.png",
+        "width":  690,
+        "height":  603,
+        "bytes":  119096
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_002_311x381_at_693_1.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_002_311x381_at_693_1.png",
+        "width":  311,
+        "height":  381,
+        "bytes":  22884
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_003_299x267_at_1_606.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_003_299x267_at_1_606.png",
+        "width":  299,
+        "height":  267,
+        "bytes":  37223
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_004_101x101_at_302_606.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_004_101x101_at_302_606.png",
+        "width":  101,
+        "height":  101,
+        "bytes":  16365
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_005_40x59_at_446_608.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_005_40x59_at_446_608.png",
+        "width":  40,
+        "height":  59,
+        "bytes":  617
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_006_38x61_at_324_709.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_006_38x61_at_324_709.png",
+        "width":  38,
+        "height":  61,
+        "bytes":  676
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_007_39x59_at_323_774.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_007_39x59_at_323_774.png",
+        "width":  39,
+        "height":  59,
+        "bytes":  609
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_008_67x67_at_352_835.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_008_67x67_at_352_835.png",
+        "width":  67,
+        "height":  67,
+        "bytes":  7627
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_009_242x89_at_3_875.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_009_242x89_at_3_875.png",
+        "width":  242,
+        "height":  89,
+        "bytes":  15624
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_010_101x101_at_249_875.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_010_101x101_at_249_875.png",
+        "width":  101,
+        "height":  101,
+        "bytes":  17977
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_011_242x105_at_3_968.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_011_242x105_at_3_968.png",
+        "width":  242,
+        "height":  105,
+        "bytes":  20286
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_012_101x101_at_249_978.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_012_101x101_at_249_978.png",
+        "width":  101,
+        "height":  101,
+        "bytes":  14832
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_013_242x114_at_3_1077.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_013_242x114_at_3_1077.png",
+        "width":  242,
+        "height":  114,
+        "bytes":  21466
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_014_38x61_at_271_1144.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_014_38x61_at_271_1144.png",
+        "width":  38,
+        "height":  61,
+        "bytes":  707
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_015_242x133_at_3_1195.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_015_242x133_at_3_1195.png",
+        "width":  242,
+        "height":  133,
+        "bytes":  25055
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_016_42x57_at_269_1209.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_016_42x57_at_269_1209.png",
+        "width":  42,
+        "height":  57,
+        "bytes":  480
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_017_40x59_at_270_1272.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_017_40x59_at_270_1272.png",
+        "width":  40,
+        "height":  59,
+        "bytes":  660
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_018_242x147_at_3_1332.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_018_242x147_at_3_1332.png",
+        "width":  242,
+        "height":  147,
+        "bytes":  31595
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_019_39x61_at_270_1333.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_019_39x61_at_270_1333.png",
+        "width":  39,
+        "height":  61,
+        "bytes":  764
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_020_38x61_at_271_1396.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_020_38x61_at_271_1396.png",
+        "width":  38,
+        "height":  61,
+        "bytes":  748
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_021_238x82_at_1_1483.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_021_238x82_at_1_1483.png",
+        "width":  238,
+        "height":  82,
+        "bytes":  12511
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_022_39x61_at_262_1546.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_022_39x61_at_262_1546.png",
+        "width":  39,
+        "height":  61,
+        "bytes":  768
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_023_238x98_at_1_1567.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_023_238x98_at_1_1567.png",
+        "width":  238,
+        "height":  98,
+        "bytes":  12510
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_024_39x61_at_283_1609.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_024_39x61_at_283_1609.png",
+        "width":  39,
+        "height":  61,
+        "bytes":  690
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_025_238x107_at_1_1667.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_025_238x107_at_1_1667.png",
+        "width":  238,
+        "height":  107,
+        "bytes":  7333
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_026_67x67_at_241_1735.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_026_67x67_at_241_1735.png",
+        "width":  67,
+        "height":  67,
+        "bytes":  8144
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_027_238x126_at_1_1776.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_027_238x126_at_1_1776.png",
+        "width":  238,
+        "height":  126,
+        "bytes":  11841
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_028_67x67_at_241_1804.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_028_67x67_at_241_1804.png",
+        "width":  67,
+        "height":  67,
+        "bytes":  7000
+    },
+    {
+        "path":  "/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_029_238x140_at_1_1904.png",
+        "sourceFolder":  "тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0",
+        "file":  "sprite_029_238x140_at_1_1904.png",
+        "width":  238,
+        "height":  140,
+        "bytes":  13563
+    }
+]

@@ -1,181 +1,603 @@
 .main-container__right {
-  position: relative !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-  width: 23% !important;
-  height: 100% !important;
-  min-width: 17.25rem !important;
-  padding-top: 1.15rem !important;
-  padding-bottom: 2.85rem !important;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 23%;
+  height: 100%;
+  min-width: 17.25rem;
+  padding-top: 1.15rem;
+  padding-bottom: 2.85rem;
 }
 
 .winnings-table {
-  box-sizing: border-box !important;
-  position: relative !important;
-  width: min(100%, 18rem) !important;
-  min-height: 5.875rem !important;
-  padding: 0.1958333333rem 0.1958333333rem 0.235rem !important;
-  border-radius: 0.47rem !important;
+  box-sizing: border-box;
+  position: relative;
+  width: min(100%, 18rem);
+  min-height: 5.875rem;
+  padding: 0.1958333333rem 0.1958333333rem 0.235rem;
+  border-radius: 0.47rem;
   box-shadow:
     0 0.1566666667rem 0.1958333333rem 0.0783333333rem rgba(0, 0, 0, 0.5),
-    inset -0.1175rem -0.1175rem 0.0391666667rem rgba(0, 0, 0, 0.15) !important;
+    inset -0.1175rem -0.1175rem 0.0391666667rem rgba(0, 0, 0, 0.15);
 }
 
 .winnings-table::before {
-  content: "" !important;
-  position: absolute !important;
-  inset: 0 !important;
-  z-index: 2 !important;
-  border-radius: 0.47rem !important;
-  box-shadow: inset 0.2741666667rem 0.2741666667rem 0.1958333333rem rgba(0, 0, 0, 0.8) !important;
-  pointer-events: none !important;
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: 0.47rem;
+  box-shadow: inset 0.2741666667rem 0.2741666667rem 0.1958333333rem
+    rgba(0, 0, 0, 0.8);
+  pointer-events: none;
 }
 
 .winnings-table::after {
-  content: "" !important;
-  position: absolute !important;
-  inset: 0 !important;
-  z-index: 3 !important;
-  border: 0.235rem solid transparent !important;
-  border-radius: 0.47rem !important;
-  background: url("/img/eldorado-winnings-table-bg.webp") border-box !important;
-  background-size: cover !important;
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border: 0.235rem solid transparent;
+  border-radius: 0.47rem;
+  background: url("/img/eldorado-winnings-table-bg.webp") border-box;
+  background-size: cover;
   -webkit-mask:
     linear-gradient(#fff 0 0) padding-box,
-    linear-gradient(#fff 0 0) !important;
-  -webkit-mask-composite: destination-out !important;
-  mask-composite: exclude !important;
-  pointer-events: none !important;
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 .winnings-table__title {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 100% !important;
-  height: 1.4883333333rem !important;
-  margin: 0 !important;
-  background-image: url("/img/eldorado-winnings-title-bg.webp") !important;
-  background-position: 50% !important;
-  background-repeat: no-repeat !important;
-  background-size: cover !important;
-  color: #000 !important;
-  font-family: "Alegreya Sans", serif !important;
-  font-size: 0.8616666667rem !important;
-  font-style: normal !important;
-  font-weight: 700 !important;
-  line-height: 1.0183333333rem !important;
-  text-align: center !important;
-  text-transform: uppercase !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 1.4883333333rem;
+  margin: 0;
+  background-image: url("/img/eldorado-winnings-title-bg.webp");
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: #000;
+  font-family: "Alegreya Sans", serif;
+  font-size: 0.8616666667rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.0183333333rem;
+  text-align: center;
+  text-transform: uppercase;
 }
 
 .winnings-table__container {
-  position: relative !important;
-  z-index: 1 !important;
-  width: 100% !important;
-  min-width: 0 !important;
-  border-collapse: collapse !important;
-  table-layout: fixed !important;
-  color: #000 !important;
-  font-family: Ubuntu, sans-serif !important;
-  font-size: 0.705rem !important;
-  font-style: normal !important;
-  font-weight: 400 !important;
-  line-height: 0.8225rem !important;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-width: 0;
+  border-collapse: collapse;
+  table-layout: fixed;
+  color: #000;
+  font-family: Ubuntu, sans-serif;
+  font-size: 0.705rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 0.8225rem;
 }
 
 .winnings-table__container th,
 .winnings-table__container td {
-  box-sizing: border-box !important;
-  height: 0.9375rem !important;
-  padding: 0.03rem 0.08rem !important;
-  border: 0.0391666667rem solid #000 !important;
-  color: #000 !important;
-  font-family: Ubuntu, sans-serif !important;
-  font-size: 0.705rem !important;
-  font-style: normal !important;
-  font-weight: 400 !important;
-  line-height: 0.8225rem !important;
-  text-align: center !important;
-  text-shadow: none !important;
-  vertical-align: middle !important;
-  white-space: nowrap !important;
+  box-sizing: border-box;
+  height: 0.9375rem;
+  padding: 0.03rem 0.08rem;
+  border: 0.0391666667rem solid #000;
+  color: #000;
+  font-family: Ubuntu, sans-serif;
+  font-size: 0.705rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 0.8225rem;
+  text-align: center;
+  text-shadow: none;
+  vertical-align: middle;
+  white-space: nowrap;
 }
 
 .winnings-table__container th:first-child,
 .winnings-table__container td:first-child {
-  width: 1.58rem !important;
-  background-color: #ffde26 !important;
+  width: 1.58rem;
+  background-color: #ffde26;
 }
 
 .winnings-table__container thead th {
-  background-color: #ffde26 !important;
+  background-color: #ffde26;
 }
 
 .winnings-table__container tbody tr:nth-child(odd) {
-  background-color: #ebe7df !important;
+  background-color: #ebe7df;
 }
 
 .winnings-table__container tbody tr:nth-child(even) {
-  background-color: #fff !important;
+  background-color: #fff;
 }
 
 .simple-info {
-  box-sizing: border-box !important;
-  position: relative !important;
-  display: flex !important;
-  width: min(100%, 18rem) !important;
-  min-height: 5.75rem !important;
-  padding: 1.0416666667rem 0.8333333333rem 0.8333333333rem !important;
-  border-radius: 0.4166666667rem !important;
-  background: rgba(0, 0, 0, 0.78) !important;
-  box-shadow: 0 0.1666666667rem 0.3333333333rem rgba(0, 0, 0, 0.45) !important;
-  color: #fff !important;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  width: min(100%, 18rem);
+  min-height: 5.75rem;
+  padding: 1.0416666667rem 0.8333333333rem 0.8333333333rem;
+  border-radius: 0.4166666667rem;
+  background: rgba(0, 0, 0, 0.78);
+  box-shadow: 0 0.1666666667rem 0.3333333333rem rgba(0, 0, 0, 0.45);
+  color: #fff;
 }
 
 .simple-info__icon {
-  display: none !important;
+  display: none;
 }
 
 .simple-info__container {
-  width: 100% !important;
-  font-family: Ubuntu, sans-serif !important;
+  width: 100%;
+  font-family: Ubuntu, sans-serif;
 }
 
 .simple-info__loto {
-  display: none !important;
+  display: none;
 }
 
 .simple-info__draw {
-  display: block !important;
-  margin-bottom: 0.75rem !important;
-  padding-bottom: 0.6666666667rem !important;
-  border-bottom: 0.0416666667rem solid rgba(255, 255, 255, 0.12) !important;
-  color: #fff !important;
-  font-family: "Alegreya Sans", serif !important;
-  font-size: 0.8333333333rem !important;
-  font-weight: 700 !important;
-  line-height: 1rem !important;
+  display: block;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.6666666667rem;
+  border-bottom: 0.0416666667rem solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-family: "Alegreya Sans", serif;
+  font-size: 0.8333333333rem;
+  font-weight: 700;
+  line-height: 1rem;
 }
 
 .simple-info__wrapper {
-  display: flex !important;
-  align-items: center !important;
-  min-height: 1rem !important;
+  display: flex;
+  align-items: center;
+  min-height: 1rem;
 }
 
 .simple-info__text {
-  color: #fff !important;
-  font-family: Ubuntu, sans-serif !important;
-  font-size: 0.5833333333rem !important;
-  font-weight: 400 !important;
-  line-height: 1rem !important;
+  color: #fff;
+  font-family: Ubuntu, sans-serif;
+  font-size: 0.5833333333rem;
+  font-weight: 400;
+  line-height: 1rem;
 }
 
 @media (max-width: 920px) {
   .main-container__right {
-    display: none !important;
+    display: none;
   }
+}
+
+/* Screenshot rebrand: payout table and yellow draw note. */
+.game-main-layout .main-container__right {
+  display: flex;
+}
+
+.game-main-layout .winnings-table {
+  width: 100%;
+  min-height: 0;
+  padding: 8px;
+  border: 5px solid #b87911;
+  border-radius: 10px;
+  background: #f3e7df;
+  box-shadow:
+    inset 0 0 0 2px #5f170c,
+    0 4px 0 rgba(79, 32, 0, 0.42);
+}
+
+.game-main-layout .winnings-table::before,
+.game-main-layout .winnings-table::after {
+  display: none;
+}
+
+.game-main-layout .winnings-table__title {
+  height: 28px;
+  margin: 0 0 0;
+  border-radius: 0;
+  background: #5d1a13;
+  color: #fff;
+  font-family: Ubuntu, Arial, sans-serif;
+  font-size: 19px;
+  font-weight: 900;
+  line-height: 28px;
+  text-transform: uppercase;
+  text-shadow: 0 2px 0 #160403;
+}
+
+.game-main-layout .winnings-table__container {
+  width: 100%;
+  color: #242424;
+  font-family: Ubuntu, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  line-height: 1;
+  background: #fff;
+}
+
+.game-main-layout .winnings-table__container th,
+.game-main-layout .winnings-table__container td {
+  height: 24px;
+  padding: 1px 4px;
+  border: 2px solid rgba(111, 32, 21, 0.42);
+  color: #252525;
+  font-family: Ubuntu, Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.game-main-layout .winnings-table__container th:first-child,
+.game-main-layout .winnings-table__container td:first-child,
+.game-main-layout .winnings-table__container thead th {
+  background-color: rgba(145, 50, 35, 0.12);
+}
+
+.game-main-layout .winnings-table__container tbody tr:nth-child(odd) {
+  background-color: #eadbd6;
+}
+
+.game-main-layout .winnings-table__container tbody tr:nth-child(even) {
+  background-color: #f7f1ef;
+}
+
+.game-main-layout .simple-info {
+  width: 100%;
+  min-height: 238px;
+  padding: 16px 18px;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #ffe578 0%, #f3db62 100%);
+  box-shadow: none;
+  color: #171717;
+}
+
+.game-main-layout .simple-info__draw {
+  margin: 0 0 78px;
+  padding: 0;
+  border: 0;
+  color: #1d1605;
+  font-family: Ubuntu, Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.05;
+}
+
+.game-main-layout .simple-info__text {
+  color: #1d1605;
+  font-family: Ubuntu, Arial, sans-serif;
+  font-size: 17px;
+  font-weight: 900;
+  line-height: 1.08;
+}
+
+@media (max-width: 1380px) {
+  .game-main-layout .winnings-table__title {
+    font-size: 16px;
+  }
+
+  .game-main-layout .winnings-table__container th,
+  .game-main-layout .winnings-table__container td {
+    height: 20px;
+    font-size: 12px;
+  }
+
+  .game-main-layout .simple-info {
+    min-height: 190px;
+  }
+
+  .game-main-layout .simple-info__draw,
+  .game-main-layout .simple-info__text {
+    font-size: 14px;
+  }
+}
+
+/* TRUE EOF payout-table clone. */
+.game-main-layout .winnings-table {
+  box-sizing: border-box;
+  width: min(100%, 404px);
+  height: 342px;
+  min-height: 342px;
+  padding: 7px 7px 6px;
+  border: 5px solid #c98b0a;
+  border-radius: 10px;
+  background: #6b170e;
+  box-shadow:
+    inset 0 0 0 2px #5b120b,
+    inset 0 0 0 4px rgba(255, 230, 59, 0.65),
+    0 2px 0 #6d3502,
+    0 0 0 1px rgba(255, 230, 59, 0.45);
+  overflow: hidden;
+}
+
+.game-main-layout .winnings-table::before,
+.game-main-layout .winnings-table::after {
+  display: none;
+}
+
+.game-main-layout .winnings-table__title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 29px;
+  margin: 0;
+  padding: 0;
+  border-radius: 2px 2px 0 0;
+  background: linear-gradient(180deg, #64180f 0%, #3c0905 100%);
+  color: #ffffff;
+  font-family: Ubuntu, Arial, sans-serif;
+  font-size: 19px;
+  font-weight: 900;
+  line-height: 29px;
+  letter-spacing: 0;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow:
+    0 2px 0 #090302,
+    1px 0 0 rgba(255, 255, 255, 0.28);
+}
+
+.game-main-layout .winnings-table__container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 292px;
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: #f8f4f1;
+}
+
+.game-main-layout .winnings-table__container th,
+.game-main-layout .winnings-table__container td {
+  box-sizing: border-box;
+  height: 21px;
+  padding: 0 4px;
+  border: 2px solid rgba(132, 42, 30, 0.5);
+  color: #202020;
+  font-family: Ubuntu, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 19px;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  text-shadow:
+    1px 1px 0 rgba(255, 255, 255, 0.88),
+    0 0 1px rgba(0, 0, 0, 0.28);
+}
+
+.game-main-layout .winnings-table__container thead th {
+  height: 24px;
+  background: #ead5cf;
+  color: #7c241b;
+  font-size: 13px;
+  line-height: 21px;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.72);
+}
+
+.game-main-layout .winnings-table__container th:first-child,
+.game-main-layout .winnings-table__container td:first-child {
+  width: 32px;
+  background: #ecd8d2;
+  color: #8a2b21;
+  font-size: 16px;
+}
+
+.game-main-layout .winnings-table__container tbody tr:nth-child(odd) {
+  background: #f9f5f3;
+}
+
+.game-main-layout .winnings-table__container tbody tr:nth-child(even) {
+  background: #eadeda;
+}
+
+.game-main-layout .winnings-table__container th:nth-child(2),
+.game-main-layout .winnings-table__container td:nth-child(2) {
+  width: 52px;
+}
+
+@media (max-width: 1380px) {
+  .game-main-layout .winnings-table {
+    width: min(100%, 360px);
+    height: 306px;
+    min-height: 306px;
+    padding: 6px;
+  }
+
+  .game-main-layout .winnings-table__title {
+    height: 26px;
+    font-size: 16px;
+    line-height: 26px;
+  }
+
+  .game-main-layout .winnings-table__container {
+    height: 262px;
+  }
+
+  .game-main-layout .winnings-table__container th,
+  .game-main-layout .winnings-table__container td {
+    height: 19px;
+    font-size: 13px;
+    line-height: 17px;
+  }
+
+  .game-main-layout .winnings-table__container thead th {
+    height: 22px;
+    font-size: 11px;
+  }
+}
+
+.game-main-layout .msg_box {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 90%;
+  height: 207px;
+  margin: 16px;
+  margin-right: 10% !important;
+  padding: 34px 28px;
+  background: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_003_299x267_at_1_606.png")
+    center / 100% 100% no-repeat;
+  color: #371508;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 900;
+  line-height: 1.08;
+}
+
+.game-main-layout .msg_box__row {
+  margin-bottom: 14px;
+}
+
+.game-main-layout .msg_box__row:last-child {
+  margin-bottom: 0;
+}
+
+.game-main-layout .msg_box__label,
+.game-main-layout .msg_box__value {
+  display: block;
+}
+
+.game-main-layout .msg_box__label {
+  color: #7d2b16;
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.game-main-layout .msg_box__value {
+  color: #201007;
+  font-size: 22px;
+  text-shadow: 1px 1px 0 rgba(255, 245, 173, 0.82);
+}
+
+/* 0-12 lottery payout panel, matched to the extracted dashboard frame. */
+.game-main-layout .winnings-table {
+  width: 410px;
+  height: 381px;
+  min-height: 381px;
+  padding: 6px 7px 7px 7px;
+  border: 0;
+  border-radius: 0;
+  background: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_002_311x381_at_693_1.png")
+    center / 100% 100% no-repeat;
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.game-main-layout .winnings-table__title {
+  height: 31px;
+  margin: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #ffe6dd;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  font-weight: 900;
+  line-height: 31px;
+  letter-spacing: 0;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow:
+    1px 1px 0 #1c0301,
+    0 0 2px rgba(255, 255, 255, 0.35);
+}
+
+.game-main-layout .winnings-table__container {
+  width: 396px;
+  height: 337px;
+  margin: 0;
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: transparent;
+}
+
+.game-main-layout .winnings-table__col.--symbol {
+  width: 29px;
+}
+
+.game-main-layout .winnings-table__col.--x1 {
+  width: 45px;
+}
+
+.game-main-layout .winnings-table__col.--x2 {
+  width: 70px;
+}
+
+.game-main-layout .winnings-table__col.--x3 {
+  width: 70.5px;
+}
+
+.game-main-layout .winnings-table__col.--x4 {
+  width: 76.5px;
+}
+
+.game-main-layout .winnings-table__col.--x5 {
+  width: 105px;
+}
+
+.game-main-layout .winnings-table__container th,
+.game-main-layout .winnings-table__container td {
+  height: 24px;
+  padding: 0 4px;
+  border: 1px solid rgba(148, 57, 45, 0.64);
+  color: #39110d;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+  vertical-align: middle;
+  text-shadow: none;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.game-main-layout .winnings-table__container thead th {
+  height: 25px;
+  background: #efc0b8;
+  color: #75251d;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 24px;
+}
+
+.game-main-layout .winnings-table__container th:first-child,
+.game-main-layout .winnings-table__container td:first-child {
+  background: #efc0b8;
+  color: #74251d;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.game-main-layout .winnings-table__container tbody tr:nth-child(odd),
+.game-main-layout .winnings-table__container tbody tr:nth-child(odd) td {
+  background: #eadeda;
+}
+
+.game-main-layout .winnings-table__container tbody tr:nth-child(even),
+.game-main-layout .winnings-table__container tbody tr:nth-child(even) td {
+  background: #f9f5f3;
+}
+
+.game-main-layout .winnings-table__container thead th,
+.game-main-layout .winnings-table__container tbody tr td:first-child,
+.game-main-layout .winnings-table__container tbody td:first-child {
+  background: #efc0b8;
+}
+
+.game-main-layout .winnings-table__container tbody td:nth-child(n + 2) {
+  font-size: 15px;
+  font-weight: 900;
 }

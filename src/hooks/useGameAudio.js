@@ -54,7 +54,7 @@ export function useGameAudio() {
       if (!src) return;
       const base = getAudio(src);
       const audio = restart ? base.cloneNode(true) : base;
-      audio.volume = volume;
+      audio.volume = volume * 0.5;
       audio.loop = loop;
       if (restart) audio.currentTime = 0;
       const playback = audio.play();
@@ -71,10 +71,20 @@ export function useGameAudio() {
         backgroundRef.current.pause();
         backgroundRef.current = null;
       }
-      backgroundRef.current = playSrc(src, { loop: true, volume: 0.28, restart: false });
+      backgroundRef.current = playSrc(src, {
+        loop: true,
+        volume: 0.28,
+        restart: false,
+      });
     },
     [playSrc],
   );
+
+  const stopBackground = useCallback(() => {
+    if (!backgroundRef.current) return;
+    backgroundRef.current.pause();
+    backgroundRef.current = null;
+  }, []);
 
   useEffect(() => {
     [media.reveal, media.spin].forEach((src) => {
@@ -85,16 +95,23 @@ export function useGameAudio() {
 
   return useCallback(
     (event, payload) => {
-      if (event === "background") playBackground("/media/eldorado-main-theme.39d363ed.mp3");
+      if (event === "background")
+        playBackground("/media/eldorado-main-theme.39d363ed.mp3");
+      if (event === "stopBackground") stopBackground();
       if (event === "click") playSrc(media.click, { volume: 0.65 });
       if (event === "buttonPress") playSrc(media.buttonPress, { volume: 1 });
       if (event === "amount") playSrc(media.amount, { volume: 0.75 });
       if (event === "spin") playSrc(media.spin, { volume: 0.9 });
+      if (event === "stopReveal") {
+        const receipt = getAudio(media.reveal);
+        receipt.pause();
+        receipt.currentTime = 0;
+      }
       if (event === "reveal") {
         const receipt = getAudio(media.reveal);
         receipt.pause();
         receipt.currentTime = 0;
-        receipt.volume = 0.8;
+        receipt.volume = 0.4;
         const playback = receipt.play();
         if (playback?.catch) playback.catch(() => {});
       }
@@ -104,9 +121,11 @@ export function useGameAudio() {
       if (event === "freeTickets") playSrc(media.freeTickets, { volume: 0.9 });
       if (event === "win") {
         const firstSymbol = payload?.lineWins?.[0]?.symbol;
-        playSrc(winSoundBySymbol[firstSymbol] ?? media.receiptWin, { volume: 0.85 });
+        playSrc(winSoundBySymbol[firstSymbol] ?? media.receiptWin, {
+          volume: 0.85,
+        });
       }
     },
-    [getAudio, playBackground, playSrc],
+    [getAudio, playBackground, playSrc, stopBackground],
   );
 }

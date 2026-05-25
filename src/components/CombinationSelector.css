@@ -1,0 +1,224 @@
+.game-main-layout .main-container__left::before {
+  content: "Выбор лотерейной комбинации";
+  white-space: wrap;
+  display: block;
+  margin: 0 0 8px 0;
+  color: #fff;
+  font-family: Ubuntu, Arial, sans-serif;
+  font-size: 19px;
+  font-weight: 900;
+  line-height: 0.9;
+  width: 200px;
+  margin-left: 38px;
+  text-shadow: 1px 2px 0 rgba(118, 31, 0, 0.75);
+}
+
+.game-main-layout .combination-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow: hidden;
+  align-items: flex-end;
+  margin-left: 18px;
+}
+
+.game-main-layout .combination-group.--disabled {
+  pointer-events: none;
+}
+
+.game-main-layout .combination-item {
+  position: relative;
+  width: 100%;
+  height: 96px;
+  min-height: 0;
+  padding: 9px 20px 5px 20px;
+  border: 0;
+  border-radius: 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  box-shadow: none;
+  color: #111;
+  cursor: pointer;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.game-main-layout .combination-item#combi-1 {
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_021_238x82_at_1_1483.png");
+}
+
+.game-main-layout .combination-item#combi-2,
+.game-main-layout .combination-item#combi-3 {
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_023_238x98_at_1_1567.png");
+}
+
+.game-main-layout .combination-item#combi-4,
+.game-main-layout .combination-item#combi-5 {
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_025_238x107_at_1_1667.png");
+}
+
+.game-main-layout .combination-item#combi-7 {
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_027_238x126_at_1_1776.png");
+}
+
+.game-main-layout .combination-item#combi-9 {
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_029_238x140_at_1_1904.png");
+}
+
+.game-main-layout .combination-item#combi-1.--glow {
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_009_242x89_at_3_875.png");
+}
+
+.game-main-layout .combination-item#combi-2.--glow,
+.game-main-layout .combination-item#combi-3.--glow {
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_011_242x105_at_3_968.png");
+}
+
+.game-main-layout .combination-item#combi-4.--glow,
+.game-main-layout .combination-item#combi-5.--glow {
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_013_242x114_at_3_1077.png");
+}
+
+.game-main-layout .combination-item#combi-7.--glow {
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_015_242x133_at_3_1195.png");
+}
+
+.game-main-layout .combination-item#combi-9.--glow {
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_018_242x147_at_3_1332.png");
+}
+
+.game-main-layout .combination-item.--glow {
+  box-shadow: none;
+  color: #fff;
+}
+
+.game-main-layout .combination-item#combi-1 {
+  height: auto;
+}
+
+.game-main-layout .combination-item#combi-2,
+.game-main-layout .combination-item#combi-3 {
+  height: 108px;
+}
+
+.game-main-layout .combination-item#combi-4,
+.game-main-layout .combination-item#combi-5 {
+  height: auto;
+  height: 123px;
+}
+
+.game-main-layout .combination-item#combi-7 {
+  height: auto;
+  height: 133px;
+}
+
+.game-main-layout .combination-item#combi-9 {
+  height: 143px;
+}
+
+.game-main-layout .combination-item#combi-1.--glow {
+  width: 100%;
+  height: auto;
+}
+
+.game-main-layout .combination-item#combi-2.--glow,
+.game-main-layout .combination-item#combi-3.--glow {
+  width: 100%;
+  height: 108px;
+}
+
+.game-main-layout .combination-item#combi-4.--glow,
+.game-main-layout .combination-item#combi-5.--glow {
+  width: 100%;
+  height: 123px;
+}
+
+.game-main-layout .combination-item#combi-7.--glow {
+  width: 100%;
+  height: 133px;
+}
+
+.game-main-layout .combination-item#combi-9.--glow {
+  width: 100%;
+  height: 143px;
+}
+
+.game-main-layout .combination-item__title {
+  grid-column: 1 / 2;
+  margin: 0;
+  color: #cf2a16;
+  font-family: Ubuntu, Arial, sans-serif;
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 #fff6b6;
+  text-align: center;
+  text-shadow: 0 2px 0 #8b150b;
+}
+
+.game-main-layout .combination-item.--glow .combination-item__title {
+  color: #fff;
+  text-shadow: 0 2px 0 #8b150b;
+}
+
+.game-main-layout .combination-item__count {
+  display: none;
+  grid-column: 2;
+  grid-row: 1 / 4;
+  align-self: start;
+  justify-self: end;
+  color: #a54012;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 58px;
+  font-weight: 900;
+  line-height: 0.82;
+  text-shadow: 2px 1px 0 #f7df60;
+}
+
+.game-main-layout .combination-item.--glow .combination-item__count {
+  color: #f6d32b;
+  text-shadow: 2px 1px 0 #6e1608;
+}
+
+.game-main-layout .combination-item__subTitle,
+.game-main-layout .combination-item__wrapper,
+.game-main-layout .combination-item__text {
+  color: inherit;
+  font-family: Ubuntu, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1;
+  letter-spacing: 0;
+  text-align: left;
+}
+
+.combination-item__text {
+  color: #cf2a16 !important;
+  font-weight: bold;
+  text-shadow: 0 2px 0 #8b150b;
+  font-weight: bold;
+}
+
+.combination-item.--glow .combination-item__text {
+  color: white !important;
+  font-weight: bold;
+}
+
+.combination-item__subTitle {
+  font-weight: bold !important;
+  text-shadow: 0 2px 0 #232222;
+}
+
+.combination-item.--glow .combination-item__subTitle {
+  color: rgb(239, 189, 64) !important;
+  font-weight: bold;
+}
+
+.combination-item__wrapper {
+  margin-top: -10px;
+}
+
+.last_subTitle {
+  display: block;
+  margin-top: -10px !important;
+}

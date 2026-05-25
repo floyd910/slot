@@ -1,16 +1,26 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { flushSync } from "react-dom";
-import { AlertTriangle, RotateCcw, WifiOff } from "lucide-react";
+import { AlertTriangle } from "lucide-react";
 import { frameApi } from "./api/frameApi.js";
-import ActionPanel from "./components/ActionPanel.jsx";
 import BottomBar from "./components/BottomBar.jsx";
+import CombinationSelector from "./components/CombinationSelector.jsx";
 import DoubleMode from "./components/DoubleMode.jsx";
+import EldoradoDoubleScene from "./components/EldoradoDoubleScene.jsx";
+import EldoradoPurchasePanel from "./components/EldoradoPurchasePanel.jsx";
 import GameMenu from "./components/GameMenu.jsx";
 import Lobby from "./components/Lobby.jsx";
 import LotteryGrid from "./components/LotteryGrid.jsx";
 import Paytable from "./components/Paytable.jsx";
-import TopBar from "./components/TopBar.jsx";
-import { stakeOptions } from "./data/mockData.js";
+import ResultPanel from "./components/ResultPanel.jsx";
+import RuntimeState, { stateCopy } from "./components/RuntimeState.jsx";
+import StartupLoader from "./components/StartupLoader.jsx";
+import {
+  combinations as fallbackCombinations,
+  games as fallbackGames,
+  initialGrid,
+  paytable as fallbackPaytable,
+  stakeOptions,
+} from "./data/mockData.js";
 import {
   buildRequestId,
   getMissingRequiredContext,
@@ -20,9 +30,16 @@ import {
 } from "./hooks/useFrameBridge.js";
 import { useGameAudio } from "./hooks/useGameAudio.js";
 import WinningsDashboard from "./components/WinningDashboard.jsx";
+import "./App.css";
 
 const initialContext = readFrameParams();
 const REQUEST_TIMEOUT_MS = 9000;
+const LOTTERY_REVEAL_STEP_MS = 420;
+const LOTTERY_REVEAL_COLUMNS = 5;
+const LOTTERY_REVEAL_AUDIO_STOP_MS =
+  LOTTERY_REVEAL_STEP_MS * (LOTTERY_REVEAL_COLUMNS - 1) + 320;
+const LOTTERY_REVEAL_SETTLE_MS =
+  LOTTERY_REVEAL_STEP_MS * (LOTTERY_REVEAL_COLUMNS - 1) + 650;
 const RETRYABLE_CODES = new Set(["NETWORK_ERROR", "TIMEOUT"]);
 const emptyDoubling = {
   active: false,
@@ -35,22 +52,8 @@ const emptyDoubling = {
   split: 0,
   revealKey: 0,
   changedIndex: -1,
-};
-
-const stateCopy = {
-  "initial-loading": "Preparing module...",
-  "bootstrap-loading": "Validating session...",
-  ready: "Ready",
-  processing: "Operation is being processed...",
-  empty: "No games are available",
-  error: "Something went wrong",
-  "network-error": "Network connection was interrupted",
-  "session-expired": "Session expired",
-  "unsupported-environment": "This environment is not supported",
-  maintenance: "Module is temporarily unavailable",
-  "invalid-session": "Invalid session",
-  "access-denied": "Access denied",
-  "configuration-error": "Configuration error",
+  lastPick: "",
+  lastStatus: "",
 };
 
 const withTimeout = (promise, label) =>
@@ -66,6 +69,67 @@ const withTimeout = (promise, label) =>
   ]);
 
 const wait = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
+const isEnabled = (value) =>
+  value === true ||
+  value === 1 ||
+  value === "1" ||
+  String(value).toLowerCase() === "true";
+const STARTUP_VIDEO_SRC = "/media/terminal-loader.mp4";
+const STARTUP_ASSETS = {
+  images: [
+    "/img/extracted/игра-Хушкол-элементы-таблица-выигрышей-1_1/sprite_001_1282x1026_at_1_1.png",
+    "/img/extracted/тут-кнопки-справа-1_0/sprite_001_284x152_at_1_1.png",
+    "/img/extracted/тут-кнопки-справа-1_0/sprite_002_284x152_at_1_155.png",
+    "/img/extracted/тут-кнопки-справа-1_0/sprite_004_284x102_at_1_463.png",
+    "/img/extracted/тут-кнопки-справа-1_0/sprite_005_284x102_at_1_567.png",
+    "/img/extracted/тут-кнопки-справа-1_0/sprite_007_284x152_at_1_775.png",
+    "/img/extracted/тут-кнопки-справа-1_0/sprite_008_284x152_at_1_929.png",
+    "/img/eldorado-gold-cell.webp",
+    "/img/gold-cell-inner.webp",
+    "/img/eldorado-winnings-table-bg.webp",
+    "/img/eldorado-winnings-title-bg.webp",
+  ],
+  videos: [STARTUP_VIDEO_SRC],
+};
+
+const preloadImage = (src) =>
+  new Promise((resolve) => {
+    const image = new Image();
+    image.onload = resolve;
+    image.onerror = resolve;
+    image.src = src;
+  });
+
+const preloadVideo = (src) =>
+  new Promise((resolve) => {
+    const video = document.createElement("video");
+    let settled = false;
+    const done = () => {
+      if (settled) return;
+      settled = true;
+      resolve();
+    };
+    video.muted = true;
+    video.playsInline = true;
+    video.preload = "auto";
+    video.addEventListener("canplaythrough", done, { once: true });
+    video.addEventListener("loadeddata", done, { once: true });
+    video.addEventListener("error", done, { once: true });
+    window.setTimeout(done, 6000);
+    video.src = src;
+    video.load();
+  });
+
+const preloadStartupAssets = async () => {
+  const fontReady =
+    document.fonts?.ready?.catch?.(() => {}) ?? Promise.resolve();
+  await Promise.all([
+    fontReady,
+    ...STARTUP_ASSETS.images.map(preloadImage),
+    ...STARTUP_ASSETS.videos.map(preloadVideo),
+    wait(900),
+  ]);
+};
 
 const normalizeRuntimeStatus = (error) => {
   if (!navigator.onLine) return "network-error";
@@ -110,13 +174,53 @@ export default function App() {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [showGameMenu, setShowGameMenu] = useState(false);
   const [spinHistory, setSpinHistory] = useState([]);
+  const [startupAssetsReady, setStartupAssetsReady] = useState(false);
+  const [startupLoaderVisible, setStartupLoaderVisible] = useState(true);
+  const [startupLoaderLeaving, setStartupLoaderLeaving] = useState(false);
   const playSound = useGameAudio();
   const emitSound = useCallback(
     (event, payload) => {
+      if (!visualMode && !["reveal", "stopReveal", "win"].includes(event)) {
+        return;
+      }
       if (soundEnabled) playSound(event, payload);
     },
-    [playSound, soundEnabled],
+    [playSound, soundEnabled, visualMode],
   );
+  const emitLotteryRevealSounds = useCallback(() => {
+    window.requestAnimationFrame(() => {
+      Array.from({ length: LOTTERY_REVEAL_COLUMNS }, (_, index) => {
+        window.setTimeout(
+          () => emitSound("reveal"),
+          index * LOTTERY_REVEAL_STEP_MS,
+        );
+      });
+      window.setTimeout(
+        () => emitSound("stopReveal"),
+        LOTTERY_REVEAL_AUDIO_STOP_MS,
+      );
+    });
+  }, [emitSound]);
+
+  useEffect(() => {
+    if (visualMode && soundEnabled) {
+      playSound("background");
+      return;
+    }
+    playSound("stopBackground");
+  }, [playSound, soundEnabled, visualMode]);
+
+  useEffect(() => () => playSound("stopBackground"), [playSound]);
+
+  useEffect(() => {
+    let active = true;
+    preloadStartupAssets().then(() => {
+      if (active) setStartupAssetsReady(true);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const diagnostics = useMemo(
     () => ({
@@ -217,14 +321,54 @@ export default function App() {
     [postEvent],
   );
 
+  const reportOperationError = useCallback(
+    (runtimeError, fallbackMessage = "Request failed") => {
+      const nextStatus = normalizeRuntimeStatus(runtimeError);
+      const message = runtimeError?.message || fallbackMessage;
+      setError(message);
+      setStatus("ready");
+      setLastKnownState(nextStatus);
+      postEvent("ERROR", {
+        code: runtimeError?.code ?? "UNKNOWN",
+        message,
+      });
+    },
+    [postEvent],
+  );
+
+  const recoverStartupToGameShell = useCallback(
+    (runtimeError) => {
+      const nextStatus = normalizeRuntimeStatus(runtimeError);
+      const fallbackBalance = Number(
+        context.balance ?? context.testBalance ?? 0,
+      );
+
+      setPlayer((current) =>
+        current ?? {
+          id: context.userId ?? "demo-player",
+          name: "Demo Player",
+          balance: Number.isFinite(fallbackBalance) ? fallbackBalance : 0,
+          currency: context.currency ?? "GEL",
+        },
+      );
+      setGames(fallbackGames);
+      setCombinations(fallbackCombinations);
+      setGrid(initialGrid);
+      setPaytableRows(fallbackPaytable);
+      setPaytableStatus("ready");
+      setCurrentGame(
+        (current) => current ?? context.gameId ?? fallbackGames[0]?.id ?? null,
+      );
+      setError("");
+      setStatus("ready");
+      setLastKnownState(nextStatus);
+    },
+    [context],
+  );
+
   const init = useCallback(async () => {
     const missing = getMissingRequiredContext(context);
     if (missing.length) {
-      if (context.mode === "embedded" && context.initSource === "missing") {
-        setStatus("initial-loading");
-        setError("");
-        return;
-      }
       const configError = new Error(
         `Missing required init context: ${missing.join(", ")}`,
       );
@@ -233,7 +377,7 @@ export default function App() {
         : missing.includes("sessionId")
           ? "INVALID_SESSION"
           : "CONFIGURATION_ERROR";
-      reportError(configError);
+      recoverStartupToGameShell(configError);
       return;
     }
 
@@ -260,9 +404,14 @@ export default function App() {
         userId: session.player.id,
       });
     } catch (initError) {
+      const nextStatus = normalizeRuntimeStatus(initError);
+      if (nextStatus === "network-error" || nextStatus === "error") {
+        recoverStartupToGameShell(initError);
+        return;
+      }
       reportError(initError, "Could not initialize iframe module");
     }
-  }, [context, postEvent, reportError]);
+  }, [context, postEvent, recoverStartupToGameShell, reportError]);
 
   useEffect(() => {
     if (!window.ResizeObserver || !window.Promise) {
@@ -278,10 +427,13 @@ export default function App() {
       if (status === "network-error") init();
     };
     const disconnect = () => {
-      setStatus("network-error");
-      setError(
-        "Connection lost. The last operation may still finish on the server.",
-      );
+      if (lastKnownState === "spin-submitted") {
+        setError(
+          "Connection lost. The last operation may still finish on the server.",
+        );
+      }
+      setStatus("ready");
+      setLastKnownState("network-error");
     };
     window.addEventListener("online", reconnect);
     window.addEventListener("offline", disconnect);
@@ -289,7 +441,23 @@ export default function App() {
       window.removeEventListener("online", reconnect);
       window.removeEventListener("offline", disconnect);
     };
-  }, [init, status]);
+  }, [init, lastKnownState, status]);
+
+  useEffect(() => {
+    if (
+      !startupLoaderVisible ||
+      !startupAssetsReady ||
+      ["initial-loading", "bootstrap-loading"].includes(status)
+    ) {
+      return;
+    }
+
+    setStartupLoaderLeaving(true);
+    const timeout = window.setTimeout(() => {
+      setStartupLoaderVisible(false);
+    }, 520);
+    return () => window.clearTimeout(timeout);
+  }, [startupAssetsReady, startupLoaderVisible, status]);
 
   const loadPaytable = async () => {
     setShowPaytable(true);
@@ -305,28 +473,29 @@ export default function App() {
     )
       return;
     const isFreeSpin = freeSpinsLeft > 0;
+    const testMode = isEnabled(context.testMode ?? context.demoMode);
+    const effectiveDemo = isFreeSpin ? false : demo || testMode;
     const totalStake = stake * selectedCombination.groups.length;
+    if (
+      !effectiveDemo &&
+      !isFreeSpin &&
+      Number(player?.balance ?? 0) < totalStake
+    ) {
+      setError("Insufficient balance for selected combination");
+      setLastKnownState("insufficient-balance");
+      setStatus("ready");
+      return;
+    }
     const requestId = buildRequestId("spin");
     const spinStartedAt = performance.now();
 
-    if (!demo && !isFreeSpin && player.balance < totalStake) {
-      reportError(
-        Object.assign(
-          new Error("Insufficient balance for selected combination"),
-          { code: "ACCESS_DENIED" },
-        ),
-      );
-      return;
-    }
-
     try {
-      if (visualMode) emitSound("spin");
       setStatus("processing");
       setGridAnimation("spinning");
       setLastKnownState("spin-submitted");
       setError("");
       setPlayer((current) =>
-        demo || isFreeSpin
+        effectiveDemo || isFreeSpin
           ? current
           : {
               ...current,
@@ -337,7 +506,7 @@ export default function App() {
         frameApi.spin({
           stake,
           lines: selectedCombination.groups.length,
-          isDemo: demo,
+          isDemo: effectiveDemo,
           isFreeSpin,
           selectedCombination,
           requestId,
@@ -348,21 +517,26 @@ export default function App() {
         ? Math.max(0, 1500 - (performance.now() - spinStartedAt))
         : 0;
       if (closeTimeLeft > 0) await wait(closeTimeLeft);
-      const isDigitWin = !visualMode && result.WinSum > 0;
-      const shouldCreditWin = !demo && result.WinSum > 0 && !isDigitWin;
+      const isDigitWin = result.WinSum > 0;
+      const shouldCreditWin =
+        !effectiveDemo && result.WinSum > 0 && !isDigitWin;
       if (visualMode) {
         setGrid(result.grid);
         setGridRevealKey((key) => key + 1);
         setGridAnimation("revealing");
+        emitLotteryRevealSounds();
       } else {
         flushSync(() => {
           setGrid(result.grid);
           setGridRevealKey((key) => key + 1);
           setGridAnimation("revealing");
         });
-        window.requestAnimationFrame(() => emitSound("reveal"));
+        emitLotteryRevealSounds();
       }
-      window.setTimeout(() => setGridAnimation("settled"), 1500);
+      window.setTimeout(
+        () => setGridAnimation("settled"),
+        LOTTERY_REVEAL_SETTLE_MS,
+      );
       setSpinResult({ ...result, creditedToBalance: shouldCreditWin });
       setDoublingState(
         isDigitWin
@@ -377,6 +551,8 @@ export default function App() {
               split: 0,
               revealKey: 0,
               changedIndex: -1,
+              lastPick: "",
+              lastStatus: "",
             }
           : emptyDoubling,
       );
@@ -407,25 +583,42 @@ export default function App() {
       } else if (result.FreeSpin) {
         setFreeSpinsTotal(15);
         setFreeSpinsLeft(15);
-        emitSound("freeTickets");
+        if (visualMode) emitSound("freeTickets");
       }
 
-      await wait(1500);
+      await wait(LOTTERY_REVEAL_SETTLE_MS);
       setStatus("ready");
       setLastKnownState(result.WinSum > 0 ? "win" : "lose");
-      emitSound(result.WinSum > 0 ? "win" : "lose", result);
+      if (result.WinSum > 0) emitSound("win", result);
+      if (visualMode && result.WinSum <= 0) emitSound("lose", result);
       postEvent("LOADED", { requestId, state: "spin-complete" });
       postEvent("UPDATE_BALANCE", {
         balance: Number(
           (
             player.balance -
-            (demo || isFreeSpin ? 0 : totalStake) +
+            (effectiveDemo || isFreeSpin ? 0 : totalStake) +
             (shouldCreditWin ? result.WinSum : 0)
           ).toFixed(2),
         ),
       });
+      if (result.WinSum <= 0) {
+        frameApi
+          .pay({ idCard: result.idCard, requestId: buildRequestId("pay") })
+          .catch(() => {});
+      }
     } catch (spinError) {
-      reportError(
+      setGridAnimation("settled");
+      if (!effectiveDemo && !isFreeSpin) {
+        setPlayer((current) =>
+          current
+            ? {
+                ...current,
+                balance: Number((current.balance + totalStake).toFixed(2)),
+              }
+            : current,
+        );
+      }
+      reportOperationError(
         spinError,
         "Spin result is unknown. Check status before retrying.",
       );
@@ -467,7 +660,7 @@ export default function App() {
       await withTimeout(
         frameApi.pay({ idCard: spinResult.idCard, requestId }),
         "Pay",
-      );
+      ).catch(() => null);
       if (!alreadyCredited) {
         setPlayer((current) => ({
           ...current,
@@ -490,10 +683,7 @@ export default function App() {
           balance: Number((player.balance + payout).toFixed(2)),
         });
     } catch (payError) {
-      reportError(
-        payError,
-        "Payment status is unknown. Check status before retrying.",
-      );
+      setStatus("ready");
     }
   };
 
@@ -518,7 +708,7 @@ export default function App() {
     }
   };
 
-  const playFooterDouble = async () => {
+  const playFooterDouble = async (side = "x2") => {
     if (!spinResult?.idCard || doublingState.loading || status === "processing")
       return;
     const step = doublingState.step || 0;
@@ -526,9 +716,9 @@ export default function App() {
       doublingState.currentAmount || spinResult.WinSum || 0,
     );
     if (step >= 5 || currentAmount <= 0) return;
-    if (!doublingState.entered) {
+    try {
       emitSound("double");
-      if (spinResult.creditedToBalance) {
+      if (!doublingState.entered && spinResult.creditedToBalance) {
         setPlayer((current) => ({
           ...current,
           balance: Number((current.balance - spinResult.WinSum).toFixed(2)),
@@ -537,22 +727,6 @@ export default function App() {
           current ? { ...current, creditedToBalance: false } : current,
         );
       }
-      setDoublingState((current) => ({
-        ...emptyDoubling,
-        ...current,
-        active: true,
-        entered: true,
-        loading: false,
-        currentAmount,
-        deferredBalance: Number(current.deferredBalance ?? 0),
-      }));
-      setLastKnownState("double");
-      return;
-    }
-
-    const deferredBalance = Number(doublingState.deferredBalance ?? 0);
-    try {
-      emitSound("double");
       setStatus("processing");
       setDoublingState((current) => ({
         ...emptyDoubling,
@@ -562,21 +736,21 @@ export default function App() {
         loading: true,
         currentAmount,
         changedIndex: step,
+        lastPick: side === "left" || side === "right" ? side : "",
+        lastStatus: "",
       }));
       const result = await withTimeout(
         frameApi.double({
           idCard: spinResult.idCard,
           wasDouble: step + 1,
           sum: currentAmount,
-          side: "x2",
+          side,
           requestId: buildRequestId("double"),
         }),
         "Double",
       );
       const won = result.status === "win" && result.WinSum > 0;
-      const visibleWin = won
-        ? Number((result.WinSum + deferredBalance).toFixed(2))
-        : deferredBalance;
+      const visibleWin = won ? Number(result.WinSum.toFixed(2)) : 0;
       setSpinResult((current) =>
         current
           ? { ...current, WinSum: visibleWin, creditedToBalance: false }
@@ -594,11 +768,18 @@ export default function App() {
           currentAmount: won ? result.WinSum : 0,
           revealKey: current.revealKey + 1,
           changedIndex: step,
+          lastPick: side === "left" || side === "right" ? side : "",
+          lastStatus: won ? "win" : "lose",
         };
       });
       setStatus("ready");
       setLastKnownState(won ? "double-win" : "double-lose");
       emitSound(won ? "win" : "lose", result);
+      if (!won) {
+        frameApi
+          .pay({ idCard: spinResult.idCard, requestId: buildRequestId("pay") })
+          .catch(() => {});
+      }
     } catch (doubleError) {
       setDoublingState((current) => ({ ...current, loading: false }));
       reportError(
@@ -606,55 +787,6 @@ export default function App() {
         "Double result is unknown. Check status before retrying.",
       );
     }
-  };
-
-  const splitFooterDouble = () => {
-    if (
-      !doublingState.entered ||
-      !doublingState.active ||
-      doublingState.loading ||
-      doublingState.currentAmount <= 0
-    )
-      return;
-    setDoublingState((current) => {
-      if (
-        !current.entered ||
-        !current.active ||
-        current.loading ||
-        current.currentAmount <= 0
-      )
-        return current;
-      const half = Number((current.currentAmount / 2).toFixed(2));
-      if (half <= 0) return current;
-      return {
-        ...current,
-        currentAmount: half,
-        deferredBalance: Number(
-          ((current.deferredBalance ?? 0) + half).toFixed(2),
-        ),
-        split: (current.split ?? 0) + 1,
-      };
-    });
-  };
-
-  const resetFooterDoubleSplit = () => {
-    if (
-      !doublingState.entered ||
-      !doublingState.active ||
-      doublingState.loading ||
-      !doublingState.split
-    )
-      return;
-    setDoublingState((current) => ({
-      ...current,
-      currentAmount: Number(
-        ((current.currentAmount ?? 0) + (current.deferredBalance ?? 0)).toFixed(
-          2,
-        ),
-      ),
-      deferredBalance: 0,
-      split: 0,
-    }));
   };
 
   const pickDouble = async (side) => {
@@ -695,6 +827,11 @@ export default function App() {
       setStatus("ready");
       setLastKnownState(result.status === "win" ? "double-win" : "double-lose");
       emitSound(result.status === "win" ? "win" : "lose");
+      if (result.WinSum <= 0) {
+        frameApi
+          .pay({ idCard: spinResult.idCard, requestId: buildRequestId("pay") })
+          .catch(() => {});
+      }
     } catch (doubleError) {
       setDoubleState((current) => ({
         ...current,
@@ -723,7 +860,8 @@ export default function App() {
         return nextValue;
       });
     }
-    if (action === "fullscreen" && !visualMode) setExpandedBoard((value) => !value);
+    if (action === "fullscreen" && !visualMode)
+      setExpandedBoard((value) => !value);
     if (action === "menu") setShowGameMenu(true);
     if (action === "stake") {
       cycleStake(1);
@@ -770,13 +908,25 @@ export default function App() {
   const pendingDigitWin = !visualMode && Number(spinResult?.WinSum ?? 0) > 0;
   const isDoublingLocked =
     pendingDigitWin || Boolean(doublingState.active || doublingState.loading);
+  const testMode = isEnabled(context.testMode ?? context.demoMode);
+  const canAffordSpin =
+    testMode ||
+    freeSpinsLeft > 0 ||
+    Number(player?.balance ?? 0) >= totalPurchase;
+  const isVisualDoubling =
+    visualMode &&
+    Number(spinResult?.WinSum ?? 0) > 0 &&
+    Boolean(
+      doublingState.entered || doublingState.loading || doublingState.step > 0,
+    );
   const spinButtonDisabled =
     status === "initial-loading" ||
     status === "bootstrap-loading" ||
-    isDoublingLocked;
+    isDoublingLocked ||
+    !canAffordSpin;
   const hideHeader =
     context.mode === "embedded" && context.featureFlags?.hiddenHeader !== false;
-  const shellClass = `frame-app mode-${context.mode} theme-${context.theme}${hideHeader ? " headerless" : ""}${expandedBoard || visualMode ? " expanded-board" : ""}${visualMode ? " view-2 --eldorado" : " view-1"}`;
+  const shellClass = `frame-app mode-${context.mode} theme-${context.theme}${hideHeader ? " headerless" : ""}${expandedBoard || visualMode ? " expanded-board" : ""}${visualMode ? " view-2 --eldorado" : " view-1"}${isVisualDoubling ? " doubling-active" : ""}`;
   const runtimeState = !["ready", "empty", "processing"].includes(status) ? (
     <RuntimeState
       status={status}
@@ -807,55 +957,24 @@ export default function App() {
     ) : (
       <>
         <aside className="main-container__left">
-          <div
-            className={`combination-group${isBusy || isDoublingLocked ? " --disabled" : ""}`}
-          >
-            {combinations.map((combo) => (
-              <div
-                key={combo.id}
-                className={`combination-item${combo.id === selectedCombinationId ? " --glow" : ""}`}
-                id={`combi-${combo.id}`}
-                role="button"
-                tabIndex={isBusy || isDoublingLocked ? -1 : 0}
-                onClick={() => {
-                  if (isBusy || isDoublingLocked) return;
-                  emitSound("buttonPress");
-                  setSelectedCombinationId(combo.id);
-                }}
-                onKeyDown={(event) => {
-                  if (
-                    isBusy ||
-                    isDoublingLocked ||
-                    (event.key !== "Enter" && event.key !== " ")
-                  )
-                    return;
-                  event.preventDefault();
-                  emitSound("buttonPress");
-                  setSelectedCombinationId(combo.id);
-                }}
-              >
-                <h4 className="combination-item__title">Комбинация</h4>
-                <span className="combination-item__count">{combo.title}</span>
-                <p className="combination-item__subTitle">
-                  включающая группу координат:
-                </p>
-                <div className="combination-item__wrapper">
-                  {getCombinationTexts(combo).map((text, index, list) => (
-                    <span key={text} className="combination-item__text">
-                      {text}
-                      {index < list.length - 1 ? "," : ""}
-                    </span>
-                  ))}
-                  {combo.id !== 1 && (
-                    <span className="combination-item__subTitle">
-                      {" "}
-                      или их сочетание
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
+          {isVisualDoubling ? (
+            <EldoradoPurchasePanel
+              amount={doublingState.currentAmount || spinResult?.WinSum || 0}
+              deferredBalance={doublingState.deferredBalance}
+              balance={player?.balance ?? 0}
+              totalPurchase={totalPurchase}
+            />
+          ) : (
+            <CombinationSelector
+              combinations={combinations}
+              selectedCombinationId={selectedCombinationId}
+              disabled={isBusy || isDoublingLocked}
+              onSelect={(comboId) => {
+                emitSound("buttonPress");
+                setSelectedCombinationId(comboId);
+              }}
+            />
+          )}
         </aside>
         <section className="main-container__center" aria-busy={isBusy}>
           {error && (
@@ -864,92 +983,87 @@ export default function App() {
               {error}
             </div>
           )}
-          <LotteryGrid
-            grid={grid}
-            revealKey={gridRevealKey}
-            animationState={gridAnimation}
-            visualMode={visualMode}
-            winningCells={spinResult?.winningCells}
-            scatterCells={spinResult?.scatterCells}
-            doublingState={doublingState}
-          />
-          <ResultPanel
-            result={spinResult}
-            freeSpinsTotal={freeSpinsTotal}
-            freeSpinsLeft={freeSpinsLeft}
-          />
+          {isVisualDoubling ? (
+            <EldoradoDoubleScene
+              amount={doublingState.currentAmount || spinResult?.WinSum || 0}
+              step={(doublingState.step || 0) + 1}
+              loading={doublingState.loading}
+              lastPick={doublingState.lastPick}
+              lastStatus={doublingState.lastStatus}
+              onPick={playFooterDouble}
+            />
+          ) : (
+            <>
+              <LotteryGrid
+                grid={grid}
+                revealKey={gridRevealKey}
+                animationState={gridAnimation}
+                visualMode={visualMode}
+                winningCells={spinResult?.winningCells}
+                winningGroups={spinResult?.lineWins}
+                scatterCells={spinResult?.scatterCells}
+                doublingState={doublingState}
+              />
+              <span className="info_msg">
+                Для получения иформации <br />
+                перейдите в раздел инфо
+              </span>
+            </>
+          )}
         </section>
 
-        <WinningsDashboard
-          stake={stake}
-          selectedCombination={selectedCombination}
-          spinResult={spinResult}
-        />
+        {!isVisualDoubling && (
+          <div className="main-container__right">
+            <WinningsDashboard
+              stake={stake}
+              selectedCombination={selectedCombination}
+              spinResult={spinResult}
+            />
+          </div>
+        )}
       </>
     ));
 
   return (
-    <div className={shellClass} data-module-mode={context.mode}>
-      {!hideHeader && (
-        <TopBar
-          player={player}
-          mode={modeLabel}
-          context={context}
-          onBack={handleBack}
-          onFullscreen={requestFullscreen}
-        />
-      )}
+    <div
+      className={shellClass}
+      data-module-mode={context.mode}
+      data-startup-loading={startupLoaderVisible ? "true" : "false"}
+    >
       <div className="game_area">
-        <div className="top_bar">
-          <div className="main-header combination-main-header">
-            <div className="main-header__text">
-              Выбор лотерейной
-              <br />
-              комбинации
-            </div>
-          </div>
+        <img
+          className="header_img"
+          alt="Betproduct.com"
+          src="/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_003_398x172_at_1492_1.png"
+        />
 
-          <img
-            data-v-75f96f19=""
-            class="main-header__image main-header__heroEn"
-            src="https://lotogame.lotosport.tj/img/eldorado-logo.31ee1229.webp"
-            alt="eldorado image"
-          ></img>
-          {currentGame && !runtimeState && (
-            <ActionPanel
-              onAction={handleAction}
+        <div className="game-main-layout">
+          <div className="frame-content">{content}</div>
+          {!runtimeState && (
+            <BottomBar
+              player={player}
+              stake={stake}
+              totalPurchase={totalPurchase}
+              selectedCombination={selectedCombination}
+              spinResult={spinResult}
+              freeSpinsLeft={freeSpinsLeft}
+              multiplier={freeSpinsLeft > 0 ? 3 : 1}
               disabled={isBusy}
-              soundEnabled={soundEnabled}
-              expanded={expandedBoard}
+              spinDisabled={spinButtonDisabled}
+              doublingState={doublingState}
               visualMode={visualMode}
+              onDecreaseCombination={() => cycleCombination(-1)}
+              onIncreaseCombination={() => cycleCombination(1)}
+              onDecreaseStake={() => cycleStake(-1)}
+              onIncreaseStake={() => cycleStake(1)}
+              onSpin={() => handleSpin({ demo: true })}
+              onDouble={playFooterDouble}
+              onTakeMoney={collectWin}
+              onInfo={loadPaytable}
+              onVisualToggle={() => handleAction("visual")}
             />
           )}
         </div>
-        <div className="frame-content">{content}</div>
-        {!runtimeState && (
-          <BottomBar
-            player={player}
-            stake={stake}
-            totalPurchase={totalPurchase}
-            selectedCombination={selectedCombination}
-            spinResult={spinResult}
-            freeSpinsLeft={freeSpinsLeft}
-            multiplier={freeSpinsLeft > 0 ? 3 : 1}
-            disabled={isBusy}
-            doublingState={doublingState}
-            visualMode={visualMode}
-            onDecreaseCombination={() => cycleCombination(-1)}
-            onIncreaseCombination={() => cycleCombination(1)}
-            onDecreaseStake={() => cycleStake(-1)}
-            onIncreaseStake={() => cycleStake(1)}
-            onSpin={() => handleSpin()}
-            onDouble={playFooterDouble}
-            onSplitDouble={splitFooterDouble}
-            onResetSplit={resetFooterDoubleSplit}
-            onTakeMoney={collectWin}
-            onInfo={loadPaytable}
-          />
-        )}
         {showPaytable && (
           <Paytable
             rows={paytableRows}
@@ -968,109 +1082,14 @@ export default function App() {
             onClose={() => setShowGameMenu(false)}
           />
         )}
-      </div>
-    </div>
-  );
-}
-
-function getCombinationTexts(combo) {
-  if (Array.isArray(combo.displayGroups)) return combo.displayGroups;
-  return (combo.groups ?? []).map((group) =>
-    group.map(formatCoordinate).join("-"),
-  );
-}
-
-function formatCoordinate(coord) {
-  return String(coord).replace(/^A/, "А").replace(/^B/, "В").replace(/^C/, "С");
-}
-
-function PayoutTable({ rows }) {
-  return (
-    <div className="winnings-table">
-      <h2 className="winnings-table__title">Таблица выигрышей</h2>
-      <table className="winnings-table__container">
-        <thead>
-          <tr>
-            <th />
-            <th>x1</th>
-            <th>x2</th>
-            <th>x3</th>
-            <th>x4</th>
-            <th>x5</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row) => (
-            <tr key={row.symbol}>
-              <td>{row.symbol}</td>
-              {[1, 2, 3, 4, 5].map((count) => (
-                <td key={count}>
-                  {row[`x${count}`] == null
-                    ? ""
-                    : Number(row[`x${count}`]).toFixed(2)}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-function RuntimeState({ status, error, mode, onRetry }) {
-  const canRetry = [
-    "network-error",
-    "error",
-    "configuration-error",
-    "initial-loading",
-  ].includes(status);
-  return (
-    <main className="runtime-state">
-      <div className="state-icon">
-        {status === "network-error" ? (
-          <WifiOff size={32} />
-        ) : (
-          <AlertTriangle size={32} />
+        {startupLoaderVisible && (
+          <StartupLoader
+            videoSrc={STARTUP_VIDEO_SRC}
+            ready={startupAssetsReady}
+            leaving={startupLoaderLeaving}
+          />
         )}
       </div>
-      <h1>{stateCopy[status] ?? stateCopy.error}</h1>
-      <p>
-        {error ||
-          (mode === "embedded"
-            ? "Waiting for host initialization."
-            : "Open the module with a valid signed context.")}
-      </p>
-      {canRetry && (
-        <button type="button" className="primary-button" onClick={onRetry}>
-          <RotateCcw size={18} />
-          Retry
-        </button>
-      )}
-    </main>
-  );
-}
-
-function ResultPanel({ result, freeSpinsTotal, freeSpinsLeft }) {
-  const message = result
-    ? getResultMessage(result, freeSpinsTotal, freeSpinsLeft)
-    : "Выберите лотерейную комбинацию и сумму лотерейной ставки.";
-
-  return (
-    <div className="main-container__wrapper">
-      <div className="main-container__info">
-        <span>{message}</span>
-      </div>
     </div>
   );
-}
-
-function getResultMessage(result, freeSpinsTotal, freeSpinsLeft) {
-  if (freeSpinsTotal > 0)
-    return `Призовые спины: ${freeSpinsLeft}/${freeSpinsTotal}. Выигрыш: ${result.WinSum.toFixed(2)}.`;
-  if (result.scatterCount >= 2)
-    return `Скаттеры: ${result.scatterCount}. Выигрыш: ${result.WinSum.toFixed(2)}.`;
-  if (result.WinSum > 0)
-    return `Поздравляем! Ваш выигрыш: ${result.WinSum.toFixed(2)}.`;
-  return "Билет не выиграл. Выберите комбинацию и попробуйте еще раз.";
 }

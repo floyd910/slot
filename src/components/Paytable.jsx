@@ -1,27 +1,18 @@
 import "./Paytable.css";
+import { paytable as fallbackPaytable } from "../data/mockData.js";
 
 const labels = {
   title: "Таблица выплат",
   column1: "Номинал лотерейной ставки",
   column2: "Номинал лотерейной комбинации",
-  column3: "Группа координат основного игрового поля, составляющие лотерейную комбинацию",
+  column3:
+    "Группа координат основного игрового поля, составляющие лотерейную комбинацию",
   column4: "Номинал цифрового значения",
   column5: "Обозначение",
-  column6: "Количество выпадений цифровых значений в одной группе координат лотерейной комбинации",
+  column6:
+    "Количество выпадений цифровых значений в одной группе координат лотерейной комбинации",
 };
-
-const matrix = [
-  [0, 0, 2, 15, 50],
-  [0, 0, 5, 20, 100],
-  [0, 0, 5, 20, 100],
-  [0, 0, 5, 20, 100],
-  [0, 0, 10, 40, 200],
-  [0, 0, 10, 40, 200],
-  [0, 5, 15, 65, 250],
-  [0, 5, 25, 100, 500],
-  [0, 5, 30, 200, 1000],
-  [0, 10, 80, 1000, 5000],
-];
+const columns = ["x1", "x2", "x3", "x4", "x5"];
 
 const designations = [
   "eldorado-0.webp",
@@ -40,7 +31,13 @@ const designations = [
 const fallbackCombinations = {
   1: ["В1-В2-В3-В4-В5"],
   3: ["А1-А2-А3-А4-А5", "В1-В2-В3-В4-В5", "С1-С2-С3-С4-С5"],
-  5: ["А1-А2-А3-А4-А5", "В1-В2-В3-В4-В5", "С1-С2-С3-С4-С5", "А1-В2-С3-В4-А5", "С1-В2-А3-В4-С5"],
+  5: [
+    "А1-А2-А3-А4-А5",
+    "В1-В2-В3-В4-В5",
+    "С1-С2-С3-С4-С5",
+    "А1-В2-С3-В4-А5",
+    "С1-В2-А3-В4-С5",
+  ],
   7: [
     "А1-А2-А3-А4-А5",
     "В1-В2-В3-В4-В5",
@@ -66,11 +63,18 @@ const fallbackCombinations = {
 function formatMoney(value, fixed = false) {
   const numeric = Number(value);
   if (!Number.isFinite(numeric)) return "";
-  return fixed ? numeric.toFixed(2) : new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(numeric);
+  return fixed
+    ? numeric.toFixed(2)
+    : new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 2 }).format(
+        numeric,
+      );
 }
 
 function formatCoordinate(coordinate) {
-  return String(coordinate).replace(/^A/, "А").replace(/^B/, "В").replace(/^C/, "С");
+  return String(coordinate)
+    .replace(/^A/, "А")
+    .replace(/^B/, "В")
+    .replace(/^C/, "С");
 }
 
 function getCombinationNumber(selectedCombination) {
@@ -85,38 +89,52 @@ function getCombinationGroups(selectedCombination, combinationNumber) {
     return fallbackCombinations[combinationNumber];
   }
 
-  if (Array.isArray(selectedCombination?.groups) && selectedCombination.groups.length > 0) {
-    return selectedCombination.groups.map((group) => group.map(formatCoordinate).join("-"));
+  if (
+    Array.isArray(selectedCombination?.groups) &&
+    selectedCombination.groups.length > 0
+  ) {
+    return selectedCombination.groups.map((group) =>
+      group.map(formatCoordinate).join("-"),
+    );
   }
 
-  if (Array.isArray(selectedCombination?.displayGroups) && selectedCombination.displayGroups.length > 0) {
+  if (
+    Array.isArray(selectedCombination?.displayGroups) &&
+    selectedCombination.displayGroups.length > 0
+  ) {
     return selectedCombination.displayGroups;
   }
 
   return fallbackCombinations[1];
 }
 
-function calculatePayout(value, symbolIndex, stake, combinationNumber) {
+function calculatePayout(value, stake, combinationNumber) {
   if (!value) return "";
-  const total = symbolIndex === 0 ? value * stake * combinationNumber : value * stake;
+  const total = value * stake * combinationNumber;
   return formatMoney(total);
 }
 
-function SymbolRows({ stake, combinationNumber }) {
-  return matrix.map((row, symbolIndex) => (
-    <tr key={symbolIndex}>
-      <td>{symbolIndex}</td>
+function SymbolRows({ rows, stake, combinationNumber }) {
+  return rows.map((row) => (
+    <tr key={row.symbol}>
+      <td>{row.symbol}</td>
       <td>
-        <img className="mevaho-payments__img" alt="image" src={`/img/${designations[symbolIndex]}`} />
+        <img
+          className="mevaho-payments__img"
+          alt="image"
+          src={`/img/${designations[row.symbol] ?? designations[0]}`}
+        />
       </td>
-      {row.map((value, index) => (
-        <td key={index}>{calculatePayout(value, symbolIndex, stake, combinationNumber)}</td>
+      {columns.map((column) => (
+        <td key={column}>
+          {calculatePayout(row[column], stake, combinationNumber)}
+        </td>
       ))}
     </tr>
   ));
 }
 
-function DesktopPayments({ stake, combinationNumber, combinationGroups }) {
+function DesktopPayments({ rows, stake, combinationNumber, combinationGroups }) {
   return (
     <table className="mevaho-payments modal-payments__desktop">
       <colgroup>
@@ -132,11 +150,11 @@ function DesktopPayments({ stake, combinationNumber, combinationGroups }) {
           <th rowSpan="2">{labels.column3}</th>
           <th rowSpan="2">{labels.column4}</th>
           <th rowSpan="2">{labels.column5}</th>
-          <th colSpan={matrix[0].length}>{labels.column6}</th>
+          <th colSpan={columns.length}>{labels.column6}</th>
         </tr>
         <tr>
-          {matrix[0].map((_, index) => (
-            <th key={index}>x{index + 1}</th>
+          {columns.map((column, index) => (
+            <th key={column}>x{index + 1}</th>
           ))}
         </tr>
       </thead>
@@ -153,13 +171,17 @@ function DesktopPayments({ stake, combinationNumber, combinationGroups }) {
             ))}
           </td>
         </tr>
-        <SymbolRows stake={stake} combinationNumber={combinationNumber} />
+        <SymbolRows
+          rows={rows}
+          stake={stake}
+          combinationNumber={combinationNumber}
+        />
       </tbody>
     </table>
   );
 }
 
-function MobilePayments({ stake, combinationNumber, combinationGroups }) {
+function MobilePayments({ rows, stake, combinationNumber, combinationGroups }) {
   return (
     <div className="mobile-payments modal-payments__mobile">
       <table className="mobile-payments__combination">
@@ -200,37 +222,67 @@ function MobilePayments({ stake, combinationNumber, combinationGroups }) {
               {labels.column4}
             </th>
             <th rowSpan="2">{labels.column5}</th>
-            <th colSpan={matrix[0].length}>{labels.column6}</th>
+            <th colSpan={columns.length}>{labels.column6}</th>
           </tr>
           <tr>
-            {matrix[0].map((_, index) => (
-              <th key={index}>x{index + 1}</th>
+            {columns.map((column, index) => (
+              <th key={column}>x{index + 1}</th>
             ))}
           </tr>
         </thead>
         <tbody>
-          <SymbolRows stake={stake} combinationNumber={combinationNumber} />
+          <SymbolRows
+            rows={rows}
+            stake={stake}
+            combinationNumber={combinationNumber}
+          />
         </tbody>
       </table>
     </div>
   );
 }
 
-export default function Paytable({ rows = [], onClose, loading, error, stake = 10, selectedCombination }) {
+export default function Paytable({
+  rows = [],
+  onClose,
+  loading,
+  error,
+  stake = 10,
+  selectedCombination,
+}) {
   const combinationNumber = getCombinationNumber(selectedCombination);
-  const combinationGroups = getCombinationGroups(selectedCombination, combinationNumber);
+  const combinationGroups = getCombinationGroups(
+    selectedCombination,
+    combinationNumber,
+  );
+  const payoutRows = rows.length ? rows : fallbackPaytable;
 
   return (
     <section className="info-modal --gambusaki">
       <div className="info-modal__container">
-        <button type="button" className="info-modal__close" onClick={onClose} aria-label="Close" />
+        <button
+          type="button"
+          className="info-modal__close"
+          onClick={onClose}
+          aria-label="Close"
+        />
         {loading && <div className="state-panel">Загрузка...</div>}
         {error && <div className="state-panel error">{error}</div>}
         {!loading && !error && (
           <div className="modal-payments">
             <h2 className="modal-payments__title">{labels.title}</h2>
-            <DesktopPayments stake={stake} combinationNumber={combinationNumber} combinationGroups={combinationGroups} />
-            <MobilePayments stake={stake} combinationNumber={combinationNumber} combinationGroups={combinationGroups} />
+            <DesktopPayments
+              rows={payoutRows}
+              stake={stake}
+              combinationNumber={combinationNumber}
+              combinationGroups={combinationGroups}
+            />
+            <MobilePayments
+              rows={payoutRows}
+              stake={stake}
+              combinationNumber={combinationNumber}
+              combinationGroups={combinationGroups}
+            />
           </div>
         )}
       </div>

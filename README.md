@@ -1,6 +1,6 @@
 # Hiranmandi iframe starter
 
-React/Vite starter for an iframe-based game frontend. It is intentionally API-ready but uses a mock adapter until the final backend contract, screenshots, and production endpoints are confirmed.
+React/Vite starter for an iframe-based game frontend. Spin, double, and pay are wired to the Hiranmandi SOAP backend by default, with a mock adapter still available for local UI work.
 
 ## Run
 
@@ -20,6 +20,18 @@ Open a specific game:
 http://localhost:5174/?mode=standalone&token=demo-token&sessionId=demo-session&gameId=hiranmandi&currency=GEL&locale=en
 ```
 
+Use the mock adapter instead of SOAP:
+
+```text
+http://localhost:5174/?mode=standalone&token=demo-token&sessionId=demo-session&gameId=hiranmandi&backendMode=mock
+```
+
+Pass SOAP partner fields explicitly:
+
+```text
+http://localhost:5174/?mode=standalone&token=demo-token&sessionId=demo-session&gameId=hiranmandi&idPartner=1&idKassi=70&idValute=1&balance=1250
+```
+
 Restrict parent postMessage origins:
 
 ```text
@@ -30,14 +42,14 @@ http://localhost:5174/?mode=embedded&token=demo-token&sessionId=demo-session&gam
 
 - launch modes: `embedded` inside a host iframe and `standalone` by direct URL
 - init sources: query params, `window.HIRANMANDI_FRAME_CONFIG`, `postMessage` `INIT_CONTEXT`, and session recovery
-- iframe query parameters: `mode`, `token`, `sessionId` / `session`, `gameId` / `game`, `locale` / `language` / `lang`, `currency`, `userId` / `playerId`, `partnerId`, `theme`, `returnUrl`, `featureFlags`, `allowedOrigins`
+- iframe query parameters: `mode`, `token`, `sessionId` / `session`, `gameId` / `game`, `locale` / `language` / `lang`, `currency`, `userId` / `playerId`, `partnerId`, `idPartner`, `idKassi`, `idValute`, `balance`, `soapEndpoint`, `backendMode`, `theme`, `returnUrl`, `featureFlags`, `allowedOrigins`
 - iframe events: `READY`, `LOADED`, `RESIZE`, `ERROR`, `REQUEST_FULLSCREEN`, `EXIT_FULLSCREEN`, `REQUEST_CLOSE`, `SESSION_EXPIRED`, `AUTH_REQUIRED`
 - host commands: `INIT_CONTEXT`, `UPDATE_THEME`, `UPDATE_LOCALE`, `UPDATE_BALANCE`, `FORCE_RELOAD`, `OPEN_MODAL`, `CLOSE_MODULE`
 - runtime states: `initial-loading`, `bootstrap-loading`, `ready`, `processing`, `empty`, `error`, `network-error`, `session-expired`, `unsupported-environment`, `maintenance`, `invalid-session`, `access-denied`, `configuration-error`
 - lobby with game cards, fixed top balance panel, bottom prize panel, loading/empty/error states
 - Hiranmandi game shell with coordinate combinations, lottery grid, visual symbol grid, stake cycling, paytable overlay, free-spin counter, and double mode
 - frontend state coverage: loading, spin processing, result, win, lose, double loading, free spins, error, recovery-oriented retry UI
-- mock backend adapter for `initSession`, `spin`, `double`, `pay`, and paytable data
+- SOAP backend adapter for `spin`, `double`, and `pay`; mock mode for local UI work
 
 ## Integration contract
 
@@ -107,11 +119,18 @@ iframe.contentWindow.postMessage({
 
 ## Backend integration points
 
-Replace `src/api/frameApi.js` with real calls when endpoints are ready:
+`src/api/frameApi.js` sends SOAP RPC requests to:
 
-- `initSession(params)` should validate token/session and return player, partner, games, combinations, and initial grid data
-- `spin(...)` maps to `SetSlotSpinHiranmandi`
-- `double(...)` maps to `GetSlotDubleHiranmandi`
-- `pay(...)` maps to `GetSlotPayHiranmandi`
+```text
+http://5.187.2.138/soap/SlotHiranmandiSOAP.dll/soap/IInBet
+```
+
+The WSDL exposes `GetMessage(Value: string)`, so the adapter wraps each backend XML message in a SOAP envelope:
+
+- `spin(...)` sends `SetSlotSpinHiranmandi`
+- `double(...)` sends `GetSlotDubleHiranmandi` and retries unanswered requests
+- `pay(...)` sends `GetSlotPayHiranmandi`
+
+Local development uses the Vite same-origin proxy at `/soap-hiranmandi`, which forwards to the SOAP DLL and avoids browser CORS blocking. In production, expose the same kind of same-origin proxy or pass its URL as `soapEndpoint`.
 
 The frontend keeps free spins lifecycle client-side as described in the technical document: 3+ scatters start 15 free spins; remaining free spins are decremented by the iframe; free spin wins display base win, x3 multiplier, and final win.

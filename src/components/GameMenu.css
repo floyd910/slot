@@ -1,177 +1,140 @@
 .game-menu-layer {
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 60 !important;
-  display: grid !important;
-  place-items: center !important;
-  padding: 28px !important;
-  background: rgba(0, 0, 0, 0.6) !important;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 28px;
+  background: rgba(0, 0, 0, 0.6);
 }
 
 .game-menu-panel {
-  width: min(760px, 92vw) !important;
-  height: min(520px, 86vh) !important;
-  overflow: hidden !important;
-  border: 2px solid #b88700 !important;
-  border-radius: 8px !important;
-  background: linear-gradient(180deg, rgba(13, 18, 18, 0.98), rgba(0, 0, 0, 0.98)) !important;
+  width: min(760px, 92vw);
+  height: min(520px, 86vh);
+  overflow: hidden;
+  border: 2px solid #b88700;
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(13, 18, 18, 0.98), rgba(0, 0, 0, 0.98));
   box-shadow:
     0 0 0 2px rgba(255, 220, 28, 0.22),
-    0 18px 50px rgba(0, 0, 0, 0.62) !important;
-  color: #fff !important;
+    0 18px 50px rgba(0, 0, 0, 0.62);
+  color: #fff;
 }
 
 .game-menu-head {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: space-between !important;
-  gap: 14px !important;
-  padding: 10px 14px !important;
-  border-bottom: 1px solid rgba(255, 215, 25, 0.55) !important;
-  background: #ffd719 !important;
-  color: #000 !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 14px;
+  border-bottom: 1px solid rgba(255, 215, 25, 0.55);
+  background: #ffd719;
+  color: #000;
 }
 
 .game-menu-head strong {
-  font-size: 0.95rem !important;
+  font-size: 0.95rem;
 }
 
 .game-menu-head button {
-  border: 1px solid rgba(0, 0, 0, 0.45) !important;
-  border-radius: 8px !important;
-  padding: 5px 10px !important;
-  background: #121212 !important;
-  color: #ffd719 !important;
-  font-weight: 800 !important;
+  border: 1px solid rgba(0, 0, 0, 0.45);
+  border-radius: 8px;
+  padding: 5px 10px;
+  background: #121212;
+  color: #ffd719;
+  font-weight: 800;
 }
 
 .game-menu-tabs {
-  display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 8px !important;
-  padding: 12px 14px 0 !important;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 12px 14px 0;
 }
 
 .game-menu-tabs button {
-  height: 38px !important;
-  border: 1px solid rgba(255, 215, 25, 0.58) !important;
-  border-radius: 8px !important;
-  background: rgba(0, 0, 0, 0.68) !important;
-  color: #ffd719 !important;
-  font-size: 0.82rem !important;
-  font-weight: 900 !important;
-  text-transform: uppercase !important;
+  height: 38px;
+  border: 1px solid rgba(255, 215, 25, 0.58);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.68);
+  color: #ffd719;
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-transform: uppercase;
 }
 
 .game-menu-tabs button.active {
-  border-color: #fff43b !important;
-  background: linear-gradient(180deg, #ffe466, #b77800) !important;
-  color: #050505 !important;
+  border-color: #fff43b;
+  background: linear-gradient(180deg, #ffe466, #b77800);
+  color: #050505;
   box-shadow:
     0 0 14px rgba(255, 215, 25, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.62) !important;
+    inset 0 1px 0 rgba(255, 255, 255, 0.62);
 }
 
 .game-menu-body {
-  height: 350px !important;
-  overflow: auto !important;
-  padding: 14px !important;
+  height: 350px;
+  overflow: auto;
+  padding: 14px;
 }
 
 .game-menu-section {
-  min-height: 100% !important;
+  min-height: 100%;
 }
 
 .game-menu-section h4 {
-  margin: 0 0 8px !important;
-  color: #ffd719 !important;
-  font-size: 0.84rem !important;
-  text-transform: uppercase !important;
+  margin: 0 0 8px;
+  color: #ffd719;
+  font-size: 0.84rem;
+  text-transform: uppercase;
 }
 
 .history-list {
-  display: grid !important;
-  gap: 6px !important;
+  display: grid;
+  gap: 6px;
 }
 
 .history-list p {
-  margin: 0 !important;
-  padding: 12px !important;
-  border: 1px solid rgba(255, 215, 25, 0.35) !important;
-  border-radius: 8px !important;
-  color: #dce6eb !important;
-  font-size: 0.72rem !important;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid rgba(255, 215, 25, 0.35);
+  border-radius: 8px;
+  color: #dce6eb;
+  font-size: 0.72rem;
 }
 
 .history-row {
-  display: grid !important;
-  grid-template-columns: 42px 1fr 72px 58px !important;
-  align-items: center !important;
-  gap: 7px !important;
-  padding: 7px 8px !important;
-  border: 1px solid rgba(255, 215, 25, 0.35) !important;
-  border-radius: 8px !important;
-  background: rgba(255, 215, 25, 0.06) !important;
-  font-size: 0.68rem !important;
+  display: grid;
+  grid-template-columns: 42px 1fr 72px 58px;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 8px;
+  border: 1px solid rgba(255, 215, 25, 0.35);
+  border-radius: 8px;
+  background: rgba(255, 215, 25, 0.06);
+  font-size: 0.68rem;
 }
 
 .history-row em {
-  color: #b9c8cf !important;
-  font-style: normal !important;
+  color: #b9c8cf;
+  font-style: normal;
 }
 
 .history-row b {
-  justify-self: end !important;
-  color: #ffd719 !important;
+  justify-self: end;
+  color: #ffd719;
 }
 
 .rules-list {
-  margin: 0 !important;
-  padding-left: 18px !important;
-  color: #edf5f7 !important;
-  font-size: 0.72rem !important;
-  line-height: 1.48 !important;
+  margin: 0;
+  padding-left: 18px;
+  color: #edf5f7;
+  font-size: 0.72rem;
+  line-height: 1.48;
 }
 
 .rules-list li {
-  margin-bottom: 6px !important;
+  margin-bottom: 6px;
 }
 
-@media (max-width: 760px) {
-  .game-menu-layer {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 14px !important;
-  }
 
-  .game-menu-panel {
-    width: min(92vw, 440px) !important;
-    height: min(74vh, 520px) !important;
-    max-height: min(74vh, 520px) !important;
-    margin: 0 !important;
-    transform: none !important;
-  }
-
-  .game-menu-head {
-    min-height: 45px !important;
-    padding: 8px 10px !important;
-  }
-
-  .game-menu-tabs {
-    padding: 10px 10px 0 !important;
-  }
-
-  .game-menu-body {
-    height: calc(min(74vh, 520px) - 103px) !important;
-    padding: 10px !important;
-  }
-
-  .history-row {
-    grid-template-columns: 38px minmax(0, 1fr) 46px !important;
-  }
-
-  .history-row em {
-    display: none !important;
-  }
-}

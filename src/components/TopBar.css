@@ -1,45 +1,22 @@
 .top-bar,
 .brand-lockup,
 .top-actions {
-  box-sizing: border-box !important;
-  height: 48px !important;
-  min-height: 48px !important;
+  box-sizing: border-box;
+  height: 48px;
+  min-height: 48px;
 }
 
 .top-bar {
-  padding: 0 28px !important;
+  padding: 0 28px;
 }
 
 .brand-lockup strong {
-  font-size: 1.35rem !important;
+  font-size: 1.35rem;
 }
 
 .top-balance {
-  font-size: 1.08rem !important;
-  font-weight: 900 !important;
+  font-size: 1.08rem;
+  font-weight: 900;
 }
 
-@media (max-width: 920px) {
-  .top-bar {
-    display: none !important;
-    position: static !important;
-    height: 44px !important;
-    min-height: 44px !important;
-    padding: 0 12px !important;
-    z-index: 1 !important;
-  }
 
-  .brand-lockup,
-  .top-actions {
-    height: 44px !important;
-    min-height: 44px !important;
-  }
-
-  .brand-lockup strong {
-    font-size: 1rem !important;
-  }
-
-  .top-balance {
-    font-size: 0.9rem !important;
-  }
-}

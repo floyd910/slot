@@ -1,118 +1,89 @@
-.main-container__center {
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: flex-start !important;
-  align-items: center !important;
-  position: relative !important;
-  width: 54% !important;
-  height: 100% !important;
-  transform: none !important;
-}
-
-.scoreboard-wrapper {
-  width: min(100%, 31.25rem) !important;
-  height: 14.2916666667rem !important;
-  aspect-ratio: 771.25 / 353 !important;
-  flex: 0 0 auto !important;
-  position: static !important;
-  transform: none !important;
-  transform-origin: 50% 50% !important;
-}
-
-.digital-scoreboard {
-  box-sizing: border-box !important;
-  position: relative !important;
-  z-index: 1 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: center !important;
-  align-items: center !important;
-  width: 100% !important;
-  height: auto !important;
-  border-radius: 0.5rem !important;
-  background-image: url("https://lotogame.lotosport.tj/img/digit-scoreboard-gold-bg.ea005927.webp") !important;
-  background-size: 100% 100% !important;
-  background-position: 50% !important;
-  background-repeat: no-repeat !important;
-  filter: drop-shadow(
-    0 0.1666666667rem 0.2083333333rem rgba(0, 0, 0, 0.5)
-  ) !important;
+﻿.scoreboard-wrapper {
+  flex: 0 0 auto;
+  position: static;
+  transform: none;
+  width: 100%;
+  object-fit: cover;
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-top: 30px;
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_001_690x603_at_1_1.png");
 }
 
 .eldorado-scoreboard {
-  box-sizing: border-box !important;
-  position: relative !important;
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: wrap !important;
-  justify-content: center !important;
-  align-items: center !important;
-  width: 100% !important;
-  padding: 3% 0 !important;
-  border: 0.0833333333rem solid hsla(0, 0%, 100%, 0.5) !important;
-  border-radius: 0.8333333333rem !important;
-  background: rgba(0, 0, 0, 0.2) !important;
-  backdrop-filter: blur(4px) !important;
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 3% 0;
+  border: 0.0833333333rem solid hsla(0, 0%, 100%, 0.5);
+  border-radius: 0.8333333333rem;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
 }
 
 .eldorado-scoreboard::before {
-  content: "" !important;
-  position: absolute !important;
-  inset: 0 !important;
-  border-radius: 0.8333333333rem !important;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8) !important;
-  filter: blur(0.2px) !important;
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 0.8333333333rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+  filter: blur(0.2px);
 }
 
 .eldorado-cell {
-  box-sizing: border-box !important;
-  position: relative !important;
-  z-index: 1 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  width: 19% !important;
-  height: auto !important;
-  border-radius: 0.3333333333rem !important;
-  transition: all 0.2s linear !important;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 19%;
+  height: auto;
+  border-radius: 0.3333333333rem;
+  transition: all 0.2s linear;
 }
 
 .eldorado-cell.--opacity {
-  opacity: 0.3 !important;
+  opacity: 0.3;
 }
 
 .eldorado-cell.--fire::after {
-  content: "" !important;
-  position: absolute !important;
-  inset: -2% !important;
-  z-index: 2 !important;
-  border-radius: 0.3333333333rem !important;
-  background-image: url("https://lotogame.lotosport.tj/img/flame-animation-cell.996d8ac9.webp") !important;
-  background-position: 50% !important;
-  background-repeat: no-repeat !important;
-  background-size: 112% 112% !important;
-  opacity: 0.72 !important;
-  pointer-events: none !important;
-  mix-blend-mode: screen !important;
+  content: "";
+  position: absolute;
+  inset: -2%;
+  z-index: 2;
+  border-radius: 0.3333333333rem;
+  background-image: url("https://lotogame.lotosport.tj/img/flame-animation-cell.996d8ac9.webp");
+  background-position: 50%;
+  background-repeat: no-repeat;
+  background-size: 112% 112%;
+  opacity: 0.72;
+  pointer-events: none;
+  mix-blend-mode: screen;
 }
 
 .eldorado-cell__container {
-  position: relative !important;
-  width: 100% !important;
-  padding-bottom: 100% !important;
+  position: relative;
+  width: 100%;
+  padding-bottom: 100%;
 }
 
 .eldorado-cell__item {
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  z-index: 1 !important;
-  height: 100% !important;
-  transform: translate(-50%, -50%) !important;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  height: 100%;
+  transform: translate(-50%, -50%);
 }
 
 .eldorado-cell__item.--0 {
-  height: 160% !important;
+  height: 160%;
 }
 
 .eldorado-cell__item.--1,
@@ -121,60 +92,88 @@
 .eldorado-cell__item.--4,
 .eldorado-cell__item.--5,
 .eldorado-cell__item.--6 {
-  height: 110% !important;
+  height: 110%;
 }
 
 .eldorado-cell__item.--7,
 .eldorado-cell__item.--8,
 .eldorado-cell__item.--10 {
-  height: 130% !important;
+  height: 130%;
 }
 
 .eldorado-cell__item.--9 {
-  height: 140% !important;
+  height: 140%;
+}
+
+.eldorado-cell__fallback {
+  position: absolute;
+  inset: 12%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 0.12rem solid rgba(255, 229, 139, 0.92);
+  background:
+    radial-gradient(
+      circle at 35% 28%,
+      rgba(255, 255, 255, 0.34),
+      transparent 24%
+    ),
+    linear-gradient(180deg, #f1c75d 0%, #a8661d 55%, #3f2110 100%);
+  box-shadow:
+    inset 0 0 0 0.15rem rgba(72, 34, 8, 0.42),
+    0 0.2rem 0.45rem rgba(0, 0, 0, 0.45);
+  color: #fff8cc;
+  font-size: clamp(1.4rem, 4vw, 2.5rem);
+  font-weight: 900;
+  line-height: 1;
+  text-shadow:
+    0 0.1rem 0 #4b240b,
+    0 0 0.35rem rgba(255, 239, 160, 0.5);
 }
 
 .carpet-nice {
-  position: absolute !important;
-  top: -0.3333333333rem !important;
-  left: -0.7916666667rem !important;
-  right: -0.5rem !important;
-  bottom: -0.5rem !important;
-  z-index: 4 !important;
-  overflow: hidden !important;
-  pointer-events: none !important;
+  position: absolute;
+  top: -0.3333333333rem;
+  left: -0.7916666667rem;
+  right: -0.5rem;
+  bottom: -0.5rem;
+  z-index: 30;
+  overflow: hidden;
+  pointer-events: none;
 }
 
 .carpet-nice__hidden {
-  opacity: 0 !important;
+  opacity: 0;
 }
 
 .carpet-nice__item {
-  position: absolute !important;
-  top: 0 !important;
-  bottom: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  z-index: 4 !important;
-  background-image: url("https://lotogame.lotosport.tj/img/eldorado-carpet.ffad4c92.webp") !important;
-  background-repeat: no-repeat !important;
-  background-size: cover !important;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 4;
+  background-image: url("https://lotogame.lotosport.tj/img/eldorado-carpet.ffad4c92.webp");
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .carpet-nice__item.--close {
-  animation: carpet-close-eldorado 1.5s linear forwards !important;
+  animation: carpet-close-eldorado 1.5s linear forwards;
 }
 
 .carpet-nice__item.--open {
-  animation: carpet-open-eldorado 1s linear forwards !important;
+  animation: carpet-open-eldorado 1s linear forwards;
 }
 
 .carpet-nice__roll {
-  position: absolute !important;
-  top: 0 !important;
-  bottom: 0 !important;
-  z-index: 5 !important;
-  border-radius: 0.0833333333rem !important;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 5;
+  border-radius: 0.0833333333rem;
   background:
     linear-gradient(
       90deg,
@@ -184,244 +183,360 @@
       #2e2d2d 79.17%,
       #171716
     ),
-    url("https://lotogame.lotosport.tj/img/carpet-roll-bg.39df8d16.png") !important;
-  background-blend-mode: overlay, normal !important;
+    url("https://lotogame.lotosport.tj/img/carpet-roll-bg.39df8d16.png");
+  background-blend-mode: overlay, normal;
 }
 
 .carpet-nice__roll.--close {
-  animation: carpet-close-roll-eldorado 1.5s linear forwards !important;
+  animation: carpet-close-roll-eldorado 1.5s linear forwards;
 }
 
 .carpet-nice__roll.--open {
-  animation: carpet-open-roll-eldorado 1s linear forwards !important;
+  animation: carpet-open-roll-eldorado 1s linear forwards;
 }
 
 .digital-scoreboard__top {
-  display: flex !important;
-  position: relative !important;
-  flex-direction: row !important;
-  flex-wrap: wrap !important;
-  justify-content: center !important;
-  align-items: center !important;
-  gap: 1.5% !important;
-  width: 100% !important;
-  margin-left: 3% !important;
-  margin-top: 7.5% !important;
-  transform: none !important;
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5%;
+  width: 100%;
+  margin-left: 3%;
+  margin-top: 7.5%;
+  transform: none;
 }
 
 .digital-scoreboard__bottom {
-  display: flex !important;
-  flex-direction: row !important;
-  justify-content: center !important;
-  align-items: center !important;
-  gap: 2% !important;
-  width: 100% !important;
-  margin: 3% 0 !important;
-  transform: none !important;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 2%;
+  width: 100%;
+  margin: 3% 0;
+  transform: none;
 }
 
 .gold-cell {
-  box-sizing: border-box !important;
-  position: relative !important;
-  width: 16% !important;
-  height: auto !important;
-  margin-bottom: 1.5% !important;
-  border-radius: 7% !important;
-  color: #000 !important;
-  font-family: Inter, Arial, Helvetica, sans-serif !important;
-  font-style: normal !important;
-  font-size: 3rem !important;
-  line-height: 3.3333333333rem !important;
-  font-weight: 600 !important;
-  transition: all 0.2s linear !important;
+  box-sizing: border-box;
+  position: relative;
+  width: 16%;
+  height: auto;
+  margin-bottom: 1.5%;
+  border-radius: 7%;
+  color: #000;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-size: 3rem;
+  line-height: 3.3333333333rem;
+  font-weight: 600;
+  transition: all 0.2s linear;
+  object-fit: cover;
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_008_67x67_at_352_835.png");
+}
+
+.digital-scoreboard__bottom .gold-cell {
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_026_67x67_at_241_1735.png");
+}
+
+.digital-scoreboard__top .gold-cell.--revealing {
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_026_67x67_at_241_1735.png");
+}
+
+.digital-scoreboard__top .gold-cell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: 7%;
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_012_101x101_at_249_978.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.digital-scoreboard__top .gold-cell.--win-highlight::after {
+  opacity: 1;
+}
+
+.digital-scoreboard__top .gold-cell.--revealing.--first {
+  animation: gold-cell-bg-reveal 0s linear 0s forwards;
+}
+
+.digital-scoreboard__top .gold-cell.--revealing.--second {
+  animation: gold-cell-bg-reveal 0s linear 0.42s forwards;
+}
+
+.digital-scoreboard__top .gold-cell.--revealing.--third {
+  animation: gold-cell-bg-reveal 0s linear 0.84s forwards;
+}
+
+.digital-scoreboard__top .gold-cell.--revealing.--fourth {
+  animation: gold-cell-bg-reveal 0s linear 1.26s forwards;
+}
+
+.digital-scoreboard__top .gold-cell.--revealing.--fifth {
+  animation: gold-cell-bg-reveal 0s linear 1.68s forwards;
+}
+
+.gold-cell__img.--revealing {
+  opacity: 1;
+}
+
+.gold-cell__img.--revealing.--first {
+  animation: gold-cell-content-reveal 0s linear 0s forwards;
+}
+
+.gold-cell__img.--revealing.--second {
+  animation: gold-cell-content-reveal 0s linear 0.42s forwards;
+}
+
+.gold-cell__img.--revealing.--third {
+  animation: gold-cell-content-reveal 0s linear 0.84s forwards;
+}
+
+.gold-cell__img.--revealing.--fourth {
+  animation: gold-cell-content-reveal 0s linear 1.26s forwards;
+}
+
+.gold-cell__img.--revealing.--fifth {
+  animation: gold-cell-content-reveal 0s linear 1.68s forwards;
 }
 
 .gold-cell.--small {
-  width: 10.3% !important;
-  padding-top: 5px !important;
-  font-size: 2.5rem !important;
-  line-height: 2.5rem !important;
+  width: 10.3%;
+  padding-top: 5px;
+  font-size: 2.5rem;
+  line-height: 2.5rem;
 }
 
 .gold-cell__wrapper {
-  position: relative !important;
-  width: 100% !important;
-  height: 100% !important;
-  border-radius: 7% !important;
-  background-image: url("/img/eldorado-gold-cell.webp") !important;
-  background-repeat: no-repeat !important;
-  background-size: 100% 100% !important;
-  transition: all 0.3s linear !important;
+  position: relative;
+  z-index: 1;
+  width: 70%;
+  height: 100%;
+  border-radius: 0;
+
+  transition: all 0.3s linear;
+  overflow: hidden;
 }
 
 .gold-cell__wrapper.--glow {
-  box-shadow: 0 0 0.3333333333rem 0.1666666667rem gold !important;
+  box-shadow: 0 0 0.3333333333rem 0.1666666667rem gold;
 }
 
 .gold-cell__wrapper.--opacity {
-  opacity: 0.5 !important;
+  opacity: 0.5;
 }
 
 .gold-cell__container {
-  content: "" !important;
-  display: block !important;
-  width: 100% !important;
-  padding-bottom: 100% !important;
-  border-radius: 7% !important;
+  content: "";
+  display: block;
+  width: 100%;
+  padding-bottom: 100%;
+  border-radius: 0;
 }
 
 .gold-cell__img {
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  width: 65% !important;
-  height: 65% !important;
-  transform: translate(-50%, -50%) !important;
-  background-image: url("/img/gold-cell-inner.webp") !important;
-  background-position: 50% !important;
-  background-repeat: no-repeat !important;
-  background-size: 100% 100% !important;
-  -webkit-mask-image: url("/img/circle.736c8716.svg") !important;
-  mask-image: url("/img/circle.736c8716.svg") !important;
-  -webkit-mask-position: -300% 600%;
-  mask-position: -300% 600%;
-  -webkit-mask-repeat: no-repeat !important;
-  mask-repeat: no-repeat !important;
-  -webkit-mask-size: 120% !important;
-  mask-size: 120% !important;
-}
-
-.digital-scoreboard.--closing .gold-cell__img {
-  -webkit-mask-position: -300% 600%;
-  mask-position: -300% 600%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 65%;
+  height: 65%;
+  opacity: 1;
+  transform: translate(-50%, -50%);
+  background: transparent;
+  -webkit-mask-image: none;
+  mask-image: none;
+  overflow: visible;
 }
 
 .gold-cell__img.--show {
-  -webkit-mask-position: 50% 50%;
-  mask-position: 50% 50%;
-}
-
-.gold-cell__img.--first {
-  animation: eraser-eldorado 0.5s linear forwards !important;
-}
-
-.gold-cell__img.--second {
-  animation: eraser-eldorado 0.5s linear 0.25s forwards !important;
-}
-
-.gold-cell__img.--third {
-  animation: eraser-eldorado 0.5s linear 0.5s forwards !important;
-}
-
-.gold-cell__img.--fourth {
-  animation: eraser-eldorado 0.5s linear 0.75s forwards !important;
-}
-
-.gold-cell__img.--fifth {
-  animation: eraser-eldorado 0.5s linear 1s forwards !important;
+  opacity: 1;
 }
 
 .gold-cell.--small .gold-cell__img {
-  width: 80% !important;
-  height: 80% !important;
+  width: 80%;
+  height: 80%;
+}
+
+.gold-cell__eraser {
+  position: absolute;
+  top: -50%;
+  left: 150%;
+  z-index: 13;
+  width: 150%;
+  height: 90%;
+  border-radius: 30%;
+  box-shadow:
+    0 0 0 10.4166666667rem #a60008,
+    inset 0 0 0.2083333333rem 0.125rem #a60008;
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotate(315deg);
+}
+
+.gold-cell__eraser.--first {
+  animation: rightEraser-gold 0.5s linear forwards;
+}
+
+.gold-cell__eraser.--second {
+  animation: rightEraser-gold 0.5s linear 0.25s forwards;
+}
+
+.gold-cell__eraser.--third {
+  animation: rightEraser-gold 0.5s linear 0.5s forwards;
+}
+
+.gold-cell__eraser.--fourth {
+  animation: rightEraser-gold 0.5s linear 0.75s forwards;
+}
+
+.gold-cell__eraser.--fifth {
+  animation: rightEraser-gold 0.5s linear 1s forwards;
 }
 
 .gold-cell__item {
-  color: #000 !important;
-  font: inherit !important;
-  line-height: 1 !important;
-  text-shadow: none !important;
-  transform: translateY(-1px) !important;
+  position: relative;
+  z-index: 4;
+  color: #000;
+  font: inherit;
+  line-height: 1;
+  text-shadow: none;
+  transform: translateY(-1px);
 }
 
 .gold-cell__item.--doubling {
-  font-size: 0.85em !important;
-  font-weight: 900 !important;
-  letter-spacing: 0 !important;
-  text-transform: uppercase !important;
+  font-size: 0.85em;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
 }
 
 .gold-cell__idx-number {
-  position: absolute !important;
-  top: -1.4166666667rem !important;
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  color: #000 !important;
-  font-family: Inter, Arial, Helvetica, sans-serif !important;
-  font-style: normal !important;
-  font-weight: 600 !important;
-  font-size: 1.25rem !important;
-  line-height: 1.25rem !important;
-  text-shadow: none !important;
+  position: absolute;
+  top: -1.4166666667rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #000;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: 1.25rem;
+  text-shadow: none;
 }
 
 .gold-cell.--small .gold-cell__idx-number {
-  top: -0.8333333333rem !important;
-  font-size: 0.625rem !important;
-  line-height: 0.625rem !important;
+  top: -0.8333333333rem;
+  font-size: 0.625rem;
+  line-height: 0.625rem;
 }
 
 .gold-cell__idx-string {
-  position: absolute !important;
-  top: 54% !important;
-  left: -1.25rem !important;
-  transform: translateY(-50%) !important;
-  color: #000 !important;
-  font-family: Inter, Arial, Helvetica, sans-serif !important;
-  font-style: normal !important;
-  font-weight: 600 !important;
-  font-size: 1.25rem !important;
-  line-height: 1.25rem !important;
-  text-shadow: none !important;
+  position: absolute;
+  top: 54%;
+  left: -1.25rem;
+  transform: translateY(-50%);
+  color: #000;
+  font-family: Inter, Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: 1.25rem;
+  text-shadow: none;
 }
 
 .flame {
-  position: absolute !important;
-  inset: 0 !important;
-  z-index: 12 !important;
-  border-radius: 7% !important;
-  background-image: url("https://lotogame.lotosport.tj/img/flame-animation-cell.996d8ac9.webp") !important;
-  background-position: 50% !important;
-  background-size: 110% 110% !important;
-  background-repeat: no-repeat !important;
-  opacity: 0.95 !important;
+  position: absolute;
+  inset: 0;
+  z-index: 24;
+  border-radius: 7%;
+  background-image: url("https://lotogame.lotosport.tj/img/flame-animation-cell.996d8ac9.webp");
+  background-position: 50%;
+  background-size: 110% 110%;
+  background-repeat: no-repeat;
+  opacity: 0.95;
 }
 
 .spinner-load {
-  position: absolute !important;
-  inset: 0 !important;
-  z-index: 14 !important;
+  position: absolute;
+  inset: 0;
+  z-index: 14;
 }
 
 .spinner-load > div {
-  position: absolute !important;
-  left: 50% !important;
-  top: 50% !important;
-  width: 0.125rem !important;
-  height: 0.4166666667rem !important;
-  margin: -0.2083333333rem 0 0 -0.0625rem !important;
-  border-radius: 0.125rem !important;
-  background: #000 !important;
-  transform-origin: 50% 0.875rem !important;
-  animation: spinner-load-fade 1s linear infinite !important;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.125rem;
+  height: 0.4166666667rem;
+  margin: -0.2083333333rem 0 0 -0.0625rem;
+  border-radius: 0.125rem;
+  background: #000;
+  transform-origin: 50% 0.875rem;
+  animation: spinner-load-fade 1s linear infinite;
 }
 
-.spinner-load > div:nth-child(1) { transform: rotate(0deg); animation-delay: -0.9167s !important; }
-.spinner-load > div:nth-child(2) { transform: rotate(30deg); animation-delay: -0.8333s !important; }
-.spinner-load > div:nth-child(3) { transform: rotate(60deg); animation-delay: -0.75s !important; }
-.spinner-load > div:nth-child(4) { transform: rotate(90deg); animation-delay: -0.6667s !important; }
-.spinner-load > div:nth-child(5) { transform: rotate(120deg); animation-delay: -0.5833s !important; }
-.spinner-load > div:nth-child(6) { transform: rotate(150deg); animation-delay: -0.5s !important; }
-.spinner-load > div:nth-child(7) { transform: rotate(180deg); animation-delay: -0.4167s !important; }
-.spinner-load > div:nth-child(8) { transform: rotate(210deg); animation-delay: -0.3333s !important; }
-.spinner-load > div:nth-child(9) { transform: rotate(240deg); animation-delay: -0.25s !important; }
-.spinner-load > div:nth-child(10) { transform: rotate(270deg); animation-delay: -0.1667s !important; }
-.spinner-load > div:nth-child(11) { transform: rotate(300deg); animation-delay: -0.0833s !important; }
-.spinner-load > div:nth-child(12) { transform: rotate(330deg); animation-delay: 0s !important; }
+.spinner-load > div:nth-child(1) {
+  transform: rotate(0deg);
+  animation-delay: -0.9167s;
+}
+.spinner-load > div:nth-child(2) {
+  transform: rotate(30deg);
+  animation-delay: -0.8333s;
+}
+.spinner-load > div:nth-child(3) {
+  transform: rotate(60deg);
+  animation-delay: -0.75s;
+}
+.spinner-load > div:nth-child(4) {
+  transform: rotate(90deg);
+  animation-delay: -0.6667s;
+}
+.spinner-load > div:nth-child(5) {
+  transform: rotate(120deg);
+  animation-delay: -0.5833s;
+}
+.spinner-load > div:nth-child(6) {
+  transform: rotate(150deg);
+  animation-delay: -0.5s;
+}
+.spinner-load > div:nth-child(7) {
+  transform: rotate(180deg);
+  animation-delay: -0.4167s;
+}
+.spinner-load > div:nth-child(8) {
+  transform: rotate(210deg);
+  animation-delay: -0.3333s;
+}
+.spinner-load > div:nth-child(9) {
+  transform: rotate(240deg);
+  animation-delay: -0.25s;
+}
+.spinner-load > div:nth-child(10) {
+  transform: rotate(270deg);
+  animation-delay: -0.1667s;
+}
+.spinner-load > div:nth-child(11) {
+  transform: rotate(300deg);
+  animation-delay: -0.0833s;
+}
+.spinner-load > div:nth-child(12) {
+  transform: rotate(330deg);
+  animation-delay: 0s;
+}
 
 @keyframes spinner-load-fade {
   0% {
@@ -432,14 +547,32 @@
   }
 }
 
-@keyframes eraser-eldorado {
+@keyframes rightEraser-gold {
   0% {
-    -webkit-mask-position: -300% 600%;
-    mask-position: -300% 600%;
+    top: -50%;
+    left: 150%;
   }
   100% {
-    -webkit-mask-position: 50% 50%;
-    mask-position: 50% 50%;
+    top: 50%;
+    left: 50%;
+  }
+}
+
+@keyframes gold-cell-bg-reveal {
+  to {
+    background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_004_101x101_at_302_606.png");
+  }
+}
+
+@keyframes gold-cell-content-reveal {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes gold-cell-digit-visible {
+  to {
+    visibility: visible;
   }
 }
 
@@ -492,122 +625,227 @@
 }
 
 .main-container__wrapper {
-  width: 100% !important;
-  height: 2rem !important;
-  position: absolute !important;
-  bottom: -0.8333333333rem !important;
-  z-index: 1 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  margin-top: 0 !important;
-  border-radius: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
+  width: 100%;
+  height: 2rem;
+  position: absolute;
+  bottom: -0.8333333333rem;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  margin-top: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .main-container__info {
-  width: 100% !important;
-  display: flex !important;
-  flex-direction: row !important;
-  justify-content: center !important;
-  align-items: center !important;
-  padding: 0.0833333333rem !important;
-  box-sizing: border-box !important;
-  font-style: normal !important;
-  font-weight: 400 !important;
-  font-size: 0.6666666667rem !important;
-  line-height: 100% !important;
-  color: #fff !important;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 0.0833333333rem;
+  box-sizing: border-box;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 0.6666666667rem;
+  line-height: 100%;
+  color: #fff;
 }
 
 .main-container__info > span {
-  font-family: Ubuntu, "Alegreya Sans", serif !important;
-}
-
-.expanded-board .scoreboard-wrapper {
-  width: min(
-    100%,
-    46.5rem,
-    calc((100vh - 48px - 104px - 5.5rem) * 1.515)
-  ) !important;
-  height: auto !important;
-  max-height: calc(100vh - 48px - 104px - 5.5rem) !important;
-  aspect-ratio: 1500 / 1035 !important;
-  margin-top: 0 !important;
-}
-
-.expanded-board .scoreboard-wrapper.--eldorado-view {
-  aspect-ratio: 1500 / 960 !important;
+  font-family: Ubuntu, "Alegreya Sans", serif;
 }
 
 .expanded-board .digital-scoreboard {
-  height: 100% !important;
-  transform: none !important;
+  height: 100%;
+  transform: none;
 }
 
 .expanded-board .digital-scoreboard__top,
 .expanded-board .digital-scoreboard__bottom {
-  width: min(29.5rem, 100%) !important;
+  width: min(29.5rem, 100%);
 }
 
-@media (max-width: 920px) {
-  .scoreboard-wrapper {
-    width: min(92vw, 650px) !important;
-  }
-
-  .scoreboard-wrapper {
-    height: auto !important;
-    aspect-ratio: 547.5 / 441.75 !important;
-    margin-top: -5px !important;
-    border-radius: 8px !important;
-  }
-
-  .eldorado-scoreboard {
-    background: unset !important;
-    backdrop-filter: unset !important;
-    border: unset !important;
-    border-radius: unset !important;
-  }
-
-  .eldorado-scoreboard::before {
-    top: -0.1666666667rem !important;
-    bottom: -0.1666666667rem !important;
-    box-shadow: unset !important;
-    filter: unset !important;
-    border-radius: unset !important;
-  }
-
-  .digital-scoreboard__top {
-    width: 100% !important;
-    gap: 2% !important;
-    margin-left: 0 !important;
-    margin-top: 0 !important;
-  }
-
-  .gold-cell {
-    font-size: clamp(1.45rem, 7vw, 3.25rem) !important;
-    line-height: 1 !important;
-  }
-
-  .gold-cell__idx-number,
-  .gold-cell__idx-string {
-    font-size: clamp(0.72rem, 2.4vw, 1.1rem) !important;
-    line-height: 1 !important;
-  }
-
-  .gold-cell__idx-number {
-    top: -1.05rem !important;
-  }
-
-  .gold-cell.--small .gold-cell__idx-number {
-    top: -0.58rem !important;
-    font-size: clamp(0.42rem, 1.8vw, 0.72rem) !important;
-  }
-
+.game-main-layout .scoreboard-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  aspect-ratio: 920 / 571;
+  padding: 0;
+  background-size: 100% 100%;
 }
 
-@media (max-width: 520px) {
-  .scoreboard-wrapper {
-    width: 94vw !important;
-  }
+.game-main-layout .digital-scoreboard {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
+
+.game-main-layout .digital-scoreboard::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.game-main-layout .digital-scoreboard__top {
+  position: absolute;
+  top: 20.32%;
+  left: 10.87%;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  width: 82.06%;
+  height: 54.82%;
+  gap: 3.5% 3.31%;
+  margin: 0;
+}
+
+.game-main-layout .digital-scoreboard__bottom {
+  position: absolute;
+  top: 78.63%;
+  left: 25.22%;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  width: 54.13%;
+  height: 10.33%;
+  gap: 0 4.02%;
+  margin: 0;
+}
+
+.game-main-layout .gold-cell {
+  width: 100%;
+  margin: 0;
+  background-image: none;
+  color: #050505;
+  font-family:
+    Arial Black,
+    Impact,
+    Ubuntu,
+    Arial,
+    sans-serif;
+  font-size: 64px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.game-main-layout .gold-cell.--small {
+  width: 100%;
+  padding-top: 0;
+  font-size: 0;
+}
+
+.game-main-layout .gold-cell__wrapper {
+  width: 100%;
+  height: auto;
+  background: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_004_101x101_at_302_606.png")
+    center / 100% 100% no-repeat;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.game-main-layout .digital-scoreboard__top .gold-cell.--revealing .gold-cell__wrapper {
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_010_101x101_at_249_875.png");
+}
+
+.game-main-layout .digital-scoreboard__top .gold-cell.--revealing.--first .gold-cell__wrapper {
+  animation: gold-cell-bg-reveal 0s linear 0s forwards;
+}
+
+.game-main-layout .digital-scoreboard__top .gold-cell.--revealing.--second .gold-cell__wrapper {
+  animation: gold-cell-bg-reveal 0s linear 0.42s forwards;
+}
+
+.game-main-layout .digital-scoreboard__top .gold-cell.--revealing.--third .gold-cell__wrapper {
+  animation: gold-cell-bg-reveal 0s linear 0.84s forwards;
+}
+
+.game-main-layout .digital-scoreboard__top .gold-cell.--revealing.--fourth .gold-cell__wrapper {
+  animation: gold-cell-bg-reveal 0s linear 1.26s forwards;
+}
+
+.game-main-layout .digital-scoreboard__top .gold-cell.--revealing.--fifth .gold-cell__wrapper {
+  animation: gold-cell-bg-reveal 0s linear 1.68s forwards;
+}
+
+.game-main-layout .gold-cell__container {
+  width: 100%;
+  padding-bottom: 69.47%;
+}
+
+.game-main-layout .gold-cell.--small .gold-cell__container {
+  padding-bottom: 70.24%;
+}
+
+.game-main-layout .gold-cell__img {
+  width: 82%;
+  height: 82%;
+  background: transparent;
+  -webkit-mask-image: none;
+  mask-image: none;
+  border-radius: 0;
+}
+
+.game-main-layout .gold-cell.--small .gold-cell__img {
+  display: none;
+}
+
+.game-main-layout .gold-cell__item {
+  position: relative;
+  z-index: 4;
+  color: #050505;
+  font: inherit;
+  line-height: 1;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.38),
+    0 0 2px rgba(255, 231, 120, 0.34);
+  transform: translateY(-2px);
+}
+
+.game-main-layout .gold-cell__img.--revealing .gold-cell__item {
+  visibility: hidden;
+  animation: gold-cell-digit-visible 0s linear var(--gold-cell-reveal-delay, 0ms)
+    forwards;
+}
+
+.game-main-layout .gold-cell__img.--concealed .gold-cell__item {
+  visibility: hidden;
+}
+
+.game-main-layout .gold-cell__idx-number {
+  top: -37px;
+  left: 50%;
+  color: #070707;
+  font-family: Ubuntu, Arial, sans-serif;
+  font-size: 25px;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.game-main-layout .gold-cell.--small .gold-cell__idx-number {
+  top: -14px;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.game-main-layout .gold-cell__idx-string {
+  top: 37%;
+  left: -42px;
+  color: #070707;
+  font-family: Ubuntu, Arial, sans-serif;
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.game-main-layout .gold-cell.--small .gold-cell__idx-string {
+  top: 20%;
+  left: -51px;
+  font-size: 28px;
+}
+

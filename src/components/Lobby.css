@@ -1,0 +1,96 @@
+.lobby-screen {
+  position: relative;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: 100%;
+  gap: 1rem;
+  padding: 2rem;
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 1rem;
+  align-content: center;
+}
+
+.game-card {
+  display: grid;
+  gap: 0.5rem;
+  min-height: 12rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--accent, #f0bc45) 20%, rgba(0, 0, 0, 0.7));
+  color: var(--text);
+  cursor: pointer;
+}
+
+.game-card:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.game-art {
+  display: grid;
+  place-items: center;
+  min-height: 6rem;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.game-art span {
+  font-size: 3rem;
+  font-weight: 900;
+}
+
+.play-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.nav-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  color: var(--text);
+}
+
+.nav-arrow.left {
+  left: 0.75rem;
+}
+
+.nav-arrow.right {
+  right: 0.75rem;
+}
+
+.super-prize {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.prize-box,
+.state-panel {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.prize-box small {
+  display: block;
+  color: var(--muted);
+}
+
+.state-panel.error {
+  color: var(--red);
+}

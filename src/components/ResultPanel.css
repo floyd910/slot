@@ -1,0 +1,22 @@
+.main-container__wrapper {
+  width: 100%;
+}
+
+.main-container__info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 2rem;
+  color: #fff;
+  font-family: Ubuntu, Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1.05;
+  text-align: center;
+  text-shadow: 0 2px 0 rgba(161, 67, 0, 0.76);
+}
+
+.main-container__info > span {
+  display: block;
+}

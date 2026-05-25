@@ -1,0 +1,31 @@
+.runtime-state {
+  display: grid;
+  min-height: 100%;
+  place-items: center;
+  align-content: center;
+  gap: 0.75rem;
+  padding: 2rem;
+  color: var(--text);
+  text-align: center;
+}
+
+.runtime-state h1,
+.runtime-state p {
+  margin: 0;
+}
+
+.runtime-state p {
+  max-width: 32rem;
+  color: var(--muted);
+}
+
+.state-icon {
+  display: grid;
+  width: 4rem;
+  height: 4rem;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.35);
+  color: var(--gold);
+}

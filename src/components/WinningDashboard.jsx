@@ -20,18 +20,56 @@ function getLineCount(selectedCombination) {
   return Number.isFinite(title) && title > 0 ? title : 3;
 }
 
+function buildMessageRows(
+  stake,
+  selectedCombination,
+  spinResult,
+  doublingState,
+) {
+  const lineCount = getLineCount(selectedCombination);
+  const totalBet = Number(stake || 0) * lineCount;
+  const winSum = Number(spinResult?.WinSum ?? 0);
+
+  if (doublingState?.lastStatus === "lose") {
+    return [
+      ["Выигрыш", formatAmount(0)],
+      ["Возможный выигрыш x2", formatAmount(0)],
+    ];
+  }
+
+  if (winSum > 0) {
+    return [
+      ["Тираж", spinResult?.idCard ?? "-"],
+      ["Выигрыш", formatAmount(winSum)],
+      ["Возможный выигрыш x2", formatAmount(winSum * 2)],
+    ];
+  }
+
+  return [
+    ["Тираж", spinResult?.idCard ?? "-"],
+    [
+      "Сумма покупки",
+      `${Number(formatAmount(Number(stake))) * Number(lineCount)}`,
+    ],
+    [
+      "Выбирая лотерейную комбинацию и совершая лотерейную ставку, Вы подтверждаете цвое согласие с действующими правилами проведения лотереии.",
+      null,
+    ],
+  ];
+}
+
 function buildTableData(stake, selectedCombination) {
   const normalizedStake = Number(stake) || 0;
   const lineCount = getLineCount(selectedCombination);
-  const regularMultiplier = normalizedStake * 10 * (lineCount / 3);
 
   return paytable.map((row) => {
-    const multiplier = row.symbol === 0 ? regularMultiplier * 9 : regularMultiplier;
-
     return COLUMNS.reduce(
       (nextRow, key) => ({
         ...nextRow,
-        [key]: row[key] == null ? "" : formatAmount(row[key] * multiplier),
+        [key]:
+          row[key] == null
+            ? ""
+            : formatAmount(row[key] * normalizedStake * lineCount),
       }),
       { id: row.symbol },
     );
@@ -42,18 +80,31 @@ export default function WinningsDashboard({
   stake = 10,
   selectedCombination,
   spinResult,
+  doublingState,
 }) {
   const tableData = useMemo(
     () => buildTableData(stake, selectedCombination),
     [stake, selectedCombination],
   );
-  const winSum = Number(spinResult?.WinSum ?? 0);
+  const messageRows = useMemo(
+    () =>
+      buildMessageRows(stake, selectedCombination, spinResult, doublingState),
+    [stake, selectedCombination, spinResult, doublingState],
+  );
 
   return (
-    <div className="main-container__right">
+    <div>
       <div className="winnings-table">
-        <h2 className="winnings-table__title">Таблица выигрышей</h2>
+        <h2 className="winnings-table__title">ТАБЛИЦА ВЫИГРЫШЕЙ</h2>
         <table className="winnings-table__container">
+          <colgroup>
+            <col className="winnings-table__col --symbol" />
+            <col className="winnings-table__col --x1" />
+            <col className="winnings-table__col --x2" />
+            <col className="winnings-table__col --x3" />
+            <col className="winnings-table__col --x4" />
+            <col className="winnings-table__col --x5" />
+          </colgroup>
           <thead>
             <tr>
               <th></th>
@@ -75,21 +126,13 @@ export default function WinningsDashboard({
         </table>
       </div>
 
-      <div className="simple-info --opened">
-        <div className="simple-info__icon"></div>
-        <div className="simple-info__container">
-          <span className="simple-info__loto --opacity">
-            Лотерейная квитанция №{" "}
-          </span>
-          <span className="simple-info__draw">Тираж № 4585676</span>
-          <div className="simple-info__wrapper">
-            <span className="simple-info__text">
-              {winSum > 0
-                ? `Выигрыш: ${formatAmount(winSum)}`
-                : "Данных нет. Купите билет."}
-            </span>
+      <div className="msg_box">
+        {messageRows.map(([label, value]) => (
+          <div className="msg_box__row" key={label}>
+            <span className="msg_box__label">{label}</span>
+            <span className="msg_box__value">{value}</span>
           </div>
-        </div>
+        ))}
       </div>
     </div>
   );

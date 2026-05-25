@@ -1,4 +1,5 @@
 import { ChevronLeft, ChevronRight, Play } from "lucide-react";
+import "./Lobby.css";
 
 export default function Lobby({ games, onSelectGame, loading, error }) {
   return (
