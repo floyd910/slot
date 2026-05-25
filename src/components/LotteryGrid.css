@@ -740,11 +740,22 @@
 .game-main-layout .gold-cell__wrapper {
   width: 100%;
   height: auto;
-  background: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_004_101x101_at_302_606.png")
+  background: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_010_101x101_at_249_875.png")
     center / 100% 100% no-repeat;
   border: 0;
   border-radius: 0;
   box-shadow: none;
+}
+
+.game-main-layout
+  .digital-scoreboard__top
+  .gold-cell.--value-visible
+  .gold-cell__wrapper {
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_004_101x101_at_302_606.png");
+}
+
+.game-main-layout .digital-scoreboard__bottom .gold-cell__wrapper {
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_010_101x101_at_249_875.png");
 }
 
 .game-main-layout .digital-scoreboard__top .gold-cell.--revealing .gold-cell__wrapper {
