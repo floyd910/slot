@@ -494,6 +494,7 @@ export default function App() {
       setGridAnimation("spinning");
       setLastKnownState("spin-submitted");
       setError("");
+      setSpinResult(null);
       setPlayer((current) =>
         effectiveDemo || isFreeSpin
           ? current

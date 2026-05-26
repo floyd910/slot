@@ -249,24 +249,6 @@
   background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_026_67x67_at_241_1735.png");
 }
 
-.digital-scoreboard__top .gold-cell::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  border-radius: 7%;
-  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_012_101x101_at_249_978.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.digital-scoreboard__top .gold-cell.--win-highlight::after {
-  opacity: 1;
-}
-
 .digital-scoreboard__top .gold-cell.--revealing.--first {
   animation: gold-cell-bg-reveal 0s linear 0s forwards;
 }
@@ -325,7 +307,7 @@
   height: 100%;
   border-radius: 0;
 
-  transition: all 0.3s linear;
+  transition: none;
   overflow: hidden;
 }
 
@@ -752,6 +734,13 @@
   .gold-cell.--value-visible
   .gold-cell__wrapper {
   background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_004_101x101_at_302_606.png");
+}
+
+.game-main-layout
+  .digital-scoreboard__top
+  .gold-cell.--win-highlight
+  .gold-cell__wrapper {
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_012_101x101_at_249_978.png");
 }
 
 .game-main-layout .digital-scoreboard__bottom .gold-cell__wrapper {

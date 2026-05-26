@@ -160,7 +160,6 @@ export default function LotteryGrid({
                 idxNumber={index}
                 idxString={idxString(index)}
                 highlighted={marked.has(cell.coord)}
-                dimmed={isSettled && hasMarkedCells && !marked.has(cell.coord)}
                 eraser={isRevealing}
                 concealed={hideDigitsBeforeReveal}
               />
@@ -182,9 +181,7 @@ export default function LotteryGrid({
                 dimmed={
                   hasDoublingMarks
                     ? index > doublingState.step
-                    : isSettled &&
-                      value !== "SCATTER" &&
-                      scatterCells.length > 0
+                    : false
                 }
                 eraser={
                   hasDoublingMarks
