@@ -94,7 +94,7 @@ export const combinations = [
 export const stakeOptions = [0.1, 0.2, 0.3, 0.4, 0.5, 1, 2, 3, 5, 10, 15, 20, 25];
 
 export const paytable = [
-  { symbol: 0, x1: null, x2: null, x3: 0.2, x4: 1.5, x5: 5 },
+  { symbol: 0, x1: null, x2: 0.2, x3: 1.5, x4: 5, x5: 5 },
   { symbol: 1, x1: null, x2: null, x3: 0.5, x4: 2, x5: 10 },
   { symbol: 2, x1: null, x2: null, x3: 0.5, x4: 2, x5: 10 },
   { symbol: 3, x1: null, x2: null, x3: 0.5, x4: 2, x5: 10 },

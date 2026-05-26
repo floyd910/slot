@@ -1,6 +1,7 @@
 const BOARD_ROWS = ["A", "B", "C"];
 const DEFAULT_PRIZE_VALUE = 12;
 const ZERO_SYMBOL = 0;
+const WILD_SYMBOL = 12;
 
 const asNumber = (value, fallback = 0) => {
   const number = Number(value);
@@ -40,18 +41,19 @@ const unique = (items) => Array.from(new Set(items));
 function evaluateRegularGroup({ group, groupIndex, grid, paytable, stake, groupCount, prizeValue }) {
   const values = group.map((coordinate) => getCellValue(grid, coordinate));
   const normalizedPrize = asNumber(prizeValue, DEFAULT_PRIZE_VALUE);
-  const usesPrizeValue = normalizedPrize !== ZERO_SYMBOL;
+  const wildValue = normalizedPrize === ZERO_SYMBOL ? WILD_SYMBOL : normalizedPrize;
   const candidates = unique(
     values.filter((value) => {
       const numeric = Number(value);
-      return numeric > ZERO_SYMBOL;
+      return numeric > ZERO_SYMBOL && numeric !== WILD_SYMBOL;
     }),
   );
 
   const best = candidates.reduce(
     (current, symbol) => {
       const count = values.filter(
-        (value) => Number(value) === Number(symbol) || (usesPrizeValue && Number(value) === normalizedPrize),
+        (value) =>
+          Number(value) === Number(symbol) || Number(value) === wildValue,
       ).length;
       const coefficient = getPayout(paytable, symbol, count);
       const amount = Number((stake * coefficient * groupCount).toFixed(2));
@@ -76,25 +78,24 @@ function evaluateRegularGroup({ group, groupIndex, grid, paytable, stake, groupC
     score: best.amount,
     winningCells: group.filter((coordinate, index) => {
       const value = Number(values[index]);
-      return value === Number(best.symbol) || (usesPrizeValue && value === normalizedPrize);
+      return value === Number(best.symbol) || value === wildValue;
     }),
   };
 }
 
-function evaluateZeroGroup({ group, groupIndex, grid, paytable, stake, groupCount }) {
-  const values = group.map((coordinate) => getCellValue(grid, coordinate));
-  const winningCells = group.filter(
-    (_coordinate, index) => Number(values[index]) === ZERO_SYMBOL,
-  );
+function evaluateScatterWin({ grid, paytable, stake, groupCount }) {
+  const winningCells = getScatterCells(grid);
   const count = Math.min(5, winningCells.length);
+  if (count < 2) return null;
+
   const coefficient = getPayout(paytable, ZERO_SYMBOL, count);
   const amount = Number((stake * coefficient * groupCount).toFixed(2));
 
   if (amount <= 0) return null;
 
   return {
-    group,
-    groupIndex,
+    group: winningCells,
+    groupIndex: -1,
     symbol: ZERO_SYMBOL,
     count,
     multiplier: coefficient,
@@ -103,7 +104,7 @@ function evaluateZeroGroup({ group, groupIndex, grid, paytable, stake, groupCoun
     baseWin: amount,
     score: amount,
     winningCells,
-    zeroCondition: true,
+    scatter: true,
   };
 }
 
@@ -120,9 +121,9 @@ export function evaluateCoordinateLottery({
   const normalizedStake = asNumber(stake);
   const normalizedRoundMultiplier = asNumber(roundMultiplier, 1) || 1;
 
-  const regularWins = groups
-    .flatMap((group, groupIndex) => {
-      const regularWin = evaluateRegularGroup({
+  const lineWins = groups
+    .map((group, groupIndex) =>
+      evaluateRegularGroup({
         group,
         groupIndex,
         grid,
@@ -130,28 +131,27 @@ export function evaluateCoordinateLottery({
         stake: normalizedStake,
         groupCount,
         prizeValue,
-      });
-      const zeroWin = evaluateZeroGroup({
-        group,
-        groupIndex,
-        grid,
-        paytable,
-        stake: normalizedStake,
-        groupCount,
-      });
-      return [zeroWin, regularWin];
-    })
+      }),
+    )
     .filter(Boolean);
-  const lineWins = regularWins;
-  const baseWinSum = Number(lineWins.reduce((sum, line) => sum + line.baseWin, 0).toFixed(2));
+  const scatterWin = evaluateScatterWin({
+    grid,
+    paytable,
+    stake: normalizedStake,
+    groupCount,
+  });
+  const allWins = scatterWin ? [...lineWins, scatterWin] : lineWins;
+  const baseWinSum = Number(allWins.reduce((sum, line) => sum + line.baseWin, 0).toFixed(2));
   const winSum = Number((baseWinSum * normalizedRoundMultiplier).toFixed(2));
-  const winningCells = unique(lineWins.flatMap((line) => line.winningCells));
+  const winningCells = unique(allWins.flatMap((line) => line.winningCells));
 
   return {
     WinSum: winSum,
     BaseWinSum: baseWinSum,
+    ScatterWin: scatterWin,
+    ScatterCount: getScatterCells(grid).length,
     LineWinKoff: Array.from({ length: 10 }, (_, index) => lineWins.find((line) => line.groupIndex === index)?.coefficient ?? 0),
-    lineWins: lineWins.map((line) => ({
+    lineWins: allWins.map((line) => ({
       ...line,
       roundMultiplier: normalizedRoundMultiplier,
       totalWin: Number((line.baseWin * normalizedRoundMultiplier).toFixed(2)),

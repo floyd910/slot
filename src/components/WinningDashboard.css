@@ -175,6 +175,38 @@
   line-height: 1rem;
 }
 
+.game-main-layout .msg_box {
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  width: 100% !important;
+  min-width: 100% !important;
+  max-width: 100% !important;
+  height: 238px !important;
+  min-height: 238px !important;
+  max-height: 238px !important;
+  overflow: hidden !important;
+}
+
+.game-main-layout .msg_box__row {
+  box-sizing: border-box !important;
+  flex: 0 0 auto !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+
+.game-main-layout .msg_box__label,
+.game-main-layout .msg_box__value {
+  display: block !important;
+  max-width: 100% !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+  font-size: clamp(10px, 0.95vw, 18px) !important;
+  line-height: 1.05 !important;
+}
+
 @media (max-width: 920px) {
   .main-container__right {
     display: none;

@@ -239,7 +239,7 @@ const mapSpinPayload = (document, params) => {
     selectedCombination: params.selectedCombination,
     paytable,
     stake: params.stake,
-    roundMultiplier: CURRENT_ROUND_MULTIPLIER,
+    roundMultiplier: params.isFreeSpin ? CURRENT_ROUND_MULTIPLIER : 1,
     prizeValue: readPrizeValue(attrs),
   });
 
@@ -249,7 +249,7 @@ const mapSpinPayload = (document, params) => {
     WinSum: lotteryResult.WinSum,
     BaseWinSum: lotteryResult.BaseWinSum,
     BackendWinSum: backendWinSum,
-    FreeSpin: asNumber(attrs.FreeSpin),
+    FreeSpin: scatterCount >= 3 ? 1 : asNumber(attrs.FreeSpin),
     Gold: gold,
     Line1: grid.A.join(","),
     Line2: grid.B.join(","),
@@ -258,7 +258,8 @@ const mapSpinPayload = (document, params) => {
     BackendLineWinKoff: backendKoffs,
     grid,
     scatterCount,
-    scatterCells: gold > 0 || scatterCount >= 2 ? scatterCells : [],
+    scatterCells: scatterCount >= 2 ? scatterCells : [],
+    scatterWin: lotteryResult.ScatterWin,
     winningCells: lotteryResult.winningCells,
     lineWins: lotteryResult.lineWins,
     isDemo: params.isDemo,
@@ -384,7 +385,7 @@ export const frameApi = {
       selectedCombination,
       paytable,
       stake,
-      roundMultiplier: CURRENT_ROUND_MULTIPLIER,
+      roundMultiplier: isFreeSpin ? CURRENT_ROUND_MULTIPLIER : 1,
       prizeValue: 12,
     });
 
@@ -395,7 +396,7 @@ export const frameApi = {
       requestId,
       WinSum: lotteryResult.WinSum,
       BaseWinSum: lotteryResult.BaseWinSum,
-      FreeSpin: scatterCount >= 3 || lotteryResult.lineWins.some((line) => line.symbol === 0 && line.count >= 3) ? 1 : 0,
+      FreeSpin: scatterCount >= 3 ? 1 : 0,
       Gold: scatterCount >= 2 ? scatterCount : 0,
       Line1: grid.A.join(","),
       Line2: grid.B.join(","),
@@ -404,6 +405,7 @@ export const frameApi = {
       grid: { ...grid, D: bonusRow },
       scatterCount,
       scatterCells: scatterCount >= 2 ? scatterCells : [],
+      scatterWin: lotteryResult.ScatterWin,
       winningCells: lotteryResult.winningCells,
       lineWins: lotteryResult.lineWins,
       isDemo,

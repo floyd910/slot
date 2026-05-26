@@ -44,6 +44,17 @@ function buildMessageRows(
   }
 
   if (canShowWinAmounts) {
+    const baseWin = Number(spinResult?.BaseWinSum ?? winSum);
+    const multiplier = Number(spinResult?.multiplier ?? 1);
+    if (multiplier > 1 && baseWin > 0) {
+      return [
+        ["Тираж", spinResult?.idCard ?? "-"],
+        ["ВЫИГРЫШ", formatAmount(baseWin)],
+        ["FREE SPINS X3", `x${multiplier}`],
+        ["ИТОГОВЫЙ ВЫИГРЫШ", formatAmount(winSum)],
+      ];
+    }
+
     return [
       ["Тираж", spinResult?.idCard ?? "-"],
       ["ТЕКУШИЙ ВЫИГРЫШ", formatAmount(winSum)],
