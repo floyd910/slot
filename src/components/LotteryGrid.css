@@ -653,7 +653,7 @@
   position: relative;
   width: 100%;
   max-width: none;
-  aspect-ratio: 920 / 571;
+  aspect-ratio: 920 / 551;
   padding: 0;
   background-size: 100% 100%;
 }
@@ -747,27 +747,45 @@
   background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_010_101x101_at_249_875.png");
 }
 
-.game-main-layout .digital-scoreboard__top .gold-cell.--revealing .gold-cell__wrapper {
+.game-main-layout
+  .digital-scoreboard__top
+  .gold-cell.--revealing
+  .gold-cell__wrapper {
   background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_010_101x101_at_249_875.png");
 }
 
-.game-main-layout .digital-scoreboard__top .gold-cell.--revealing.--first .gold-cell__wrapper {
+.game-main-layout
+  .digital-scoreboard__top
+  .gold-cell.--revealing.--first
+  .gold-cell__wrapper {
   animation: gold-cell-bg-reveal 0s linear 0s forwards;
 }
 
-.game-main-layout .digital-scoreboard__top .gold-cell.--revealing.--second .gold-cell__wrapper {
+.game-main-layout
+  .digital-scoreboard__top
+  .gold-cell.--revealing.--second
+  .gold-cell__wrapper {
   animation: gold-cell-bg-reveal 0s linear 0.42s forwards;
 }
 
-.game-main-layout .digital-scoreboard__top .gold-cell.--revealing.--third .gold-cell__wrapper {
+.game-main-layout
+  .digital-scoreboard__top
+  .gold-cell.--revealing.--third
+  .gold-cell__wrapper {
   animation: gold-cell-bg-reveal 0s linear 0.84s forwards;
 }
 
-.game-main-layout .digital-scoreboard__top .gold-cell.--revealing.--fourth .gold-cell__wrapper {
+.game-main-layout
+  .digital-scoreboard__top
+  .gold-cell.--revealing.--fourth
+  .gold-cell__wrapper {
   animation: gold-cell-bg-reveal 0s linear 1.26s forwards;
 }
 
-.game-main-layout .digital-scoreboard__top .gold-cell.--revealing.--fifth .gold-cell__wrapper {
+.game-main-layout
+  .digital-scoreboard__top
+  .gold-cell.--revealing.--fifth
+  .gold-cell__wrapper {
   animation: gold-cell-bg-reveal 0s linear 1.68s forwards;
 }
 
@@ -807,8 +825,8 @@
 
 .game-main-layout .gold-cell__img.--revealing .gold-cell__item {
   visibility: hidden;
-  animation: gold-cell-digit-visible 0s linear var(--gold-cell-reveal-delay, 0ms)
-    forwards;
+  animation: gold-cell-digit-visible 0s linear
+    var(--gold-cell-reveal-delay, 0ms) forwards;
 }
 
 .game-main-layout .gold-cell__img.--concealed .gold-cell__item {
@@ -848,4 +866,3 @@
   left: -51px;
   font-size: 28px;
 }
-

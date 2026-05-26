@@ -923,8 +923,8 @@ export default function App() {
   const spinButtonDisabled =
     status === "initial-loading" ||
     status === "bootstrap-loading" ||
-    isDoublingLocked ||
-    !canAffordSpin;
+    Boolean(doublingState.loading) ||
+    (!pendingDigitWin && !canAffordSpin);
   const hideHeader =
     context.mode === "embedded" && context.featureFlags?.hiddenHeader !== false;
   const shellClass = `frame-app mode-${context.mode} theme-${context.theme}${hideHeader ? " headerless" : ""}${expandedBoard || visualMode ? " expanded-board" : ""}${visualMode ? " view-2 --eldorado" : " view-1"}${isVisualDoubling ? " doubling-active" : ""}`;
@@ -1019,6 +1019,8 @@ export default function App() {
               stake={stake}
               selectedCombination={selectedCombination}
               spinResult={spinResult}
+              doublingState={doublingState}
+              revealComplete={gridAnimation === "settled"}
             />
           </div>
         )}
@@ -1057,7 +1059,9 @@ export default function App() {
               onIncreaseCombination={() => cycleCombination(1)}
               onDecreaseStake={() => cycleStake(-1)}
               onIncreaseStake={() => cycleStake(1)}
-              onSpin={() => handleSpin({ demo: true })}
+              onSpin={() =>
+                pendingDigitWin ? collectWin() : handleSpin({ demo: true })
+              }
               onDouble={playFooterDouble}
               onTakeMoney={collectWin}
               onInfo={loadPaytable}

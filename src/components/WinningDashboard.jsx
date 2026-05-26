@@ -25,32 +25,35 @@ function buildMessageRows(
   selectedCombination,
   spinResult,
   doublingState,
+  revealComplete,
 ) {
   const lineCount = getLineCount(selectedCombination);
   const totalBet = Number(stake || 0) * lineCount;
   const winSum = Number(spinResult?.WinSum ?? 0);
+  const canShowWinAmounts =
+    winSum > 0 &&
+    (revealComplete ||
+      doublingState?.entered ||
+      Boolean(doublingState?.lastStatus));
 
   if (doublingState?.lastStatus === "lose") {
     return [
-      ["Выигрыш", formatAmount(0)],
-      ["Возможный выигрыш x2", formatAmount(0)],
+      ["ВЫИГРЫШ", formatAmount(0)],
+      ["ВОЗМОЖНЫЙ ВЫИГРЫШ", formatAmount(0)],
     ];
   }
 
-  if (winSum > 0) {
+  if (canShowWinAmounts) {
     return [
       ["Тираж", spinResult?.idCard ?? "-"],
-      ["Выигрыш", formatAmount(winSum)],
-      ["Возможный выигрыш x2", formatAmount(winSum * 2)],
+      ["ТЕКУШИЙ ВЫИГРЫШ", formatAmount(winSum)],
+      ["ВОЗМОЖНЫЙ ВЫИГРЫШ", formatAmount(winSum * 2)],
     ];
   }
 
   return [
-    ["Тираж", spinResult?.idCard ?? "-"],
-    [
-      "Сумма покупки",
-      `${Number(formatAmount(Number(stake))) * Number(lineCount)}`,
-    ],
+    ["ТИРАЖ", spinResult?.idCard ?? "-"],
+    ["СУММА ПОКУПКИ", `${formatAmount(stake * lineCount)}`],
     [
       "Выбирая лотерейную комбинацию и совершая лотерейную ставку, Вы подтверждаете цвое согласие с действующими правилами проведения лотереии.",
       null,
@@ -81,6 +84,7 @@ export default function WinningsDashboard({
   selectedCombination,
   spinResult,
   doublingState,
+  revealComplete = true,
 }) {
   const tableData = useMemo(
     () => buildTableData(stake, selectedCombination),
@@ -88,8 +92,14 @@ export default function WinningsDashboard({
   );
   const messageRows = useMemo(
     () =>
-      buildMessageRows(stake, selectedCombination, spinResult, doublingState),
-    [stake, selectedCombination, spinResult, doublingState],
+      buildMessageRows(
+        stake,
+        selectedCombination,
+        spinResult,
+        doublingState,
+        revealComplete,
+      ),
+    [stake, selectedCombination, spinResult, doublingState, revealComplete],
   );
 
   return (

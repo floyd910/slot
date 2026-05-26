@@ -246,8 +246,8 @@ const mapSpinPayload = (document, params) => {
   return {
     idCard: attrs.idCard ?? attrs.IdCard ?? attrs.IDCard,
     requestId: params.requestId,
-    WinSum: backendWinSum,
-    BaseWinSum: backendWinSum,
+    WinSum: lotteryResult.WinSum,
+    BaseWinSum: lotteryResult.BaseWinSum,
     BackendWinSum: backendWinSum,
     FreeSpin: asNumber(attrs.FreeSpin),
     Gold: gold,
