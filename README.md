@@ -133,4 +133,16 @@ The WSDL exposes `GetMessage(Value: string)`, so the adapter wraps each backend 
 
 Local development uses the Vite same-origin proxy at `/soap-hiranmandi`, which forwards to the SOAP DLL and avoids browser CORS blocking. In production, expose the same kind of same-origin proxy or pass its URL as `soapEndpoint`.
 
+The hosted Netlify build uses the same path:
+
+```text
+https://poetic-pegasus-37aef2.netlify.app/soap-hiranmandi
+```
+
+That route is configured in `netlify.toml` as a same-origin proxy to the SOAP backend. If the SOAP backend has its own allowlist, include this frontend origin:
+
+```text
+https://poetic-pegasus-37aef2.netlify.app
+```
+
 The frontend keeps free spins lifecycle client-side as described in the technical document: 3+ scatters start 15 free spins; remaining free spins are decremented by the iframe; free spin wins display base win, x3 multiplier, and final win.
