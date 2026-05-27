@@ -168,6 +168,8 @@ button:disabled {
 .view-2 .main-container__center {
   width: 100%;
   margin-left: 0;
+  background: transparent;
+  background-image: none;
 }
 
 .view-2 .info_msg {

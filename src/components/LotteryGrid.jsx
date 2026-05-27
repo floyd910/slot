@@ -203,21 +203,9 @@ export default function LotteryGrid({
   }
 
   // VIEW 2: Eldorado View
-  // Added inline matching directives to bind container height constraints to View 1's bounding box rules
   return (
-    <div
-      className="scoreboard-wrapper --eldorado-view"
-      style={{
-        minHeight: "100%",
-        height: "100%",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
-      <div
-        className="eldorado-scoreboard"
-        style={{ flexGrow: 1, minHeight: "340px" }}
-      >
+    <div className="scoreboard-wrapper --eldorado-view">
+      <div className="eldorado-scoreboard">
         {topCells.map((cell, index) => (
           <EldoradoCell
             key={`${cell.coord}-${revealKey}`}

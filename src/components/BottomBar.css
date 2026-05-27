@@ -5,6 +5,7 @@
   right: 0;
   width: 11%;
   padding: 10px;
+  height: 100vh;
 }
 
 .control-panel {
@@ -13,6 +14,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  height: 100%;
 }
 
 .action_button {

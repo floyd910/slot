@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+﻿import React, { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { paytable } from "../data/mockData.js";
 import "./WinningDashboard.css";
 
@@ -10,6 +10,13 @@ function formatAmount(value) {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(value);
+}
+
+function fitMessageFontSize(text, baseSize, minSize, fullSizeLength) {
+  const length = String(text ?? "").length;
+  if (length <= fullSizeLength) return baseSize;
+
+  return Math.max(minSize, Math.floor((baseSize * fullSizeLength) / length));
 }
 
 function getLineCount(selectedCombination) {
@@ -44,19 +51,7 @@ function buildMessageRows(
   }
 
   if (canShowWinAmounts) {
-    const baseWin = Number(spinResult?.BaseWinSum ?? winSum);
-    const multiplier = Number(spinResult?.multiplier ?? 1);
-    if (multiplier > 1 && baseWin > 0) {
-      return [
-        ["Тираж", spinResult?.idCard ?? "-"],
-        ["ВЫИГРЫШ", formatAmount(baseWin)],
-        ["FREE SPINS X3", `x${multiplier}`],
-        ["ИТОГОВЫЙ ВЫИГРЫШ", formatAmount(winSum)],
-      ];
-    }
-
     return [
-      ["Тираж", spinResult?.idCard ?? "-"],
       ["ТЕКУШИЙ ВЫИГРЫШ", formatAmount(winSum)],
       ["ВОЗМОЖНЫЙ ВЫИГРЫШ", formatAmount(winSum * 2)],
     ];
@@ -65,10 +60,7 @@ function buildMessageRows(
   return [
     ["ТИРАЖ", spinResult?.idCard ?? "-"],
     ["СУММА ПОКУПКИ", `${formatAmount(stake * lineCount)}`],
-    [
-      "Выбирая лотерейную комбинацию и совершая лотерейную ставку, Вы подтверждаете цвое согласие с действующими правилами проведения лотереии.",
-      null,
-    ],
+    [],
   ];
 }
 
@@ -112,6 +104,37 @@ export default function WinningsDashboard({
       ),
     [stake, selectedCombination, spinResult, doublingState, revealComplete],
   );
+  const messageSignature = useMemo(
+    () =>
+      messageRows.map(([label, value]) => `${label}:${value ?? ""}`).join("|"),
+    [messageRows],
+  );
+  const messageBoxRef = useRef(null);
+  const [messageFit, setMessageFit] = useState({
+    signature: messageSignature,
+    scale: 1,
+  });
+
+  useLayoutEffect(() => {
+    const box = messageBoxRef.current;
+    if (!box) return;
+
+    if (messageFit.signature !== messageSignature) {
+      setMessageFit({ signature: messageSignature, scale: 1 });
+      return;
+    }
+
+    const hasOverflow =
+      box.scrollHeight > box.clientHeight + 1 ||
+      box.scrollWidth > box.clientWidth + 1;
+
+    if (hasOverflow && messageFit.scale > 0.28) {
+      setMessageFit((current) => ({
+        ...current,
+        scale: Math.max(0.28, current.scale * 0.88),
+      }));
+    }
+  }, [messageFit, messageSignature]);
 
   return (
     <div>
@@ -147,13 +170,36 @@ export default function WinningsDashboard({
         </table>
       </div>
 
-      <div className="msg_box">
-        {messageRows.map(([label, value]) => (
-          <div className="msg_box__row" key={label}>
-            <span className="msg_box__label">{label}</span>
-            <span className="msg_box__value">{value}</span>
-          </div>
-        ))}
+      <div className="msg_box" ref={messageBoxRef}>
+        {messageRows.map(([label, value]) => {
+          const labelFontSize = Math.max(
+            5,
+            fitMessageFontSize(label, 14, 8, 42) * messageFit.scale,
+          );
+          const valueFontSize = Math.max(
+            7,
+            fitMessageFontSize(value, 22, 10, 18) * messageFit.scale,
+          );
+
+          return (
+            <div
+              className="msg_box__row"
+              key={label}
+              style={{
+                "--msg-label-font-size": `${labelFontSize}px`,
+                "--msg-value-font-size": `${valueFontSize}px`,
+              }}
+            >
+              <span className="msg_box__label">{label}</span>
+              <span className="msg_box__value">{value}</span>
+            </div>
+          );
+        })}
+        <p>
+          Выбирая лотерейную комбинацию и совершая лотерейную ставку, Вы
+          подтверждаете цвое согласие с действующими правилами проведения
+          лотереии.
+        </p>
       </div>
     </div>
   );
