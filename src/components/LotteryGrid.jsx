@@ -142,9 +142,10 @@ export default function LotteryGrid({
 
   const doublingMarks = doublingState?.marks ?? [];
   const hasDoublingMarks =
-    doublingMarks.some(Boolean) ||
-    doublingState?.active ||
-    doublingState?.loading;
+    animationState !== "spinning" &&
+    (doublingMarks.some(Boolean) ||
+      doublingState?.active ||
+      doublingState?.loading);
   const dRow = hasDoublingMarks ? doublingMarks : (grid.D ?? []);
 
   // VIEW 1: Standard Digital View
@@ -178,22 +179,14 @@ export default function LotteryGrid({
                     ? value === "x2" && index === doublingState.step - 1
                     : value === "SCATTER"
                 }
-                dimmed={
-                  hasDoublingMarks
-                    ? index > doublingState.step
-                    : false
-                }
+                dimmed={false}
                 eraser={
                   hasDoublingMarks
                     ? doublingState.changedIndex === index && Boolean(value)
                     : isRevealing
                 }
                 concealed={!hasDoublingMarks && hideDigitsBeforeReveal}
-                loading={
-                  hasDoublingMarks &&
-                  doublingState.loading &&
-                  index === doublingState.step
-                }
+                loading={false}
               />
             ))}
           </div>
@@ -291,7 +284,7 @@ function GoldCell({
 
   return (
     <div
-      className={`gold-cell${size === "small" ? " --small" : ""}${!concealed && !eraser ? " --value-visible" : ""}${highlighted ? " --win-highlight" : ""}${eraserClass ? ` --revealing ${eraserClass}` : ""}${dimmed ? " --opacity" : ""}`}
+      className={`gold-cell${size === "small" ? " --small" : ""}${isDoublingMark ? " --doubling-revealed" : ""}${!concealed && !eraser ? " --value-visible" : ""}${highlighted ? " --win-highlight" : ""}${eraserClass ? ` --revealing ${eraserClass}` : ""}${dimmed ? " --opacity" : ""}`}
     >
       <div
         className={`gold-cell__wrapper${highlighted ? " --glow" : ""}${dimmed ? " --opacity" : ""}`}

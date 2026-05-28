@@ -245,6 +245,10 @@
   background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_026_67x67_at_241_1735.png");
 }
 
+.digital-scoreboard__bottom .gold-cell.--doubling-revealed {
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_008_67x67_at_352_835.png");
+}
+
 .digital-scoreboard__top .gold-cell.--revealing {
   background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_026_67x67_at_241_1735.png");
 }
@@ -400,7 +404,7 @@
 }
 
 .gold-cell__item.--doubling {
-  font-size: 0.85em;
+  font-size: 1.2em;
   font-weight: 900;
   letter-spacing: 0;
   text-transform: uppercase;
@@ -412,9 +416,6 @@
   left: 50%;
   transform: translateX(-50%);
   color: #000;
-  font-family: Inter, Arial, Helvetica, sans-serif;
-  font-style: normal;
-  font-weight: 600;
   font-size: 1.25rem;
   line-height: 1.25rem;
   text-shadow: none;
@@ -428,16 +429,24 @@
 
 .gold-cell__idx-string {
   position: absolute;
-  top: 54%;
+  top: 50%;
   left: -1.25rem;
   transform: translateY(-50%);
   color: #000;
-  font-family: Inter, Arial, Helvetica, sans-serif;
-  font-style: normal;
-  font-weight: 600;
   font-size: 1.25rem;
   line-height: 1.25rem;
   text-shadow: none;
+}
+
+.gold-cell__idx-number,
+.gold-cell__idx-string {
+  font-family: inherit;
+  font-style: inherit;
+  font-weight: inherit;
+}
+
+.gold-cell.--small .gold-cell__idx-string {
+  top: calc(50% + 2.5px);
 }
 
 .flame {
@@ -773,6 +782,13 @@
 }
 
 .game-main-layout
+  .digital-scoreboard__bottom
+  .gold-cell.--doubling-revealed
+  .gold-cell__wrapper {
+  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_008_67x67_at_352_835.png");
+}
+
+.game-main-layout
   .digital-scoreboard__top
   .gold-cell.--revealing
   .gold-cell__wrapper {
@@ -833,7 +849,9 @@
 }
 
 .game-main-layout .gold-cell.--small .gold-cell__img {
-  display: none;
+  display: flex;
+  width: 80%;
+  height: 80%;
 }
 
 .game-main-layout .gold-cell__item {
@@ -846,6 +864,11 @@
     0 1px 0 rgba(255, 255, 255, 0.38),
     0 0 2px rgba(255, 231, 120, 0.34);
   transform: translateY(-2px);
+}
+
+.game-main-layout .gold-cell__item.--doubling {
+  font-size: 2rem;
+  line-height: 2rem;
 }
 
 .game-main-layout .gold-cell__img.--revealing .gold-cell__item {
@@ -862,9 +885,7 @@
   top: -37px;
   left: 50%;
   color: #070707;
-  font-family: Ubuntu, Arial, sans-serif;
   font-size: 25px;
-  font-weight: 900;
   line-height: 1;
   text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.7);
 }
@@ -876,18 +897,22 @@
 }
 
 .game-main-layout .gold-cell__idx-string {
-  top: 37%;
+  top: 50%;
   left: -42px;
   color: #070707;
-  font-family: Ubuntu, Arial, sans-serif;
   font-size: 28px;
-  font-weight: 900;
   line-height: 1;
   text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.7);
 }
 
+.game-main-layout .gold-cell__idx-number,
+.game-main-layout .gold-cell__idx-string {
+  font-family: inherit;
+  font-weight: inherit;
+}
+
 .game-main-layout .gold-cell.--small .gold-cell__idx-string {
-  top: 20%;
+  top: 50%;
   left: -51px;
   font-size: 28px;
 }

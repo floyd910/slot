@@ -492,6 +492,7 @@ export default function App() {
     try {
       setStatus("processing");
       setGridAnimation("spinning");
+      setDoublingState(emptyDoubling);
       setLastKnownState("spin-submitted");
       setError("");
       setSpinResult(null);
