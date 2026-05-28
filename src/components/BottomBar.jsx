@@ -1,90 +1,62 @@
 import "./BottomBar.css";
 
 export default function BottomBar({
-  player,
-  stake,
-  totalPurchase,
-  selectedCombination,
-  spinResult,
   disabled,
   spinDisabled = false,
-  doublingState,
   visualMode = false,
   onVisualToggle,
-  onDecreaseCombination,
   onIncreaseCombination,
-  onDecreaseStake,
   onIncreaseStake,
   onSpin,
-  onDouble,
-  onTakeMoney,
   onInfo,
 }) {
-  const pendingWin = Number(spinResult?.WinSum ?? 0) > 0;
-  const isX2Pending = pendingWin;
-  const currentAmount = Number(
-    doublingState?.currentAmount || spinResult?.WinSum || 0,
-  );
-  const canDouble =
-    !disabled && isX2Pending && !doublingState?.loading && currentAmount > 0;
-
   return (
     <footer className="bottom-bar">
       <div className="control-panel">
         <TakeMoney title="ЗАБРАТЬ ДЕНГИ" disabled={disabled} />
-        <CombinationControl
-          title="Комбинация"
-          value={selectedCombination?.title ?? ""}
-          disabled={disabled}
-          onMinus={onDecreaseCombination}
-          onPlus={onIncreaseCombination}
-        />
-        <NominalControl
-          title="Лотерейная ставка"
-          value={Number(stake ?? 0).toFixed(2)}
-          disabled={disabled}
-          onMinus={onDecreaseStake}
-          onPlus={onIncreaseStake}
-        />
-        <DisplayField
-          innerTitle="Выигрыш"
-          value={spinResult?.WinSum ? Number(spinResult.WinSum).toFixed(2) : ""}
-        />
-        <DisplayField
-          title="Сумма покупки"
-          value={Number(totalPurchase ?? 0).toFixed(2)}
-        />
-        <DisplayField
-          title="Баланс"
-          value={Number(player?.balance ?? 0).toFixed(2)}
-        />
-        {isX2Pending ? (
-          <ApplyDoubling disabled={!canDouble} onClick={onDouble} />
-        ) : (
-          <div
-            className={`auto-game${disabled ? " --disabled" : ""}`}
-            role="button"
-            tabIndex={disabled ? -1 : 0}
-          >
-            <span className="auto-game__text">Авто игра</span>
-          </div>
-        )}
         <BasicButton
           type="information"
           extraClass="information-button"
-          disabled={false}
+          disabled={disabled}
           onClick={onInfo}
         />
         <BasicButton
-          type="visual"
-          extraClass="visual-button"
+          type="language"
+          extraClass="language-button"
+          disabled={disabled}
+        />
+        <BasicButton
+          type="menu"
+          extraClass="language-button"
+          disabled={disabled}
+        />
+        <BasicButton
+          type="visualization"
+          extraClass="language-button"
           disabled={disabled}
           active={visualMode}
           onClick={onVisualToggle}
         />
         <BasicButton
-          type="game"
-          extraClass="play-game"
+          type="betAmount"
+          extraClass="language-button"
+          disabled={disabled}
+          onClick={onIncreaseStake}
+        />
+        <BasicButton
+          type="lotteryCombination"
+          extraClass="language-button"
+          disabled={disabled}
+          onClick={onIncreaseCombination}
+        />
+        <BasicButton
+          type="autoExpress"
+          extraClass="auto-express-button"
+          disabled={disabled}
+        />
+        <BasicButton
+          type="spinDraw"
+          extraClass="spin-draw-button"
           disabled={disabled || spinDisabled}
           onClick={onSpin}
         />
@@ -125,10 +97,30 @@ function TakeMoney({ disabled, title }) {
       onClick={() => {
         if (!disabled) onPlus();
       }}
+      onPointerDown={(event) => {
+        if (!disabled) event.currentTarget.classList.add("--pressed");
+      }}
+      onPointerUp={(event) => {
+        event.currentTarget.classList.remove("--pressed");
+      }}
+      onPointerLeave={(event) => {
+        event.currentTarget.classList.remove("--pressed");
+      }}
+      onPointerCancel={(event) => {
+        event.currentTarget.classList.remove("--pressed");
+      }}
       onKeyDown={(event) => {
         if (disabled || (event.key !== "Enter" && event.key !== " ")) return;
         event.preventDefault();
+        event.currentTarget.classList.add("--pressed");
         onPlus();
+      }}
+      onKeyUp={(event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.currentTarget.classList.remove("--pressed");
+      }}
+      onBlur={(event) => {
+        event.currentTarget.classList.remove("--pressed");
       }}
     >
       <span className="action_btn_title take-money__title">{title}</span>
@@ -159,45 +151,6 @@ function NominalControl({ title, value, disabled, onPlus }) {
   );
 }
 
-function DisplayField({ title, innerTitle, value, center = false }) {
-  return (
-    <div className="display-field">
-      {title && <div className="display-field__title">{title}</div>}
-      <div className="display-field__container">
-        {innerTitle && (
-          <div className="display-field__innerTitle">{innerTitle}</div>
-        )}
-        <div className="display-field__wrapper">
-          {value && (
-            <div className={`display-field__value${center ? " --center" : ""}`}>
-              {value}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ApplyDoubling({ disabled, onClick }) {
-  return (
-    <div
-      className={`apply-doubling${disabled ? " --disabled" : " --blink"}`}
-      role="button"
-      tabIndex={disabled ? -1 : 0}
-      onClick={() => {
-        if (!disabled) onClick();
-      }}
-      onKeyDown={(event) => {
-        if (disabled || (event.key !== "Enter" && event.key !== " ")) return;
-        event.preventDefault();
-        onClick();
-      }}
-    >
-      <span className="apply-doubling__text">Удвоить</span>
-    </div>
-  );
-}
 
 function BasicButton({
   type,
@@ -207,7 +160,26 @@ function BasicButton({
   onClick,
 }) {
   const labels = {
-    information: "Правила",
+    information: "ИНФО",
+    language: "Точикий",
+    menu: "МЕНЮ",
+    visualization: (
+      <>
+        РЕЖИМ
+        <br />
+        ВИЗУАЛИЗАЦИИ
+      </>
+    ),
+    betAmount: "СУММА СТАВКИ",
+    lotteryCombination: "ЛОТЕРЕЙННАЯ КОМБИНАЦИЯ",
+    autoExpress: "АВТО ЭКСПРЕСС",
+    spinDraw: (
+      <>
+        УЧАВСТВОВАТЬ
+        <br />
+        В ТИРАЖЕ
+      </>
+    ),
     visual: "Вид",
     game: "Играть",
     closer: "Забрать",
@@ -222,14 +194,17 @@ function BasicButton({
         if (!disabled && onClick) onClick();
       }}
       onKeyDown={(event) => {
-        if (
-          disabled ||
-          !onClick ||
-          (event.key !== "Enter" && event.key !== " ")
-        )
-          return;
+        if (disabled || (event.key !== "Enter" && event.key !== " ")) return;
         event.preventDefault();
-        onClick();
+        event.currentTarget.classList.add("--pressed");
+        if (onClick) onClick();
+      }}
+      onKeyUp={(event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.currentTarget.classList.remove("--pressed");
+      }}
+      onBlur={(event) => {
+        event.currentTarget.classList.remove("--pressed");
       }}
     >
       <span className={`basic-button__label --${type}`}>

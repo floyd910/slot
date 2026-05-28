@@ -35,5 +35,135 @@
   align-items: center;
 }
 .take-money {
+  width: 100%;
+  height: 102px;
+  background-size: 100% 100%;
   background-image: url("img/extracted/тут-кнопки-справа-1_0/sprite_012_284x102_at_1_1445.png");
 }
+
+.take-money.--disabled {
+  background-image: url("img/extracted/тут-кнопки-справа-1_0/sprite_010_284x102_at_1_1237.png");
+}
+
+.take-money.--pressed,
+.take-money:active {
+  background-image: url("img/extracted/тут-кнопки-справа-1_0/sprite_011_284x102_at_1_1341.png");
+}
+
+.information-button {
+  width: 100%;
+  height: 102px;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  background-image: url("img/extracted/тут-кнопки-справа-1_0/sprite_012_284x102_at_1_1445.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.information-button.--disabled {
+  background-image: url("img/extracted/тут-кнопки-справа-1_0/sprite_010_284x102_at_1_1237.png");
+}
+
+.information-button.--pressed,
+.information-button:active {
+  background-image: url("img/extracted/тут-кнопки-справа-1_0/sprite_011_284x102_at_1_1341.png");
+}
+
+.information-button .basic-button__label {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.language-button {
+  width: 100%;
+  height: 102px;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  background-image: url("/img/extracted/тут-кнопки-справа-1_0/sprite_006_284x102_at_1_671.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.language-button.--disabled {
+  background-image: url("/img/extracted/тут-кнопки-справа-1_0/sprite_004_284x102_at_1_463.png");
+}
+
+.language-button.--pressed,
+.language-button:active {
+  background-image: url("/img/extracted/тут-кнопки-справа-1_0/sprite_005_284x102_at_1_567.png");
+}
+
+.language-button .basic-button__label {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.basic-button__label.--visualization {
+  line-height: 1.15;
+}
+
+.auto-express-button {
+  width: 100%;
+  height: 152px;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  background-image: url("/img/extracted/тут-кнопки-справа-1_0/sprite_003_284x152_at_1_309.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.auto-express-button.--disabled {
+  background-image: url("/img/extracted/тут-кнопки-справа-1_0/sprite_001_284x152_at_1_1.png");
+}
+
+.auto-express-button.--pressed,
+.auto-express-button:active {
+  background-image: url("/img/extracted/тут-кнопки-справа-1_0/sprite_002_284x152_at_1_155.png");
+}
+
+.auto-express-button .basic-button__label {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spin-draw-button {
+  width: 100%;
+  height: 152px;
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  background-image: url("/img/extracted/тут-кнопки-справа-1_0/sprite_009_284x152_at_1_1083.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.spin-draw-button.--disabled {
+  background-image: url("/img/extracted/тут-кнопки-справа-1_0/sprite_007_284x152_at_1_775.png");
+}
+
+.spin-draw-button.--pressed,
+.spin-draw-button:active {
+  background-image: url("/img/extracted/тут-кнопки-справа-1_0/sprite_008_284x152_at_1_929.png");
+}
+
+.spin-draw-button .basic-button__label {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 1.15;
+}
+
