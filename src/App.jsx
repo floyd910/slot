@@ -1058,6 +1058,7 @@ export default function App() {
               disabled={isBusy}
               spinDisabled={spinButtonDisabled}
               doublingState={doublingState}
+              revealComplete={gridAnimation === "settled"}
               visualMode={visualMode}
               onDecreaseCombination={() => cycleCombination(-1)}
               onIncreaseCombination={() => cycleCombination(1)}

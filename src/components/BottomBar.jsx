@@ -1,15 +1,27 @@
 import "./BottomBar.css";
 
 export default function BottomBar({
+  spinResult,
   disabled,
   spinDisabled = false,
+  doublingState,
+  revealComplete = false,
   visualMode = false,
   onVisualToggle,
   onIncreaseCombination,
   onIncreaseStake,
   onSpin,
+  onDouble,
   onInfo,
 }) {
+  const pendingWin = Number(spinResult?.WinSum ?? 0) > 0;
+  const showDouble = pendingWin && revealComplete;
+  const currentAmount = Number(
+    doublingState?.currentAmount || spinResult?.WinSum || 0,
+  );
+  const canDouble =
+    !disabled && showDouble && !doublingState?.loading && currentAmount > 0;
+
   return (
     <footer className="bottom-bar">
       <div className="control-panel">
@@ -37,12 +49,21 @@ export default function BottomBar({
           active={visualMode}
           onClick={onVisualToggle}
         />
-        <BasicButton
-          type="betAmount"
-          extraClass="language-button"
-          disabled={disabled}
-          onClick={onIncreaseStake}
-        />
+        {showDouble ? (
+          <BasicButton
+            type="double"
+            extraClass="language-button"
+            disabled={!canDouble}
+            onClick={onDouble}
+          />
+        ) : (
+          <BasicButton
+            type="betAmount"
+            extraClass="language-button"
+            disabled={disabled}
+            onClick={onIncreaseStake}
+          />
+        )}
         <BasicButton
           type="lotteryCombination"
           extraClass="language-button"
@@ -171,6 +192,7 @@ function BasicButton({
       </>
     ),
     betAmount: "СУММА СТАВКИ",
+    double: "\u0423\u0414\u0412\u041e\u0418\u0422\u042c",
     lotteryCombination: "ЛОТЕРЕЙННАЯ КОМБИНАЦИЯ",
     autoExpress: "АВТО ЭКСПРЕСС",
     spinDraw: (
