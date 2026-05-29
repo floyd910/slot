@@ -126,6 +126,7 @@
 }
 
 .auto-express-button.--pressed,
+.auto-express-button.--active,
 .auto-express-button:active {
   background-image: url("/img/extracted/тут-кнопки-справа-1_0/sprite_002_284x152_at_1_155.png");
 }
@@ -154,6 +155,7 @@
 }
 
 .spin-draw-button.--pressed,
+.spin-draw-button.--active,
 .spin-draw-button:active {
   background-image: url("/img/extracted/тут-кнопки-справа-1_0/sprite_008_284x152_at_1_929.png");
 }

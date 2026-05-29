@@ -4,6 +4,9 @@ export default function BottomBar({
   spinResult,
   disabled,
   spinDisabled = false,
+  autoPlayActive = false,
+  autoPlayDisabled = false,
+  spinFeedbackActive = false,
   doublingState,
   revealComplete = false,
   visualMode = false,
@@ -11,6 +14,7 @@ export default function BottomBar({
   onIncreaseCombination,
   onIncreaseStake,
   onSpin,
+  onAutoPlay,
   onDouble,
   onInfo,
 }) {
@@ -73,12 +77,15 @@ export default function BottomBar({
         <BasicButton
           type="autoExpress"
           extraClass="auto-express-button"
-          disabled={disabled}
+          disabled={autoPlayDisabled}
+          active={autoPlayActive}
+          onClick={onAutoPlay}
         />
         <BasicButton
           type="spinDraw"
           extraClass="spin-draw-button"
           disabled={disabled || spinDisabled}
+          active={spinFeedbackActive}
           onClick={onSpin}
         />
       </div>
