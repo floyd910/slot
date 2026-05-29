@@ -1,0 +1,129 @@
+.game-bottom-area {
+  position: absolute;
+  left: 0;
+  right: var(--clone-rail-width);
+  bottom: 0;
+  z-index: 7;
+  height: var(--clone-stage-bottom);
+  padding: 1.35rem 3.1rem 0.6rem;
+  color: #f8ca16;
+  font-family: "Arial Narrow", Arial, sans-serif;
+  pointer-events: none;
+}
+
+.game-bottom-area__top {
+  display: grid;
+  grid-template-columns: 1.03fr 0.97fr;
+  gap: 1.4rem;
+  width: 88.5%;
+  margin: 0 auto 0.45rem;
+}
+
+.game-bottom-area__message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 4.35rem;
+  border: 0.14rem solid rgba(220, 228, 235, 0.72);
+  background:
+    linear-gradient(180deg, rgba(43, 12, 1, 0.78), rgba(13, 4, 0, 0.82)),
+    rgba(26, 8, 0, 0.82);
+  box-shadow:
+    inset 0 0 1.1rem rgba(0, 0, 0, 0.88),
+    0 0 0.35rem rgba(255, 255, 255, 0.3);
+  color: #9bad0d;
+  font-size: 1.78rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
+  text-align: center;
+  text-shadow:
+    0 0 0.35rem rgba(123, 132, 0, 0.8),
+    0.08rem 0.08rem 0 #260900;
+  white-space: nowrap;
+}
+
+.game-bottom-area__fields {
+  display: grid;
+  grid-template-columns: 1.08fr 1.08fr 1.08fr 1.08fr 0.82fr 0.82fr;
+  gap: 1.25rem;
+  align-items: end;
+  width: 100%;
+}
+
+.game-bottom-field {
+  min-width: 0;
+}
+
+.game-bottom-field__title {
+  height: 1.05rem;
+  margin-bottom: 0.2rem;
+  color: rgba(223, 219, 219, 0.82);
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 0.86;
+  text-align: center;
+  text-shadow:
+    0 0 0.22rem rgba(255, 255, 255, 0.58),
+    0.08rem 0.08rem 0 #2b0900;
+  white-space: normal;
+}
+
+.game-bottom-field.--compact .game-bottom-field__title {
+  font-size: 0.8rem;
+  line-height: 0.74;
+}
+
+.game-bottom-field__value {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.8rem;
+  border: 0.12rem solid rgba(223, 232, 239, 0.76);
+  background:
+    linear-gradient(180deg, rgba(45, 12, 1, 0.74), rgba(16, 5, 0, 0.9)),
+    rgba(24, 7, 0, 0.88);
+  box-shadow:
+    inset 0 0 1rem rgba(0, 0, 0, 0.88),
+    0 0 0.26rem rgba(255, 255, 255, 0.32);
+  color: #ffc400;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  text-shadow:
+    0 0 0.35rem rgba(255, 169, 0, 0.72),
+    0.08rem 0.08rem 0 #4d1300;
+  white-space: nowrap;
+}
+
+.game-bottom-field:nth-child(5) .game-bottom-field__value,
+.game-bottom-field:nth-child(6) .game-bottom-field__value {
+  color: #a6c916;
+  text-shadow:
+    0 0 0.35rem rgba(139, 176, 0, 0.75),
+    0.08rem 0.08rem 0 #2f1100;
+}
+
+@media (max-width: 1180px) {
+  .game-bottom-area {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+
+  .game-bottom-area__top {
+    width: 91%;
+  }
+
+  .game-bottom-area__message {
+    font-size: 1.45rem;
+  }
+
+  .game-bottom-area__fields {
+    gap: 0.75rem;
+  }
+
+  .game-bottom-field__value {
+    font-size: 1.65rem;
+  }
+}

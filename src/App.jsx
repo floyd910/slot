@@ -7,6 +7,7 @@ import CombinationSelector from "./components/CombinationSelector.jsx";
 import DoubleMode from "./components/DoubleMode.jsx";
 import EldoradoDoubleScene from "./components/EldoradoDoubleScene.jsx";
 import EldoradoPurchasePanel from "./components/EldoradoPurchasePanel.jsx";
+import GameBottomArea from "./components/GameBottomArea.jsx";
 import GameMenu from "./components/GameMenu.jsx";
 import Lobby from "./components/Lobby.jsx";
 import LotteryGrid from "./components/LotteryGrid.jsx";
@@ -1364,41 +1365,50 @@ export default function App() {
         <div className="game-main-layout">
           <div className="frame-content">{content}</div>
           {!runtimeState && (
-            <BottomBar
-              player={player}
-              stake={stake}
-              totalPurchase={totalPurchase}
-              selectedCombination={selectedCombination}
-              spinResult={spinResult}
-              freeSpinsLeft={freeSpinsLeft}
-              multiplier={freeSpinsLeft > 0 ? 3 : 1}
-              disabled={isBusy}
-              spinDisabled={spinButtonDisabled}
-              autoPlayActive={autoPlayActive}
-              autoPlayDisabled={autoPlayDisabled}
-              spinFeedbackActive={spinFeedbackActive}
-              doublingState={doublingState}
-              revealComplete={gridAnimation === "settled"}
-              visualMode={visualMode}
-              onDecreaseCombination={() => cycleCombination(-1)}
-              onIncreaseCombination={() => cycleCombination(1)}
-              onDecreaseStake={() => cycleStake(-1)}
-              onIncreaseStake={() => cycleStake(1)}
-              onSpin={() =>
-                pendingDigitWin ? collectWin() : handleSpin({ demo: true })
-              }
-              onAutoPlay={() => {
-                if (autoPlayActiveRef.current) {
-                  stopAutoPlay();
-                  return;
+            <>
+              <GameBottomArea
+                player={player}
+                stake={stake}
+                totalPurchase={totalPurchase}
+                selectedCombination={selectedCombination}
+                spinResult={spinResult}
+              />
+              <BottomBar
+                player={player}
+                stake={stake}
+                totalPurchase={totalPurchase}
+                selectedCombination={selectedCombination}
+                spinResult={spinResult}
+                freeSpinsLeft={freeSpinsLeft}
+                multiplier={freeSpinsLeft > 0 ? 3 : 1}
+                disabled={isBusy}
+                spinDisabled={spinButtonDisabled}
+                autoPlayActive={autoPlayActive}
+                autoPlayDisabled={autoPlayDisabled}
+                spinFeedbackActive={spinFeedbackActive}
+                doublingState={doublingState}
+                revealComplete={gridAnimation === "settled"}
+                visualMode={visualMode}
+                onDecreaseCombination={() => cycleCombination(-1)}
+                onIncreaseCombination={() => cycleCombination(1)}
+                onDecreaseStake={() => cycleStake(-1)}
+                onIncreaseStake={() => cycleStake(1)}
+                onSpin={() =>
+                  pendingDigitWin ? collectWin() : handleSpin({ demo: true })
                 }
-                startAutoPlay();
-              }}
-              onDouble={playFooterDouble}
-              onTakeMoney={collectWin}
-              onInfo={loadPaytable}
-              onVisualToggle={() => handleAction("visual")}
-            />
+                onAutoPlay={() => {
+                  if (autoPlayActiveRef.current) {
+                    stopAutoPlay();
+                    return;
+                  }
+                  startAutoPlay();
+                }}
+                onDouble={playFooterDouble}
+                onTakeMoney={collectWin}
+                onInfo={loadPaytable}
+                onVisualToggle={() => handleAction("visual")}
+              />
+            </>
           )}
         </div>
         {showPaytable && (
