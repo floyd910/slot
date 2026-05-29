@@ -41,6 +41,7 @@ const LOTTERY_REVEAL_AUDIO_STOP_MS =
 const LOTTERY_REVEAL_SETTLE_MS =
   LOTTERY_REVEAL_STEP_MS * (LOTTERY_REVEAL_COLUMNS - 1) + 650;
 const AUTOPLAY_STEP_DELAY_MS = 2000;
+const AUTOPLAY_BUSY_RETRY_MS = 250;
 const RETRYABLE_CODES = new Set(["NETWORK_ERROR", "TIMEOUT"]);
 const emptyDoubling = {
   active: false,
@@ -75,6 +76,8 @@ const isEnabled = (value) =>
   value === 1 ||
   value === "1" ||
   String(value).toLowerCase() === "true";
+const IMAGE_PRELOAD_TIMEOUT_MS = 6000;
+const CSS_URL_PATTERN = /url\(\s*(['"]?)(.*?)\1\s*\)/g;
 const STARTUP_VIDEO_SRC = "/media/terminal-loader.mp4";
 const STARTUP_ASSETS = {
   images: [
@@ -96,12 +99,68 @@ const STARTUP_ASSETS = {
   videos: [STARTUP_VIDEO_SRC],
 };
 
+const toPreloadUrl = (src) => {
+  if (!src || src.startsWith("data:") || src.startsWith("blob:")) return "";
+  try {
+    return new URL(src, document.baseURI).href;
+  } catch {
+    return src;
+  }
+};
+
+const collectCssImageUrlsFromText = (text, urls) => {
+  CSS_URL_PATTERN.lastIndex = 0;
+  let match = CSS_URL_PATTERN.exec(text);
+  while (match) {
+    const src = toPreloadUrl(match[2]);
+    if (src) urls.add(src);
+    match = CSS_URL_PATTERN.exec(text);
+  }
+};
+
+const collectCssRuleImageUrls = (rule, urls) => {
+  if (rule.cssText) collectCssImageUrlsFromText(rule.cssText, urls);
+  if (rule.cssRules) {
+    Array.from(rule.cssRules).forEach((nestedRule) =>
+      collectCssRuleImageUrls(nestedRule, urls),
+    );
+  }
+};
+
+const collectStylesheetImageUrls = () => {
+  const urls = new Set();
+  Array.from(document.styleSheets).forEach((sheet) => {
+    try {
+      Array.from(sheet.cssRules ?? []).forEach((rule) =>
+        collectCssRuleImageUrls(rule, urls),
+      );
+    } catch {
+      // Cross-origin stylesheets cannot expose cssRules; skip them safely.
+    }
+  });
+  return [...urls];
+};
+
 const preloadImage = (src) =>
   new Promise((resolve) => {
+    const normalizedSrc = toPreloadUrl(src);
+    if (!normalizedSrc) {
+      resolve();
+      return;
+    }
     const image = new Image();
-    image.onload = resolve;
-    image.onerror = resolve;
-    image.src = src;
+    let settled = false;
+    const done = () => {
+      if (settled) return;
+      settled = true;
+      resolve();
+    };
+    image.decoding = "async";
+    image.fetchPriority = "high";
+    image.onload = done;
+    image.onerror = done;
+    window.setTimeout(done, IMAGE_PRELOAD_TIMEOUT_MS);
+    image.src = normalizedSrc;
   });
 
 const preloadVideo = (src) =>
@@ -127,9 +186,15 @@ const preloadVideo = (src) =>
 const preloadStartupAssets = async () => {
   const fontReady =
     document.fonts?.ready?.catch?.(() => {}) ?? Promise.resolve();
+  const images = [
+    ...new Set([
+      ...STARTUP_ASSETS.images.map(toPreloadUrl),
+      ...collectStylesheetImageUrls(),
+    ]),
+  ].filter(Boolean);
   await Promise.all([
     fontReady,
-    ...STARTUP_ASSETS.images.map(preloadImage),
+    ...images.map(preloadImage),
     ...STARTUP_ASSETS.videos.map(preloadVideo),
     wait(900),
   ]);
@@ -184,7 +249,8 @@ export default function App() {
   const [startupLoaderVisible, setStartupLoaderVisible] = useState(true);
   const [startupLoaderLeaving, setStartupLoaderLeaving] = useState(false);
   const autoPlayActiveRef = useRef(false);
-  const autoPlayTimerRef = useRef(null);
+  const autoPlayLoopIdRef = useRef(0);
+  const collectWinRef = useRef(null);
   const handleSpinRef = useRef(null);
   const spinFeedbackTimerRef = useRef(null);
   const liveSpinStateRef = useRef({
@@ -194,6 +260,7 @@ export default function App() {
     freeSpinsLeft,
     player,
     selectedCombination: null,
+    spinResult,
     stake,
     status,
     visualMode,
@@ -233,12 +300,6 @@ export default function App() {
 
   useEffect(() => () => playSound("stopBackground"), [playSound]);
 
-  const clearAutoPlayTimer = useCallback(() => {
-    if (!autoPlayTimerRef.current) return;
-    window.clearTimeout(autoPlayTimerRef.current);
-    autoPlayTimerRef.current = null;
-  }, []);
-
   const clearSpinFeedbackTimer = useCallback(() => {
     if (!spinFeedbackTimerRef.current) return;
     window.clearTimeout(spinFeedbackTimerRef.current);
@@ -247,23 +308,17 @@ export default function App() {
 
   const stopAutoPlay = useCallback(() => {
     autoPlayActiveRef.current = false;
-    clearAutoPlayTimer();
+    autoPlayLoopIdRef.current += 1;
     setAutoPlayActive(false);
-  }, [clearAutoPlayTimer]);
+  }, []);
 
-  const queueAutoPlaySpin = useCallback(
-    (delay = AUTOPLAY_STEP_DELAY_MS) => {
-      clearAutoPlayTimer();
-      autoPlayTimerRef.current = window.setTimeout(() => {
-        autoPlayTimerRef.current = null;
-        if (!autoPlayActiveRef.current) return;
-        handleSpinRef.current?.({ demo: false });
-      }, delay);
-    },
-    [clearAutoPlayTimer],
-  );
+  const startAutoPlay = useCallback(() => {
+    setError("");
+    autoPlayActiveRef.current = true;
+    autoPlayLoopIdRef.current += 1;
+    setAutoPlayActive(true);
+  }, []);
 
-  useEffect(() => () => clearAutoPlayTimer(), [clearAutoPlayTimer]);
   useEffect(() => () => clearSpinFeedbackTimer(), [clearSpinFeedbackTimer]);
 
   const playSpinFeedback = useCallback(() => {
@@ -311,6 +366,7 @@ export default function App() {
       freeSpinsLeft,
       player,
       selectedCombination,
+      spinResult,
       stake,
       status,
       visualMode,
@@ -322,6 +378,7 @@ export default function App() {
     freeSpinsLeft,
     player,
     selectedCombination,
+    spinResult,
     stake,
     status,
     visualMode,
@@ -570,8 +627,9 @@ export default function App() {
       status === "processing" ||
       doubleState.loading ||
       doublingState.loading
-    )
+    ) {
       return null;
+    }
     const isFreeSpin = freeSpinsLeft > 0;
     const testMode = isEnabled(context.testMode ?? context.demoMode);
     const effectiveDemo = isFreeSpin ? false : demo || testMode;
@@ -649,25 +707,30 @@ export default function App() {
         () => setGridAnimation("settled"),
         LOTTERY_REVEAL_SETTLE_MS,
       );
-      setSpinResult({ ...result, creditedToBalance: shouldCreditWin });
-      setDoublingState(
-        isDigitWin
-          ? {
-              active: true,
-              entered: false,
-              loading: false,
-              step: 0,
-              marks: ["", "", "", "", ""],
-              currentAmount: result.WinSum,
-              deferredBalance: 0,
-              split: 0,
-              revealKey: 0,
-              changedIndex: -1,
-              lastPick: "",
-              lastStatus: "",
-            }
-          : emptyDoubling,
-      );
+      const nextSpinResult = { ...result, creditedToBalance: shouldCreditWin };
+      const nextDoublingState = isDigitWin
+        ? {
+            active: true,
+            entered: false,
+            loading: false,
+            step: 0,
+            marks: ["", "", "", "", ""],
+            currentAmount: result.WinSum,
+            deferredBalance: 0,
+            split: 0,
+            revealKey: 0,
+            changedIndex: -1,
+            lastPick: "",
+            lastStatus: "",
+          }
+        : emptyDoubling;
+      setSpinResult(nextSpinResult);
+      setDoublingState(nextDoublingState);
+      liveSpinStateRef.current = {
+        ...liveSpinStateRef.current,
+        spinResult: nextSpinResult,
+        doublingState: nextDoublingState,
+      };
       if (shouldCreditWin) {
         setPlayer((current) => ({
           ...current,
@@ -708,17 +771,28 @@ export default function App() {
       if (result.WinSum > 0) emitSound("win", result);
       if (visualMode && result.WinSum <= 0) emitSound("lose", result);
       if (autoPlayActiveRef.current && result.WinSum > 0) {
-        await frameApi
-          .pay({ idCard: result.idCard, requestId: buildRequestId("pay") })
-          .catch(() => null);
-        setDoubleState({
+        await withTimeout(
+          frameApi.pay({
+            idCard: result.idCard,
+            requestId: buildRequestId("pay"),
+          }),
+          "Pay",
+        ).catch(() => null);
+        const nextDoubleState = {
           active: false,
           loading: false,
           step: 1,
           status: "Choose left or right",
-        });
+        };
+        setDoubleState(nextDoubleState);
         setDoublingState(emptyDoubling);
         setSpinResult(null);
+        liveSpinStateRef.current = {
+          ...liveSpinStateRef.current,
+          doubleState: nextDoubleState,
+          doublingState: emptyDoubling,
+          spinResult: null,
+        };
         setPlayer((current) =>
           current
             ? {
@@ -743,9 +817,6 @@ export default function App() {
           .pay({ idCard: result.idCard, requestId: buildRequestId("pay") })
           .catch(() => {});
       }
-      if (autoPlayActiveRef.current) {
-        queueAutoPlaySpin();
-      }
       return result;
     } catch (spinError) {
       setGridAnimation("settled");
@@ -763,7 +834,6 @@ export default function App() {
         spinError,
         "Spin result is unknown. Check status before retrying.",
       );
-      stopAutoPlay();
       return null;
     }
   };
@@ -790,47 +860,148 @@ export default function App() {
   };
 
   const collectWin = async () => {
+    const {
+      player,
+      spinResult,
+      status,
+    } = liveSpinStateRef.current;
     if (
       !spinResult?.idCard ||
-      spinResult.WinSum <= 0 ||
+      Number(spinResult.WinSum ?? 0) <= 0 ||
       status === "processing"
     )
-      return;
+      return false;
     const requestId = buildRequestId("pay");
-    const payout = spinResult.WinSum;
+    const payout = Number(spinResult.WinSum ?? 0);
     const alreadyCredited = spinResult.creditedToBalance;
     try {
       setStatus("processing");
+      liveSpinStateRef.current = {
+        ...liveSpinStateRef.current,
+        status: "processing",
+      };
       setLastKnownState("pay-submitted");
       await withTimeout(
         frameApi.pay({ idCard: spinResult.idCard, requestId }),
         "Pay",
       ).catch(() => null);
       if (!alreadyCredited) {
-        setPlayer((current) => ({
-          ...current,
-          balance: Number((current.balance + payout).toFixed(2)),
-        }));
+        setPlayer((current) => {
+          if (!current) return current;
+          const nextPlayer = {
+            ...current,
+            balance: Number((Number(current.balance ?? 0) + payout).toFixed(2)),
+          };
+          liveSpinStateRef.current = {
+            ...liveSpinStateRef.current,
+            player: nextPlayer,
+          };
+          return nextPlayer;
+        });
       }
-      setDoubleState({
+      const nextDoubleState = {
         active: false,
         loading: false,
         step: 1,
         status: "Choose left or right",
-      });
+      };
+      setDoubleState(nextDoubleState);
       setDoublingState(emptyDoubling);
       setSpinResult(null);
       setStatus("ready");
+      liveSpinStateRef.current = {
+        ...liveSpinStateRef.current,
+        doubleState: nextDoubleState,
+        doublingState: emptyDoubling,
+        spinResult: null,
+        status: "ready",
+      };
       setLastKnownState("paid");
       emitSound("cashout");
       if (!alreadyCredited)
         postEvent("UPDATE_BALANCE", {
-          balance: Number((player.balance + payout).toFixed(2)),
+          balance: Number((Number(player?.balance ?? 0) + payout).toFixed(2)),
         });
+      return true;
     } catch (payError) {
       setStatus("ready");
+      liveSpinStateRef.current = {
+        ...liveSpinStateRef.current,
+        status: "ready",
+      };
+      return false;
     }
   };
+
+  collectWinRef.current = collectWin;
+
+  useEffect(() => {
+    if (!autoPlayActive) return undefined;
+
+    let cancelled = false;
+    const loopId = autoPlayLoopIdRef.current;
+    const shouldContinue = () =>
+      !cancelled &&
+      autoPlayActiveRef.current &&
+      autoPlayLoopIdRef.current === loopId;
+
+    const runLoop = async () => {
+      while (shouldContinue()) {
+        const {
+          context,
+          doubleState,
+          doublingState,
+          freeSpinsLeft,
+          player,
+          selectedCombination,
+          spinResult,
+          stake,
+          status,
+        } = liveSpinStateRef.current;
+
+        if (!selectedCombination) {
+          stopAutoPlay();
+          break;
+        }
+
+        if (
+          status === "processing" ||
+          doubleState.loading ||
+          doublingState.loading
+        ) {
+          await wait(AUTOPLAY_BUSY_RETRY_MS);
+          continue;
+        }
+
+        if (spinResult?.idCard && Number(spinResult.WinSum ?? 0) > 0) {
+          await collectWinRef.current?.();
+          await wait(AUTOPLAY_BUSY_RETRY_MS);
+          continue;
+        }
+
+        const testMode = isEnabled(context.testMode ?? context.demoMode);
+        const totalStake = stake * selectedCombination.groups.length;
+        if (
+          !testMode &&
+          freeSpinsLeft <= 0 &&
+          Number(player?.balance ?? 0) < totalStake
+        ) {
+          setError("Insufficient balance for selected combination");
+          setLastKnownState("insufficient-balance");
+          stopAutoPlay();
+          break;
+        }
+
+        const result = await handleSpinRef.current?.({ demo: false });
+        await wait(result ? AUTOPLAY_STEP_DELAY_MS : AUTOPLAY_BUSY_RETRY_MS);
+      }
+    };
+
+    runLoop();
+    return () => {
+      cancelled = true;
+    };
+  }, [autoPlayActive, stopAutoPlay]);
 
   const enterDouble = () => {
     if (spinResult?.WinSum > 0) {
@@ -1072,7 +1243,7 @@ export default function App() {
   const autoPlayDisabled =
     status === "initial-loading" ||
     status === "bootstrap-loading" ||
-    Boolean(doublingState.loading) ||
+    (!autoPlayActive && Boolean(doublingState.loading)) ||
     (!autoPlayActive && status === "processing") ||
     (!autoPlayActive && !pendingDigitWin && !canAffordSpin);
   const hideHeader =
@@ -1221,10 +1392,7 @@ export default function App() {
                   stopAutoPlay();
                   return;
                 }
-                setError("");
-                autoPlayActiveRef.current = true;
-                setAutoPlayActive(true);
-                queueAutoPlaySpin(0);
+                startAutoPlay();
               }}
               onDouble={playFooterDouble}
               onTakeMoney={collectWin}
