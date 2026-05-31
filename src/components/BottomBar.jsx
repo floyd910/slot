@@ -1,11 +1,10 @@
 import "./BottomBar.css";
+import { useLanguage } from "../i18n.jsx";
 
 export default function BottomBar({
   spinResult,
   disabled,
   spinDisabled = false,
-  autoPlayActive = false,
-  autoPlayDisabled = false,
   spinFeedbackActive = false,
   doublingState,
   revealComplete = false,
@@ -14,10 +13,10 @@ export default function BottomBar({
   onIncreaseCombination,
   onIncreaseStake,
   onSpin,
-  onAutoPlay,
   onDouble,
   onInfo,
 }) {
+  const { toggleLanguage } = useLanguage();
   const pendingWin = Number(spinResult?.WinSum ?? 0) > 0;
   const showDouble = pendingWin && revealComplete;
   const currentAmount = Number(
@@ -29,7 +28,7 @@ export default function BottomBar({
   return (
     <footer className="bottom-bar">
       <div className="control-panel">
-        <TakeMoney title="ЗАБРАТЬ ДЕНГИ" disabled={disabled} />
+        <TakeMoney disabled={disabled} />
         <BasicButton
           type="information"
           extraClass="information-button"
@@ -40,6 +39,7 @@ export default function BottomBar({
           type="language"
           extraClass="language-button"
           disabled={disabled}
+          onClick={toggleLanguage}
         />
         <BasicButton
           type="menu"
@@ -77,9 +77,6 @@ export default function BottomBar({
         <BasicButton
           type="autoExpress"
           extraClass="auto-express-button"
-          disabled={autoPlayDisabled}
-          active={autoPlayActive}
-          onClick={onAutoPlay}
         />
         <BasicButton
           type="spinDraw"
@@ -116,7 +113,8 @@ function CombinationControl({ title, value, disabled, onPlus }) {
   );
 }
 
-function TakeMoney({ disabled, title }) {
+function TakeMoney({ disabled }) {
+  const { t } = useLanguage();
   return (
     <div
       className={`action_button take-money${disabled ? " --disabled" : ""}`}
@@ -151,7 +149,7 @@ function TakeMoney({ disabled, title }) {
         event.currentTarget.classList.remove("--pressed");
       }}
     >
-      <span className="action_btn_title take-money__title">{title}</span>
+      <span className="action_btn_title take-money__title">{t("takeMoney")}</span>
     </div>
   );
 }
@@ -187,31 +185,17 @@ function BasicButton({
   active = false,
   onClick,
 }) {
+  const { t } = useLanguage();
   const labels = {
-    information: "ИНФО",
-    language: "Точикий",
-    menu: "МЕНЮ",
-    visualization: (
-      <>
-        РЕЖИМ
-        <br />
-        ВИЗУАЛИЗАЦИИ
-      </>
-    ),
-    betAmount: "СУММА СТАВКИ",
-    double: "\u0423\u0414\u0412\u041e\u0418\u0422\u042c",
-    lotteryCombination: "ЛОТЕРЕЙННАЯ КОМБИНАЦИЯ",
-    autoExpress: "АВТО ЭКСПРЕСС",
-    spinDraw: (
-      <>
-        УЧАВСТВОВАТЬ
-        <br />
-        В ТИРАЖЕ
-      </>
-    ),
-    visual: "Вид",
-    game: "Играть",
-    closer: "Забрать",
+    information: t("info"),
+    language: t("language"),
+    menu: t("menu"),
+    visualization: renderMultiline(t("visualization")),
+    betAmount: t("betAmount"),
+    double: t("double"),
+    lotteryCombination: t("lotteryCombination"),
+    autoExpress: t("autoExpress"),
+    spinDraw: renderMultiline(t("participate")),
   };
 
   return (
@@ -240,5 +224,16 @@ function BasicButton({
         {labels[type] ?? type}
       </span>
     </div>
+  );
+}
+
+function renderMultiline(text) {
+  const [firstLine, secondLine] = text.split("\n");
+  return (
+    <>
+      {firstLine}
+      {secondLine && <br />}
+      {secondLine}
+    </>
   );
 }

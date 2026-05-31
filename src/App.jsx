@@ -13,7 +13,7 @@ import Lobby from "./components/Lobby.jsx";
 import LotteryGrid from "./components/LotteryGrid.jsx";
 import Paytable from "./components/Paytable.jsx";
 import ResultPanel from "./components/ResultPanel.jsx";
-import RuntimeState, { stateCopy } from "./components/RuntimeState.jsx";
+import RuntimeState from "./components/RuntimeState.jsx";
 import StartupLoader from "./components/StartupLoader.jsx";
 import {
   combinations as fallbackCombinations,
@@ -31,6 +31,7 @@ import {
 } from "./hooks/useFrameBridge.js";
 import { useGameAudio } from "./hooks/useGameAudio.js";
 import WinningsDashboard from "./components/WinningDashboard.jsx";
+import { useLanguage } from "./i18n.jsx";
 import "./App.css";
 
 const initialContext = readFrameParams();
@@ -41,8 +42,6 @@ const LOTTERY_REVEAL_AUDIO_STOP_MS =
   LOTTERY_REVEAL_STEP_MS * (LOTTERY_REVEAL_COLUMNS - 1) + 320;
 const LOTTERY_REVEAL_SETTLE_MS =
   LOTTERY_REVEAL_STEP_MS * (LOTTERY_REVEAL_COLUMNS - 1) + 650;
-const AUTOPLAY_STEP_DELAY_MS = 2000;
-const AUTOPLAY_BUSY_RETRY_MS = 250;
 const RETRYABLE_CODES = new Set(["NETWORK_ERROR", "TIMEOUT"]);
 const emptyDoubling = {
   active: false,
@@ -213,6 +212,7 @@ const normalizeRuntimeStatus = (error) => {
 };
 
 export default function App() {
+  const { t } = useLanguage();
   const [context, setContext] = useState(initialContext);
   const [status, setStatus] = useState("initial-loading");
   const [error, setError] = useState("");
@@ -244,15 +244,10 @@ export default function App() {
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [showGameMenu, setShowGameMenu] = useState(false);
   const [spinHistory, setSpinHistory] = useState([]);
-  const [autoPlayActive, setAutoPlayActive] = useState(false);
   const [spinFeedbackActive, setSpinFeedbackActive] = useState(false);
   const [startupAssetsReady, setStartupAssetsReady] = useState(false);
   const [startupLoaderVisible, setStartupLoaderVisible] = useState(true);
   const [startupLoaderLeaving, setStartupLoaderLeaving] = useState(false);
-  const autoPlayActiveRef = useRef(false);
-  const autoPlayLoopIdRef = useRef(0);
-  const collectWinRef = useRef(null);
-  const handleSpinRef = useRef(null);
   const spinFeedbackTimerRef = useRef(null);
   const liveSpinStateRef = useRef({
     context,
@@ -305,19 +300,6 @@ export default function App() {
     if (!spinFeedbackTimerRef.current) return;
     window.clearTimeout(spinFeedbackTimerRef.current);
     spinFeedbackTimerRef.current = null;
-  }, []);
-
-  const stopAutoPlay = useCallback(() => {
-    autoPlayActiveRef.current = false;
-    autoPlayLoopIdRef.current += 1;
-    setAutoPlayActive(false);
-  }, []);
-
-  const startAutoPlay = useCallback(() => {
-    setError("");
-    autoPlayActiveRef.current = true;
-    autoPlayLoopIdRef.current += 1;
-    setAutoPlayActive(true);
   }, []);
 
   useEffect(() => () => clearSpinFeedbackTimer(), [clearSpinFeedbackTimer]);
@@ -490,13 +472,14 @@ export default function App() {
         context.balance ?? context.testBalance ?? 0,
       );
 
-      setPlayer((current) =>
-        current ?? {
-          id: context.userId ?? "demo-player",
-          name: "Demo Player",
-          balance: Number.isFinite(fallbackBalance) ? fallbackBalance : 0,
-          currency: context.currency ?? "GEL",
-        },
+      setPlayer(
+        (current) =>
+          current ?? {
+            id: context.userId ?? "demo-player",
+            name: "Demo Player",
+            balance: Number.isFinite(fallbackBalance) ? fallbackBalance : 0,
+            currency: context.currency ?? "GEL",
+          },
       );
       setGames(fallbackGames);
       setCombinations(fallbackCombinations);
@@ -556,7 +539,7 @@ export default function App() {
         recoverStartupToGameShell(initError);
         return;
       }
-      reportError(initError, "Could not initialize iframe module");
+      reportError(initError, t("initError"));
     }
   }, [context, postEvent, recoverStartupToGameShell, reportError]);
 
@@ -640,14 +623,13 @@ export default function App() {
       !isFreeSpin &&
       Number(player?.balance ?? 0) < totalStake
     ) {
-      setError("Insufficient balance for selected combination");
+      setError(t("insufficientBalance"));
       setLastKnownState("insufficient-balance");
       setStatus("ready");
       liveSpinStateRef.current = {
         ...liveSpinStateRef.current,
         status: "ready",
       };
-      stopAutoPlay();
       return null;
     }
     const requestId = buildRequestId("spin");
@@ -771,45 +753,13 @@ export default function App() {
       setLastKnownState(result.WinSum > 0 ? "win" : "lose");
       if (result.WinSum > 0) emitSound("win", result);
       if (visualMode && result.WinSum <= 0) emitSound("lose", result);
-      if (autoPlayActiveRef.current && result.WinSum > 0) {
-        await withTimeout(
-          frameApi.pay({
-            idCard: result.idCard,
-            requestId: buildRequestId("pay"),
-          }),
-          "Pay",
-        ).catch(() => null);
-        const nextDoubleState = {
-          active: false,
-          loading: false,
-          step: 1,
-          status: "Choose left or right",
-        };
-        setDoubleState(nextDoubleState);
-        setDoublingState(emptyDoubling);
-        setSpinResult(null);
-        liveSpinStateRef.current = {
-          ...liveSpinStateRef.current,
-          doubleState: nextDoubleState,
-          doublingState: emptyDoubling,
-          spinResult: null,
-        };
-        setPlayer((current) =>
-          current
-            ? {
-                ...current,
-                balance: Number((current.balance + result.WinSum).toFixed(2)),
-              }
-            : current,
-        );
-      }
       postEvent("LOADED", { requestId, state: "spin-complete" });
       postEvent("UPDATE_BALANCE", {
         balance: Number(
           (
             player.balance -
             (effectiveDemo || isFreeSpin ? 0 : totalStake) +
-            (shouldCreditWin || autoPlayActiveRef.current ? result.WinSum : 0)
+            (shouldCreditWin ? result.WinSum : 0)
           ).toFixed(2),
         ),
       });
@@ -833,13 +783,11 @@ export default function App() {
       }
       reportOperationError(
         spinError,
-        "Spin result is unknown. Check status before retrying.",
+        t("spinUnknown"),
       );
       return null;
     }
   };
-
-  handleSpinRef.current = handleSpin;
 
   const cycleStake = (direction) => {
     emitSound("amount");
@@ -861,11 +809,7 @@ export default function App() {
   };
 
   const collectWin = async () => {
-    const {
-      player,
-      spinResult,
-      status,
-    } = liveSpinStateRef.current;
+    const { player, spinResult, status } = liveSpinStateRef.current;
     if (
       !spinResult?.idCard ||
       Number(spinResult.WinSum ?? 0) <= 0 ||
@@ -933,76 +877,6 @@ export default function App() {
       return false;
     }
   };
-
-  collectWinRef.current = collectWin;
-
-  useEffect(() => {
-    if (!autoPlayActive) return undefined;
-
-    let cancelled = false;
-    const loopId = autoPlayLoopIdRef.current;
-    const shouldContinue = () =>
-      !cancelled &&
-      autoPlayActiveRef.current &&
-      autoPlayLoopIdRef.current === loopId;
-
-    const runLoop = async () => {
-      while (shouldContinue()) {
-        const {
-          context,
-          doubleState,
-          doublingState,
-          freeSpinsLeft,
-          player,
-          selectedCombination,
-          spinResult,
-          stake,
-          status,
-        } = liveSpinStateRef.current;
-
-        if (!selectedCombination) {
-          stopAutoPlay();
-          break;
-        }
-
-        if (
-          status === "processing" ||
-          doubleState.loading ||
-          doublingState.loading
-        ) {
-          await wait(AUTOPLAY_BUSY_RETRY_MS);
-          continue;
-        }
-
-        if (spinResult?.idCard && Number(spinResult.WinSum ?? 0) > 0) {
-          await collectWinRef.current?.();
-          await wait(AUTOPLAY_BUSY_RETRY_MS);
-          continue;
-        }
-
-        const testMode = isEnabled(context.testMode ?? context.demoMode);
-        const totalStake = stake * selectedCombination.groups.length;
-        if (
-          !testMode &&
-          freeSpinsLeft <= 0 &&
-          Number(player?.balance ?? 0) < totalStake
-        ) {
-          setError("Insufficient balance for selected combination");
-          setLastKnownState("insufficient-balance");
-          stopAutoPlay();
-          break;
-        }
-
-        const result = await handleSpinRef.current?.({ demo: false });
-        await wait(result ? AUTOPLAY_STEP_DELAY_MS : AUTOPLAY_BUSY_RETRY_MS);
-      }
-    };
-
-    runLoop();
-    return () => {
-      cancelled = true;
-    };
-  }, [autoPlayActive, stopAutoPlay]);
 
   const enterDouble = () => {
     if (spinResult?.WinSum > 0) {
@@ -1101,7 +975,7 @@ export default function App() {
       setDoublingState((current) => ({ ...current, loading: false }));
       reportError(
         doubleError,
-        "Double result is unknown. Check status before retrying.",
+        t("doubleUnknown"),
       );
     }
   };
@@ -1115,7 +989,7 @@ export default function App() {
       setDoubleState((current) => ({
         ...current,
         loading: true,
-        status: `Opening ${side}...`,
+        status: `${t("opening")} ${t(side)}...`,
       }));
       const result = await withTimeout(
         frameApi.double({
@@ -1138,8 +1012,8 @@ export default function App() {
         step: current.step + 1,
         status:
           result.status === "win"
-            ? `${result.side} won. Double again or take money.`
-            : `${result.side} lost.`,
+            ? `${t(result.side)} ${t("doubleWon")}`
+            : `${t(result.side)} ${t("doubleLost")}`,
       }));
       setStatus("ready");
       setLastKnownState(result.status === "win" ? "double-win" : "double-lose");
@@ -1153,11 +1027,11 @@ export default function App() {
       setDoubleState((current) => ({
         ...current,
         loading: false,
-        status: "Retry double request",
+        status: t("retryDouble"),
       }));
       reportError(
         doubleError,
-        "Double result is unknown. Check status before retrying.",
+        t("doubleUnknown"),
       );
     }
   };
@@ -1212,9 +1086,9 @@ export default function App() {
 
   const modeLabel = currentGame
     ? visualMode
-      ? "Visual Mode"
-      : "Lottery Mode"
-    : "Game Select";
+      ? t("visualMode")
+      : t("lotteryMode")
+    : t("gameSelect");
   const totalPurchase = Number(
     (stake * (selectedCombination?.groups.length ?? 0)).toFixed(2),
   );
@@ -1241,12 +1115,6 @@ export default function App() {
     status === "bootstrap-loading" ||
     Boolean(doublingState.loading) ||
     (!pendingDigitWin && !canAffordSpin);
-  const autoPlayDisabled =
-    status === "initial-loading" ||
-    status === "bootstrap-loading" ||
-    (!autoPlayActive && Boolean(doublingState.loading)) ||
-    (!autoPlayActive && status === "processing") ||
-    (!autoPlayActive && !pendingDigitWin && !canAffordSpin);
   const hideHeader =
     context.mode === "embedded" && context.featureFlags?.hiddenHeader !== false;
   const shellClass = `frame-app mode-${context.mode} theme-${context.theme}${hideHeader ? " headerless" : ""}${expandedBoard || visualMode ? " expanded-board" : ""}${visualMode ? " view-2 --eldorado" : " view-1"}${isVisualDoubling ? " doubling-active" : ""}`;
@@ -1265,7 +1133,7 @@ export default function App() {
       <Lobby
         games={games}
         loading={status === "bootstrap-loading"}
-        error={status === "empty" ? stateCopy.empty : ""}
+        error={status === "empty" ? t("noGames") : ""}
         onSelectGame={setCurrentGame}
       />
     ) : doubleState.active ? (
@@ -1328,8 +1196,8 @@ export default function App() {
                 doublingState={doublingState}
               />
               <span className="info_msg">
-                Для получения иформации <br />
-                перейдите в раздел инфо
+                {t("moreInfo").split("\n")[0]} <br />
+                {t("moreInfo").split("\n")[1]}
               </span>
             </>
           )}
@@ -1383,8 +1251,6 @@ export default function App() {
                 multiplier={freeSpinsLeft > 0 ? 3 : 1}
                 disabled={isBusy}
                 spinDisabled={spinButtonDisabled}
-                autoPlayActive={autoPlayActive}
-                autoPlayDisabled={autoPlayDisabled}
                 spinFeedbackActive={spinFeedbackActive}
                 doublingState={doublingState}
                 revealComplete={gridAnimation === "settled"}
@@ -1396,13 +1262,6 @@ export default function App() {
                 onSpin={() =>
                   pendingDigitWin ? collectWin() : handleSpin({ demo: true })
                 }
-                onAutoPlay={() => {
-                  if (autoPlayActiveRef.current) {
-                    stopAutoPlay();
-                    return;
-                  }
-                  startAutoPlay();
-                }}
                 onDouble={playFooterDouble}
                 onTakeMoney={collectWin}
                 onInfo={loadPaytable}
@@ -1416,7 +1275,7 @@ export default function App() {
             rows={paytableRows}
             loading={paytableStatus === "loading"}
             error={
-              paytableStatus === "error" ? "Could not load payment table" : ""
+              paytableStatus === "error" ? t("paytableLoadError") : ""
             }
             stake={stake}
             selectedCombination={selectedCombination}

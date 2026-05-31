@@ -1,5 +1,6 @@
 import "./Paytable.css";
 import { paytable as fallbackPaytable } from "../data/mockData.js";
+import { useLanguage } from "../i18n.jsx";
 
 const labels = {
   title: "Таблица выплат",
@@ -250,6 +251,24 @@ export default function Paytable({
   stake = 10,
   selectedCombination,
 }) {
+  const { language, t } = useLanguage();
+  Object.assign(labels, language === "tg" ? {
+    title: "Ҷадвали пардохтҳо",
+    column1: "Маблағи шарти лотерея",
+    column2: "Миқдори комбинатсияҳои лотерея",
+    column3: "Гурӯҳи координатҳои майдони асосии бозӣ, ки комбинатсияи лотереяро ташкил медиҳанд",
+    column4: "Қимати рақамӣ",
+    column5: "Аломат",
+    column6: "Миқдори такрори қиматҳои рақамӣ дар як гурӯҳи координатҳои комбинатсияи лотерея",
+  } : {
+    title: "Таблица выплат",
+    column1: "Номинал лотерейной ставки",
+    column2: "Номинал лотерейной комбинации",
+    column3: "Группа координат основного игрового поля, составляющие лотерейную комбинацию",
+    column4: "Номинал цифрового значения",
+    column5: "Обозначение",
+    column6: "Количество выпадений цифровых значений в одной группе координат лотерейной комбинации",
+  });
   const combinationNumber = getCombinationNumber(selectedCombination);
   const combinationGroups = getCombinationGroups(
     selectedCombination,
@@ -264,9 +283,9 @@ export default function Paytable({
           type="button"
           className="info-modal__close"
           onClick={onClose}
-          aria-label="Close"
+          aria-label={language === "tg" ? "Пӯшидан" : "Закрыть"}
         />
-        {loading && <div className="state-panel">Загрузка...</div>}
+        {loading && <div className="state-panel">{t("loading")}</div>}
         {error && <div className="state-panel error">{error}</div>}
         {!loading && !error && (
           <div className="modal-payments">

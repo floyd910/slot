@@ -1,6 +1,7 @@
 ﻿import React, { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { paytable } from "../data/mockData.js";
 import "./WinningDashboard.css";
+import { useLanguage } from "../i18n.jsx";
 
 const COLUMNS = ["x1", "x2", "x3", "x4", "x5"];
 
@@ -33,6 +34,7 @@ function buildMessageRows(
   spinResult,
   doublingState,
   revealComplete,
+  t,
 ) {
   const lineCount = getLineCount(selectedCombination);
   const totalBet = Number(stake || 0) * lineCount;
@@ -45,21 +47,21 @@ function buildMessageRows(
 
   if (doublingState?.lastStatus === "lose") {
     return [
-      ["ВЫИГРЫШ", formatAmount(0)],
-      ["ВОЗМОЖНЫЙ ВЫИГРЫШ", formatAmount(0)],
+      [t("win"), formatAmount(0)],
+      [t("possibleWin"), formatAmount(0)],
     ];
   }
 
   if (canShowWinAmounts) {
     return [
-      ["ТЕКУШИЙ ВЫИГРЫШ", formatAmount(winSum)],
-      ["ВОЗМОЖНЫЙ ВЫИГРЫШ", formatAmount(winSum * 2)],
+      [t("currentWin"), formatAmount(winSum)],
+      [t("possibleWin"), formatAmount(winSum * 2)],
     ];
   }
 
   return [
-    ["ТИРАЖ", spinResult?.idCard ?? "-"],
-    ["СУММА ПОКУПКИ", `${formatAmount(stake * lineCount)}`],
+    [t("draw"), spinResult?.idCard ?? "-"],
+    [t("purchaseAmount"), `${formatAmount(stake * lineCount)}`],
     [],
   ];
 }
@@ -89,6 +91,7 @@ export default function WinningsDashboard({
   doublingState,
   revealComplete = true,
 }) {
+  const { t } = useLanguage();
   const tableData = useMemo(
     () => buildTableData(stake, selectedCombination),
     [stake, selectedCombination],
@@ -101,8 +104,9 @@ export default function WinningsDashboard({
         spinResult,
         doublingState,
         revealComplete,
+        t,
       ),
-    [stake, selectedCombination, spinResult, doublingState, revealComplete],
+    [stake, selectedCombination, spinResult, doublingState, revealComplete, t],
   );
   const messageSignature = useMemo(
     () =>
@@ -139,7 +143,7 @@ export default function WinningsDashboard({
   return (
     <div>
       <div className="winnings-table">
-        <h2 className="winnings-table__title">ТАБЛИЦА ВЫИГРЫШЕЙ</h2>
+        <h2 className="winnings-table__title">{t("winningsTable")}</h2>
         <table className="winnings-table__container">
           <colgroup>
             <col className="winnings-table__col --symbol" />
@@ -196,9 +200,7 @@ export default function WinningsDashboard({
           );
         })}
         <p>
-          Выбирая лотерейную комбинацию и совершая лотерейную ставку, Вы
-          подтверждаете цвое согласие с действующими правилами проведения
-          лотереии.
+          {t("lotteryConsent")}
         </p>
       </div>
     </div>

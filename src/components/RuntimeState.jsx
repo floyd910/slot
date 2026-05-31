@@ -1,52 +1,29 @@
 import { AlertTriangle, RotateCcw, WifiOff } from "lucide-react";
 import "./RuntimeState.css";
+import { useLanguage } from "../i18n.jsx";
 
-const stateCopy = {
-  "initial-loading": "Preparing module...",
-  "bootstrap-loading": "Validating session...",
-  ready: "Ready",
-  processing: "Operation is being processed...",
-  empty: "No games are available",
-  error: "Something went wrong",
-  "network-error": "Network connection was interrupted",
-  "session-expired": "Session expired",
-  "unsupported-environment": "This environment is not supported",
-  maintenance: "Module is temporarily unavailable",
-  "invalid-session": "Invalid session",
-  "access-denied": "Access denied",
-  "configuration-error": "Configuration error",
+const stateKeys = {
+  "initial-loading": "preparing", "bootstrap-loading": "validating", ready: "ready",
+  processing: "processing", empty: "noGames", error: "somethingWrong",
+  "network-error": "networkError", "session-expired": "sessionExpired",
+  "unsupported-environment": "unsupported", maintenance: "maintenance",
+  "invalid-session": "invalidSession", "access-denied": "accessDenied",
+  "configuration-error": "configurationError",
 };
 
-export { stateCopy };
-
 export default function RuntimeState({ status, error, mode, onRetry }) {
-  const canRetry = [
-    "network-error",
-    "error",
-    "configuration-error",
-    "initial-loading",
-  ].includes(status);
-
+  const { t } = useLanguage();
+  const canRetry = ["network-error", "error", "configuration-error", "initial-loading"].includes(status);
   return (
     <main className="runtime-state">
       <div className="state-icon">
-        {status === "network-error" ? (
-          <WifiOff size={32} />
-        ) : (
-          <AlertTriangle size={32} />
-        )}
+        {status === "network-error" ? <WifiOff size={32} /> : <AlertTriangle size={32} />}
       </div>
-      <h1>{stateCopy[status] ?? stateCopy.error}</h1>
-      <p>
-        {error ||
-          (mode === "embedded"
-            ? "Waiting for host initialization."
-            : "Open the module with a valid signed context.")}
-      </p>
+      <h1>{t(stateKeys[status] ?? "somethingWrong")}</h1>
+      <p>{error || (mode === "embedded" ? t("waitingHost") : t("openSignedContext"))}</p>
       {canRetry && (
         <button type="button" className="primary-button" onClick={onRetry}>
-          <RotateCcw size={18} />
-          Retry
+          <RotateCcw size={18} /> {t("retry")}
         </button>
       )}
     </main>

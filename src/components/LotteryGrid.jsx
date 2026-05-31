@@ -2,31 +2,61 @@ import { useEffect, useMemo, useState } from "react";
 import "./LotteryGrid.css";
 
 const rows = ["A", "B", "C"];
+const HUSHKOL_GAME_ASSETS =
+  "/img/extracted/игра-Хушкол-элементы-игры-1";
+const HUSHKOL_PAYTABLE_ASSETS =
+  "/img/extracted/игра-Хушкол-элементы-таблица-выигрышей-1_0";
+const DICE_ASSETS = "/img/extracted/Линии-и-Кости-2_0";
 const eldoradoStatic = {
-  0: "static-0.e9b0187b.webp",
-  1: "static-1.370ebc88.webp",
-  2: "static-2.56b6cf39.webp",
-  3: "static-3.73bd4f2a.webp",
-  4: "static-4.2aa19f0d.webp",
-  5: "static-5.635a476d.webp",
-  6: "static-6.36840f86.webp",
-  7: "static-7.9910247d.webp",
-  8: "static-8.2ed034f6.webp",
-  9: "static-9.12aded74.webp",
-  10: "static-10.b42777fd.webp",
+  0: `${HUSHKOL_GAME_ASSETS}_1/sprite_002_202x202_at_963_1.png`,
+  1: `${DICE_ASSETS}/sprite_009_143x165_at_207_379.png`,
+  2: `${DICE_ASSETS}/sprite_006_144x166_at_205_207.png`,
+  3: `${DICE_ASSETS}/sprite_007_143x165_at_355_207.png`,
+  4: `${DICE_ASSETS}/sprite_008_143x169_at_356_376.png`,
+  5: `${DICE_ASSETS}/sprite_011_142x167_at_356_549.png`,
+  6: `${DICE_ASSETS}/sprite_034_144x168_at_298_1401.png`,
+  7: `${HUSHKOL_PAYTABLE_ASSETS}/sprite_003_179x179_at_1_1045.png`,
+  8: {
+    src: `${HUSHKOL_PAYTABLE_ASSETS}/sprite_002_1258x1012_at_15_1031.png`,
+    className: " --instrument",
+    crop: true,
+  },
+  9: `${HUSHKOL_GAME_ASSETS}_4/sprite_001_202x202_at_1_1.png`,
+  10: `${HUSHKOL_GAME_ASSETS}_3/sprite_001_202x202_at_1_1.png`,
+  11: `${HUSHKOL_GAME_ASSETS}_2/sprite_001_202x202_at_1_1.png`,
+  12: `${HUSHKOL_PAYTABLE_ASSETS}/sprite_004_178x179_at_1089_1045.png`,
 };
-const eldoradoAnim = {
-  0: "anim-0.41ab1375.webp",
-  1: "anim-1.5abba0ce.webp",
-  2: "anim-2.7329c493.webp",
-  3: "anim-3.727bf396.webp",
-  4: "anim-4.8f496ec7.webp",
-  5: "anim-5.87c816a2.webp",
-  6: "anim-6.bd317c5e.webp",
-  7: "anim-7.4e98e307.webp",
-  8: "anim-8.d7089d52.webp",
-  9: "anim-9.2d545620.webp",
-  10: "anim-10.d692585e.webp",
+const eldoradoWinFrames = {
+  1: [
+    `${DICE_ASSETS}/sprite_009_143x165_at_207_379.png`,
+    `${DICE_ASSETS}/sprite_023_144x166_at_1_1023.png`,
+    `${DICE_ASSETS}/sprite_024_143x165_at_151_1023.png`,
+    `${DICE_ASSETS}/sprite_030_143x166_at_3_1195.png`,
+  ],
+  2: [
+    `${DICE_ASSETS}/sprite_006_144x166_at_205_207.png`,
+    `${DICE_ASSETS}/sprite_033_143x166_at_3_1367.png`,
+    `${DICE_ASSETS}/sprite_036_144x166_at_1_1539.png`,
+    `${DICE_ASSETS}/sprite_039_142x166_at_3_1711.png`,
+  ],
+  3: [
+    `${DICE_ASSETS}/sprite_007_143x165_at_355_207.png`,
+    `${DICE_ASSETS}/sprite_012_143x165_at_207_550.png`,
+    `${DICE_ASSETS}/sprite_015_143x165_at_207_721.png`,
+    `${DICE_ASSETS}/sprite_029_144x165_at_150_1194.png`,
+  ],
+  4: [
+    `${DICE_ASSETS}/sprite_008_143x169_at_356_376.png`,
+    `${DICE_ASSETS}/sprite_014_143x164_at_356_720.png`,
+    `${DICE_ASSETS}/sprite_025_142x166_at_300_1061.png`,
+    `${DICE_ASSETS}/sprite_031_142x166_at_300_1231.png`,
+  ],
+  5: [
+    `${DICE_ASSETS}/sprite_011_142x167_at_356_549.png`,
+    `${DICE_ASSETS}/sprite_017_143x167_at_300_892.png`,
+    `${DICE_ASSETS}/sprite_037_143x168_at_300_1571.png`,
+    `${DICE_ASSETS}/sprite_011_142x167_at_356_549.png`,
+  ],
 };
 
 export default function LotteryGrid({
@@ -205,8 +235,6 @@ export default function LotteryGrid({
             digit={cell.value}
             idxNumber={index}
             animated={isSettled && marked.has(cell.coord)}
-            dimmed={isSettled && hasMarkedCells && !marked.has(cell.coord)}
-            showFire={isSettled && marked.has(cell.coord)}
           />
         ))}
         <CarpetNice animationState={animationState} />
@@ -237,21 +265,42 @@ function EldoradoCell({
   digit,
   animated = false,
   dimmed = false,
-  showFire = false,
 }) {
   const symbol = normalizeEldoradoDigit(digit);
-  const image = animated ? eldoradoAnim[symbol] : eldoradoStatic[symbol];
+  const image = eldoradoStatic[symbol];
+  const imageSrc = typeof image === "string" ? image : image?.src;
+  const imageClass = typeof image === "string" ? "" : (image?.className ?? "");
+  const isCroppedImage = typeof image === "object" && image?.crop;
+  const winFrames = animated ? eldoradoWinFrames[symbol] : null;
 
   return (
     <div
-      className={`eldorado-cell${animated ? " --glow" : ""}${dimmed ? " --opacity" : ""}${showFire ? " --fire" : ""}`}
+      className={`eldorado-cell${animated ? " --glow" : ""}${dimmed ? " --opacity" : ""}`}
     >
       <div className="eldorado-cell__container">
-        {image ? (
+        {winFrames?.length > 1 ? (
+          <span className="eldorado-cell__animation" aria-label="image">
+            {winFrames.map((frame, index) => (
+              <img
+                alt=""
+                aria-hidden="true"
+                key={frame}
+                src={frame}
+                className={`eldorado-cell__item --${symbol} --frame --frame-${index + 1}`}
+              />
+            ))}
+          </span>
+        ) : imageSrc && isCroppedImage ? (
+          <span
+            aria-label="image"
+            className={`eldorado-cell__item --${symbol}${imageClass}`}
+            style={{ "--eldorado-symbol-image": `url("${imageSrc}")` }}
+          />
+        ) : imageSrc ? (
           <img
             alt="image"
-            src={`https://lotogame.lotosport.tj/img/${image}`}
-            className={`eldorado-cell__item --${symbol}`}
+            src={imageSrc}
+            className={`eldorado-cell__item --${symbol}${imageClass}`}
           />
         ) : (
           <span className={`eldorado-cell__fallback --${symbol}`}>
