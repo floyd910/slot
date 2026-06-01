@@ -19,7 +19,7 @@
   justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 3% 0;
+  padding: 1.5% 0;
   border: 0.0833333333rem solid hsla(0, 0%, 100%, 0.5);
   border-radius: 0.8333333333rem;
   background: rgba(0, 0, 0, 0.2);
@@ -42,7 +42,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 19%;
+  width: 18%;
   height: auto;
   border-radius: 0.3333333333rem;
   transition: all 0.2s linear;
@@ -69,11 +69,20 @@
   transform: translate(-50%, -50%);
 }
 
+.eldorado-cell__background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+
 .eldorado-cell__item.--instrument {
   background-image: var(--eldorado-symbol-image);
   background-repeat: no-repeat;
   background-size: 706% 568%;
-  background-position: 14.1% 5.2%;
+  background-position: 15.4% 8%;
 }
 
 .eldorado-cell__animation {
@@ -678,7 +687,7 @@
 }
 
 .view-2 .game-main-layout .scoreboard-wrapper.--eldorado-view {
-  width: 100%;
+  width: 90%;
   height: calc(32.9402173925vw - 14.8230978261px);
   aspect-ratio: auto;
   background: transparent;
@@ -686,9 +695,39 @@
 }
 
 .view-2 .game-main-layout .eldorado-scoreboard {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  column-gap: 2.7%;
+  row-gap: 0.45%;
+  align-items: center;
+  justify-items: center;
+  padding: 0.5%;
   border: 0;
   background: transparent;
   backdrop-filter: none;
+}
+
+.view-2 .game-main-layout .eldorado-cell {
+  width: 100%;
+  height: 100%;
+}
+
+.view-2 .game-main-layout .eldorado-cell__container {
+  width: 100%;
+  height: 100%;
+  padding-bottom: 0;
+}
+
+.view-2 .game-main-layout .eldorado-cell__item {
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+}
+
+.view-2 .game-main-layout .eldorado-cell.--dice .eldorado-cell__item {
+  width: 60%;
+  height: 70%;
 }
 
 .view-2 .game-main-layout .eldorado-scoreboard::before {

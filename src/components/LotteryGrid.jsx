@@ -7,14 +7,31 @@ const HUSHKOL_GAME_ASSETS =
 const HUSHKOL_PAYTABLE_ASSETS =
   "/img/extracted/игра-Хушкол-элементы-таблица-выигрышей-1_0";
 const DICE_ASSETS = "/img/extracted/Линии-и-Кости-2_0";
+const diceCellBackgrounds = {
+  1: `${DICE_ASSETS}/sprite_013_202x202_at_1_613.png`,
+  2: `${DICE_ASSETS}/sprite_005_202x202_at_1_205.png`,
+  3: `${DICE_ASSETS}/sprite_001_202x202_at_1_1.png`,
+  4: `${DICE_ASSETS}/sprite_002_202x202_at_205_1.png`,
+  5: `${DICE_ASSETS}/sprite_010_202x202_at_1_409.png`,
+  6: `${DICE_ASSETS}/sprite_001_202x202_at_1_1.png`,
+};
+const eldoradoCellBackgrounds = {
+  0: `${DICE_ASSETS}/sprite_010_202x202_at_1_409.png`,
+  7: `${DICE_ASSETS}/sprite_002_202x202_at_205_1.png`,
+  8: `${DICE_ASSETS}/sprite_005_202x202_at_1_205.png`,
+  9: `${DICE_ASSETS}/sprite_013_202x202_at_1_613.png`,
+  10: `${DICE_ASSETS}/sprite_001_202x202_at_1_1.png`,
+  11: `${DICE_ASSETS}/sprite_010_202x202_at_1_409.png`,
+  12: `${DICE_ASSETS}/sprite_016_202x202_at_1_817.png`,
+};
 const eldoradoStatic = {
   0: `${HUSHKOL_GAME_ASSETS}_1/sprite_002_202x202_at_963_1.png`,
   1: `${DICE_ASSETS}/sprite_009_143x165_at_207_379.png`,
   2: `${DICE_ASSETS}/sprite_006_144x166_at_205_207.png`,
   3: `${DICE_ASSETS}/sprite_007_143x165_at_355_207.png`,
   4: `${DICE_ASSETS}/sprite_008_143x169_at_356_376.png`,
-  5: `${DICE_ASSETS}/sprite_011_142x167_at_356_549.png`,
-  6: `${DICE_ASSETS}/sprite_034_144x168_at_298_1401.png`,
+  5: `${DICE_ASSETS}/sprite_014_143x164_at_356_720.png`,
+  6: `${DICE_ASSETS}/sprite_011_142x167_at_356_549.png`,
   7: `${HUSHKOL_PAYTABLE_ASSETS}/sprite_003_179x179_at_1_1045.png`,
   8: {
     src: `${HUSHKOL_PAYTABLE_ASSETS}/sprite_002_1258x1012_at_15_1031.png`,
@@ -272,12 +289,24 @@ function EldoradoCell({
   const imageClass = typeof image === "string" ? "" : (image?.className ?? "");
   const isCroppedImage = typeof image === "object" && image?.crop;
   const winFrames = animated ? eldoradoWinFrames[symbol] : null;
+  const isDice = symbol >= 1 && symbol <= 6;
+  const backgroundSrc = isDice
+    ? diceCellBackgrounds[symbol]
+    : eldoradoCellBackgrounds[symbol];
 
   return (
     <div
-      className={`eldorado-cell${animated ? " --glow" : ""}${dimmed ? " --opacity" : ""}`}
+      className={`eldorado-cell${isDice ? " --dice" : ""}${animated ? " --glow" : ""}${dimmed ? " --opacity" : ""}`}
     >
       <div className="eldorado-cell__container">
+        {backgroundSrc && (
+          <img
+            alt=""
+            aria-hidden="true"
+            className="eldorado-cell__background"
+            src={backgroundSrc}
+          />
+        )}
         {winFrames?.length > 1 ? (
           <span className="eldorado-cell__animation" aria-label="image">
             {winFrames.map((frame, index) => (
@@ -293,7 +322,7 @@ function EldoradoCell({
         ) : imageSrc && isCroppedImage ? (
           <span
             aria-label="image"
-            className={`eldorado-cell__item --${symbol}${imageClass}`}
+            className={`eldorado-cell__item --${symbol}${isDice ? " --dice" : ""}${imageClass}`}
             style={{ "--eldorado-symbol-image": `url("${imageSrc}")` }}
           />
         ) : imageSrc ? (
