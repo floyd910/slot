@@ -185,10 +185,10 @@ function BasicButton({
   active = false,
   onClick,
 }) {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
   const labels = {
     information: t("info"),
-    language: t("language"),
+    language: language === "ru" ? "\u0422\u041e\u04b6\u0418\u041a\u04e2" : "\u0420\u0423\u0421\u0421\u041a\u0418\u0419",
     menu: t("menu"),
     visualization: renderMultiline(t("visualization")),
     betAmount: t("betAmount"),

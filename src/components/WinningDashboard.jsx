@@ -175,7 +175,7 @@ export default function WinningsDashboard({
       </div>
 
       <div className="msg_box" ref={messageBoxRef}>
-        {messageRows.map(([label, value]) => {
+        {messageRows.map(([label, value], index) => {
           const labelFontSize = Math.max(
             5,
             fitMessageFontSize(label, 14, 8, 42) * messageFit.scale,
@@ -188,7 +188,7 @@ export default function WinningsDashboard({
           return (
             <div
               className="msg_box__row"
-              key={label}
+              key={`${label ?? "empty"}-${index}`}
               style={{
                 "--msg-label-font-size": `${labelFontSize}px`,
                 "--msg-value-font-size": `${valueFontSize}px`,
