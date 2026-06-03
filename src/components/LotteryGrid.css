@@ -157,7 +157,7 @@
   top: -0.3333333333rem;
   left: -0.7916666667rem;
   right: -0.5rem;
-  bottom: -0.5rem;
+  bottom: calc(-0.5rem - 20px);
   z-index: 4;
   overflow: hidden;
   pointer-events: none;
@@ -181,11 +181,11 @@
 }
 
 .carpet-nice__item.--close {
-  animation: carpet-close-eldorado 1.5s linear forwards;
+  animation: carpet-close-eldorado var(--carpet-close-duration, 1.455s) linear forwards;
 }
 
 .carpet-nice__item.--open {
-  animation: carpet-open-eldorado 1s linear forwards;
+  animation: carpet-open-eldorado var(--carpet-open-duration, 1.455s) linear forwards;
 }
 
 .carpet-nice__roll {
@@ -200,11 +200,11 @@
 }
 
 .carpet-nice__roll.--close {
-  animation: carpet-close-roll-eldorado 1.5s linear forwards;
+  animation: carpet-close-roll-eldorado var(--carpet-close-duration, 1.455s) linear forwards;
 }
 
 .carpet-nice__roll.--open {
-  animation: carpet-open-roll-eldorado 1s linear forwards;
+  animation: carpet-open-roll-eldorado var(--carpet-open-duration, 1.455s) linear forwards;
   transform: scaleX(-1);
 }
 

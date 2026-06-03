@@ -10,7 +10,7 @@ import EldoradoPurchasePanel from "./components/EldoradoPurchasePanel.jsx";
 import GameBottomArea from "./components/GameBottomArea.jsx";
 import GameMenu from "./components/GameMenu.jsx";
 import Lobby from "./components/Lobby.jsx";
-import LotteryGrid from "./components/LotteryGrid.jsx";
+import LotteryGrid, { ELDORADO_VIEW_ASSETS } from "./components/LotteryGrid.jsx";
 import Paytable from "./components/Paytable.jsx";
 import ResultPanel from "./components/ResultPanel.jsx";
 import RuntimeState from "./components/RuntimeState.jsx";
@@ -77,6 +77,14 @@ const isEnabled = (value) =>
   value === "1" ||
   String(value).toLowerCase() === "true";
 const IMAGE_PRELOAD_TIMEOUT_MS = 6000;
+const CARPET_SOUND_SRC = "/media/carpet.ogg";
+const CARPET_SOUND_FALLBACK_MS = 4910;
+const CARPET_ANIMATION_TRIM_MS = 2000;
+const getCarpetAnimationHalfMs = (durationMs) =>
+  Math.round(Math.max(0, durationMs - CARPET_ANIMATION_TRIM_MS) / 2);
+const CARPET_ANIMATION_HALF_MS = getCarpetAnimationHalfMs(
+  CARPET_SOUND_FALLBACK_MS,
+);
 const CSS_URL_PATTERN = /url\(\s*(['"]?)(.*?)\1\s*\)/g;
 const STARTUP_VIDEO_SRC = "/media/terminal-loader.mp4";
 const STARTUP_ASSETS = {
@@ -183,12 +191,39 @@ const preloadVideo = (src) =>
     video.load();
   });
 
+const loadAudioDurationMs = (src) =>
+  new Promise((resolve) => {
+    const audio = new Audio(src);
+    let settled = false;
+    const done = (durationMs = CARPET_SOUND_FALLBACK_MS) => {
+      if (settled) return;
+      settled = true;
+      resolve(durationMs);
+    };
+    audio.preload = "metadata";
+    audio.addEventListener(
+      "loadedmetadata",
+      () => {
+        const durationMs = Number.isFinite(audio.duration)
+          ? Math.ceil(audio.duration * 1000)
+          : CARPET_SOUND_FALLBACK_MS;
+        done(durationMs);
+      },
+      { once: true },
+    );
+    audio.addEventListener("error", () => done(), { once: true });
+    window.setTimeout(() => done(), 2000);
+    audio.src = src;
+    audio.load();
+  });
+
 const preloadStartupAssets = async () => {
   const fontReady =
     document.fonts?.ready?.catch?.(() => {}) ?? Promise.resolve();
   const images = [
     ...new Set([
       ...STARTUP_ASSETS.images.map(toPreloadUrl),
+      ...ELDORADO_VIEW_ASSETS.map(toPreloadUrl),
       ...collectStylesheetImageUrls(),
     ]),
   ].filter(Boolean);
@@ -227,6 +262,8 @@ export default function App() {
   const [gridAnimation, setGridAnimation] = useState("idle");
   const [stake, setStake] = useState(10);
   const [visualMode, setVisualMode] = useState(false);
+  const [carpetCloseMs, setCarpetCloseMs] = useState(CARPET_ANIMATION_HALF_MS);
+  const [carpetOpenMs, setCarpetOpenMs] = useState(CARPET_ANIMATION_HALF_MS);
   const [expandedBoard, setExpandedBoard] = useState(false);
   const [spinResult, setSpinResult] = useState(null);
   const [freeSpinsTotal, setFreeSpinsTotal] = useState(0);
@@ -250,6 +287,7 @@ export default function App() {
   const [startupLoaderLeaving, setStartupLoaderLeaving] = useState(false);
   const spinFeedbackTimerRef = useRef(null);
   const liveSpinStateRef = useRef({
+    carpetCloseMs,
     context,
     doubleState,
     doublingState,
@@ -264,9 +302,12 @@ export default function App() {
   const playSound = useGameAudio();
   const emitSound = useCallback(
     (event, payload) => {
-      if (!visualMode && !["reveal", "stopReveal", "win"].includes(event)) {
+      if (visualMode && event !== "carpet") return;
+      if (visualMode && event === "carpet") {
+        if (soundEnabled) playSound(event, payload);
         return;
       }
+      if (!["reveal", "stopReveal", "win"].includes(event)) return;
       if (soundEnabled) playSound(event, payload);
     },
     [playSound, soundEnabled, visualMode],
@@ -287,12 +328,22 @@ export default function App() {
   }, [emitSound]);
 
   useEffect(() => {
-    if (visualMode && soundEnabled) {
-      playSound("background");
-      return;
-    }
     playSound("stopBackground");
-  }, [playSound, soundEnabled, visualMode]);
+  }, [playSound]);
+
+  useEffect(() => {
+    let active = true;
+    loadAudioDurationMs(CARPET_SOUND_SRC).then((durationMs) => {
+      if (active) {
+        const halfDurationMs = getCarpetAnimationHalfMs(durationMs);
+        setCarpetCloseMs(halfDurationMs);
+        setCarpetOpenMs(halfDurationMs);
+      }
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => () => playSound("stopBackground"), [playSound]);
 
@@ -325,6 +376,13 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!visualMode) return;
+    ELDORADO_VIEW_ASSETS.forEach((src) => {
+      preloadImage(src);
+    });
+  }, [visualMode]);
+
   const diagnostics = useMemo(
     () => ({
       initSource: context.initSource,
@@ -343,6 +401,7 @@ export default function App() {
 
   useEffect(() => {
     liveSpinStateRef.current = {
+      carpetCloseMs,
       context,
       doubleState,
       doublingState,
@@ -355,6 +414,7 @@ export default function App() {
       visualMode,
     };
   }, [
+    carpetCloseMs,
     context,
     doubleState,
     doublingState,
@@ -596,6 +656,7 @@ export default function App() {
 
   const handleSpin = async ({ demo = false } = {}) => {
     const {
+      carpetCloseMs,
       context,
       doubleState,
       doublingState,
@@ -633,7 +694,6 @@ export default function App() {
       return null;
     }
     const requestId = buildRequestId("spin");
-    const spinStartedAt = performance.now();
 
     try {
       playSpinFeedback();
@@ -642,7 +702,7 @@ export default function App() {
         ...liveSpinStateRef.current,
         status: "processing",
       };
-      setGridAnimation("spinning");
+      if (!visualMode) setGridAnimation("spinning");
       setDoublingState(emptyDoubling);
       setLastKnownState("spin-submitted");
       setError("");
@@ -666,10 +726,11 @@ export default function App() {
         }),
         "Spin",
       );
-      const closeTimeLeft = visualMode
-        ? Math.max(0, 1500 - (performance.now() - spinStartedAt))
-        : 0;
-      if (closeTimeLeft > 0) await wait(closeTimeLeft);
+      if (visualMode) {
+        setGridAnimation("spinning");
+        emitSound("carpet");
+        if (carpetCloseMs > 0) await wait(carpetCloseMs);
+      }
       const isDigitWin = result.WinSum > 0;
       const shouldCreditWin =
         !effectiveDemo && result.WinSum > 0 && !isDigitWin;
@@ -1190,6 +1251,8 @@ export default function App() {
                 revealKey={gridRevealKey}
                 animationState={gridAnimation}
                 visualMode={visualMode}
+                carpetCloseMs={carpetCloseMs}
+                carpetOpenMs={carpetOpenMs}
                 winningCells={spinResult?.winningCells}
                 winningGroups={spinResult?.lineWins}
                 scatterCells={spinResult?.scatterCells}

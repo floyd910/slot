@@ -76,6 +76,28 @@ const eldoradoWinFrames = {
   ],
 };
 
+const collectImageSources = (...values) =>
+  values.flatMap((value) => {
+    if (!value) return [];
+    if (typeof value === "string") return [value];
+    if (Array.isArray(value)) return collectImageSources(...value);
+    if (typeof value === "object") return collectImageSources(...Object.values(value));
+    return [];
+  });
+
+export const ELDORADO_VIEW_ASSETS = [
+  ...new Set(
+    collectImageSources(
+      diceCellBackgrounds,
+      eldoradoCellBackgrounds,
+      eldoradoStatic,
+      eldoradoWinFrames,
+      "/img/extracted/Слот_Интерфейс-ковер-для-розыгрыша-визуализации/sprite_001_1145x666_at_3_3.png",
+      "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_002_201x653_at_1289_1.png",
+    ),
+  ),
+];
+
 export default function LotteryGrid({
   grid = {},
   revealKey = 0,
@@ -86,6 +108,8 @@ export default function LotteryGrid({
   scatterCells = [],
   doublingState,
   backendError = false,
+  carpetCloseMs = 1455,
+  carpetOpenMs = 1455,
 }) {
   const groupedWins = useMemo(
     () =>
@@ -254,19 +278,27 @@ export default function LotteryGrid({
             animated={isSettled && marked.has(cell.coord)}
           />
         ))}
-        <CarpetNice animationState={animationState} />
+        <CarpetNice
+          animationState={animationState}
+          closeMs={carpetCloseMs}
+          openMs={carpetOpenMs}
+        />
       </div>
     </div>
   );
 }
 
-function CarpetNice({ animationState }) {
+function CarpetNice({ animationState, closeMs, openMs }) {
   const isRevealing = animationState === "revealing";
   const isSpinning = animationState === "spinning";
 
   return (
     <div
       className={`carpet-nice${animationState === "idle" || animationState === "settled" ? " carpet-nice__hidden" : ""}`}
+      style={{
+        "--carpet-close-duration": `${closeMs}ms`,
+        "--carpet-open-duration": `${openMs}ms`,
+      }}
     >
       <div
         className={`carpet-nice__item${isSpinning ? " --close" : ""}${isRevealing ? " --open" : ""}`}

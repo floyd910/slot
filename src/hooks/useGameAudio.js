@@ -5,6 +5,7 @@ const media = {
   buttonPress: "/media/button-press-sound.mp3",
   amount: "/media/pressing-bet-amount-button.8819b8f6.mp3",
   spin: "/media/eldorado-carpet-sound.a486c07e.mp3",
+  carpet: "/media/carpet.ogg",
   reveal: "/media/receipt-erase.6a92056f.mp3",
   receiptWin: "/media/receipt-win-drop-sound.11ff43ce.mp3",
   digitShort: "/media/digit-short.82a63348.mp3",
@@ -191,6 +192,7 @@ export function useGameAudio() {
       if (event === "buttonPress") playSrc(media.buttonPress, { volume: 1 });
       if (event === "amount") playSrc(media.amount, { volume: 0.75 });
       if (event === "spin") playSrc(media.spin, { volume: 0.9 });
+      if (event === "carpet") playSrc(media.carpet, { volume: 1 });
       if (event === "stopReveal") {
         const receipt = getAudio(media.reveal);
         receipt.pause();
