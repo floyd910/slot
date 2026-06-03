@@ -158,7 +158,7 @@
   left: -0.7916666667rem;
   right: -0.5rem;
   bottom: -0.5rem;
-  z-index: 30;
+  z-index: 4;
   overflow: hidden;
   pointer-events: none;
 }
@@ -174,9 +174,10 @@
   left: 0;
   right: 0;
   z-index: 4;
-  background-image: url("https://lotogame.lotosport.tj/img/eldorado-carpet.ffad4c92.webp");
+  background-image: url("/img/extracted/Слот_Интерфейс-ковер-для-розыгрыша-визуализации/sprite_001_1145x666_at_3_3.png");
   background-repeat: no-repeat;
-  background-size: cover;
+  background-position: center;
+  background-size: contain;
 }
 
 .carpet-nice__item.--close {
@@ -192,18 +193,10 @@
   top: 0;
   bottom: 0;
   z-index: 5;
-  border-radius: 0.0833333333rem;
-  background:
-    linear-gradient(
-      90deg,
-      #302222,
-      #443129 25%,
-      #50433e 44.27%,
-      #2e2d2d 79.17%,
-      #171716
-    ),
-    url("https://lotogame.lotosport.tj/img/carpet-roll-bg.39df8d16.png");
-  background-blend-mode: overlay, normal;
+  background-image: url("/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_002_201x653_at_1289_1.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 
 .carpet-nice__roll.--close {
@@ -212,6 +205,7 @@
 
 .carpet-nice__roll.--open {
   animation: carpet-open-roll-eldorado 1s linear forwards;
+  transform: scaleX(-1);
 }
 
 .digital-scoreboard__top {
@@ -589,26 +583,22 @@
 @keyframes carpet-close-eldorado {
   0% {
     background-position: 0;
-    right: 100%;
-    left: 0;
+    clip-path: inset(0 100% 0 0);
   }
   100% {
     background-position: 0;
-    right: 0;
-    left: 0;
+    clip-path: inset(0 0 0 0);
   }
 }
 
 @keyframes carpet-open-eldorado {
   0% {
     background-position: 100%;
-    right: 0;
-    left: 0;
+    clip-path: inset(0 0 0 0);
   }
   100% {
     background-position: 100%;
-    right: 0;
-    left: 100%;
+    clip-path: inset(0 0 0 100%);
   }
 }
 
@@ -618,14 +608,14 @@
     left: 0;
   }
   100% {
-    width: 10%;
+    width: 17.5%;
     left: 100%;
   }
 }
 
 @keyframes carpet-close-roll-eldorado {
   0% {
-    width: 10%;
+    width: 17.5%;
     left: 0;
   }
   100% {
@@ -732,6 +722,10 @@
 
 .view-2 .game-main-layout .eldorado-scoreboard::before {
   box-shadow: none;
+}
+
+.view-2 .game-main-layout .carpet-nice__item {
+  background-size: 100% 100%;
 }
 
 .game-main-layout .digital-scoreboard {
