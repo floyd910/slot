@@ -205,6 +205,7 @@
 
 .carpet-nice__roll.--open {
   animation: carpet-open-roll-eldorado var(--carpet-open-duration, 1.455s) linear forwards;
+  filter: drop-shadow(-0.16rem 0 0.12rem rgba(25, 0, 0, 0.55));
   transform: scaleX(-1);
 }
 
@@ -609,7 +610,7 @@
   }
   100% {
     width: 17.5%;
-    left: 100%;
+    left: 96%;
   }
 }
 

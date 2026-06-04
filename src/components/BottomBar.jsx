@@ -9,7 +9,9 @@ export default function BottomBar({
   doublingState,
   revealComplete = false,
   visualMode = false,
+  autoPlayOn = false,
   onVisualToggle,
+  onAutoPlay,
   onIncreaseCombination,
   onIncreaseStake,
   onSpin,
@@ -77,6 +79,9 @@ export default function BottomBar({
         <BasicButton
           type="autoExpress"
           extraClass="auto-express-button"
+          active={autoPlayOn}
+          disabled={disabled && !autoPlayOn}
+          onClick={onAutoPlay}
         />
         <BasicButton
           type="spinDraw"

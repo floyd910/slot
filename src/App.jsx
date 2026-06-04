@@ -10,7 +10,9 @@ import EldoradoPurchasePanel from "./components/EldoradoPurchasePanel.jsx";
 import GameBottomArea from "./components/GameBottomArea.jsx";
 import GameMenu from "./components/GameMenu.jsx";
 import Lobby from "./components/Lobby.jsx";
-import LotteryGrid, { ELDORADO_VIEW_ASSETS } from "./components/LotteryGrid.jsx";
+import LotteryGrid, {
+  ELDORADO_VIEW_ASSETS,
+} from "./components/LotteryGrid.jsx";
 import Paytable from "./components/Paytable.jsx";
 import ResultPanel from "./components/ResultPanel.jsx";
 import RuntimeState from "./components/RuntimeState.jsx";
@@ -87,8 +89,20 @@ const CARPET_ANIMATION_HALF_MS = getCarpetAnimationHalfMs(
 );
 const CSS_URL_PATTERN = /url\(\s*(['"]?)(.*?)\1\s*\)/g;
 const STARTUP_VIDEO_SRC = "/media/terminal-loader.mp4";
+const GAME_AREA_BACKGROUND_SRC =
+  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_001_1282x1026_at_1_1.png";
+const GAME_AREA_FOOTER_SRC =
+  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_015_1282x196_at_1_1029.png";
+const GAME_HEADER_SRC =
+  "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_003_398x172_at_1492_1.png";
+const CRITICAL_GAME_IMAGE_ASSETS = [
+  GAME_AREA_BACKGROUND_SRC,
+  GAME_AREA_FOOTER_SRC,
+  GAME_HEADER_SRC,
+];
 const STARTUP_ASSETS = {
   images: [
+    ...CRITICAL_GAME_IMAGE_ASSETS,
     "/img/extracted/игра-Хушкол-элементы-таблица-выигрышей-1_1/sprite_001_1282x1026_at_1_1.png",
     "/img/extracted/тут-кнопки-справа-1_0/sprite_001_284x152_at_1_1.png",
     "/img/extracted/тут-кнопки-справа-1_0/sprite_002_284x152_at_1_155.png",
@@ -149,7 +163,14 @@ const collectStylesheetImageUrls = () => {
   return [...urls];
 };
 
-const preloadImage = (src) =>
+const preloadImage = (
+  src,
+  {
+    decode = true,
+    fetchPriority = "high",
+    timeoutMs = IMAGE_PRELOAD_TIMEOUT_MS,
+  } = {},
+) =>
   new Promise((resolve) => {
     const normalizedSrc = toPreloadUrl(src);
     if (!normalizedSrc) {
@@ -158,16 +179,23 @@ const preloadImage = (src) =>
     }
     const image = new Image();
     let settled = false;
-    const done = () => {
+    const done = async () => {
       if (settled) return;
       settled = true;
+      if (decode && image.decode) {
+        try {
+          await image.decode();
+        } catch {
+          // Loaded images can still reject decode in some browsers.
+        }
+      }
       resolve();
     };
     image.decoding = "async";
-    image.fetchPriority = "high";
+    image.fetchPriority = fetchPriority;
     image.onload = done;
     image.onerror = done;
-    window.setTimeout(done, IMAGE_PRELOAD_TIMEOUT_MS);
+    if (timeoutMs) window.setTimeout(done, timeoutMs);
     image.src = normalizedSrc;
   });
 
@@ -220,16 +248,34 @@ const loadAudioDurationMs = (src) =>
 const preloadStartupAssets = async () => {
   const fontReady =
     document.fonts?.ready?.catch?.(() => {}) ?? Promise.resolve();
+  const criticalImages = [
+    ...new Set(CRITICAL_GAME_IMAGE_ASSETS.map(toPreloadUrl)),
+  ].filter(Boolean);
   const images = [
     ...new Set([
       ...STARTUP_ASSETS.images.map(toPreloadUrl),
       ...ELDORADO_VIEW_ASSETS.map(toPreloadUrl),
       ...collectStylesheetImageUrls(),
     ]),
-  ].filter(Boolean);
+  ].filter((src) => src && !criticalImages.includes(src));
+  await Promise.all(
+    criticalImages.map((src) =>
+      preloadImage(src, {
+        decode: true,
+        fetchPriority: "high",
+        timeoutMs: null,
+      }),
+    ),
+  );
   await Promise.all([
     fontReady,
-    ...images.map(preloadImage),
+    ...images.map((src) =>
+      preloadImage(src, {
+        decode: false,
+        fetchPriority: "low",
+        timeoutMs: IMAGE_PRELOAD_TIMEOUT_MS,
+      }),
+    ),
     ...STARTUP_ASSETS.videos.map(preloadVideo),
     wait(900),
   ]);
@@ -278,6 +324,7 @@ export default function App() {
     status: "Choose left or right",
   });
   const [doublingState, setDoublingState] = useState(emptyDoubling);
+  const [autoPlayOn, setAutoPlayOn] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [showGameMenu, setShowGameMenu] = useState(false);
   const [spinHistory, setSpinHistory] = useState([]);
@@ -286,6 +333,7 @@ export default function App() {
   const [startupLoaderVisible, setStartupLoaderVisible] = useState(true);
   const [startupLoaderLeaving, setStartupLoaderLeaving] = useState(false);
   const spinFeedbackTimerRef = useRef(null);
+  const autoPlayOnRef = useRef(autoPlayOn);
   const liveSpinStateRef = useRef({
     carpetCloseMs,
     context,
@@ -299,6 +347,11 @@ export default function App() {
     status,
     visualMode,
   });
+
+  const toggleAutoPlay = () => {
+    setAutoPlayOn((current) => !current);
+  };
+
   const playSound = useGameAudio();
   const emitSound = useCallback(
     (event, payload) => {
@@ -842,10 +895,7 @@ export default function App() {
             : current,
         );
       }
-      reportOperationError(
-        spinError,
-        t("spinUnknown"),
-      );
+      reportOperationError(spinError, t("spinUnknown"));
       return null;
     }
   };
@@ -938,6 +988,33 @@ export default function App() {
       return false;
     }
   };
+
+  const onAutoPlay = async () => {
+    const result = await handleSpin({ demo: true });
+    if (!result) return;
+    await wait(1000);
+    if (!autoPlayOnRef.current) return;
+    await collectWin();
+  };
+
+  useEffect(() => {
+    autoPlayOnRef.current = autoPlayOn;
+    if (!autoPlayOn) return undefined;
+
+    let cancelled = false;
+    const runAutoPlay = async () => {
+      while (!cancelled && autoPlayOnRef.current) {
+        await onAutoPlay();
+        await wait(100);
+      }
+    };
+
+    runAutoPlay();
+    return () => {
+      cancelled = true;
+      autoPlayOnRef.current = false;
+    };
+  }, [autoPlayOn]);
 
   const enterDouble = () => {
     if (spinResult?.WinSum > 0) {
@@ -1034,10 +1111,7 @@ export default function App() {
       }
     } catch (doubleError) {
       setDoublingState((current) => ({ ...current, loading: false }));
-      reportError(
-        doubleError,
-        t("doubleUnknown"),
-      );
+      reportError(doubleError, t("doubleUnknown"));
     }
   };
 
@@ -1090,10 +1164,7 @@ export default function App() {
         loading: false,
         status: t("retryDouble"),
       }));
-      reportError(
-        doubleError,
-        t("doubleUnknown"),
-      );
+      reportError(doubleError, t("doubleUnknown"));
     }
   };
 
@@ -1290,7 +1361,7 @@ export default function App() {
         <img
           className="header_img"
           alt="Betproduct.com"
-          src="/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_003_398x172_at_1492_1.png"
+          src={GAME_HEADER_SRC}
         />
 
         <div className="game-main-layout">
@@ -1318,6 +1389,7 @@ export default function App() {
                 doublingState={doublingState}
                 revealComplete={gridAnimation === "settled"}
                 visualMode={visualMode}
+                autoPlayOn={autoPlayOn}
                 onDecreaseCombination={() => cycleCombination(-1)}
                 onIncreaseCombination={() => cycleCombination(1)}
                 onDecreaseStake={() => cycleStake(-1)}
@@ -1329,6 +1401,7 @@ export default function App() {
                 onTakeMoney={collectWin}
                 onInfo={loadPaytable}
                 onVisualToggle={() => handleAction("visual")}
+                onAutoPlay={toggleAutoPlay}
               />
             </>
           )}
@@ -1337,9 +1410,7 @@ export default function App() {
           <Paytable
             rows={paytableRows}
             loading={paytableStatus === "loading"}
-            error={
-              paytableStatus === "error" ? t("paytableLoadError") : ""
-            }
+            error={paytableStatus === "error" ? t("paytableLoadError") : ""}
             stake={stake}
             selectedCombination={selectedCombination}
             onClose={() => setShowPaytable(false)}
