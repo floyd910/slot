@@ -1374,6 +1374,7 @@ export default function App() {
                 totalPurchase={totalPurchase}
                 selectedCombination={selectedCombination}
                 spinResult={spinResult}
+                revealComplete={gridAnimation === "settled"}
               />
               <BottomBar
                 player={player}

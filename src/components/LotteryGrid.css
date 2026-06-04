@@ -92,24 +92,7 @@
 }
 
 .eldorado-cell__animation .eldorado-cell__item {
-  opacity: 0;
-  animation: eldorado-winning-symbol-frame 0.72s steps(1, end) infinite;
-}
-
-.eldorado-cell__animation .--frame-1 {
-  animation-delay: 0s;
-}
-
-.eldorado-cell__animation .--frame-2 {
-  animation-delay: -0.54s;
-}
-
-.eldorado-cell__animation .--frame-3 {
-  animation-delay: -0.36s;
-}
-
-.eldorado-cell__animation .--frame-4 {
-  animation-delay: -0.18s;
+  opacity: 1;
 }
 
 .eldorado-cell__fallback {
@@ -142,11 +125,11 @@
 
 @keyframes eldorado-winning-symbol-frame {
   0%,
-  24.99% {
+  9.99% {
     opacity: 1;
   }
 
-  25%,
+  10%,
   100% {
     opacity: 0;
   }

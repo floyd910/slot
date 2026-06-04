@@ -40,7 +40,6 @@ export default function BottomBar({
         <BasicButton
           type="language"
           extraClass="language-button"
-          disabled={disabled}
           onClick={toggleLanguage}
         />
         <BasicButton

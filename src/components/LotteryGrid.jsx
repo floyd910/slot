@@ -76,6 +76,39 @@ const eldoradoWinFrames = {
   ],
 };
 
+const frameXs = [1, 205, 409, 613, 817, 1021, 1225, 1429, 1633, 1837];
+const frameFile = (number, x, y = 1) =>
+  `sprite_${String(number).padStart(3, "0")}_202x202_at_${x}_${y}.png`;
+const characterFramePath = (folder, file) =>
+  `${HUSHKOL_GAME_ASSETS}_${folder}/${file}`;
+const firstRowFrames = (folder) =>
+  frameXs.map((x, index) =>
+    characterFramePath(folder, frameFile(index + 1, x)),
+  );
+
+const eldoradoSpecialWinFrames = {
+  0: [
+    ...frameXs
+      .slice(0, 5)
+      .map((x, index) => characterFramePath(1, frameFile(index + 2, x + 962))),
+    ...frameXs
+      .slice(0, 5)
+      .map((x, index) =>
+        characterFramePath(1, frameFile(index + 7, x + 962, 205)),
+      ),
+  ],
+  9: firstRowFrames(4),
+  10: firstRowFrames(3),
+  11: firstRowFrames(2),
+};
+
+const getPingPongFrameIndex = (tick, frameCount) => {
+  if (frameCount <= 1) return 0;
+  const cycleLength = frameCount * 2 - 2;
+  const cycleIndex = tick % cycleLength;
+  return cycleIndex < frameCount ? cycleIndex : cycleLength - cycleIndex;
+};
+
 const collectImageSources = (...values) =>
   values.flatMap((value) => {
     if (!value) return [];
@@ -92,6 +125,7 @@ export const ELDORADO_VIEW_ASSETS = [
       eldoradoCellBackgrounds,
       eldoradoStatic,
       eldoradoWinFrames,
+      eldoradoSpecialWinFrames,
       "/img/extracted/Слот_Интерфейс-ковер-для-розыгрыша-визуализации/sprite_001_1145x666_at_3_3.png",
       "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_002_201x653_at_1289_1.png",
     ),
@@ -121,6 +155,7 @@ export default function LotteryGrid({
     [winningGroups],
   );
   const [activeWinGroup, setActiveWinGroup] = useState(0);
+  const [eldoradoWinFrameTick, setEldoradoWinFrameTick] = useState(0);
 
   useEffect(() => {
     setActiveWinGroup(0);
@@ -140,6 +175,15 @@ export default function LotteryGrid({
   const isRevealing = animationState === "revealing";
   const isSettled = animationState === "settled";
   const hideDigitsBeforeReveal = !isRevealing && !isSettled;
+
+  useEffect(() => {
+    setEldoradoWinFrameTick(0);
+    if (animationState !== "settled" || marked.size === 0) return undefined;
+    const interval = window.setInterval(() => {
+      setEldoradoWinFrameTick((tick) => tick + 1);
+    }, 85);
+    return () => window.clearInterval(interval);
+  }, [animationState, marked.size]);
 
   // Keep the board visible until a real backend operation reports an error.
   const isGridMissing =
@@ -275,7 +319,8 @@ export default function LotteryGrid({
             key={`${cell.coord}-${revealKey}`}
             digit={cell.value}
             idxNumber={index}
-            animated={isSettled && marked.has(cell.coord)}
+            highlighted={isSettled && marked.has(cell.coord)}
+            animationFrameTick={eldoradoWinFrameTick}
           />
         ))}
         <CarpetNice
@@ -313,14 +358,19 @@ function CarpetNice({ animationState, closeMs, openMs }) {
 function EldoradoCell({
   digit,
   animated = false,
+  highlighted = false,
   dimmed = false,
+  animationFrameTick = 0,
 }) {
   const symbol = normalizeEldoradoDigit(digit);
   const image = eldoradoStatic[symbol];
   const imageSrc = typeof image === "string" ? image : image?.src;
   const imageClass = typeof image === "string" ? "" : (image?.className ?? "");
   const isCroppedImage = typeof image === "object" && image?.crop;
-  const winFrames = animated ? eldoradoWinFrames[symbol] : null;
+  const winFrames =
+    (highlighted && eldoradoSpecialWinFrames[symbol]) ||
+    (animated && eldoradoWinFrames[symbol]) ||
+    null;
   const isDice = symbol >= 1 && symbol <= 6;
   const backgroundSrc = isDice
     ? diceCellBackgrounds[symbol]
@@ -328,7 +378,7 @@ function EldoradoCell({
 
   return (
     <div
-      className={`eldorado-cell${isDice ? " --dice" : ""}${animated ? " --glow" : ""}${dimmed ? " --opacity" : ""}`}
+      className={`eldorado-cell${isDice ? " --dice" : ""}${highlighted || animated ? " --glow" : ""}${dimmed ? " --opacity" : ""}`}
     >
       <div className="eldorado-cell__container">
         {backgroundSrc && (
@@ -341,15 +391,16 @@ function EldoradoCell({
         )}
         {winFrames?.length > 1 ? (
           <span className="eldorado-cell__animation" aria-label="image">
-            {winFrames.map((frame, index) => (
-              <img
-                alt=""
-                aria-hidden="true"
-                key={frame}
-                src={frame}
-                className={`eldorado-cell__item --${symbol} --frame --frame-${index + 1}`}
-              />
-            ))}
+            <img
+              alt=""
+              aria-hidden="true"
+              src={
+                winFrames[
+                  getPingPongFrameIndex(animationFrameTick, winFrames.length)
+                ]
+              }
+              className={`eldorado-cell__item --${symbol} --frame`}
+            />
           </span>
         ) : imageSrc && isCroppedImage ? (
           <span
