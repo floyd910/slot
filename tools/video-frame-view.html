@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #111;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="frame" width="1280" height="720"></canvas>
+    <script>
+      const params = new URLSearchParams(location.search);
+      const src = params.get("src") || "../reference-view2-spins.mp4";
+      const time = Number(params.get("t") || "0");
+      const canvas = document.getElementById("frame");
+      const context = canvas.getContext("2d");
+      const video = document.createElement("video");
+      video.muted = true;
+      video.crossOrigin = "anonymous";
+      video.preload = "auto";
+      video.src = src;
+      const draw = () => {
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        document.body.dataset.ready = "true";
+      };
+      const fail = () => {
+        context.fillStyle = "#580000";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        context.fillStyle = "#fff";
+        context.font = "32px sans-serif";
+        context.fillText("video frame failed", 40, 80);
+        document.body.dataset.ready = "error";
+      };
+      video.addEventListener("loadedmetadata", () => {
+        video.currentTime = Math.min(Math.max(time, 0), video.duration || time);
+      });
+      video.addEventListener("seeked", draw);
+      video.addEventListener("loadeddata", () => {
+        if (time === 0) draw();
+      });
+      video.addEventListener("error", fail);
+      window.setTimeout(() => {
+        if (document.body.dataset.ready !== "true") fail();
+      }, 4500);
+    </script>
+  </body>
+</html>

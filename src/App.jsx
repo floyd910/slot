@@ -251,15 +251,31 @@ const preloadStartupAssets = async () => {
   const criticalImages = [
     ...new Set(CRITICAL_GAME_IMAGE_ASSETS.map(toPreloadUrl)),
   ].filter(Boolean);
+  const view2Images = [
+    ...new Set(ELDORADO_VIEW_ASSETS.map(toPreloadUrl)),
+  ].filter((src) => src && !criticalImages.includes(src));
   const images = [
     ...new Set([
       ...STARTUP_ASSETS.images.map(toPreloadUrl),
-      ...ELDORADO_VIEW_ASSETS.map(toPreloadUrl),
       ...collectStylesheetImageUrls(),
     ]),
-  ].filter((src) => src && !criticalImages.includes(src));
+  ].filter(
+    (src) =>
+      src &&
+      !criticalImages.includes(src) &&
+      !view2Images.includes(src),
+  );
   await Promise.all(
     criticalImages.map((src) =>
+      preloadImage(src, {
+        decode: true,
+        fetchPriority: "high",
+        timeoutMs: null,
+      }),
+    ),
+  );
+  await Promise.all(
+    view2Images.map((src) =>
       preloadImage(src, {
         decode: true,
         fetchPriority: "high",
@@ -1228,9 +1244,9 @@ export default function App() {
     status === "initial-loading" ||
     status === "bootstrap-loading" ||
     status === "processing";
-  const pendingDigitWin = !visualMode && Number(spinResult?.WinSum ?? 0) > 0;
+  const pendingTicketWin = Number(spinResult?.WinSum ?? 0) > 0;
   const isDoublingLocked =
-    pendingDigitWin || Boolean(doublingState.active || doublingState.loading);
+    pendingTicketWin || Boolean(doublingState.active || doublingState.loading);
   const testMode = isEnabled(context.testMode ?? context.demoMode);
   const canAffordSpin =
     testMode ||
@@ -1246,7 +1262,7 @@ export default function App() {
     status === "initial-loading" ||
     status === "bootstrap-loading" ||
     Boolean(doublingState.loading) ||
-    (!pendingDigitWin && !canAffordSpin);
+    (!pendingTicketWin && !canAffordSpin);
   const hideHeader =
     context.mode === "embedded" && context.featureFlags?.hiddenHeader !== false;
   const shellClass = `frame-app mode-${context.mode} theme-${context.theme}${hideHeader ? " headerless" : ""}${expandedBoard || visualMode ? " expanded-board" : ""}${visualMode ? " view-2 --eldorado" : " view-1"}${isVisualDoubling ? " doubling-active" : ""}`;
@@ -1396,7 +1412,7 @@ export default function App() {
                 onDecreaseStake={() => cycleStake(-1)}
                 onIncreaseStake={() => cycleStake(1)}
                 onSpin={() =>
-                  pendingDigitWin ? collectWin() : handleSpin({ demo: true })
+                  pendingTicketWin ? collectWin() : handleSpin({ demo: true })
                 }
                 onDouble={playFooterDouble}
                 onTakeMoney={collectWin}
