@@ -56,6 +56,7 @@
   position: relative;
   width: 100%;
   padding-bottom: 100%;
+  overflow: hidden;
 }
 
 .eldorado-cell__item {
@@ -133,6 +134,18 @@
     0 0 0.35rem rgba(255, 239, 160, 0.5);
 }
 
+.eldorado-cell__video-dice {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background-image: url("/img/reference/dice-shine-video-sprite.png");
+  background-repeat: no-repeat;
+  background-size: 1000% 600%;
+  background-position: 0 0;
+  pointer-events: none;
+  animation: eldorado-dice-video-frames 6s steps(1, end) infinite;
+}
+
 @keyframes eldorado-winning-symbol-frame {
   0%,
   9.99% {
@@ -143,6 +156,70 @@
   100% {
     opacity: 0;
   }
+}
+
+@keyframes eldorado-dice-video-frames {
+  0% { background-position: 0% 0%; }
+  1.6667% { background-position: 11.1111% 0%; }
+  3.3333% { background-position: 22.2222% 0%; }
+  5% { background-position: 33.3333% 0%; }
+  6.6667% { background-position: 44.4444% 0%; }
+  8.3333% { background-position: 55.5556% 0%; }
+  10% { background-position: 66.6667% 0%; }
+  11.6667% { background-position: 77.7778% 0%; }
+  13.3333% { background-position: 88.8889% 0%; }
+  15% { background-position: 100% 0%; }
+  16.6667% { background-position: 0% 20%; }
+  18.3333% { background-position: 11.1111% 20%; }
+  20% { background-position: 22.2222% 20%; }
+  21.6667% { background-position: 33.3333% 20%; }
+  23.3333% { background-position: 44.4444% 20%; }
+  25% { background-position: 55.5556% 20%; }
+  26.6667% { background-position: 66.6667% 20%; }
+  28.3333% { background-position: 77.7778% 20%; }
+  30% { background-position: 88.8889% 20%; }
+  31.6667% { background-position: 100% 20%; }
+  33.3333% { background-position: 0% 40%; }
+  35% { background-position: 11.1111% 40%; }
+  36.6667% { background-position: 22.2222% 40%; }
+  38.3333% { background-position: 33.3333% 40%; }
+  40% { background-position: 44.4444% 40%; }
+  41.6667% { background-position: 55.5556% 40%; }
+  43.3333% { background-position: 66.6667% 40%; }
+  45% { background-position: 77.7778% 40%; }
+  46.6667% { background-position: 88.8889% 40%; }
+  48.3333% { background-position: 100% 40%; }
+  50% { background-position: 0% 60%; }
+  51.6667% { background-position: 11.1111% 60%; }
+  53.3333% { background-position: 22.2222% 60%; }
+  55% { background-position: 33.3333% 60%; }
+  56.6667% { background-position: 44.4444% 60%; }
+  58.3333% { background-position: 55.5556% 60%; }
+  60% { background-position: 66.6667% 60%; }
+  61.6667% { background-position: 77.7778% 60%; }
+  63.3333% { background-position: 88.8889% 60%; }
+  65% { background-position: 100% 60%; }
+  66.6667% { background-position: 0% 80%; }
+  68.3333% { background-position: 11.1111% 80%; }
+  70% { background-position: 22.2222% 80%; }
+  71.6667% { background-position: 33.3333% 80%; }
+  73.3333% { background-position: 44.4444% 80%; }
+  75% { background-position: 55.5556% 80%; }
+  76.6667% { background-position: 66.6667% 80%; }
+  78.3333% { background-position: 77.7778% 80%; }
+  80% { background-position: 88.8889% 80%; }
+  81.6667% { background-position: 100% 80%; }
+  83.3333% { background-position: 0% 100%; }
+  85% { background-position: 11.1111% 100%; }
+  86.6667% { background-position: 22.2222% 100%; }
+  88.3333% { background-position: 33.3333% 100%; }
+  90% { background-position: 44.4444% 100%; }
+  91.6667% { background-position: 55.5556% 100%; }
+  93.3333% { background-position: 66.6667% 100%; }
+  95% { background-position: 77.7778% 100%; }
+  96.6667% { background-position: 88.8889% 100%; }
+  98.3333%,
+  100% { background-position: 100% 100%; }
 }
 
 .carpet-nice {

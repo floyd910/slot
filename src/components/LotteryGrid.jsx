@@ -8,6 +8,7 @@ const HUSHKOL_PAYTABLE_ASSETS =
   "/img/extracted/игра-Хушкол-элементы-таблица-выигрышей-1_0";
 const DICE_ASSETS = "/img/extracted/Линии-и-Кости-2_0";
 const LINE_ASSETS = "/img/extracted/Линии-и-Кости-1_00";
+const VIDEO_DICE_SHINE_SPRITE = "/img/reference/dice-shine-video-sprite.png";
 const SYMBOL_12_COMBO_BORDER = `${LINE_ASSETS}/sprite_005_102x102_at_1847_432.png`;
 const COMBO_BORDERS = [
   SYMBOL_12_COMBO_BORDER,
@@ -53,38 +54,7 @@ const eldoradoStatic = {
   11: `${HUSHKOL_GAME_ASSETS}_2/sprite_014_202x202_at_613_205.png`,
   12: `${HUSHKOL_GAME_ASSETS}_4/sprite_013_202x202_at_409_205.png`,
 };
-const eldoradoWinFrames = {
-  1: [
-    `${DICE_ASSETS}/sprite_009_143x165_at_207_379.png`,
-    `${DICE_ASSETS}/sprite_023_144x166_at_1_1023.png`,
-    `${DICE_ASSETS}/sprite_024_143x165_at_151_1023.png`,
-    `${DICE_ASSETS}/sprite_030_143x166_at_3_1195.png`,
-  ],
-  2: [
-    `${DICE_ASSETS}/sprite_006_144x166_at_205_207.png`,
-    `${DICE_ASSETS}/sprite_033_143x166_at_3_1367.png`,
-    `${DICE_ASSETS}/sprite_036_144x166_at_1_1539.png`,
-    `${DICE_ASSETS}/sprite_039_142x166_at_3_1711.png`,
-  ],
-  3: [
-    `${DICE_ASSETS}/sprite_007_143x165_at_355_207.png`,
-    `${DICE_ASSETS}/sprite_012_143x165_at_207_550.png`,
-    `${DICE_ASSETS}/sprite_015_143x165_at_207_721.png`,
-    `${DICE_ASSETS}/sprite_029_144x165_at_150_1194.png`,
-  ],
-  4: [
-    `${DICE_ASSETS}/sprite_008_143x169_at_356_376.png`,
-    `${DICE_ASSETS}/sprite_014_143x164_at_356_720.png`,
-    `${DICE_ASSETS}/sprite_025_142x166_at_300_1061.png`,
-    `${DICE_ASSETS}/sprite_031_142x166_at_300_1231.png`,
-  ],
-  5: [
-    `${DICE_ASSETS}/sprite_011_142x167_at_356_549.png`,
-    `${DICE_ASSETS}/sprite_017_143x167_at_300_892.png`,
-    `${DICE_ASSETS}/sprite_037_143x168_at_300_1571.png`,
-    `${DICE_ASSETS}/sprite_011_142x167_at_356_549.png`,
-  ],
-};
+const eldoradoWinFrames = {};
 
 const frameXs = [1, 205, 409, 613, 817, 1021, 1225, 1429, 1633, 1837];
 const frameFile = (number, x, y = 1) =>
@@ -232,6 +202,7 @@ export const ELDORADO_VIEW_ASSETS = [
       eldoradoWinFrames,
       eldoradoSpecialWinFrames,
       COMBO_BORDERS,
+      VIDEO_DICE_SHINE_SPRITE,
       "/img/extracted/Слот_Интерфейс-ковер-для-розыгрыша-визуализации/sprite_001_1145x666_at_3_3.png",
       "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_002_201x653_at_1289_1.png",
     ),
@@ -518,7 +489,7 @@ function EldoradoCell({
 
   return (
     <div
-      className={`eldorado-cell${isDice ? " --dice" : ""}${highlighted || animated ? " --glow" : ""}${dimmed ? " --opacity" : ""}`}
+      className={`eldorado-cell${isDice ? " --dice" : ""}${highlighted || animated ? " --glow" : ""}${isDice && (highlighted || animated) ? " --dice-video-selected" : ""}${dimmed ? " --opacity" : ""}`}
     >
       <div className="eldorado-cell__container">
         {backgroundSrc && (
@@ -536,6 +507,9 @@ function EldoradoCell({
             className="eldorado-cell__combo-border"
             src={comboBorder}
           />
+        )}
+        {isDice && (highlighted || animated) && (
+          <span className="eldorado-cell__video-dice" aria-hidden="true" />
         )}
         {winFrames?.length > 1 ? (
           <span className="eldorado-cell__animation" aria-label="image">
