@@ -40,12 +40,11 @@ const unique = (items) => Array.from(new Set(items));
 
 function evaluateRegularGroup({ group, groupIndex, grid, paytable, stake, groupCount, prizeValue }) {
   const values = group.map((coordinate) => getCellValue(grid, coordinate));
-  const normalizedPrize = asNumber(prizeValue, DEFAULT_PRIZE_VALUE);
-  const wildValue = normalizedPrize === ZERO_SYMBOL ? WILD_SYMBOL : normalizedPrize;
+  const wildValue = WILD_SYMBOL;
   const candidates = unique(
     values.filter((value) => {
       const numeric = Number(value);
-      return numeric > ZERO_SYMBOL && numeric !== WILD_SYMBOL;
+      return numeric > ZERO_SYMBOL && numeric !== wildValue;
     }),
   );
 

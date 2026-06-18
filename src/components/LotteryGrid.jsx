@@ -257,6 +257,11 @@ export default function LotteryGrid({
     animationState === "settled" && groupedWins.length > 0
       ? COMBO_BORDERS[activeWinGroup % COMBO_BORDERS.length]
       : null;
+  const showScatterOnly = scatterCells.length >= 2;
+  const visibleScatterCells = showScatterOnly ? scatterCells : [];
+  const visibleComboBorderCells = showScatterOnly
+    ? new Set()
+    : activeComboBorderCells;
   const hasMarkedCells = marked.size > 0;
   const isRevealing = animationState === "revealing";
   const isSettled = animationState === "settled";
@@ -396,9 +401,14 @@ export default function LotteryGrid({
             key={`${cell.coord}-${revealKey}`}
             digit={cell.value}
             idxNumber={index}
-            highlighted={isSettled && eldoradoWinningCells.has(cell.coord)}
+            highlighted={
+              isSettled &&
+              (showScatterOnly
+                ? visibleScatterCells.includes(cell.coord)
+                : eldoradoWinningCells.has(cell.coord))
+            }
             comboBorder={
-              isSettled && activeComboBorderCells.has(cell.coord)
+              isSettled && visibleComboBorderCells.has(cell.coord)
                 ? activeComboBorder
                 : null
             }
