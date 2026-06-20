@@ -42,6 +42,7 @@
 }
 
 .header_img {
+  z-index: 6;
   pointer-events: none;
   width: 520px;
   height: 140px;
@@ -174,10 +175,6 @@ button:disabled {
 
 .view-2 .info_msg {
   display: none;
-}
-
-.doubling-active .bottom-bar {
-  margin-top: -2.5rem;
 }
 
 .info_msg {

@@ -9,7 +9,11 @@ export default function BottomBar({
   doublingState,
   revealComplete = false,
   visualMode = false,
+  isVisualDoubling = false,
   autoPlayOn = false,
+  onCollect,
+  onPickLeft,
+  onPickRight,
   onVisualToggle,
   onAutoPlay,
   onIncreaseCombination,
@@ -30,7 +34,7 @@ export default function BottomBar({
   return (
     <footer className="bottom-bar">
       <div className="control-panel">
-        <TakeMoney disabled={disabled} />
+        <TakeMoney disabled={disabled} onClick={onCollect} />
         <BasicButton
           type="information"
           extraClass="information-button"
@@ -54,27 +58,18 @@ export default function BottomBar({
           active={visualMode}
           onClick={onVisualToggle}
         />
-        {showDouble ? (
-          <BasicButton
-            type="double"
-            extraClass="language-button"
-            disabled={!canDouble}
-            onClick={onDouble}
-          />
+        {isVisualDoubling ? (
+          <BasicButton type="left" extraClass="language-button" disabled={disabled} onClick={onPickLeft} />
+        ) : showDouble ? (
+          <BasicButton type="double" extraClass="language-button" disabled={!canDouble} onClick={onDouble} />
         ) : (
-          <BasicButton
-            type="betAmount"
-            extraClass="language-button"
-            disabled={disabled}
-            onClick={onIncreaseStake}
-          />
+          <BasicButton type="betAmount" extraClass="language-button" disabled={disabled} onClick={onIncreaseStake} />
         )}
-        <BasicButton
-          type="lotteryCombination"
-          extraClass="language-button"
-          disabled={disabled}
-          onClick={onIncreaseCombination}
-        />
+        {isVisualDoubling ? (
+          <BasicButton type="right" extraClass="language-button" disabled={disabled} onClick={onPickRight} />
+        ) : (
+          <BasicButton type="lotteryCombination" extraClass="language-button" disabled={disabled} onClick={onIncreaseCombination} />
+        )}
         <BasicButton
           type="autoExpress"
           extraClass="auto-express-button"
@@ -117,7 +112,7 @@ function CombinationControl({ title, value, disabled, onPlus }) {
   );
 }
 
-function TakeMoney({ disabled }) {
+function TakeMoney({ disabled, onClick }) {
   const { t } = useLanguage();
   return (
     <div
@@ -125,7 +120,7 @@ function TakeMoney({ disabled }) {
       role="button"
       tabIndex={disabled ? -1 : 0}
       onClick={() => {
-        if (!disabled) onPlus();
+        if (!disabled) if (onClick) onClick();
       }}
       onPointerDown={(event) => {
         if (!disabled) event.currentTarget.classList.add("--pressed");
@@ -143,7 +138,7 @@ function TakeMoney({ disabled }) {
         if (disabled || (event.key !== "Enter" && event.key !== " ")) return;
         event.preventDefault();
         event.currentTarget.classList.add("--pressed");
-        onPlus();
+        if (onClick) onClick();
       }}
       onKeyUp={(event) => {
         if (event.key !== "Enter" && event.key !== " ") return;
@@ -197,6 +192,8 @@ function BasicButton({
     visualization: renderMultiline(t("visualization")),
     betAmount: t("betAmount"),
     double: t("double"),
+    left: t("left"),
+    right: t("right"),
     lotteryCombination: t("lotteryCombination"),
     autoExpress: t("autoExpress"),
     spinDraw: renderMultiline(t("participate")),

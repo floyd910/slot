@@ -1,178 +1,173 @@
 .eldorado-double {
-  min-height: 100%;
+  position: relative;
+  z-index: -1;
+  width: 115%;
+  margin-top: 0;
+  margin-left: -8%;
+  transform: translateX(8%);
+  aspect-ratio: 1336 / 437;
+  overflow: hidden;
+  isolation: isolate;
 }
 
-.doubling-header {
+.eldorado-double__landscape,
+.eldorado-double__arches {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 4;
-  height: 6.25rem;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-}
-
-.doubling-header__hero {
-  position: absolute;
-  top: 0.6666666667rem;
-  left: 50%;
-  width: 22rem;
-  transform: translateX(-50%);
   user-select: none;
 }
 
-.doubling-desktop {
-  position: relative;
+.eldorado-double__landscape {
+  z-index: 0;
+  object-fit: fill;
+}
+
+.eldorado-double__arches {
+  z-index: 1;
+  object-fit: fill;
+  transform: scale(1.20, 1.08);
+  transform-origin: right bottom;
+}
+
+.eldorado-double__character {
+  position: absolute;
+  right: 12%;
+  bottom: 4%;
+  z-index: 3;
+  width: 23%;
+  height: auto;
+  transform: translateX(-220px) scaleY(0.67);
+  transform-origin: center bottom;
+  pointer-events: none;
+  user-select: none;
+}
+
+.doubling-desktop__ladder {
+  position: absolute;
+  top: 13%;
+  left: 12%;
+  z-index: 4;
   display: flex;
-  width: 100%;
+  width: 16%;
+  height: 66%;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.doubling-desktop__ladder > img {
+  width: 9%;
   height: 100%;
-  min-height: 28rem;
+}
+
+.doubling-desktop__levels {
+  position: absolute;
+  inset: 0 7%;
+  display: flex;
   flex-direction: column;
   justify-content: space-between;
-  overflow: hidden;
-  background-color: #702b2b;
-  background-image: url("https://lotogame.lotosport.tj/img/eldorado-bg-doubling.1a56d55b.webp");
-  background-position: 50%;
-  background-repeat: no-repeat;
-  background-size: cover;
 }
 
-.doubling-desktop__group {
-  position: absolute;
-  top: 7.0833333333rem;
-  left: 4.1666666667rem;
-  z-index: 2;
-  display: flex;
-  min-width: 10.8333333333rem;
-  flex-direction: column-reverse;
-  align-items: center;
-  justify-content: center;
-  gap: 1.0416666667rem;
-  padding: 1.6666666667rem 1.25rem;
-  border: 1px solid rgba(245, 232, 92, 0.5);
-  border-radius: 0.5rem;
-  background: rgba(0, 0, 0, 0.6);
-}
-
-.eldorado-double__level {
+.doubling-desktop__level {
   position: relative;
-  min-width: 6.25rem;
-  color: rgba(255, 235, 117, 0.5);
-  font-family: Ubuntu, Arial, sans-serif;
-  font-size: 1.1666666667rem;
-  font-weight: 900;
-  line-height: 1;
-  text-align: center;
-  text-shadow: 0 0.125rem 0 #000;
+  display: grid;
+  place-items: center;
+  height: 13%;
 }
 
-.eldorado-double__level.--active,
-.eldorado-double__level.--passed {
-  color: #ffea00;
-  filter: drop-shadow(0 0 0.25rem rgba(255, 234, 0, 0.85));
+.doubling-desktop__level img {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.doubling-desktop__level span {
+  position: relative;
+  z-index: 1;
+  color: #35140d;
+  font-family: Arial Black, Arial, sans-serif;
+  font-size: clamp(0.7rem, 1.65vw, 1.5rem);
+  font-weight: 900;
+}
+
+.doubling-desktop__level.--active img {
+  content: url("/img/extracted/\u0442\u0443\u0442-\u0444\u043e\u043d--\u0432\u044b\u0431\u043e\u0440-\u0438\u0433\u0440-\u043f\u0435\u0440\u0432\u0430\u044f-\u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0430-\u0438-\u0441\u0440\u0430\u0437\u0443-\u043b\u043e\u0442\u043e\u0440\u0435\u0439\u043d\u044b\u0439-\u0440\u0435\u0436\u0438\u043c_\u0443\u0434\u0432\u043e\u0435\u043d\u0438\u0435-5_0/sprite_015_160x56_at_169_1558.png");
 }
 
 .eldorado-double__choices {
   position: absolute;
-  inset: 6rem 5rem 5.25rem 17rem;
-  z-index: 3;
+  top: 48%;
+  left: 32%;
+  z-index: 5;
+  display: flex;
+  width: 29%;
+  justify-content: space-between;
+  transform: translateY(-50%);
 }
 
 .eldorado-double__choice {
-  position: absolute;
-  top: 16%;
-  width: 36%;
-  height: 65%;
+  position: relative;
+  display: flex;
+  flex: 0 0 46%;
+  width: 46%;
+  aspect-ratio: 144 / 137;
+  align-items: flex-end;
+  padding: 0;
+  isolation: isolate;
   border: 0;
   background: transparent;
-  cursor: pointer;
 }
 
-.eldorado-double__choice:disabled {
-  cursor: wait;
+.eldorado-double__choice img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
-.eldorado-double__choice.--left {
-  left: 4%;
+.eldorado-double__choice > img:not(.eldorado-double__choice-highlight) {
+  position: relative;
+  z-index: 1;
 }
 
-.eldorado-double__choice.--right {
-  right: 3%;
-}
-
-.eldorado-double__choice::before {
-  content: "";
+.eldorado-double__choice-highlight {
   position: absolute;
-  inset: 8% 10%;
-  border: 0.0833333333rem solid rgba(245, 232, 92, 0.46);
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 50% 45%, rgba(255, 234, 0, 0.18), transparent 52%),
-    rgba(0, 0, 0, 0.08);
-  opacity: 0;
-  transition: opacity 0.2s linear, transform 0.2s linear;
-}
-
-.eldorado-double__choice:hover::before,
-.eldorado-double__choice.--win::before,
-.eldorado-double__choice.--lose::before {
-  opacity: 1;
-  transform: scale(1.02);
-}
-
-.eldorado-double__choice span {
-  position: absolute;
-  top: 48%;
+  bottom: 35%;
   left: 50%;
-  z-index: 2;
-  transform: translate(-50%, -50%);
-  font-family: Ubuntu, Arial, sans-serif;
-  font-size: 4rem;
-  font-weight: 900;
-  line-height: 1;
-  -webkit-text-stroke: 1px #000;
-  background: linear-gradient(180deg, #fee7a2 29%, #986c47 62%, #e9ad7a);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: eldorado-double-reveal 0.32s ease-out;
+  z-index: 0;
+  width: 115% !important;
+  max-width: none;
+  height: 245% !important;
+  transform: translateX(-50%);
+  object-fit: fill;
+  pointer-events: none;
 }
 
-.eldorado-double__choice.--lose span {
-  background: linear-gradient(180deg, #ffffff 20%, #8a8a8a 70%);
-  background-clip: text;
-  -webkit-background-clip: text;
-}
 
 .doubling-desktop__result {
   position: absolute;
-  bottom: 4.5rem;
+  bottom: 16%;
   left: 50%;
-  z-index: 5;
-  min-width: 10.4166666667rem;
-  padding: 0.4166666667rem 0.8333333333rem;
+  z-index: 6;
+  width: 15%;
   transform: translateX(-50%);
-  border-radius: 0.5rem;
-  background: rgba(0, 0, 0, 0.6);
-  color: #ffea00;
-  font-family: Ubuntu, Arial, sans-serif;
-  font-size: 1.5rem;
+}
+
+.doubling-desktop__result img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.doubling-desktop__result span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #35140d;
+  font-family: Arial Black, Arial, sans-serif;
+  font-size: clamp(0.7rem, 1.75vw, 1.55rem);
   font-weight: 900;
-  text-align: center;
 }
-
-@keyframes eldorado-double-reveal {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.5);
-  }
-  70% {
-    transform: translate(-50%, -50%) scale(1.18);
-  }
-  100% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-

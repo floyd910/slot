@@ -1053,6 +1053,28 @@ export default function App() {
     }
   };
 
+  const enterVisualDouble = () => {
+    if (
+      !visualMode ||
+      !spinResult?.idCard ||
+      Number(spinResult?.WinSum ?? 0) <= 0 ||
+      doublingState.loading ||
+      status === "processing"
+    )
+      return;
+
+    setDoublingState((current) => ({
+      ...emptyDoubling,
+      ...current,
+      active: true,
+      entered: true,
+      loading: false,
+      lastPick: "",
+      lastStatus: "",
+    }));
+    setLastKnownState("double");
+  };
+
   const playFooterDouble = async (side = "x2") => {
     if (!spinResult?.idCard || doublingState.loading || status === "processing")
       return;
@@ -1063,7 +1085,7 @@ export default function App() {
     if (step >= 5 || currentAmount <= 0) return;
     try {
       emitSound("double");
-      if (!doublingState.entered && spinResult.creditedToBalance) {
+      if (step === 0 && spinResult.creditedToBalance) {
         setPlayer((current) => ({
           ...current,
           balance: Number((current.balance - spinResult.WinSum).toFixed(2)),
@@ -1096,18 +1118,20 @@ export default function App() {
       );
       const won = result.status === "win" && result.WinSum > 0;
       const visibleWin = won ? Number(result.WinSum.toFixed(2)) : 0;
-      setSpinResult((current) =>
-        current
-          ? { ...current, WinSum: visibleWin, creditedToBalance: false }
-          : current,
-      );
+      if (won) {
+        setSpinResult((current) =>
+          current
+            ? { ...current, WinSum: visibleWin, creditedToBalance: false }
+            : current,
+        );
+      }
       setDoublingState((current) => {
         const marks = [...current.marks];
         marks[step] = won ? "x2" : "x0";
         return {
           ...current,
           active: won && step + 1 < 5 && result.WinSum > 0,
-          loading: false,
+          loading: !won,
           step: step + 1,
           marks,
           currentAmount: won ? result.WinSum : 0,
@@ -1124,6 +1148,22 @@ export default function App() {
         frameApi
           .pay({ idCard: spinResult.idCard, requestId: buildRequestId("pay") })
           .catch(() => {});
+        window.setTimeout(() => {
+          setSpinResult((current) =>
+            current
+              ? {
+                  ...current,
+                  WinSum: 0,
+                  winningCells: [],
+                  lineWins: [],
+                  scatterCells: [],
+                  creditedToBalance: false,
+                }
+              : current,
+          );
+          setGridAnimation("idle");
+          setDoublingState(emptyDoubling);
+        }, 1200);
       }
     } catch (doubleError) {
       setDoublingState((current) => ({ ...current, loading: false }));
@@ -1406,6 +1446,10 @@ export default function App() {
                 doublingState={doublingState}
                 revealComplete={gridAnimation === "settled"}
                 visualMode={visualMode}
+                isVisualDoubling={isVisualDoubling}
+                onCollect={collectWin}
+                onPickLeft={() => playFooterDouble("left")}
+                onPickRight={() => playFooterDouble("right")}
                 autoPlayOn={autoPlayOn}
                 onDecreaseCombination={() => cycleCombination(-1)}
                 onIncreaseCombination={() => cycleCombination(1)}
@@ -1414,7 +1458,7 @@ export default function App() {
                 onSpin={() =>
                   pendingTicketWin ? collectWin() : handleSpin({ demo: true })
                 }
-                onDouble={playFooterDouble}
+                onDouble={visualMode ? enterVisualDouble : playFooterDouble}
                 onTakeMoney={collectWin}
                 onInfo={loadPaytable}
                 onVisualToggle={() => handleAction("visual")}

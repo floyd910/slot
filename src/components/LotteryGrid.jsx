@@ -90,15 +90,16 @@ export default function LotteryGrid({
       ? (groupedWins[activeWinGroup] ?? groupedWins[0])
       : [],
   );
+  const showScatterOnly = scatterCells.length >= 2;
   const activeComboBorder =
-    animationState === "settled" && groupedWins.length > 0
+    animationState === "settled" && (groupedWins.length > 0 || showScatterOnly)
       ? COMBO_BORDERS[activeWinGroup % COMBO_BORDERS.length]
       : null;
-  const showScatterOnly = scatterCells.length >= 2;
   const visibleScatterCells = showScatterOnly ? scatterCells : [];
-  const visibleComboBorderCells = showScatterOnly
-    ? new Set()
-    : activeComboBorderCells;
+  const visibleComboBorderCells = new Set([
+    ...activeComboBorderCells,
+    ...(showScatterOnly ? scatterCells : []),
+  ]);
   const hasMarkedCells = marked.size > 0;
   const isRevealing = animationState === "revealing";
   const isSettled = animationState === "settled";
