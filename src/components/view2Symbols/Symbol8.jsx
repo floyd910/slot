@@ -3,7 +3,7 @@ import { View2SymbolBase, view2SymbolAsset, view2SymbolFrames } from "./View2Sym
 export const symbol8Assets = {
   staticImage: view2SymbolAsset(8, "1.png"),
   background: view2SymbolAsset(8, "background.png"),
-  winFrames: view2SymbolFrames(8, 2),
+  winFrames: view2SymbolFrames(8, 4),
 };
 
 export default function Symbol8(props) {
