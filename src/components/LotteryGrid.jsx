@@ -59,15 +59,15 @@ export default function LotteryGrid({
   carpetCloseMs = 1455,
   carpetOpenMs = 1455,
 }) {
-  const groupedWins = useMemo(
-    () =>
-      winningGroups
-        .map((group) =>
-          Array.isArray(group?.winningCells) ? group.winningCells : group,
-        )
-        .filter((group) => Array.isArray(group) && group.length > 0),
-    [winningGroups],
-  );
+  const groupedWins = useMemo(() => {
+    const groups = winningGroups
+      .map((group) =>
+        Array.isArray(group?.winningCells) ? group.winningCells : group,
+      )
+      .filter((group) => Array.isArray(group) && group.length > 0);
+
+    return groups.length > 0 ? groups : winningCells.length > 0 ? [winningCells] : [];
+  }, [winningGroups, winningCells]);
   const [activeWinGroup, setActiveWinGroup] = useState(0);
 
   useEffect(() => {
