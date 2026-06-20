@@ -268,7 +268,7 @@ function CarpetNice({ animationState, closeMs, openMs }) {
 
   return (
     <div
-      className={`carpet-nice${animationState === "idle" || animationState === "settled" ? " carpet-nice__hidden" : ""}`}
+      className={`carpet-nice${isSpinning ? " --spinning" : ""}${isRevealing ? " --revealing" : ""}${animationState === "idle" || animationState === "settled" ? " carpet-nice__hidden" : ""}`}
       style={{
         "--carpet-close-duration": `${closeMs}ms`,
         "--carpet-open-duration": `${openMs}ms`,

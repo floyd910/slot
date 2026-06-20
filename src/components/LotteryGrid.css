@@ -764,9 +764,10 @@
 .view-2 .game-main-layout .eldorado-scoreboard {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  grid-template-rows: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, calc((100% - 60px - 0.9%) / 3));
   column-gap: 2.7%;
   row-gap: 0.45%;
+  align-content: start;
   align-items: center;
   justify-items: center;
   padding: 0.5%;
@@ -799,6 +800,18 @@
 
 .view-2 .game-main-layout .eldorado-scoreboard::before {
   box-shadow: none;
+}
+
+.view-2 .game-main-layout .carpet-nice {
+  top: 0;
+  bottom: auto;
+  height: calc(100% - 30px);
+}
+
+.view-2 .game-main-layout .carpet-nice.--spinning,
+.view-2 .game-main-layout .carpet-nice.--revealing {
+  opacity: 1;
+  visibility: visible;
 }
 
 .view-2 .game-main-layout .carpet-nice__item {
