@@ -1,14 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import "./LotteryGrid.css";
+import {
+  VIEW2_SYMBOL_ASSET_SOURCES,
+  VIEW2_SYMBOL_COMPONENTS,
+  VIEW2_SYMBOL_GROUP_CYCLE_MS,
+} from "./view2Symbols/index.jsx";
 
 const rows = ["A", "B", "C"];
-const HUSHKOL_GAME_ASSETS =
-  "/img/extracted/игра-Хушкол-элементы-игры-1";
-const HUSHKOL_PAYTABLE_ASSETS =
-  "/img/extracted/игра-Хушкол-элементы-таблица-выигрышей-1_0";
-const DICE_ASSETS = "/img/extracted/Линии-и-Кости-2_0";
 const LINE_ASSETS = "/img/extracted/Линии-и-Кости-1_00";
-const VIDEO_DICE_SHINE_SPRITE = "/img/reference/dice-shine-video-sprite.png";
 const SYMBOL_12_COMBO_BORDER = `${LINE_ASSETS}/sprite_005_102x102_at_1847_432.png`;
 const COMBO_BORDERS = [
   SYMBOL_12_COMBO_BORDER,
@@ -22,164 +21,7 @@ const COMBO_BORDERS = [
   `${LINE_ASSETS}/sprite_014_102x102_at_1195_1237.png`,
   `${LINE_ASSETS}/sprite_017_102x102_at_951_1937.png`,
 ];
-const diceCellBackgrounds = {
-  1: `${DICE_ASSETS}/sprite_013_202x202_at_1_613.png`,
-  2: `${DICE_ASSETS}/sprite_005_202x202_at_1_205.png`,
-  3: `${DICE_ASSETS}/sprite_001_202x202_at_1_1.png`,
-  4: `${DICE_ASSETS}/sprite_002_202x202_at_205_1.png`,
-  5: `${DICE_ASSETS}/sprite_010_202x202_at_1_409.png`,
-  6: `${DICE_ASSETS}/sprite_001_202x202_at_1_1.png`,
-};
-const eldoradoCellBackgrounds = {
-  0: `${DICE_ASSETS}/sprite_010_202x202_at_1_409.png`,
-  7: `${DICE_ASSETS}/sprite_002_202x202_at_205_1.png`,
-  8: `${DICE_ASSETS}/sprite_005_202x202_at_1_205.png`,
-  9: `${DICE_ASSETS}/sprite_013_202x202_at_1_613.png`,
-  10: `${DICE_ASSETS}/sprite_001_202x202_at_1_1.png`,
-  11: `${DICE_ASSETS}/sprite_010_202x202_at_1_409.png`,
-  12: `${DICE_ASSETS}/sprite_016_202x202_at_1_817.png`,
-};
-const eldoradoStatic = {
-  0: `${HUSHKOL_GAME_ASSETS}_1/sprite_002_202x202_at_963_1.png`,
-  1: `${DICE_ASSETS}/sprite_009_143x165_at_207_379.png`,
-  2: `${DICE_ASSETS}/sprite_006_144x166_at_205_207.png`,
-  3: `${DICE_ASSETS}/sprite_007_143x165_at_355_207.png`,
-  4: `${DICE_ASSETS}/sprite_008_143x169_at_356_376.png`,
-  5: `${DICE_ASSETS}/sprite_014_143x164_at_356_720.png`,
-  6: `${DICE_ASSETS}/sprite_011_142x167_at_356_549.png`,
-  7: `${HUSHKOL_GAME_ASSETS}_2/sprite_015_202x202_at_817_205.png`,
-  8: `${HUSHKOL_GAME_ASSETS}_3/sprite_019_202x202_at_1633_205.png`,
-  9: `${HUSHKOL_GAME_ASSETS}_4/sprite_004_202x202_at_613_1.png`,
-  10: `${HUSHKOL_GAME_ASSETS}_3/sprite_001_202x202_at_1_1.png`,
-  11: `${HUSHKOL_GAME_ASSETS}_2/sprite_014_202x202_at_613_205.png`,
-  12: `${HUSHKOL_GAME_ASSETS}_4/sprite_013_202x202_at_409_205.png`,
-};
-const eldoradoWinFrames = {};
-
-const frameXs = [1, 205, 409, 613, 817, 1021, 1225, 1429, 1633, 1837];
-const frameFile = (number, x, y = 1) =>
-  `sprite_${String(number).padStart(3, "0")}_202x202_at_${x}_${y}.png`;
-const characterFramePath = (folder, file) =>
-  `${HUSHKOL_GAME_ASSETS}_${folder}/${file}`;
-const characterFrameFiles = (folder, files) =>
-  files.map((file) => characterFramePath(folder, file));
-const firstRowFrames = (folder) =>
-  frameXs.map((x, index) =>
-    characterFramePath(folder, frameFile(index + 1, x)),
-  );
-const numberedCharacterFrames = (folder, frames) =>
-  characterFrameFiles(
-    folder,
-    frames.map(([number, x, y]) => frameFile(number, x, y)),
-  );
-const coinBagWinFrames = characterFrameFiles(1, [
-  "sprite_002_202x202_at_963_1.png",
-  "sprite_003_202x202_at_1167_1.png",
-  "sprite_004_202x202_at_1371_1.png",
-  "sprite_005_202x202_at_1575_1.png",
-  "sprite_006_202x202_at_1779_1.png",
-  "sprite_007_202x202_at_963_205.png",
-  "sprite_008_202x202_at_1167_205.png",
-  "sprite_009_202x202_at_1371_205.png",
-  "sprite_010_202x202_at_1575_205.png",
-  "sprite_011_202x202_at_1779_205.png",
-]);
-const symbol9WinFrames = numberedCharacterFrames(4, [
-  [1, 1, 1],
-  [2, 205, 1],
-  [3, 409, 1],
-  [4, 613, 1],
-  [5, 817, 1],
-  [6, 1021, 1],
-  [7, 1225, 1],
-  [8, 1429, 1],
-  [9, 1633, 1],
-  [10, 1837, 1],
-  [11, 1, 205],
-  [12, 205, 205],
-]);
-const symbol12WinFrames = numberedCharacterFrames(4, [
-  [13, 409, 205],
-  [14, 613, 205],
-  [15, 817, 205],
-  [16, 1021, 205],
-  [17, 1225, 205],
-  [18, 1429, 205],
-  [19, 1633, 205],
-  [20, 1837, 205],
-]);
-
-const eldoradoSpecialWinFrames = {
-  0: coinBagWinFrames,
-  7: numberedCharacterFrames(2, [
-    [15, 817, 205],
-    [16, 1021, 205],
-    [17, 1225, 205],
-    [18, 1429, 205],
-    [19, 1633, 205],
-    [20, 1837, 205],
-  ]),
-  8: numberedCharacterFrames(3, [
-    [19, 1633, 205],
-    [20, 1837, 205],
-  ]),
-  9: symbol9WinFrames,
-  10: firstRowFrames(3),
-  11: numberedCharacterFrames(2, [
-    [14, 613, 205],
-    [13, 409, 205],
-    [12, 205, 205],
-    [11, 1, 205],
-  ]),
-  12: symbol12WinFrames,
-};
-const eldoradoSpecialSymbols = new Set([0, 7, 8, 9, 10, 11, 12]);
-const eldoradoForwardLoopSymbols = new Set([9, 12]);
-const eldoradoSpecialFrameMs = {
-  9: 167,
-  12: 250,
-};
-
-const ELDORADO_WIN_FRAME_MS = 85;
-const ELDORADO_WIN_CYCLE_MS = 1530;
-const ELDORADO_GROUP_CYCLE_MS =
-  (Math.max(
-    ...Object.values(eldoradoSpecialWinFrames).map((frames) =>
-      Math.max(frames.length * 2 - 2, 1),
-    ),
-  ) +
-    1) *
-  ELDORADO_WIN_FRAME_MS;
-
-const getPingPongFrameIndex = (tick, frameCount) => {
-  if (frameCount <= 1) return 0;
-  const cycleLength = frameCount * 2 - 2;
-  const cycleIndex = tick % cycleLength;
-  return cycleIndex < frameCount ? cycleIndex : cycleLength - cycleIndex;
-};
-
-const getEldoradoFrameIndex = (symbol, tick, frameCount) => {
-  if (eldoradoForwardLoopSymbols.has(symbol)) {
-    return tick % frameCount;
-  }
-  return getPingPongFrameIndex(tick, frameCount);
-};
-
-const getHighlightedWinFrames = (symbol) => {
-  if (eldoradoSpecialSymbols.has(symbol)) {
-    return eldoradoSpecialWinFrames[symbol] ?? null;
-  }
-  return eldoradoWinFrames[symbol] ?? null;
-};
-
-const getFrameDurationMs = (symbol, frameCount) => {
-  if (eldoradoSpecialFrameMs[symbol]) return eldoradoSpecialFrameMs[symbol];
-  if (frameCount <= 1) return ELDORADO_WIN_FRAME_MS;
-  return Math.max(
-    ELDORADO_WIN_FRAME_MS,
-    Math.round(ELDORADO_WIN_CYCLE_MS / (frameCount * 2 - 2)),
-  );
-};
+const ELDORADO_GROUP_CYCLE_MS = VIEW2_SYMBOL_GROUP_CYCLE_MS;
 
 const collectImageSources = (...values) =>
   values.flatMap((value) => {
@@ -196,13 +38,8 @@ const collectImageSources = (...values) =>
 export const ELDORADO_VIEW_ASSETS = [
   ...new Set(
     collectImageSources(
-      diceCellBackgrounds,
-      eldoradoCellBackgrounds,
-      eldoradoStatic,
-      eldoradoWinFrames,
-      eldoradoSpecialWinFrames,
+      VIEW2_SYMBOL_ASSET_SOURCES,
       COMBO_BORDERS,
-      VIDEO_DICE_SHINE_SPRITE,
       "/img/extracted/Слот_Интерфейс-ковер-для-розыгрыша-визуализации/sprite_001_1145x666_at_3_3.png",
       "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_002_201x653_at_1289_1.png",
     ),
@@ -456,101 +293,17 @@ function EldoradoCell({
   animationKey = "",
 }) {
   const symbol = normalizeEldoradoDigit(digit);
-  const [animationFrameTick, setAnimationFrameTick] = useState(0);
-  const image = eldoradoStatic[symbol];
-  const imageSrc = typeof image === "string" ? image : image?.src;
-  const imageClass = typeof image === "string" ? "" : (image?.className ?? "");
-  const isCroppedImage = typeof image === "object" && image?.crop;
-  const winFrames =
-    ((highlighted || animated) && getHighlightedWinFrames(symbol)) ||
-    null;
-  const frameCycleLength = winFrames?.length > 1
-    ? eldoradoForwardLoopSymbols.has(symbol)
-      ? winFrames.length
-      : winFrames.length * 2 - 2
-    : 1;
-  const frameDurationMs = winFrames?.length > 1
-    ? getFrameDurationMs(symbol, winFrames.length)
-    : ELDORADO_WIN_FRAME_MS;
-
-  useEffect(() => {
-    setAnimationFrameTick(0);
-    if (!winFrames || frameCycleLength <= 1) return undefined;
-    const interval = window.setInterval(() => {
-      setAnimationFrameTick((tick) => (tick + 1) % frameCycleLength);
-    }, frameDurationMs);
-    return () => window.clearInterval(interval);
-  }, [
-    animationKey,
-    frameCycleLength,
-    frameDurationMs,
-    symbol,
-    Boolean(winFrames),
-  ]);
-
-  const frameIndex =
-    winFrames?.length > 1
-      ? getEldoradoFrameIndex(symbol, animationFrameTick, winFrames.length)
-      : 0;
-  const isDice = symbol >= 1 && symbol <= 6;
-  const backgroundSrc = isDice
-    ? diceCellBackgrounds[symbol]
-    : eldoradoCellBackgrounds[symbol];
+  const SymbolComponent =
+    VIEW2_SYMBOL_COMPONENTS[symbol] ?? VIEW2_SYMBOL_COMPONENTS[0];
 
   return (
-    <div
-      className={`eldorado-cell${isDice ? " --dice" : ""}${highlighted || animated ? " --glow" : ""}${isDice && (highlighted || animated) ? " --dice-video-selected" : ""}${dimmed ? " --opacity" : ""}`}
-    >
-      <div className="eldorado-cell__container">
-        {backgroundSrc && (
-          <img
-            alt=""
-            aria-hidden="true"
-            className="eldorado-cell__background"
-            src={backgroundSrc}
-          />
-        )}
-        {comboBorder && (
-          <img
-            alt=""
-            aria-hidden="true"
-            className="eldorado-cell__combo-border"
-            src={comboBorder}
-          />
-        )}
-        {isDice && (highlighted || animated) && (
-          <span className="eldorado-cell__video-dice" aria-hidden="true" />
-        )}
-        {winFrames?.length > 1 ? (
-          <span className="eldorado-cell__animation" aria-label="image">
-            <img
-              alt=""
-              aria-hidden="true"
-              src={
-                winFrames[frameIndex]
-              }
-              className={`eldorado-cell__item --${symbol} --frame`}
-            />
-          </span>
-        ) : imageSrc && isCroppedImage ? (
-          <span
-            aria-label="image"
-            className={`eldorado-cell__item --${symbol}${isDice ? " --dice" : ""}${imageClass}`}
-            style={{ "--eldorado-symbol-image": `url("${imageSrc}")` }}
-          />
-        ) : imageSrc ? (
-          <img
-            alt="image"
-            src={imageSrc}
-            className={`eldorado-cell__item --${symbol}${imageClass}`}
-          />
-        ) : (
-          <span className={`eldorado-cell__fallback --${symbol}`}>
-            {symbol}
-          </span>
-        )}
-      </div>
-    </div>
+    <SymbolComponent
+      animated={animated}
+      highlighted={highlighted}
+      dimmed={dimmed}
+      comboBorder={comboBorder}
+      animationKey={animationKey}
+    />
   );
 }
 

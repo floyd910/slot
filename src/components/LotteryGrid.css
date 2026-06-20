@@ -106,6 +106,10 @@
   opacity: 1;
 }
 
+.eldorado-cell.--video-symbol .eldorado-cell__item.--video-frame {
+  object-fit: fill;
+}
+
 .eldorado-cell__fallback {
   position: absolute;
   inset: 12%;
@@ -138,7 +142,10 @@
   position: absolute;
   inset: 0;
   z-index: 5;
-  background-image: url("/img/reference/dice-shine-video-sprite.png");
+  background-image: var(
+    --eldorado-dice-shine-image,
+    url("/img/reference/dice-shine-video-sprite.png")
+  );
   background-repeat: no-repeat;
   background-size: 1000% 600%;
   background-position: 0 0;
@@ -275,7 +282,6 @@
 
 .carpet-nice__roll.--open {
   animation: carpet-open-roll-eldorado var(--carpet-open-duration, 1.455s) linear forwards;
-  filter: drop-shadow(-0.16rem 0 0.12rem rgba(25, 0, 0, 0.55));
   transform: scaleX(-1);
 }
 
