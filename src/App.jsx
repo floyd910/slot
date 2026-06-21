@@ -52,6 +52,7 @@ const emptyDoubling = {
   step: 0,
   marks: ["", "", "", "", ""],
   currentAmount: 0,
+  initialAmount: 0,
   deferredBalance: 0,
   split: 0,
   revealKey: 0,
@@ -95,10 +96,41 @@ const GAME_AREA_FOOTER_SRC =
   "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_015_1282x196_at_1_1029.png";
 const GAME_HEADER_SRC =
   "/img/extracted/игра-Хушкол-элементы-игры-1_0/sprite_003_398x172_at_1492_1.png";
+const DOUBLE_SCENE_ASSET_DIR =
+  "/img/extracted/\u0442\u0443\u0442-\u0444\u043e\u043d--\u0432\u044b\u0431\u043e\u0440-\u0438\u0433\u0440-\u043f\u0435\u0440\u0432\u0430\u044f-\u0441\u0442\u0440\u0430\u043d\u0438\u0446\u0430-\u0438-\u0441\u0440\u0430\u0437\u0443-\u043b\u043e\u0442\u043e\u0440\u0435\u0439\u043d\u044b\u0439-\u0440\u0435\u0436\u0438\u043c_\u0443\u0434\u0432\u043e\u0435\u043d\u0438\u0435-5_0";
+const DOUBLE_SCENE_ASSETS = [
+  "sprite_001_1336x542_at_1_1.png",
+  "sprite_002_21x194_at_1339_1.png",
+  "sprite_003_21x194_at_1419_1.png",
+  "sprite_004_159x351_at_1447_1.png",
+  "sprite_005_250x305_at_1611_1.png",
+  "sprite_006_144x160_at_1866_1.png",
+  "sprite_007_17x140_at_1343_196.png",
+  "sprite_008_18x139_at_1422_197.png",
+  "sprite_009_1336x396_at_1_545.png",
+  "sprite_010_1336x542_at_1_947.png",
+  "sprite_011_160x59_at_211_1491.png",
+  "sprite_012_203x57_at_4_1494.png",
+  "sprite_013_144x137_at_333_1554.png",
+  "sprite_014_164x160_at_1_1558.png",
+  "sprite_015_160x56_at_169_1558.png",
+  "sprite_016_160x56_at_169_1616.png",
+  "sprite_017_160x57_at_169_1674.png",
+  "sprite_018_160x58_at_1_1767.png",
+  "sprite_019_160x57_at_163_1767.png",
+  "sprite_020_160x58_at_163_1826.png",
+  "sprite_021_160x58_at_1_1827.png",
+  "sprite_022_160x58_at_163_1886.png",
+  "sprite_023_160x57_at_1_1887.png",
+  "sprite_024_160x57_at_1_1946.png",
+  "sprite_025_160x59_at_163_1946.png",
+].map((file) => DOUBLE_SCENE_ASSET_DIR + "/" + file);
+
 const CRITICAL_GAME_IMAGE_ASSETS = [
   GAME_AREA_BACKGROUND_SRC,
   GAME_AREA_FOOTER_SRC,
   GAME_HEADER_SRC,
+  ...DOUBLE_SCENE_ASSETS,
 ];
 const STARTUP_ASSETS = {
   images: [
@@ -1069,6 +1101,8 @@ export default function App() {
       active: true,
       entered: true,
       loading: false,
+      currentAmount: Number(spinResult.WinSum),
+      initialAmount: Number(spinResult.WinSum),
       lastPick: "",
       lastStatus: "",
     }));
@@ -1106,18 +1140,10 @@ export default function App() {
         lastPick: side === "left" || side === "right" ? side : "",
         lastStatus: "",
       }));
-      const result = await withTimeout(
-        frameApi.double({
-          idCard: spinResult.idCard,
-          wasDouble: step + 1,
-          sum: currentAmount,
-          side,
-          requestId: buildRequestId("double"),
-        }),
-        "Double",
-      );
-      const won = result.status === "win" && result.WinSum > 0;
-      const visibleWin = won ? Number(result.WinSum.toFixed(2)) : 0;
+      // Temporary local double-mode outcome: each choice is an even 50/50 chance.
+      const won = Math.random() < 0.5;
+      const visibleWin = won ? Number((currentAmount * 2).toFixed(2)) : 0;
+      const result = { WinSum: visibleWin };
       if (won) {
         setSpinResult((current) =>
           current
@@ -1131,8 +1157,8 @@ export default function App() {
         return {
           ...current,
           active: won && step + 1 < 5 && result.WinSum > 0,
-          loading: !won,
-          step: step + 1,
+          loading: true,
+          step: won ? step + 1 : step,
           marks,
           currentAmount: won ? result.WinSum : 0,
           revealKey: current.revealKey + 1,
@@ -1141,10 +1167,19 @@ export default function App() {
           lastStatus: won ? "win" : "lose",
         };
       });
-      setStatus("ready");
       setLastKnownState(won ? "double-win" : "double-lose");
       emitSound(won ? "win" : "lose", result);
-      if (!won) {
+      if (won) {
+        window.setTimeout(() => {
+          setDoublingState((current) =>
+            current.lastStatus === "win"
+              ? { ...current, loading: false, lastPick: "", lastStatus: "" }
+              : current,
+          );
+          setStatus("ready");
+        }, 1500);
+      } else {
+        setStatus("ready");
         frameApi
           .pay({ idCard: spinResult.idCard, requestId: buildRequestId("pay") })
           .catch(() => {});
@@ -1163,7 +1198,7 @@ export default function App() {
           );
           setGridAnimation("idle");
           setDoublingState(emptyDoubling);
-        }, 1200);
+        }, 2700);
       }
     } catch (doubleError) {
       setDoublingState((current) => ({ ...current, loading: false }));
@@ -1338,7 +1373,7 @@ export default function App() {
         <aside className="main-container__left">
           {isVisualDoubling ? (
             <EldoradoPurchasePanel
-              amount={doublingState.currentAmount || spinResult?.WinSum || 0}
+              amount={doublingState.currentAmount ?? spinResult?.WinSum ?? 0}
               deferredBalance={doublingState.deferredBalance}
               balance={player?.balance ?? 0}
               totalPurchase={totalPurchase}
@@ -1364,8 +1399,9 @@ export default function App() {
           )}
           {isVisualDoubling ? (
             <EldoradoDoubleScene
-              amount={doublingState.currentAmount || spinResult?.WinSum || 0}
-              step={(doublingState.step || 0) + 1}
+              amount={doublingState.currentAmount ?? spinResult?.WinSum ?? 0}
+              ladderAmount={doublingState.initialAmount ?? spinResult?.WinSum ?? 0}
+              step={doublingState.step || 0}
               loading={doublingState.loading}
               lastPick={doublingState.lastPick}
               lastStatus={doublingState.lastStatus}
