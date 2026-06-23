@@ -294,10 +294,7 @@ const preloadStartupAssets = async () => {
       ...collectStylesheetImageUrls(),
     ]),
   ].filter(
-    (src) =>
-      src &&
-      !criticalImages.includes(src) &&
-      !view2Images.includes(src),
+    (src) => src && !criticalImages.includes(src) && !view2Images.includes(src),
   );
   await Promise.all(
     criticalImages.map((src) =>
@@ -1439,7 +1436,9 @@ export default function App() {
           {isVisualDoubling ? (
             <EldoradoDoubleScene
               amount={doublingState.currentAmount ?? spinResult?.WinSum ?? 0}
-              ladderAmount={doublingState.initialAmount ?? spinResult?.WinSum ?? 0}
+              ladderAmount={
+                doublingState.initialAmount ?? spinResult?.WinSum ?? 0
+              }
               step={doublingState.step || 0}
               loading={doublingState.loading}
               lastPick={doublingState.lastPick}
@@ -1569,7 +1568,9 @@ export default function App() {
             <div className="free-spins-modal__card">
               <span className="free-spins-modal__eyebrow">BONUS ROUND</span>
               <strong>You have 15 Free Spins</strong>
-              <span className="free-spins-modal__multiplier">Multiplier x3</span>
+              <span className="free-spins-modal__multiplier">
+                Multiplier x3
+              </span>
               <button type="button" onClick={startFreeSpinRun}>
                 START FREE SPINS
               </button>

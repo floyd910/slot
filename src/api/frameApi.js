@@ -4,6 +4,10 @@ import { evaluateCoordinateLottery, getScatterCells } from "../gameLogic/coordin
 const delay = (ms = 450) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const clone = (value) => JSON.parse(JSON.stringify(value));
+const formatSoapDateTime = (date = new Date()) => {
+  const pad = (value) => String(value).padStart(2, "0");
+  return `${pad(date.getDate())}.${pad(date.getMonth() + 1)}.${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+};
 const DEFAULT_SOAP_ENDPOINT = "/soap-hiranmandi";
 const GAME_NUMERIC_ID = "36";
 const SOAP_NAMESPACE = "urn:InBetIntf-IInBet";
@@ -117,15 +121,50 @@ const BACKEND_LINE_COORDINATES = [
   [],
 ];
 
-const mapBackendLineWins = (koffs) =>
+const getCoordinateValue = (grid, coordinate) => {
+  const row = coordinate?.[0];
+  const column = Number(coordinate?.slice(1)) - 1;
+  return asNumber(grid?.[row]?.[column], null);
+};
+
+// The backend decides that the line is a winner. The client only narrows its
+// visual highlight to the consecutive left-to-right winning run: 12 is a Wild
+// and 0 is a Scatter, so it can never join a regular line win.
+const getWinningSymbolsForBackendLine = (grid, coordinates) => {
+  const cells = coordinates.map((coordinate) => ({
+    coordinate,
+    value: getCoordinateValue(grid, coordinate),
+  }));
+  const targetSymbol = cells.find(
+    (cell) => cell.value > 0 && cell.value !== 12,
+  )?.value;
+
+  if (targetSymbol == null) {
+    const wildOnlyCells = cells
+      .filter((cell) => cell.value === 12)
+      .map((cell) => cell.coordinate);
+    return wildOnlyCells.length >= 2 ? wildOnlyCells : [];
+  }
+
+  const winningCells = [];
+  for (const cell of cells) {
+    if (cell.value !== targetSymbol && cell.value !== 12) break;
+    winningCells.push(cell.coordinate);
+  }
+
+  return winningCells.length >= 2 ? winningCells : [];
+};
+
+const mapBackendLineWins = (koffs, grid) =>
   koffs.flatMap((value, index) => {
     if (value <= 0) return [];
     const lineId = index + 1;
+    const lineCoordinates = BACKEND_LINE_COORDINATES[index] ?? [];
     return [
       {
         lineId,
         backendValue: value,
-        winningCells: BACKEND_LINE_COORDINATES[index] ?? [],
+        winningCells: getWinningSymbolsForBackendLine(grid, lineCoordinates),
       },
     ];
   });
@@ -261,7 +300,7 @@ const mapSpinPayload = (document, params) => {
   });
   const backendKoffs = readKoffValues(document, attrs);
   const backendWinSum = asNumber(attrs.WinSum);
-  const backendLineWins = mapBackendLineWins(backendKoffs);
+  const backendLineWins = mapBackendLineWins(backendKoffs, grid);
   const freeSpin = asNumber(attrs.FreeSpin);
   const gold = asNumber(attrs.Gold);
   const scatterCells = freeSpin > 0 ? getScatterCells(grid) : [];
@@ -382,7 +421,7 @@ export const frameApi = {
       const idGame = forceTestParams
         ? BACKEND_TEST_PARAMS.idGame
         : runtimeConfig.backendGameId ?? GAME_NUMERIC_ID;
-      const spinMessage = `<message MessageType="SetSlotSpinHiranmandi">
+      const spinMessage = `<message MessageType="SetSlotSpinHiranmandi" MessageDateTime="${formatSoapDateTime()}" MessageFormatVersion="1.0">
  <Spin
    idPartner="${xmlEscape(idPartner)}"
    idKassi="${xmlEscape(idKassi)}"
