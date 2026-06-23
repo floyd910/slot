@@ -229,6 +229,67 @@
   100% { background-position: 100% 100%; }
 }
 
+/* The route stays on the upper face; one brighter frame appears only at the bottom corner. */
+.eldorado-cell__video-dice {
+  background-image: none;
+  animation: eldorado-dice-shine-edge-path 2.8s linear infinite;
+}
+
+.eldorado-cell__video-dice::before,
+.eldorado-cell__video-dice::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: var(
+    --eldorado-dice-shine-image,
+    url("/img/reference/dice-shine-video-sprite.png")
+  );
+  background-repeat: no-repeat;
+  background-size: 1000% 600%;
+  pointer-events: none;
+}
+
+.eldorado-cell__video-dice::before {
+  background-position: 33.3333% 0%;
+  animation: eldorado-dice-base-frame-visibility 2.8s steps(1, end) infinite;
+}
+
+.eldorado-cell__video-dice::after {
+  background-position: 22.2222% 0%;
+  transform: translate3d(-9.78%, -9%, 0);
+  opacity: 0;
+  animation: eldorado-dice-bottom-frame-visibility 2.8s steps(1, end) infinite;
+}
+
+@keyframes eldorado-dice-shine-edge-path {
+  0%,
+  100% { transform: translate3d(-7.5%, -2%, 0); }
+  12.5% { transform: translate3d(-24.5%, 10.5%, 0); }
+  25% { transform: translate3d(-34%, 23.5%, 0); }
+  50% { transform: translate3d(-7.5%, 49%, 0); }
+  75% { transform: translate3d(19%, 23.5%, 0); }
+}
+
+@keyframes eldorado-dice-base-frame-visibility {
+  0%,
+  46.99%,
+  50.01%,
+  100% { opacity: 1; }
+
+  47%,
+  50% { opacity: 0; }
+}
+
+@keyframes eldorado-dice-bottom-frame-visibility {
+  0%,
+  46.99%,
+  50.01%,
+  100% { opacity: 0; }
+
+  47%,
+  50% { opacity: 1; }
+}
+
 .carpet-nice {
   position: absolute;
   top: -0.3333333333rem;

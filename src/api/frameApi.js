@@ -100,6 +100,43 @@ const readKoffValues = (document, gameAttrs) =>
     return asNumber(lineAttrs.Koff ?? gameAttrs[`LineWinKoff${index + 1}`] ?? gameAttrs.LineWinKoff?.split?.(",")?.[index]);
   });
 
+// The SOAP payload identifies a winning path only by its one-based
+// LineWinKoff index. These are the coordinate paths specified for lines 1-9.
+// The provider has not supplied coordinates for line 10, so it is deliberately
+// left unhighlighted instead of guessing a path on the client.
+const BACKEND_LINE_COORDINATES = [
+  ["B1", "B2", "B3", "B4", "B5"],
+  ["A1", "A2", "A3", "A4", "A5"],
+  ["C1", "C2", "C3", "C4", "C5"],
+  ["A1", "B2", "C3", "B4", "A5"],
+  ["C1", "B2", "A3", "B4", "C5"],
+  ["B1", "A2", "A3", "A4", "B5"],
+  ["B1", "C2", "C3", "C4", "B5"],
+  ["A1", "A2", "B3", "C4", "C5"],
+  ["C1", "C2", "B3", "A4", "A5"],
+  [],
+];
+
+const mapBackendLineWins = (koffs) =>
+  koffs.flatMap((value, index) => {
+    if (value <= 0) return [];
+    const lineId = index + 1;
+    return [
+      {
+        lineId,
+        backendValue: value,
+        winningCells: BACKEND_LINE_COORDINATES[index] ?? [],
+      },
+    ];
+  });
+
+const sumBackendLineWins = (koffs) =>
+  Number(
+    koffs
+      .reduce((total, value) => total + Math.max(0, value), 0)
+      .toFixed(2),
+  );
+
 const buildBonusRow = (gold) => {
   const count = Math.min(5, Math.max(asNumber(gold), asNumber(gold) > 0 ? 2 : 0));
   const row = Array.from({ length: 5 }, () => "");
@@ -231,41 +268,45 @@ const mapSpinPayload = (document, params) => {
   });
   const backendKoffs = readKoffValues(document, attrs);
   const backendWinSum = asNumber(attrs.WinSum);
+  const backendLineWins = mapBackendLineWins(backendKoffs);
+  const lineWinSum = sumBackendLineWins(backendKoffs);
+  // Demo responses currently leave WinSum at 0 even with a non-zero Koff.
+  // In that case, use the server-returned line values as the total; do not
+  // multiply a stake or inspect symbols on the frontend.
+  const winSum = backendWinSum > 0 ? backendWinSum : lineWinSum;
+  const freeSpin = asNumber(attrs.FreeSpin);
   const gold = asNumber(attrs.Gold);
-  const scatterCells = getScatterCells(grid);
+  const scatterCells = freeSpin > 0 ? getScatterCells(grid) : [];
   const scatterCount = scatterCells.length;
-  const lotteryResult = evaluateCoordinateLottery({
-    grid,
-    selectedCombination: params.selectedCombination,
-    paytable,
-    stake: params.stake,
-    roundMultiplier: params.isFreeSpin ? CURRENT_ROUND_MULTIPLIER : 1,
-    prizeValue: readPrizeValue(attrs),
-  });
+  const winningCells = [
+    ...new Set(backendLineWins.flatMap((line) => line.winningCells)),
+  ];
 
   return {
     idCard: attrs.idCard ?? attrs.IdCard ?? attrs.IDCard,
     requestId: params.requestId,
-    WinSum: lotteryResult.WinSum,
-    BaseWinSum: lotteryResult.BaseWinSum,
+    WinSum: winSum,
+    BaseWinSum: winSum,
     BackendWinSum: backendWinSum,
-    FreeSpin: scatterCount >= 3 ? 1 : asNumber(attrs.FreeSpin),
+    BackendLineWinSum: lineWinSum,
+    winSumSource: backendWinSum > 0 ? "WinSum" : "LineWinKoff",
+    FreeSpin: freeSpin,
     Gold: gold,
     Line1: grid.A.join(","),
     Line2: grid.B.join(","),
     Line3: grid.C.join(","),
-    LineWinKoff: lotteryResult.LineWinKoff,
+    LineWinKoff: backendKoffs,
     BackendLineWinKoff: backendKoffs,
     grid,
     scatterCount,
-    scatterCells: scatterCount >= 2 ? scatterCells : [],
-    scatterWin: lotteryResult.ScatterWin,
-    winningCells: lotteryResult.winningCells,
-    lineWins: lotteryResult.lineWins,
+    scatterCells,
+    scatterWin: null,
+    winningCells,
+    lineWins: backendLineWins,
     isDemo: params.isDemo,
     isFreeSpin: params.isFreeSpin,
-    multiplier: lotteryResult.multiplier,
-    prizeValue: lotteryResult.prizeValue,
+    multiplier: asNumber(attrs.Multiplier ?? attrs.WinMultiplier, 1),
+    prizeValue: readPrizeValue(attrs),
     symbols: symbolMap,
   };
 };

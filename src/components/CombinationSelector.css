@@ -152,9 +152,8 @@
   font-weight: 900;
   line-height: 1;
   text-transform: uppercase;
-  text-shadow: 0 1px 0 #fff6b6;
   text-align: center;
-  text-shadow: 0 2px 0 #8b150b;
+  text-shadow: 0 2px 0 white;
 }
 
 .game-main-layout .combination-item.--glow .combination-item__title {
@@ -195,18 +194,18 @@
 .combination-item__text {
   color: #cf2a16 !important;
   font-weight: bold;
-  text-shadow: 0 2px 0 #8b150b;
+  text-shadow: 0 2px 0 white;
   font-weight: bold;
 }
 
 .combination-item.--glow .combination-item__text {
   color: white !important;
   font-weight: bold;
+  text-shadow: 0 2px 0 #8b150b;
 }
 
 .combination-item__subTitle {
   font-weight: bold !important;
-  text-shadow: 0 2px 0 #232222;
 }
 
 .combination-item.--glow .combination-item__subTitle {
