@@ -130,13 +130,6 @@ const mapBackendLineWins = (koffs) =>
     ];
   });
 
-const sumBackendLineWins = (koffs) =>
-  Number(
-    koffs
-      .reduce((total, value) => total + Math.max(0, value), 0)
-      .toFixed(2),
-  );
-
 const buildBonusRow = (gold) => {
   const count = Math.min(5, Math.max(asNumber(gold), asNumber(gold) > 0 ? 2 : 0));
   const row = Array.from({ length: 5 }, () => "");
@@ -269,11 +262,6 @@ const mapSpinPayload = (document, params) => {
   const backendKoffs = readKoffValues(document, attrs);
   const backendWinSum = asNumber(attrs.WinSum);
   const backendLineWins = mapBackendLineWins(backendKoffs);
-  const lineWinSum = sumBackendLineWins(backendKoffs);
-  // Demo responses currently leave WinSum at 0 even with a non-zero Koff.
-  // In that case, use the server-returned line values as the total; do not
-  // multiply a stake or inspect symbols on the frontend.
-  const winSum = backendWinSum > 0 ? backendWinSum : lineWinSum;
   const freeSpin = asNumber(attrs.FreeSpin);
   const gold = asNumber(attrs.Gold);
   const scatterCells = freeSpin > 0 ? getScatterCells(grid) : [];
@@ -285,11 +273,11 @@ const mapSpinPayload = (document, params) => {
   return {
     idCard: attrs.idCard ?? attrs.IdCard ?? attrs.IDCard,
     requestId: params.requestId,
-    WinSum: winSum,
-    BaseWinSum: winSum,
+    WinSum: backendWinSum,
+    BaseWinSum: backendWinSum,
     BackendWinSum: backendWinSum,
-    BackendLineWinSum: lineWinSum,
-    winSumSource: backendWinSum > 0 ? "WinSum" : "LineWinKoff",
+    hasBackendWin:
+      backendWinSum > 0 || backendLineWins.length > 0 || freeSpin > 0,
     FreeSpin: freeSpin,
     Gold: gold,
     Line1: grid.A.join(","),

@@ -44,6 +44,8 @@ const LOTTERY_REVEAL_AUDIO_STOP_MS =
   LOTTERY_REVEAL_STEP_MS * (LOTTERY_REVEAL_COLUMNS - 1) + 320;
 const LOTTERY_REVEAL_SETTLE_MS =
   LOTTERY_REVEAL_STEP_MS * (LOTTERY_REVEAL_COLUMNS - 1) + 650;
+const FREE_SPIN_COUNT = 15;
+const FREE_SPIN_AUTOPLAY_DELAY_MS = 180;
 const RETRYABLE_CODES = new Set(["NETWORK_ERROR", "TIMEOUT"]);
 const emptyDoubling = {
   active: false,
@@ -362,6 +364,7 @@ export default function App() {
   const [spinResult, setSpinResult] = useState(null);
   const [freeSpinsTotal, setFreeSpinsTotal] = useState(0);
   const [freeSpinsLeft, setFreeSpinsLeft] = useState(0);
+  const [showFreeSpinPrompt, setShowFreeSpinPrompt] = useState(false);
   const [showPaytable, setShowPaytable] = useState(false);
   const [paytableRows, setPaytableRows] = useState([]);
   const [paytableStatus, setPaytableStatus] = useState("idle");
@@ -382,6 +385,7 @@ export default function App() {
   const [startupLoaderLeaving, setStartupLoaderLeaving] = useState(false);
   const spinFeedbackTimerRef = useRef(null);
   const autoPlayOnRef = useRef(autoPlayOn);
+  const freeSpinRunRef = useRef(false);
   const liveSpinStateRef = useRef({
     carpetCloseMs,
     context,
@@ -755,7 +759,7 @@ export default function App() {
     setPaytableStatus("ready");
   };
 
-  const handleSpin = async ({ demo = false } = {}) => {
+  const handleSpin = async ({ demo = false, freeSpinAuto = false } = {}) => {
     const {
       carpetCloseMs,
       context,
@@ -772,7 +776,8 @@ export default function App() {
       !selectedCombination ||
       status === "processing" ||
       doubleState.loading ||
-      doublingState.loading
+      doublingState.loading ||
+      (freeSpinRunRef.current && !freeSpinAuto)
     ) {
       return null;
     }
@@ -832,6 +837,7 @@ export default function App() {
         emitSound("carpet");
         if (carpetCloseMs > 0) await wait(carpetCloseMs);
       }
+      const hasBackendWin = result.hasBackendWin ?? result.WinSum > 0;
       const isDigitWin = result.WinSum > 0;
       const shouldCreditWin =
         !effectiveDemo && result.WinSum > 0 && !isDigitWin;
@@ -898,11 +904,24 @@ export default function App() {
         ].slice(0, 10),
       );
 
+      let shouldShowFreeSpinPrompt = false;
       if (isFreeSpin) {
-        setFreeSpinsLeft((left) => Math.max(0, left - 1));
+        const nextFreeSpinsLeft = Math.max(0, freeSpinsLeft - 1);
+        setFreeSpinsLeft(nextFreeSpinsLeft);
+        liveSpinStateRef.current = {
+          ...liveSpinStateRef.current,
+          freeSpinsLeft: nextFreeSpinsLeft,
+        };
       } else if (result.FreeSpin) {
-        setFreeSpinsTotal(15);
-        setFreeSpinsLeft(15);
+        setFreeSpinsTotal(FREE_SPIN_COUNT);
+        setFreeSpinsLeft(FREE_SPIN_COUNT);
+        liveSpinStateRef.current = {
+          ...liveSpinStateRef.current,
+          freeSpinsLeft: FREE_SPIN_COUNT,
+        };
+        autoPlayOnRef.current = false;
+        setAutoPlayOn(false);
+        shouldShowFreeSpinPrompt = true;
         if (visualMode) emitSound("freeTickets");
       }
 
@@ -912,9 +931,10 @@ export default function App() {
         ...liveSpinStateRef.current,
         status: "ready",
       };
-      setLastKnownState(result.WinSum > 0 ? "win" : "lose");
-      if (result.WinSum > 0) emitSound("win", result);
-      if (visualMode && result.WinSum <= 0) emitSound("lose", result);
+      setLastKnownState(hasBackendWin ? "win" : "lose");
+      if (hasBackendWin) emitSound("win", result);
+      if (visualMode && !hasBackendWin) emitSound("lose", result);
+      if (shouldShowFreeSpinPrompt) setShowFreeSpinPrompt(true);
       postEvent("LOADED", { requestId, state: "spin-complete" });
       postEvent("UPDATE_BALANCE", {
         balance: Number(
@@ -925,7 +945,7 @@ export default function App() {
           ).toFixed(2),
         ),
       });
-      if (result.WinSum <= 0) {
+      if (!hasBackendWin) {
         frameApi
           .pay({ idCard: result.idCard, requestId: buildRequestId("pay") })
           .catch(() => {});
@@ -1037,7 +1057,26 @@ export default function App() {
     }
   };
 
+  const startFreeSpinRun = async () => {
+    if (freeSpinRunRef.current || liveSpinStateRef.current.freeSpinsLeft <= 0)
+      return;
+
+    freeSpinRunRef.current = true;
+    setShowFreeSpinPrompt(false);
+    try {
+      while (liveSpinStateRef.current.freeSpinsLeft > 0) {
+        const result = await handleSpin({ demo: true, freeSpinAuto: true });
+        if (!result) break;
+        if (liveSpinStateRef.current.freeSpinsLeft > 0)
+          await wait(FREE_SPIN_AUTOPLAY_DELAY_MS);
+      }
+    } finally {
+      freeSpinRunRef.current = false;
+    }
+  };
+
   const onAutoPlay = async () => {
+    if (freeSpinRunRef.current || showFreeSpinPrompt) return;
     const result = await handleSpin({ demo: true });
     if (!result) return;
     await wait(1000);
@@ -1455,6 +1494,12 @@ export default function App() {
           alt="Betproduct.com"
           src={GAME_HEADER_SRC}
         />
+        {freeSpinsLeft > 0 && !showFreeSpinPrompt && (
+          <div className="free-spins-progress" aria-live="polite">
+            <span>FREE SPINS LEFT: {freeSpinsLeft}</span>
+            <strong>x3</strong>
+          </div>
+        )}
 
         <div className="game-main-layout">
           <div className="frame-content">{content}</div>
@@ -1518,6 +1563,18 @@ export default function App() {
             history={spinHistory}
             onClose={() => setShowGameMenu(false)}
           />
+        )}
+        {showFreeSpinPrompt && (
+          <div className="free-spins-modal" role="dialog" aria-modal="true">
+            <div className="free-spins-modal__card">
+              <span className="free-spins-modal__eyebrow">BONUS ROUND</span>
+              <strong>You have 15 Free Spins</strong>
+              <span className="free-spins-modal__multiplier">Multiplier x3</span>
+              <button type="button" onClick={startFreeSpinRun}>
+                START FREE SPINS
+              </button>
+            </div>
+          </div>
         )}
         {startupLoaderVisible && (
           <StartupLoader
