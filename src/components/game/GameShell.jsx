@@ -1,4 +1,4 @@
-﻿import BottomBar from "../BottomBar.jsx";
+import BottomBar from "../BottomBar.jsx";
 import GameBottomArea from "../GameBottomArea.jsx";
 import GameMenu from "../GameMenu.jsx";
 import Paytable from "../Paytable.jsx";
@@ -90,7 +90,9 @@ export default function GameShell({ controller }) {
             onClose={() => actions.setShowGameMenu(false)}
           />
         )}
-        {state.showFreeSpinPrompt && <FreeSpinsPrompt />}
+        {state.showFreeSpinPrompt && (
+          <FreeSpinsPrompt count={state.freeSpinsTotal} />
+        )}
         {state.startupLoaderVisible && (
           <StartupLoader
             videoSrc={STARTUP_VIDEO_SRC}

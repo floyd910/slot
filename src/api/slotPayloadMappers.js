@@ -85,19 +85,6 @@ const getWinningSymbolsForBackendLine = (grid, coordinates) => {
   return winningCells.length >= 2 ? winningCells : [];
 };
 
-const getSelectedLineCount = (params) => {
-  const explicitLines = asNumber(params?.lines, 0);
-  if (explicitLines > 0) return explicitLines;
-
-  const selectedLines = params?.selectedCombination?.groups?.length;
-  return Number.isFinite(selectedLines) && selectedLines > 0 ? selectedLines : 1;
-};
-
-const toMoney = (value) => Number(asNumber(value, 0).toFixed(2));
-
-const getBackendLineWinAmount = (coefficient, params) =>
-  toMoney(asNumber(params?.stake, 0) * coefficient * getSelectedLineCount(params));
-
 const getLineWinSymbol = (grid, winningCells) => {
   const symbol = winningCells
     .map((coordinate) => getCoordinateValue(grid, coordinate))
@@ -105,7 +92,7 @@ const getLineWinSymbol = (grid, winningCells) => {
   return symbol ?? null;
 };
 
-const mapBackendLineWins = (koffs, grid, params) =>
+const mapBackendLineWins = (koffs, grid) =>
   koffs.flatMap((value, index) => {
     const coefficient = asNumber(value, 0);
     if (coefficient <= 0) return [];
@@ -113,7 +100,6 @@ const mapBackendLineWins = (koffs, grid, params) =>
     const lineId = index + 1;
     const lineCoordinates = BACKEND_LINE_COORDINATES[index] ?? [];
     const winningCells = getWinningSymbolsForBackendLine(grid, lineCoordinates);
-    const baseWin = getBackendLineWinAmount(coefficient, params);
 
     return [
       {
@@ -125,21 +111,10 @@ const mapBackendLineWins = (koffs, grid, params) =>
         backendValue: coefficient,
         coefficient,
         multiplier: coefficient,
-        groupCount: getSelectedLineCount(params),
-        baseWin,
-        score: baseWin,
-        totalWin: baseWin,
         winningCells,
       },
     ];
   });
-
-const getLineWinTotal = (lineWins) =>
-  Number(
-    lineWins
-      .reduce((sum, lineWin) => sum + asNumber(lineWin.totalWin), 0)
-      .toFixed(2),
-  );
 
 export const buildBonusRow = (gold) => {
   const count = Math.min(5, Math.max(asNumber(gold), asNumber(gold) > 0 ? 2 : 0));
@@ -197,10 +172,8 @@ export const mapSpinPayload = (document, params) => {
     D: buildBonusRow(attrs.Gold),
   });
   const backendKoffs = readKoffValues(document, attrs);
-  const backendLineWins = mapBackendLineWins(backendKoffs, grid, params);
-  const calculatedLineWinSum = getLineWinTotal(backendLineWins);
-  const rawBackendWinSum = asNumber(attrs.WinSum, calculatedLineWinSum);
-  const backendWinSum = rawBackendWinSum > 0 ? rawBackendWinSum : calculatedLineWinSum;
+  const backendWinSum = asNumber(attrs.WinSum, 0);
+  const backendLineWins = mapBackendLineWins(backendKoffs, grid);
   const freeSpin = asNumber(attrs.FreeSpin);
   const gold = asNumber(attrs.Gold);
   const scatterCells = freeSpin > 0 ? getScatterCells(grid) : [];
@@ -214,10 +187,8 @@ export const mapSpinPayload = (document, params) => {
     requestId: params.requestId,
     WinSum: backendWinSum,
     BaseWinSum: backendWinSum,
-    BackendWinSum: rawBackendWinSum,
-    CalculatedLineWinSum: calculatedLineWinSum,
-    hasBackendWin:
-      backendWinSum > 0 || backendLineWins.length > 0 || freeSpin > 0,
+    BackendWinSum: backendWinSum,
+    hasBackendWin: backendWinSum > 0 || freeSpin > 0,
     FreeSpin: freeSpin,
     Gold: gold,
     Line1: grid.A.join(","),

@@ -1,4 +1,4 @@
-﻿.frame-app {
+.frame-app {
   display: block;
   width: 100vw;
   height: 100vh;
@@ -95,16 +95,6 @@
   box-shadow: none;
   margin-top: 120px;
   gap: 10px;
-}
-
-.inline-alert {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-  color: var(--red);
 }
 
 .primary-button,

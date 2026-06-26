@@ -2,7 +2,6 @@ import { flushSync } from "react-dom";
 import { frameApi } from "../api/frameApi.js";
 import {
   FREE_SPIN_AUTOPLAY_DELAY_MS,
-  FREE_SPIN_COUNT,
   LOTTERY_REVEAL_SETTLE_MS,
   createDoubleState,
   createEmptyDoublingState,
@@ -11,6 +10,7 @@ import {
 import { buildRequestId } from "../hooks/useFrameBridge.js";
 import { wait, withTimeout } from "../utils/async.js";
 import { isEnabled } from "../utils/featureFlags.js";
+import { getAwardedFreeSpinCount } from "../utils/freeSpins.js";
 import { getTicketWinAmount } from "../utils/gameResult.js";
 import { asNumber } from "../utils/number.js";
 
@@ -48,6 +48,7 @@ export const createSpinActions = ({
       doubleState,
       doublingState,
       freeSpinsLeft,
+      freeSpinsTotal,
       player,
       selectedCombination,
       stake,
@@ -126,6 +127,7 @@ export const createSpinActions = ({
         if (carpetCloseMs > 0) await wait(carpetCloseMs);
       }
       const hasBackendWin = result.hasBackendWin ?? result.WinSum > 0;
+      const awardedFreeSpins = getAwardedFreeSpinCount(result);
       const ticketWinAmount = getTicketWinAmount(result);
       const isDigitWin = ticketWinAmount > 0;
       const shouldCreditWin =
@@ -182,18 +184,25 @@ export const createSpinActions = ({
 
       let shouldShowFreeSpinPrompt = false;
       if (isFreeSpin) {
-        const nextFreeSpinsLeft = Math.max(0, freeSpinsLeft - 1);
+        const nextFreeSpinsLeft = Math.max(
+          0,
+          freeSpinsLeft - 1 + awardedFreeSpins,
+        );
+        const nextFreeSpinsTotal = freeSpinsTotal + awardedFreeSpins;
+        if (awardedFreeSpins > 0) setFreeSpinsTotal(nextFreeSpinsTotal);
         setFreeSpinsLeft(nextFreeSpinsLeft);
         liveSpinStateRef.current = {
           ...liveSpinStateRef.current,
           freeSpinsLeft: nextFreeSpinsLeft,
+          freeSpinsTotal: nextFreeSpinsTotal,
         };
-      } else if (result.FreeSpin) {
-        setFreeSpinsTotal(FREE_SPIN_COUNT);
-        setFreeSpinsLeft(FREE_SPIN_COUNT);
+      } else if (awardedFreeSpins > 0) {
+        setFreeSpinsTotal(awardedFreeSpins);
+        setFreeSpinsLeft(awardedFreeSpins);
         liveSpinStateRef.current = {
           ...liveSpinStateRef.current,
-          freeSpinsLeft: FREE_SPIN_COUNT,
+          freeSpinsLeft: awardedFreeSpins,
+          freeSpinsTotal: awardedFreeSpins,
         };
         autoPlayOnRef.current = false;
         setAutoPlayOn(false);
@@ -320,7 +329,7 @@ export const createSpinActions = ({
     freeSpinRunRef.current = true;
     try {
       while (liveSpinStateRef.current.freeSpinsLeft > 0) {
-        const result = await handleSpin({ demo: true, freeSpinAuto: true });
+        const result = await handleSpin({ freeSpinAuto: true });
         if (!result) break;
         if (liveSpinStateRef.current.freeSpinsLeft > 0)
           await wait(FREE_SPIN_AUTOPLAY_DELAY_MS);
@@ -332,7 +341,7 @@ export const createSpinActions = ({
 
   const onAutoPlay = async () => {
     if (freeSpinRunRef.current || showFreeSpinPrompt) return;
-    const result = await handleSpin({ demo: true });
+    const result = await handleSpin();
     if (!result) return;
     await wait(1000);
     if (!autoPlayOnRef.current) return;

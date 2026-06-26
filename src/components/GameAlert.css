@@ -1,0 +1,116 @@
+.game-alert {
+  position: absolute;
+  top: clamp(8px, 1.4vh, 18px);
+  left: 50%;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 10px;
+  width: min(90%, 620px);
+  min-height: 44px;
+  box-sizing: border-box;
+  padding: 8px 16px 8px 12px;
+  overflow: hidden;
+  pointer-events: none;
+  color: #fff2bb;
+  background:
+    linear-gradient(180deg, rgba(48, 14, 9, 0.96), rgba(20, 9, 7, 0.94)),
+    radial-gradient(circle at 0 50%, rgba(229, 62, 38, 0.4), transparent 38%);
+  border: 1px solid rgba(246, 199, 78, 0.78);
+  border-radius: 8px;
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.32),
+    0 0 18px rgba(151, 34, 19, 0.22),
+    inset 0 1px 0 rgba(255, 242, 172, 0.3);
+  transform: translateX(-50%);
+}
+
+.game-alert::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(255, 244, 184, 0.16) 45%,
+    transparent 70%
+  );
+  transform: translateX(-120%);
+  animation: game-alert-sheen 3.8s ease-in-out infinite;
+}
+
+.game-alert__accent {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: linear-gradient(180deg, #ff4d2f, #ffd35b, #ff4d2f);
+  box-shadow: 0 0 14px rgba(255, 92, 46, 0.75);
+}
+
+.game-alert__icon {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  color: #fff3b0;
+  background: linear-gradient(180deg, #aa2418, #61120d);
+  border: 1px solid rgba(255, 210, 88, 0.72);
+  border-radius: 50%;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+.game-alert__message {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: clamp(13px, 1.08vw, 16px);
+  line-height: 1.25;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-align: left;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.72);
+}
+
+.view-2 .game-alert {
+  top: clamp(10px, 1.8vh, 22px);
+}
+
+@keyframes game-alert-sheen {
+  0%, 42% {
+    transform: translateX(-120%);
+  }
+  70%, 100% {
+    transform: translateX(120%);
+  }
+}
+
+@media (max-width: 900px) {
+  .game-alert {
+    width: min(94%, 520px);
+    min-height: 40px;
+    padding: 7px 12px 7px 10px;
+  }
+
+  .game-alert__icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .game-alert__message {
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-alert::after {
+    animation: none;
+    transform: translateX(120%);
+  }
+}

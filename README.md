@@ -8,41 +8,41 @@ React/Vite starter for an iframe-based game frontend. Spin, double, and pay are 
 npm run dev --prefix iframe-slot
 ```
 
-Default local URL:
+Default local real SOAP URL:
 
 ```text
-http://localhost:5174/?mode=standalone&token=demo-token&sessionId=demo-session&gameId=hiranmandi
+http://localhost:5174/?mode=standalone&token=partner-token&sessionId=partner-session&userId=partner-user&gameId=hiranmandi&currency=GEL&locale=en&backendMode=soap&testMode=false&demoMode=false&backendTestParams=false
 ```
 
 Open a specific game:
 
 ```text
-http://localhost:5174/?mode=standalone&token=demo-token&sessionId=demo-session&gameId=hiranmandi&currency=GEL&locale=en
+http://localhost:5174/?mode=standalone&token=partner-token&sessionId=partner-session&userId=partner-user&gameId=hiranmandi&currency=GEL&locale=en&backendMode=soap&testMode=false&demoMode=false&backendTestParams=false
 ```
 
 Use the mock adapter instead of SOAP:
 
 ```text
-http://localhost:5174/?mode=standalone&token=demo-token&sessionId=demo-session&gameId=hiranmandi&backendMode=mock
+http://localhost:5174/?mode=standalone&token=partner-token&sessionId=partner-session&userId=partner-user&gameId=hiranmandi&currency=GEL&locale=en&backendMode=mock&testMode=true
 ```
 
 Pass SOAP partner fields explicitly:
 
 ```text
-http://localhost:5174/?mode=standalone&token=demo-token&sessionId=demo-session&gameId=hiranmandi&idPartner=1&idKassi=70&idValute=1&balance=1250
+http://localhost:5174/?mode=standalone&token=partner-token&sessionId=partner-session&userId=partner-user&gameId=hiranmandi&currency=GEL&locale=en&idPartner=1&idKassi=70&idValute=1&balance=1250&backendMode=soap&testMode=false&demoMode=false&backendTestParams=false
 ```
 
 Restrict parent postMessage origins:
 
 ```text
-http://localhost:5174/?mode=embedded&token=demo-token&sessionId=demo-session&gameId=hiranmandi&allowedOrigins=https://partner.example
+http://localhost:5174/?mode=embedded&token=partner-token&sessionId=partner-session&userId=partner-user&gameId=hiranmandi&allowedOrigins=https://partner.example&backendMode=soap&testMode=false&demoMode=false&backendTestParams=false
 ```
 
 ## Implemented starter scope
 
 - launch modes: `embedded` inside a host iframe and `standalone` by direct URL
 - init sources: query params, `window.HIRANMANDI_FRAME_CONFIG`, `postMessage` `INIT_CONTEXT`, and session recovery
-- iframe query parameters: `mode`, `token`, `sessionId` / `session`, `gameId` / `game`, `locale` / `language` / `lang`, `currency`, `userId` / `playerId`, `partnerId`, `idPartner`, `idKassi`, `idValute`, `balance`, `soapEndpoint`, `backendMode`, `theme`, `returnUrl`, `featureFlags`, `allowedOrigins`
+- iframe query parameters: `mode`, `token`, `sessionId` / `session`, `gameId` / `game`, `locale` / `language` / `lang`, `currency`, `userId` / `playerId`, `partnerId`, `idPartner`, `idKassi`, `idValute`, `balance`, `soapEndpoint`, `backendMode`, `testMode`, `demoMode`, `backendTestParams`, `theme`, `returnUrl`, `featureFlags`, `allowedOrigins`
 - iframe events: `READY`, `LOADED`, `RESIZE`, `ERROR`, `REQUEST_FULLSCREEN`, `EXIT_FULLSCREEN`, `REQUEST_CLOSE`, `SESSION_EXPIRED`, `AUTH_REQUIRED`
 - host commands: `INIT_CONTEXT`, `UPDATE_THEME`, `UPDATE_LOCALE`, `UPDATE_BALANCE`, `FORCE_RELOAD`, `OPEN_MODAL`, `CLOSE_MODULE`
 - runtime states: `initial-loading`, `bootstrap-loading`, `ready`, `processing`, `empty`, `error`, `network-error`, `session-expired`, `unsupported-environment`, `maintenance`, `invalid-session`, `access-denied`, `configuration-error`
@@ -63,7 +63,7 @@ All postMessage payloads use this envelope:
   payload: {},
   meta: {
     requestId: "evt-...",
-    sessionId: "demo-session",
+    sessionId: "partner-session",
     moduleVersion: "0.1.0",
     mode: "embedded",
     gameId: "hiranmandi",
@@ -145,4 +145,4 @@ That route is configured in `netlify.toml` as a same-origin proxy to the SOAP ba
 https://poetic-pegasus-37aef2.netlify.app
 ```
 
-The frontend keeps free spins lifecycle client-side as described in the technical document: 3+ scatters start 15 free spins; remaining free spins are decremented by the iframe; free spin wins display base win, x3 multiplier, and final win.
+The backend `FreeSpin` value is the source of truth for free-spin awards: `0` means no award, and any positive number is the awarded free-spin count. The iframe only tracks and decrements the remaining awarded free spins during playback.

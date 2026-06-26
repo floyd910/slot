@@ -90,6 +90,7 @@ export function useGameController() {
     doubleState,
     doublingState,
     freeSpinsLeft,
+    freeSpinsTotal,
     player,
     selectedCombination: null,
     spinResult,
@@ -206,6 +207,7 @@ export function useGameController() {
       doubleState,
       doublingState,
       freeSpinsLeft,
+      freeSpinsTotal,
       player,
       selectedCombination,
       spinResult,
@@ -219,6 +221,7 @@ export function useGameController() {
     doubleState,
     doublingState,
     freeSpinsLeft,
+    freeSpinsTotal,
     player,
     selectedCombination,
     spinResult,
@@ -584,6 +587,7 @@ export function useGameController() {
     testMode ||
     freeSpinsLeft > 0 ||
     Number(player?.balance ?? 0) >= totalPurchase;
+  const hasFreeSpinsPending = freeSpinsLeft > 0;
   const isVisualDoubling =
     visualMode &&
     Boolean(
@@ -605,12 +609,9 @@ export function useGameController() {
 
   const pressSpinButton = () => {
     if (isVisualDoubling) return collectWin();
-    if (showFreeSpinPrompt) return startFreeSpinRun();
-    if (freeSpinsLeft > 0 && spinResult?.isFreeSpin) {
-      return handleSpin({ demo: true });
-    }
+    if (showFreeSpinPrompt || hasFreeSpinsPending) return startFreeSpinRun();
     if (pendingTicketWin) return collectWin();
-    return handleSpin({ demo: true });
+    return handleSpin();
   };
 
   return {

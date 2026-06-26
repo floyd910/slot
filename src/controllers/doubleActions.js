@@ -178,18 +178,28 @@ export const createDoubleActions = ({
         status: "processing",
       });
 
-      // Temporary local double-mode outcome: each choice is an even 50/50 chance.
-      const won = Math.random() < 0.5;
-      const nextAmount = won ? withMoney(currentAmount * 2) : 0;
+      const result = await withTimeout(
+        frameApi.double({
+          idCard: spinResult.idCard,
+          wasDouble: step,
+          sum: currentAmount,
+          side,
+          requestId: buildRequestId("double"),
+        }),
+        "Double",
+      );
+      const nextAmount = withMoney(result.WinSum);
+      const won = nextAmount > 0;
       const nextStep = won ? step + 1 : step;
-      const nextSpinResult = won
-        ? { ...spinResult, WinSum: nextAmount, creditedToBalance: false }
-        : spinResult;
+      const nextSpinResult = {
+        ...spinResult,
+        idCard: result.idCard ?? spinResult.idCard,
+        WinSum: nextAmount,
+        creditedToBalance: false,
+      };
 
-      if (won) {
-        setSpinResult(nextSpinResult);
-        syncLiveState({ spinResult: nextSpinResult });
-      }
+      setSpinResult(nextSpinResult);
+      syncLiveState({ spinResult: nextSpinResult });
 
       const marks = [...loadingState.marks];
       marks[step] = won ? "x2" : "x0";

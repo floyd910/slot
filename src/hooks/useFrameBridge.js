@@ -78,6 +78,8 @@ export function readFrameParams() {
   const search = new URLSearchParams(window.location.search);
   const globalConfig = window.HIRANMANDI_FRAME_CONFIG ?? {};
   const stored = readStoredContext();
+  const queryDemoMode = search.get("demoMode");
+  const queryTestMode = search.get("testMode");
   const queryContext = {
     mode: search.get("mode"),
     sessionId: search.get("sessionId") ?? search.get("session"),
@@ -92,7 +94,8 @@ export function readFrameParams() {
     gameId: search.get("gameId") ?? search.get("game"),
     token: search.get("token"),
     balance: search.get("balance"),
-    testMode: search.get("testMode") ?? search.get("demoMode"),
+    testMode: queryTestMode ?? queryDemoMode,
+    demoMode: queryDemoMode,
     testBalance: search.get("testBalance"),
     soapEndpoint: search.get("soapEndpoint"),
     backendMode: search.get("backendMode"),

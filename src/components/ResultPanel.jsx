@@ -1,5 +1,6 @@
 import "./ResultPanel.css";
 import { useLanguage } from "../i18n.jsx";
+import { getAwardedFreeSpinCount } from "../utils/freeSpins.js";
 import { asNumber } from "../utils/number.js";
 
 export default function ResultPanel({ result, freeSpinsTotal, freeSpinsLeft }) {
@@ -21,22 +22,26 @@ function getResultMessage(result, freeSpinsTotal, freeSpinsLeft, t) {
   const multiplier = asNumber(result.multiplier, 1);
   const baseWin = asNumber(result.BaseWinSum ?? result.WinSum);
   const finalWin = asNumber(result.WinSum);
+  const awardedFreeSpins = getAwardedFreeSpinCount(result);
   const scatterWin = asNumber(
     result.scatterWin?.totalWin ?? result.scatterWin?.baseWin,
   );
 
-  if (result.scatterCount >= 3 && !result.isFreeSpin) {
+  if (awardedFreeSpins > 0 && !result.isFreeSpin) {
+    const scatterText =
+      result.scatterCount > 0
+        ? t("scatters") + ": " + result.scatterCount + ". "
+        : "";
     return (
-      t("scatters") +
-      ": " +
-      result.scatterCount +
-      ". " +
+      scatterText +
       t("win") +
       ": " +
       scatterWin.toFixed(2) +
       ". " +
       t("prizeSpins") +
-      ": 15."
+      ": " +
+      awardedFreeSpins +
+      "."
     );
   }
 

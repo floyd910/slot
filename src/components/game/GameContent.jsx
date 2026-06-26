@@ -1,5 +1,5 @@
-import { AlertTriangle } from "lucide-react";
 import CombinationSelector from "../CombinationSelector.jsx";
+import GameAlert from "../GameAlert.jsx";
 import DoubleMode from "../DoubleMode.jsx";
 import EldoradoDoubleScene from "../EldoradoDoubleScene.jsx";
 import EldoradoPurchasePanel from "../EldoradoPurchasePanel.jsx";
@@ -62,12 +62,7 @@ export default function GameContent({ controller, runtimeState }) {
         )}
       </aside>
       <section className="main-container__center" aria-busy={derived.isBusy}>
-        {state.error && (
-          <div className="inline-alert">
-            <AlertTriangle size={18} />
-            {state.error}
-          </div>
-        )}
+        <GameAlert message={state.error} />
         {derived.isVisualDoubling ? (
           <EldoradoDoubleScene
             amount={
