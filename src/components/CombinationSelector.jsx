@@ -42,5 +42,8 @@ function renderCombinationTexts(combo, labelLength) {
 }
 
 function formatCoordinate(coord) {
-  return String(coord).replace(/^A/, "А").replace(/^B/, "В").replace(/^C/, "С");
+  return String(coord)
+    .replace(/^A/, "\u0410")
+    .replace(/^B/, "\u0412")
+    .replace(/^C/, "\u0421");
 }

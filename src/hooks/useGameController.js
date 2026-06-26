@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { frameApi } from "../api/frameApi.js";
 import { ELDORADO_VIEW_ASSETS } from "../config/eldoradoAssets.js";
 import {
@@ -23,6 +23,11 @@ import {
 import { useLanguage } from "../i18n.jsx";
 import { wait, withTimeout } from "../utils/async.js";
 import { isEnabled } from "../utils/featureFlags.js";
+import {
+  getTicketWinAmount,
+  hasTicketWin,
+  shouldOfferDouble,
+} from "../utils/gameResult.js";
 import {
   loadAudioDurationMs,
   preloadImage,
@@ -530,6 +535,8 @@ export function useGameController() {
       doubleState,
       doublingState,
       emitSound,
+      liveSpinStateRef,
+      postEvent,
       reportError,
       setDoubleState,
       setDoublingState,
@@ -560,7 +567,16 @@ export function useGameController() {
     status === "initial-loading" ||
     status === "bootstrap-loading" ||
     status === "processing";
-  const pendingTicketWin = Number(spinResult?.WinSum ?? 0) > 0;
+  const ticketWinAmount = getTicketWinAmount(spinResult, doublingState);
+  const pendingTicketWin = hasTicketWin(spinResult, doublingState);
+  const doubleOfferAvailable = shouldOfferDouble({
+    autoPlayOn,
+    doublingState,
+    freeSpinsLeft,
+    freeSpinRunActive: freeSpinRunRef.current,
+    showFreeSpinPrompt,
+    spinResult,
+  });
   const isDoublingLocked =
     pendingTicketWin || Boolean(doublingState.active || doublingState.loading);
   const testMode = isEnabled(context.testMode ?? context.demoMode);
@@ -570,9 +586,12 @@ export function useGameController() {
     Number(player?.balance ?? 0) >= totalPurchase;
   const isVisualDoubling =
     visualMode &&
-    Number(spinResult?.WinSum ?? 0) > 0 &&
     Boolean(
-      doublingState.entered || doublingState.loading || doublingState.step > 0,
+      doublingState.entered &&
+        (doublingState.active ||
+          doublingState.loading ||
+          doublingState.lastStatus ||
+          (pendingTicketWin && doublingState.step > 0)),
     );
   const spinButtonDisabled =
     status === "initial-loading" ||
@@ -584,6 +603,16 @@ export function useGameController() {
   const shellClass = `frame-app mode-${context.mode} theme-${context.theme}${hideHeader ? " headerless" : ""}${expandedBoard || visualMode ? " expanded-board" : ""}${visualMode ? " view-2 --eldorado" : " view-1"}${isVisualDoubling ? " doubling-active" : ""}`;
   const runtimeStateVisible = !["ready", "empty", "processing"].includes(status);
 
+  const pressSpinButton = () => {
+    if (isVisualDoubling) return collectWin();
+    if (showFreeSpinPrompt) return startFreeSpinRun();
+    if (freeSpinsLeft > 0 && spinResult?.isFreeSpin) {
+      return handleSpin({ demo: true });
+    }
+    if (pendingTicketWin) return collectWin();
+    return handleSpin({ demo: true });
+  };
+
   return {
     actions: {
       collectWin,
@@ -594,6 +623,7 @@ export function useGameController() {
       loadPaytable,
       pickDouble,
       playFooterDouble,
+      pressSpinButton,
       selectCombination,
       setCurrentGame,
       setShowGameMenu,
@@ -638,6 +668,7 @@ export function useGameController() {
     },
     derived: {
       canAffordSpin,
+      doubleOfferAvailable,
       isBusy,
       isDoublingLocked,
       isVisualDoubling,
@@ -647,6 +678,7 @@ export function useGameController() {
       shellClass,
       spinButtonDisabled,
       testMode,
+      ticketWinAmount,
       totalPurchase,
     },
   };

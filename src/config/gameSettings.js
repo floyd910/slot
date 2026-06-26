@@ -9,6 +9,9 @@ export const LOTTERY_REVEAL_SETTLE_MS =
 
 export const FREE_SPIN_COUNT = 15;
 export const FREE_SPIN_AUTOPLAY_DELAY_MS = 250;
+export const DOUBLE_MAX_STEPS = 5;
+export const DOUBLE_RESULT_REVEAL_MS = 1500;
+export const DOUBLE_LOSS_RESET_MS = 2700;
 
 export const IMAGE_PRELOAD_TIMEOUT_MS = 6000;
 export const CARPET_SOUND_SRC = "/media/carpet.ogg";

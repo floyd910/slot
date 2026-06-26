@@ -11,6 +11,8 @@ import {
 import { buildRequestId } from "../hooks/useFrameBridge.js";
 import { wait, withTimeout } from "../utils/async.js";
 import { isEnabled } from "../utils/featureFlags.js";
+import { getTicketWinAmount } from "../utils/gameResult.js";
+import { asNumber } from "../utils/number.js";
 
 export const createSpinActions = ({
   autoPlayOnRef,
@@ -101,7 +103,7 @@ export const createSpinActions = ({
               balance: Number((current.balance - totalStake).toFixed(2)),
             },
       );
-      const result = await withTimeout(
+      const apiResult = await withTimeout(
         frameApi.spin({
           stake,
           lines: selectedCombination.groups.length,
@@ -112,13 +114,20 @@ export const createSpinActions = ({
         }),
         "Spin",
       );
+      const result = {
+        ...apiResult,
+        WinSum: asNumber(apiResult.WinSum),
+        BaseWinSum: asNumber(apiResult.BaseWinSum, asNumber(apiResult.WinSum)),
+        BackendWinSum: asNumber(apiResult.BackendWinSum, asNumber(apiResult.WinSum)),
+      };
       if (visualMode) {
         setGridAnimation("spinning");
         emitSound("carpet");
         if (carpetCloseMs > 0) await wait(carpetCloseMs);
       }
       const hasBackendWin = result.hasBackendWin ?? result.WinSum > 0;
-      const isDigitWin = result.WinSum > 0;
+      const ticketWinAmount = getTicketWinAmount(result);
+      const isDigitWin = ticketWinAmount > 0;
       const shouldCreditWin =
         !effectiveDemo && result.WinSum > 0 && !isDigitWin;
       if (visualMode) {
@@ -140,7 +149,7 @@ export const createSpinActions = ({
       );
       const nextSpinResult = { ...result, creditedToBalance: shouldCreditWin };
       const nextDoublingState = isDigitWin
-        ? createWinningDoublingState(result.WinSum)
+        ? createWinningDoublingState(ticketWinAmount)
         : createEmptyDoublingState();
       setSpinResult(nextSpinResult);
       setDoublingState(nextDoublingState);
@@ -236,15 +245,15 @@ export const createSpinActions = ({
   };
 
   const collectWin = async () => {
-    const { player, spinResult, status } = liveSpinStateRef.current;
+    const { doublingState, player, spinResult, status } = liveSpinStateRef.current;
     if (
       !spinResult?.idCard ||
-      Number(spinResult.WinSum ?? 0) <= 0 ||
+      getTicketWinAmount(spinResult, doublingState) <= 0 ||
       status === "processing"
     )
       return false;
     const requestId = buildRequestId("pay");
-    const payout = Number(spinResult.WinSum ?? 0);
+    const payout = getTicketWinAmount(spinResult, doublingState);
     const alreadyCredited = spinResult.creditedToBalance;
     try {
       setStatus("processing");
@@ -276,6 +285,7 @@ export const createSpinActions = ({
       setDoubleState(nextDoubleState);
       setDoublingState(nextDoublingState);
       setSpinResult(null);
+      setGridAnimation("idle");
       setStatus("ready");
       liveSpinStateRef.current = {
         ...liveSpinStateRef.current,

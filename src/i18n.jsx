@@ -3,7 +3,7 @@ import { createContext, useContext, useMemo, useState } from "react";
 const copy = {
   ru: {
     takeMoney: "ЗАБРАТЬ ДЕНЬГИ", info: "ИНФО", language: "РУССКИЙ", menu: "МЕНЮ",
-    visualization: "РЕЖИМ\nВИЗУАЛИЗАЦИИ", betAmount: "СУММА СТАВКИ", double: "УДВОИТЬ",
+    visualization: "РЕЖИМ\nВИЗУАЛИЗАЦИИ", betAmount: "СУММА СТАВКИ", double: "\u0423\u0414\u0412\u041e\u0415\u041d\u0418\u0415",
     lotteryCombination: "ЛОТЕРЕЙНАЯ КОМБИНАЦИЯ", autoExpress: "АВТО ЭКСПРЕСС",
     participate: "УЧАСТВОВАТЬ\nВ ТИРАЖЕ", chooseCoordinateGroup: "ВЫБЕРИТЕ ГРУППУ КООРДИНАТ",
     minimumPurchase: "МИНИМАЛЬНАЯ СУММА ПОКУПКИ 0.10", balance: "БАЛАНС.",

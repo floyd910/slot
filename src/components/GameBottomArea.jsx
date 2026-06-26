@@ -1,5 +1,6 @@
 import "./GameBottomArea.css";
 import { useLanguage } from "../i18n.jsx";
+import { getTicketWinAmount } from "../utils/gameResult.js";
 
 const formatMoney = (value) => Number(value ?? 0).toFixed(2);
 
@@ -14,7 +15,7 @@ export default function GameBottomArea({
   const { t } = useLanguage();
   const combinationCount = selectedCombination?.groups?.length ?? 1;
   const cashback = Number(player?.balance ?? 0) * 0.1;
-  const ticketWin = revealComplete ? Number(spinResult?.WinSum ?? 0) : 0;
+  const ticketWin = revealComplete ? getTicketWinAmount(spinResult) : 0;
 
   return (
     <section className="game-bottom-area" aria-label={t("gameStatus")}>

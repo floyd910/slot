@@ -6,8 +6,8 @@ export default function BottomBar({
   disabled,
   spinDisabled = false,
   spinFeedbackActive = false,
+  doubleOfferAvailable = false,
   doublingState,
-  revealComplete = false,
   visualMode = false,
   isVisualDoubling = false,
   autoPlayOn = false,
@@ -23,13 +23,8 @@ export default function BottomBar({
   onInfo,
 }) {
   const { toggleLanguage } = useLanguage();
-  const pendingWin = Number(spinResult?.WinSum ?? 0) > 0;
-  const showDouble = pendingWin && revealComplete;
-  const currentAmount = Number(
-    doublingState?.currentAmount || spinResult?.WinSum || 0,
-  );
-  const canDouble =
-    !disabled && showDouble && !doublingState?.loading && currentAmount > 0;
+  const showDouble = doubleOfferAvailable;
+  const canDouble = !disabled && showDouble && !doublingState?.loading;
 
   return (
     <footer className="bottom-bar">
@@ -89,29 +84,6 @@ export default function BottomBar({
   );
 }
 
-function CombinationControl({ title, value, disabled, onPlus }) {
-  return (
-    <div
-      className={`combination-control${disabled ? " --disabled" : ""}`}
-      role="button"
-      tabIndex={disabled ? -1 : 0}
-      onClick={() => {
-        if (!disabled) onPlus();
-      }}
-      onKeyDown={(event) => {
-        if (disabled || (event.key !== "Enter" && event.key !== " ")) return;
-        event.preventDefault();
-        onPlus();
-      }}
-    >
-      <span className="combination-control__title">{title}</span>
-      <div className="combination-control__wrapper">
-        <span className="combination-control__value">{value}</span>
-      </div>
-    </div>
-  );
-}
-
 function TakeMoney({ disabled, onClick }) {
   const { t } = useLanguage();
   return (
@@ -149,29 +121,6 @@ function TakeMoney({ disabled, onClick }) {
       }}
     >
       <span className="action_btn_title take-money__title">{t("takeMoney")}</span>
-    </div>
-  );
-}
-
-function NominalControl({ title, value, disabled, onPlus }) {
-  return (
-    <div
-      className={`nominal-control${disabled ? " --disabled" : ""}`}
-      role="button"
-      tabIndex={disabled ? -1 : 0}
-      onClick={() => {
-        if (!disabled) onPlus();
-      }}
-      onKeyDown={(event) => {
-        if (disabled || (event.key !== "Enter" && event.key !== " ")) return;
-        event.preventDefault();
-        onPlus();
-      }}
-    >
-      <span className="nominal-control__title">{title}</span>
-      <div className="nominal-control__wrapper">
-        <span className="nominal-control__value">{value}</span>
-      </div>
     </div>
   );
 }

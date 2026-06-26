@@ -1,5 +1,6 @@
 ﻿import React, { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { paytable } from "../data/mockData.js";
+import { getTicketWinAmount } from "../utils/gameResult.js";
 import "./WinningDashboard.css";
 import { useLanguage } from "../i18n.jsx";
 
@@ -38,7 +39,7 @@ function buildMessageRows(
 ) {
   const lineCount = getLineCount(selectedCombination);
   const totalBet = Number(stake || 0) * lineCount;
-  const winSum = Number(spinResult?.WinSum ?? 0);
+  const winSum = getTicketWinAmount(spinResult, doublingState);
   const canShowWinAmounts =
     winSum > 0 &&
     (revealComplete ||

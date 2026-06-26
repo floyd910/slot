@@ -45,41 +45,26 @@ export default function GameShell({ controller }) {
                 revealComplete={state.gridAnimation === "settled"}
               />
               <BottomBar
-                player={state.player}
-                stake={state.stake}
-                totalPurchase={derived.totalPurchase}
-                selectedCombination={derived.selectedCombination}
                 spinResult={state.spinResult}
-                freeSpinsLeft={state.freeSpinsLeft}
-                multiplier={state.freeSpinsLeft > 0 ? 3 : 1}
                 disabled={derived.isBusy}
                 spinDisabled={derived.spinButtonDisabled}
                 spinFeedbackActive={state.spinFeedbackActive}
+                doubleOfferAvailable={derived.doubleOfferAvailable}
                 doublingState={state.doublingState}
-                revealComplete={state.gridAnimation === "settled"}
                 visualMode={state.visualMode}
                 isVisualDoubling={derived.isVisualDoubling}
                 onCollect={actions.collectWin}
                 onPickLeft={() => actions.playFooterDouble("left")}
                 onPickRight={() => actions.playFooterDouble("right")}
                 autoPlayOn={state.autoPlayOn}
-                onDecreaseCombination={() => actions.cycleCombination(-1)}
                 onIncreaseCombination={() => actions.cycleCombination(1)}
-                onDecreaseStake={() => actions.cycleStake(-1)}
                 onIncreaseStake={() => actions.cycleStake(1)}
-                onSpin={() =>
-                  state.showFreeSpinPrompt
-                    ? actions.startFreeSpinRun()
-                    : derived.pendingTicketWin
-                      ? actions.collectWin()
-                      : actions.handleSpin({ demo: true })
-                }
+                onSpin={actions.pressSpinButton}
                 onDouble={
                   state.visualMode
                     ? actions.enterVisualDouble
                     : actions.playFooterDouble
                 }
-                onTakeMoney={actions.collectWin}
                 onInfo={actions.loadPaytable}
                 onVisualToggle={actions.toggleVisualMode}
                 onAutoPlay={actions.toggleAutoPlay}
