@@ -349,11 +349,11 @@ export default function App() {
   const [games, setGames] = useState([]);
   const [currentGame, setCurrentGame] = useState(initialContext.gameId ?? null);
   const [combinations, setCombinations] = useState([]);
-  const [selectedCombinationId, setSelectedCombinationId] = useState(3);
+  const [selectedCombinationId, setSelectedCombinationId] = useState(1);
   const [grid, setGrid] = useState({ A: [], B: [], C: [], D: [] });
   const [gridRevealKey, setGridRevealKey] = useState(0);
   const [gridAnimation, setGridAnimation] = useState("idle");
-  const [stake, setStake] = useState(10);
+  const [stake, setStake] = useState(0.1);
   const [visualMode, setVisualMode] = useState(false);
   const [carpetCloseMs, setCarpetCloseMs] = useState(CARPET_ANIMATION_HALF_MS);
   const [carpetOpenMs, setCarpetOpenMs] = useState(CARPET_ANIMATION_HALF_MS);
@@ -1055,11 +1055,12 @@ export default function App() {
   };
 
   const startFreeSpinRun = async () => {
+    setShowFreeSpinPrompt(false);
+
     if (freeSpinRunRef.current || liveSpinStateRef.current.freeSpinsLeft <= 0)
       return;
 
     freeSpinRunRef.current = true;
-    setShowFreeSpinPrompt(false);
     try {
       while (liveSpinStateRef.current.freeSpinsLeft > 0) {
         const result = await handleSpin({ demo: true, freeSpinAuto: true });
@@ -1493,12 +1494,6 @@ export default function App() {
           alt="Betproduct.com"
           src={GAME_HEADER_SRC}
         />
-        {freeSpinsLeft > 0 && !showFreeSpinPrompt && (
-          <div className="free-spins-progress" aria-live="polite">
-            <span>FREE SPINS LEFT: {freeSpinsLeft}</span>
-            <strong>x3</strong>
-          </div>
-        )}
 
         <div className="game-main-layout">
           <div className="frame-content">{content}</div>
@@ -1566,14 +1561,11 @@ export default function App() {
         {showFreeSpinPrompt && (
           <div className="free-spins-modal" role="dialog" aria-modal="true">
             <div className="free-spins-modal__card">
-              <span className="free-spins-modal__eyebrow">BONUS ROUND</span>
-              <strong>You have 15 Free Spins</strong>
-              <span className="free-spins-modal__multiplier">
-                Multiplier x3
-              </span>
-              <button type="button" onClick={startFreeSpinRun}>
-                START FREE SPINS
-              </button>
+              <strong>
+                Для начала розыгрыша <br />
+                15 бесплатных лотерейних квитанций <br />
+                нажмите на кнопкы "Учавствовать в тираже"
+              </strong>
             </div>
           </div>
         )}
