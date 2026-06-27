@@ -1,7 +1,6 @@
 import { flushSync } from "react-dom";
 import { frameApi } from "../api/frameApi.js";
 import {
-  FREE_SPIN_AUTOPLAY_DELAY_MS,
   LOTTERY_REVEAL_SETTLE_MS,
   createDoubleState,
   createEmptyDoublingState,
@@ -12,6 +11,7 @@ import { wait, withTimeout } from "../utils/async.js";
 import { isEnabled } from "../utils/featureFlags.js";
 import { getAwardedFreeSpinCount } from "../utils/freeSpins.js";
 import { getTicketWinAmount } from "../utils/gameResult.js";
+import { getNextSpinDelayMs } from "../utils/spinTiming.js";
 import { asNumber } from "../utils/number.js";
 
 export const createSpinActions = ({
@@ -332,7 +332,7 @@ export const createSpinActions = ({
         const result = await handleSpin({ freeSpinAuto: true });
         if (!result) break;
         if (liveSpinStateRef.current.freeSpinsLeft > 0)
-          await wait(FREE_SPIN_AUTOPLAY_DELAY_MS);
+          await wait(getNextSpinDelayMs(result));
       }
     } finally {
       freeSpinRunRef.current = false;
@@ -343,7 +343,7 @@ export const createSpinActions = ({
     if (freeSpinRunRef.current || showFreeSpinPrompt) return;
     const result = await handleSpin();
     if (!result) return;
-    await wait(1000);
+    await wait(getNextSpinDelayMs(result));
     if (!autoPlayOnRef.current) return;
     await collectWin();
   };

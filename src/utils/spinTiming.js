@@ -1,0 +1,24 @@
+import {
+  NEXT_SPIN_DELAY_MS,
+  WIN_LINE_HIGHLIGHT_MS,
+} from "../config/gameSettings.js";
+
+const getWinningGroups = (result) => {
+  const lineWins = Array.isArray(result?.lineWins) ? result.lineWins : [];
+  const groups = lineWins
+    .map((line) =>
+      Array.isArray(line?.winningCells) ? line.winningCells : line,
+    )
+    .filter((group) => Array.isArray(group) && group.length > 0);
+
+  if (groups.length > 0) return groups;
+  return Array.isArray(result?.winningCells) && result.winningCells.length > 0
+    ? [result.winningCells]
+    : [];
+};
+
+export const getNextSpinDelayMs = (result) => {
+  const winningGroupCount = getWinningGroups(result).length;
+  if (winningGroupCount <= 0) return NEXT_SPIN_DELAY_MS;
+  return winningGroupCount * WIN_LINE_HIGHLIGHT_MS + NEXT_SPIN_DELAY_MS;
+};

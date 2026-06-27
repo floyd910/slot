@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import { WIN_LINE_HIGHLIGHT_MS } from "../../config/gameSettings.js";
 
 export const ELDORADO_WIN_FRAME_MS = 85;
-export const ELDORADO_WIN_CYCLE_MS = 1530;
+export const ELDORADO_WIN_CYCLE_MS = WIN_LINE_HIGHLIGHT_MS;
 export const VIEW2_SYMBOL_ASSETS = "/img/view2-symbols";
 
 export const view2SymbolAsset = (symbol, file) =>
