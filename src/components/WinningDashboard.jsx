@@ -1,10 +1,19 @@
-﻿import React, { useLayoutEffect, useMemo, useRef, useState } from "react";
-import { paytable } from "../data/mockData.js";
+import React, { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { getTicketWinAmount } from "../utils/gameResult.js";
+import {
+  PAYOUT_COLUMNS,
+  PAYOUT_ROWS,
+  formatPayoutValue,
+  getCombinationNumber,
+  getPayoutMultiplier,
+} from "../utils/payoutTable.js";
 import "./WinningDashboard.css";
 import { useLanguage } from "../i18n.jsx";
 
-const COLUMNS = ["x1", "x2", "x3", "x4", "x5"];
+const COLUMNS = PAYOUT_COLUMNS.map((label, index) => ({
+  className: `--x${index + 1}`,
+  label,
+}));
 
 function formatAmount(value) {
   if (value == null || value === "") return "";
@@ -21,13 +30,7 @@ function fitMessageFontSize(text, baseSize, minSize, fullSizeLength) {
   return Math.max(minSize, Math.floor((baseSize * fullSizeLength) / length));
 }
 
-function getLineCount(selectedCombination) {
-  const lineCount = selectedCombination?.groups?.length;
-  if (Number.isFinite(lineCount) && lineCount > 0) return lineCount;
-
-  const title = Number(selectedCombination?.title ?? selectedCombination?.id);
-  return Number.isFinite(title) && title > 0 ? title : 3;
-}
+const getLineCount = getCombinationNumber;
 
 function buildMessageRows(
   stake,
@@ -38,7 +41,6 @@ function buildMessageRows(
   t,
 ) {
   const lineCount = getLineCount(selectedCombination);
-  const totalBet = Number(stake || 0) * lineCount;
   const winSum = getTicketWinAmount(spinResult, doublingState);
   const canShowWinAmounts =
     winSum > 0 &&
@@ -68,21 +70,12 @@ function buildMessageRows(
 }
 
 function buildTableData(stake, selectedCombination) {
-  const normalizedStake = Number(stake) || 0;
-  const lineCount = getLineCount(selectedCombination);
+  const payoutMultiplier = getPayoutMultiplier(stake, selectedCombination);
 
-  return paytable.map((row) => {
-    return COLUMNS.reduce(
-      (nextRow, key) => ({
-        ...nextRow,
-        [key]:
-          row[key] == null
-            ? ""
-            : formatAmount(row[key] * normalizedStake * lineCount),
-      }),
-      { id: row.symbol },
-    );
-  });
+  return PAYOUT_ROWS.map((row) => ({
+    id: row.symbol,
+    values: row.values.map((value) => formatPayoutValue(value, payoutMultiplier)),
+  }));
 }
 
 export default function WinningsDashboard({
@@ -148,17 +141,18 @@ export default function WinningsDashboard({
         <table className="winnings-table__container">
           <colgroup>
             <col className="winnings-table__col --symbol" />
-            <col className="winnings-table__col --x1" />
-            <col className="winnings-table__col --x2" />
-            <col className="winnings-table__col --x3" />
-            <col className="winnings-table__col --x4" />
-            <col className="winnings-table__col --x5" />
+            {COLUMNS.map((column) => (
+              <col
+                className={`winnings-table__col ${column.className}`}
+                key={column.label}
+              />
+            ))}
           </colgroup>
           <thead>
             <tr>
               <th></th>
               {COLUMNS.map((column) => (
-                <th key={column}>{column}</th>
+                <th key={column.label}>{column.label}</th>
               ))}
             </tr>
           </thead>
@@ -166,8 +160,8 @@ export default function WinningsDashboard({
             {tableData.map((row) => (
               <tr key={row.id}>
                 <td>{row.id}</td>
-                {COLUMNS.map((column) => (
-                  <td key={column}>{row[column]}</td>
+                {COLUMNS.map((column, index) => (
+                  <td key={column.label}>{row.values[index]}</td>
                 ))}
               </tr>
             ))}
@@ -200,9 +194,7 @@ export default function WinningsDashboard({
             </div>
           );
         })}
-        <p>
-          {t("lotteryConsent")}
-        </p>
+        <p>{t("lotteryConsent")}</p>
       </div>
     </div>
   );
