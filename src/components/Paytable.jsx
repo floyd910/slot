@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import "./Paytable.css";
 import { useLanguage } from "../i18n.jsx";
+import View2Paytable from "./View2Paytable.jsx";
 import {
   BASE_PAYOUT_STAKE,
   PAYOUT_COLUMNS,
@@ -57,6 +58,7 @@ const renderLines = (lines) =>
 export default function Paytable({
   loading,
   error,
+  visualMode = false,
   stake = BASE_PAYOUT_STAKE,
   selectedCombination,
   onClose,
@@ -80,10 +82,16 @@ export default function Paytable({
   }, [onClose]);
 
   return (
-    <section className="info-modal" aria-label={copy.title}>
+    <section
+      className={`info-modal${visualMode ? " --view2" : ""}`}
+      aria-label={copy.title}
+    >
       {loading && <div className="info-paytable-state">{t("loading")}</div>}
       {error && <div className="info-paytable-state --error">{error}</div>}
-      {!loading && !error && (
+      {!loading && !error && visualMode && (
+        <View2Paytable language={language} payoutMultiplier={payoutMultiplier} />
+      )}
+      {!loading && !error && !visualMode && (
         <div className="info-paytable">
           <h2 className="info-paytable__title">{copy.title}</h2>
           <table className="info-paytable__table">

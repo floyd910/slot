@@ -80,6 +80,7 @@ export default function GameShell({ controller }) {
             error={
               state.paytableStatus === "error" ? t("paytableLoadError") : ""
             }
+            visualMode={state.visualMode}
             stake={state.stake}
             selectedCombination={derived.selectedCombination}
             onClose={() => actions.setShowPaytable(false)}

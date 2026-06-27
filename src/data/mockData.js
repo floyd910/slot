@@ -105,7 +105,7 @@ export const paytable = [
   { symbol: 8, x1: null, x2: 0.5, x3: 3, x4: 20, x5: 100 },
   { symbol: 9, x1: null, x2: 1, x3: 8, x4: 100, x5: 500 },
   { symbol: 10, x1: null, x2: 0.2, x3: 2.5, x4: 12.5, x5: 75 },
-  { symbol: 11, x1: null, x2: 0.2, x3: 2.5, x4: 12.5, x5: 75 },
+  { symbol: 11, x1: null, x2: null, x3: 2, x4: 10, x5: 40 },
   { symbol: 12, x1: null, x2: 1, x3: 25, x4: 250, x5: 5000 },
 ];
 
