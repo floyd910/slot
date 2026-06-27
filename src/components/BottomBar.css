@@ -66,6 +66,7 @@
 }
 
 .information-button.--pressed,
+.information-button.--active,
 .information-button:active {
   background-image: url("/img/extracted/тут-кнопки-справа-1_0/sprite_011_284x102_at_1_1341.png");
 }

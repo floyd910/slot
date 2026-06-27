@@ -57,6 +57,7 @@ export default function GameShell({ controller }) {
                 onPickLeft={() => actions.playFooterDouble("left")}
                 onPickRight={() => actions.playFooterDouble("right")}
                 autoPlayOn={state.autoPlayOn}
+                infoActive={state.showPaytable}
                 onIncreaseCombination={() => actions.cycleCombination(1)}
                 onIncreaseStake={() => actions.cycleStake(1)}
                 onSpin={actions.pressSpinButton}

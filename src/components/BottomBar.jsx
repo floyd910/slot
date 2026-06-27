@@ -11,6 +11,7 @@ export default function BottomBar({
   visualMode = false,
   isVisualDoubling = false,
   autoPlayOn = false,
+  infoActive = false,
   onCollect,
   onPickLeft,
   onPickRight,
@@ -34,6 +35,7 @@ export default function BottomBar({
           type="information"
           extraClass="information-button"
           disabled={disabled}
+          active={infoActive}
           onClick={onInfo}
         />
         <BasicButton

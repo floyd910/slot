@@ -453,7 +453,7 @@ export function useGameController() {
   }, [startupAssetsReady, startupLoaderVisible, status]);
 
   const loadPaytable = async () => {
-    setShowPaytable(true);
+    setShowPaytable((current) => !current);
     setPaytableStatus("ready");
   };
 

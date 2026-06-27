@@ -1,220 +1,155 @@
 .info-modal {
   position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.8);
-  z-index: 100;
-}
-
-.info-modal__container {
-  position: absolute;
+  inset: 0 11% 0 0;
+  z-index: 60;
   box-sizing: border-box;
-  right: 50%;
-  top: 50%;
-  transform: translate(50%, -50%);
-  max-height: 33.3333333333rem;
-  max-width: 54.1666666667rem;
-  width: 90%;
-  height: 90%;
-  background-image: url("/img/info-modal-bg.4db5972c.jpg");
-  background-size: cover;
-  box-shadow: 0 0.4166666667rem 0.4166666667rem rgba(0, 0, 0, 0.5);
-  border-radius: 0.5rem;
-  padding: 3.75rem 1rem 2.6666666667rem;
-  z-index: 101;
+  overflow: hidden;
+  background: #003f05;
+  color: #f3f6ed;
+  font-family: "Arial", "Helvetica Neue", sans-serif;
+  letter-spacing: 0;
 }
 
-.info-modal__close {
-  position: absolute;
-  top: 1.0416666667rem;
-  right: 1rem;
-  height: 0.5833333333rem;
-  width: 0.5833333333rem;
-  padding: 0;
-  border: 0;
-  border-radius: 0;
-  background-color: transparent;
-  background-image: url("/img/close-icon-info.b4b687d1.svg");
-  background-position: 50%;
-  background-repeat: no-repeat;
-  background-size: contain;
-  box-shadow: none;
-  cursor: pointer;
-}
-
-.modal-payments {
-  box-sizing: border-box;
-  white-space: pre-line;
+.info-paytable {
   width: 100%;
   height: 100%;
-  overflow: auto;
-  padding: 0 1rem;
+  box-sizing: border-box;
+  padding: 5.1vh 1.2vw 3.2vh 0;
+  background: linear-gradient(180deg, #003906 0%, #004906 42%, #004304 100%);
 }
 
-.modal-payments::-webkit-scrollbar {
-  width: 0.4166666667rem;
+.info-paytable__title {
+  margin: 0 0 2.1vh;
+  color: #f6f8ee;
+  text-align: center;
+  font-family: inherit;
+  font-size: clamp(1.45rem, 2.1vw, 2.35rem);
+  font-weight: 800;
+  line-height: 1.05;
+  text-shadow: 0 0 3px rgba(255, 255, 255, 0.6), 0 2px 3px rgba(0, 0, 0, 0.65);
 }
 
-.modal-payments::-webkit-scrollbar-thumb {
-  background-color: #bf9d4c;
-  border-radius: 0.4166666667rem;
+.info-paytable__table {
+  width: 100%;
+  height: calc(100% - 6.2vh);
+  table-layout: fixed;
+  border-collapse: collapse;
+  border: 2px solid rgba(223, 235, 220, 0.86);
+  background: #005a04;
 }
 
-.modal-payments__title {
-  font-family: Ubuntu, sans-serif;
-  font-style: normal;
+.info-paytable__stake-col {
+  width: 12.1%;
+}
+
+.info-paytable__combo-col {
+  width: 13.8%;
+}
+
+.info-paytable__groups-col {
+  width: 18.3%;
+}
+
+.info-paytable__symbol-col {
+  width: 12.1%;
+}
+
+.info-paytable__payout-col {
+  width: 8.74%;
+}
+
+.info-paytable th,
+.info-paytable td {
+  border: 2px solid rgba(216, 231, 216, 0.58);
+  box-sizing: border-box;
+  text-align: center;
+  vertical-align: middle;
+  color: #f1f6ed;
+  text-shadow: 0 0 3px rgba(255, 255, 255, 0.45), 0 2px 2px rgba(0, 0, 0, 0.72);
+}
+
+.info-paytable thead th {
+  height: 5.1vh;
+  padding: 0.38rem 0.5rem;
+  background: rgba(0, 25, 2, 0.58);
+  font-size: clamp(0.64rem, 0.92vw, 1.06rem);
   font-weight: 700;
-  font-size: 1rem;
-  line-height: 146%;
-  color: #000;
-  margin: 0 0 0.5rem;
+  line-height: 1.05;
 }
 
-.mevaho-payments {
-  width: 100%;
-  border-spacing: 0;
+.info-paytable tbody td {
+  padding: 0.16rem 0.45rem;
+  background: rgba(0, 74, 2, 0.92);
+  font-size: clamp(0.88rem, 1.35vw, 1.45rem);
+  font-weight: 800;
+  line-height: 1;
 }
 
-.mevaho-payments tr:first-child th:last-child {
-  border-top-right-radius: 0.3333333333rem;
+.info-paytable tbody tr:nth-child(odd) td {
+  background-color: rgba(65, 132, 55, 0.72);
 }
 
-.mevaho-payments tr:first-child th:first-child {
-  border-top-left-radius: 0.3333333333rem;
+.info-paytable tbody tr:nth-child(even) td {
+  background-color: rgba(0, 78, 0, 0.95);
 }
 
-.mevaho-payments__designations {
-  overflow-wrap: anywhere;
+.info-paytable tbody tr:nth-child(odd) .info-paytable__merged,
+.info-paytable tbody tr:nth-child(even) .info-paytable__merged {
+  background: #006004;
 }
 
-.mevaho-payments__img {
-  height: 1.25rem;
-  width: 1.25rem;
+.info-paytable__merged {
+  font-size: clamp(0.95rem, 1.35vw, 1.5rem);
 }
 
-.mevaho-payments th {
-  border: 0.0416666667rem solid #000;
-  background-color: #8c0009;
-  font-weight: 400;
-  color: #fff;
-  font-family: Ubuntu, sans-serif;
-  font-style: normal;
-  font-size: 0.75rem;
-  line-height: 0.875rem;
-  padding: 0.25rem;
+.info-paytable__merged.--groups {
+  padding-inline: 1.1rem;
+  font-size: clamp(0.95rem, 1.42vw, 1.52rem);
+  line-height: 1.32;
+  white-space: normal;
 }
 
-.--gambusaki .mevaho-payments th {
-  background-color: #2a414c;
-}
-
-.mevaho-payments td {
-  border: 0.0416666667rem solid #000;
-  font-family: Ubuntu, sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 0.75rem;
-  line-height: 0.875rem;
-  padding: 0.25rem;
-  text-align: center;
-  vertical-align: middle;
-}
-
-.--gambusaki .mevaho-payments td {
-  color: #000;
-}
-
-.mevaho-payments tbody tr:nth-child(2n) {
-  background-color: transparent;
-}
-
-.mevaho-payments tbody tr:nth-child(odd) {
-  background-color: #ebe7df;
-}
-
-.mevaho-payments__combination {
-  margin: 0;
-  font-family: Ubuntu, sans-serif;
+.info-paytable__merged.--groups span {
+  display: block;
   white-space: nowrap;
-  display: inline-flex;
 }
 
-.modal-payments__mobile {
-  display: none;
+.info-paytable__symbol {
+  font-weight: 800;
 }
 
-.mobile-payments {
-  display: none;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 0.4166666667rem;
+.info-paytable__value {
+  white-space: nowrap;
 }
 
-.mobile-payments table {
-  color: #000;
-  z-index: -2;
-  border-spacing: 0;
-  width: 100%;
-}
-
-.mobile-payments tr:last-child td:first-child {
-  border-bottom-left-radius: 0.3333333333rem;
-}
-
-.mobile-payments tr:last-child td:last-child {
-  border-bottom-right-radius: 0.3333333333rem;
-}
-
-.mobile-payments tr:first-child th:last-child {
-  border-top-right-radius: 0.3333333333rem;
-}
-
-.mobile-payments tr:first-child th:first-child {
-  border-top-left-radius: 0.3333333333rem;
-}
-
-.mobile-payments th {
-  border: 0.0416666667rem solid #000;
-  background-color: #8c0009;
-  font-weight: 400;
-  color: #fff;
-  font-family: Ubuntu, sans-serif;
-  font-style: normal;
-  padding: 0.25rem;
-  font-size: 0.5833333333rem;
-  line-height: 0.6666666667rem;
-}
-
-.--gambusaki .mobile-payments th {
-  background-color: #2a414c;
-}
-
-.mobile-payments td {
-  border: 0.0416666667rem solid #000;
-  font-family: Ubuntu, sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  padding: 0.25rem;
-  font-size: 0.5833333333rem;
-  line-height: 0.6666666667rem;
-  background-color: #ebe7df;
-  text-align: center;
-  vertical-align: middle;
-}
-
-.info-modal .state-panel {
+.info-paytable-state {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0;
-  font-family: Ubuntu, "Alegreya Sans", sans-serif;
-  font-size: 0.75rem;
-  color: #000;
-  background: transparent;
-  border: 0;
-  box-shadow: none;
+  background: #003f05;
+  color: #f3f6ed;
+  font-family: "Arial", "Helvetica Neue", sans-serif;
+  font-size: clamp(1rem, 1.5vw, 1.6rem);
+  font-weight: 800;
+  text-align: center;
 }
 
+.info-paytable-state.--error {
+  color: #ffd18a;
+}
 
+@media (max-width: 900px) {
+  .info-modal {
+    inset: 0;
+    z-index: 120;
+    overflow: auto;
+  }
+
+  .info-paytable {
+    min-width: 860px;
+    min-height: 560px;
+    padding: 2.6rem 0.8rem 1rem 0;
+  }
+}
