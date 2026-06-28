@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 const copy = {
   ru: {
@@ -74,14 +74,34 @@ const copy = {
 };
 
 const LanguageContext = createContext(null);
+const LANGUAGE_TRANSITION_SILENCE_MS = 180;
 
 export function LanguageProvider({ children }) {
   const [language, setLanguage] = useState("ru");
+  const [isLanguageChanging, setIsLanguageChanging] = useState(false);
+
+  const toggleLanguage = useCallback(() => {
+    setIsLanguageChanging(true);
+    setLanguage((current) => (current === "ru" ? "tg" : "ru"));
+  }, []);
+
+  useEffect(() => {
+    if (!isLanguageChanging) return undefined;
+
+    const timer = window.setTimeout(() => {
+      setIsLanguageChanging(false);
+    }, LANGUAGE_TRANSITION_SILENCE_MS);
+
+    return () => window.clearTimeout(timer);
+  }, [isLanguageChanging, language]);
+
   const value = useMemo(() => ({
     language,
-    toggleLanguage: () => setLanguage((current) => (current === "ru" ? "tg" : "ru")),
+    isLanguageChanging,
+    toggleLanguage,
     t: (key) => copy[language][key] ?? copy.ru[key] ?? key,
-  }), [language]);
+  }), [isLanguageChanging, language, toggleLanguage]);
+
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }
 

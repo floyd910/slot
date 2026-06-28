@@ -5,10 +5,9 @@ import {
 } from "./View2SymbolBase.jsx";
 
 export const symbol9Assets = {
-  staticImage: view2SymbolAsset(9, "1.png"),
-  background: view2SymbolAsset(9, "background.png"),
-  winFrames: view2SymbolFrames(9, 8),
-  forwardLoop: true,
+  staticImage: view2SymbolAsset(11, "1.png"),
+  background: view2SymbolAsset(11, "background.png"),
+  winFrames: view2SymbolFrames(11, 7),
   frameMs: 250,
 };
 export default function Symbol9(props) {

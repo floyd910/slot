@@ -41,6 +41,7 @@ export default function BottomBar({
         <BasicButton
           type="language"
           extraClass="language-button"
+          suppressPressFeedback
           onClick={toggleLanguage}
         />
         <BasicButton
@@ -133,6 +134,7 @@ function BasicButton({
   extraClass = "",
   disabled = false,
   active = false,
+  suppressPressFeedback = false,
   onClick,
 }) {
   const { language, t } = useLanguage();
@@ -152,7 +154,7 @@ function BasicButton({
 
   return (
     <div
-      className={`basic-button ${extraClass}${active ? " --active" : ""}${disabled ? " --disabled" : ""}`}
+      className={`basic-button ${extraClass}${active ? " --active" : ""}${disabled ? " --disabled" : ""}${suppressPressFeedback ? " --no-press-feedback" : ""}`}
       role="button"
       tabIndex={disabled ? -1 : 0}
       onClick={() => {
@@ -161,7 +163,7 @@ function BasicButton({
       onKeyDown={(event) => {
         if (disabled || (event.key !== "Enter" && event.key !== " ")) return;
         event.preventDefault();
-        event.currentTarget.classList.add("--pressed");
+        if (!suppressPressFeedback) event.currentTarget.classList.add("--pressed");
         if (onClick) onClick();
       }}
       onKeyUp={(event) => {

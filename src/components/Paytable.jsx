@@ -63,7 +63,7 @@ export default function Paytable({
   selectedCombination,
   onClose,
 }) {
-  const { language, t } = useLanguage();
+  const { isLanguageChanging, language, t } = useLanguage();
   const copy = PAYTABLE_COPY[language] ?? PAYTABLE_COPY.ru;
   const combinationNumber = getCombinationNumber(selectedCombination);
   const combinationGroups = getCombinationGroups(
@@ -86,7 +86,7 @@ export default function Paytable({
       className={`info-modal${visualMode ? " --view2" : ""}`}
       aria-label={copy.title}
     >
-      {loading && <div className="info-paytable-state">{t("loading")}</div>}
+      {loading && !isLanguageChanging && <div className="info-paytable-state">{t("loading")}</div>}
       {error && <div className="info-paytable-state --error">{error}</div>}
       {!loading && !error && visualMode && (
         <View2Paytable language={language} payoutMultiplier={payoutMultiplier} />

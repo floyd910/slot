@@ -13,7 +13,7 @@ export const PAYOUT_ROWS = [
   { symbol: 8, values: [null, null, 1.5, 7.5, 25] },
   { symbol: 9, values: [null, null, 2, 10, 40] },
   { symbol: 10, values: [null, 0.2, 2.5, 12.5, 75] },
-  { symbol: 11, values: [null, null, 2, 10, 40] },
+  { symbol: 11, values: [null, 0.2, 2.5, 12.5, 75] },
   { symbol: 12, values: [null, 1, 25, 250, 900] },
 ];
 
