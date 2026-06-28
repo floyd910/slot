@@ -10,9 +10,9 @@ import FreeSpinsPrompt from "./FreeSpinsPrompt.jsx";
 import GameContent from "./GameContent.jsx";
 
 export default function GameShell({ controller }) {
-  const { t } = useLanguage();
+  const { isLanguageChanging, t } = useLanguage();
   const { actions, derived, state } = controller;
-  const runtimeState = derived.runtimeStateVisible ? (
+  const runtimeState = derived.runtimeStateVisible && !isLanguageChanging ? (
     <RuntimeState
       status={state.status}
       error={state.error}
@@ -25,7 +25,7 @@ export default function GameShell({ controller }) {
     <div
       className={derived.shellClass}
       data-module-mode={state.context.mode}
-      data-startup-loading={state.startupLoaderVisible ? "true" : "false"}
+      data-startup-loading={state.startupLoaderVisible && !isLanguageChanging ? "true" : "false"}
     >
       <div className="game_area">
         <img className="header_img" alt="Betproduct.com" src={GAME_HEADER_SRC} />
@@ -95,7 +95,7 @@ export default function GameShell({ controller }) {
         {state.showFreeSpinPrompt && (
           <FreeSpinsPrompt count={state.freeSpinsTotal} />
         )}
-        {state.startupLoaderVisible && (
+        {state.startupLoaderVisible && !isLanguageChanging && (
           <StartupLoader
             videoSrc={STARTUP_VIDEO_SRC}
             ready={state.startupAssetsReady}

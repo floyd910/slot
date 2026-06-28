@@ -47,6 +47,7 @@ const initialContext = readFrameParams();
 
 export function useGameController() {
   const { t } = useLanguage();
+  const tRef = useRef(t);
   const [context, setContext] = useState(initialContext);
   const [status, setStatus] = useState("initial-loading");
   const [error, setError] = useState("");
@@ -129,6 +130,10 @@ export function useGameController() {
   }, [emitSound]);
 
   useEffect(() => {
+    tRef.current = t;
+  }, [t]);
+
+  useEffect(() => {
     playSound("stopBackground");
   }, [playSound]);
 
@@ -169,9 +174,11 @@ export function useGameController() {
 
   useEffect(() => {
     let active = true;
-    preloadStartupAssets().then(() => {
-      if (active) setStartupAssetsReady(true);
-    });
+    withTimeout(preloadStartupAssets(), "Startup assets", 7000)
+      .catch(() => {})
+      .then(() => {
+        if (active) setStartupAssetsReady(true);
+      });
     return () => {
       active = false;
     };
@@ -402,9 +409,9 @@ export function useGameController() {
         recoverStartupToGameShell(initError);
         return;
       }
-      reportError(initError, t("initError"));
+      reportError(initError, tRef.current("initError"));
     }
-  }, [context, postEvent, recoverStartupToGameShell, reportError, t]);
+  }, [context, postEvent, recoverStartupToGameShell, reportError]);
 
   useEffect(() => {
     if (!window.ResizeObserver || !window.Promise) {
