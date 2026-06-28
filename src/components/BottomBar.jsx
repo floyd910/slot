@@ -9,6 +9,8 @@ export default function BottomBar({
   doubleOfferAvailable = false,
   doublingState,
   visualMode = false,
+  viewSwitchDisabled = false,
+  paytableControlsLocked = false,
   isVisualDoubling = false,
   autoPlayOn = false,
   infoActive = false,
@@ -52,7 +54,7 @@ export default function BottomBar({
         <BasicButton
           type="visualization"
           extraClass="language-button"
-          disabled={disabled}
+          disabled={disabled || viewSwitchDisabled}
           active={visualMode}
           onClick={onVisualToggle}
         />
@@ -61,12 +63,12 @@ export default function BottomBar({
         ) : showDouble ? (
           <BasicButton type="double" extraClass="language-button" disabled={!canDouble} onClick={onDouble} />
         ) : (
-          <BasicButton type="betAmount" extraClass="language-button" disabled={disabled} onClick={onIncreaseStake} />
+          <BasicButton type="betAmount" extraClass="language-button" disabled={disabled || paytableControlsLocked} onClick={onIncreaseStake} />
         )}
         {isVisualDoubling ? (
           <BasicButton type="right" extraClass="language-button" disabled={disabled} onClick={onPickRight} />
         ) : (
-          <BasicButton type="lotteryCombination" extraClass="language-button" disabled={disabled} onClick={onIncreaseCombination} />
+          <BasicButton type="lotteryCombination" extraClass="language-button" disabled={disabled || paytableControlsLocked} onClick={onIncreaseCombination} />
         )}
         <BasicButton
           type="autoExpress"

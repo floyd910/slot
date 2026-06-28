@@ -52,6 +52,8 @@ export default function GameShell({ controller }) {
                 doubleOfferAvailable={derived.doubleOfferAvailable}
                 doublingState={state.doublingState}
                 visualMode={state.visualMode}
+                viewSwitchDisabled={derived.viewSwitchDisabled}
+                paytableControlsLocked={derived.paytableControlsLocked}
                 isVisualDoubling={derived.isVisualDoubling}
                 onCollect={actions.collectWin}
                 onPickLeft={() => actions.playFooterDouble("left")}

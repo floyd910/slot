@@ -464,6 +464,10 @@ export function useGameController() {
     setPaytableStatus("ready");
   };
 
+  const freeSpinsActive =
+    freeSpinsLeft > 0 || showFreeSpinPrompt || freeSpinRunRef.current;
+  const paytableControlsLocked = showPaytable || autoPlayOn || freeSpinsActive;
+
   const { collectWin, handleSpin, onAutoPlay, startFreeSpinRun } =
     createSpinActions({
       autoPlayOnRef,
@@ -494,6 +498,7 @@ export function useGameController() {
     });
 
   const cycleStake = (direction) => {
+    if (paytableControlsLocked) return;
     emitSound("amount");
     const index = stakeOptions.indexOf(stake);
     const nextIndex =
@@ -502,7 +507,7 @@ export function useGameController() {
   };
 
   const cycleCombination = (direction) => {
-    if (!combinations.length) return;
+    if (paytableControlsLocked || !combinations.length) return;
     emitSound("buttonPress");
     const index = combinations.findIndex(
       (item) => item.id === selectedCombinationId,
@@ -562,6 +567,7 @@ export function useGameController() {
     });
 
   const toggleVisualMode = () => {
+    if (viewSwitchDisabled) return;
     emitSound("click");
     setVisualMode((value) => {
       const nextValue = !value;
@@ -578,7 +584,10 @@ export function useGameController() {
     status === "bootstrap-loading" ||
     status === "processing";
   const ticketWinAmount = getTicketWinAmount(spinResult, doublingState);
+  const uncollectedWin = Boolean(spinResult?.idCard) && ticketWinAmount > 0;
   const pendingTicketWin = hasTicketWin(spinResult, doublingState);
+  const viewSwitchDisabled =
+    status === "processing" || autoPlayOn || freeSpinsActive || uncollectedWin;
   const doubleOfferAvailable = shouldOfferDouble({
     autoPlayOn,
     doublingState,
@@ -681,6 +690,7 @@ export function useGameController() {
       isDoublingLocked,
       isVisualDoubling,
       pendingTicketWin,
+      paytableControlsLocked,
       runtimeStateVisible,
       selectedCombination,
       shellClass,
@@ -688,6 +698,8 @@ export function useGameController() {
       testMode,
       ticketWinAmount,
       totalPurchase,
+      uncollectedWin,
+      viewSwitchDisabled,
     },
   };
 }
