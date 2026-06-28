@@ -36,7 +36,7 @@ const getMatchPayout = (symbol, matchCount, payoutMultiplier) =>
     payoutMultiplier,
   );
 
-function SymbolTile({ symbol, className = "" }) {
+function SymbolTile({ symbol, imageSymbol = symbol, className = "" }) {
   return (
     <span
       className={`view2-info-symbol ${className} symbol-${symbol} info-symbol`}
@@ -44,7 +44,7 @@ function SymbolTile({ symbol, className = "" }) {
     >
       <img
         className="view2-info-symbol__item"
-        src={getSymbolImage(symbol)}
+        src={getSymbolImage(imageSymbol)}
         alt=""
       />
     </span>
@@ -127,7 +127,7 @@ export default function View2Paytable({ language, payoutMultiplier }) {
         <div className="info-top-right">
           <div className="top-symbols">
             <SymbolTile symbol={10} className="--decor --top-right-a" />
-            <SymbolTile symbol={9} className="--decor --top-right-b" />
+            <SymbolTile symbol={9} imageSymbol={11} className="--decor --top-right-b" />
           </div>
 
           <PayoutCard
@@ -191,12 +191,12 @@ export default function View2Paytable({ language, payoutMultiplier }) {
           <div className="right-top">
             <PayoutCard
               className="--right-middle"
-              symbol={11}
+              symbol={9}
               counts={[5, 4, 3]}
               payoutMultiplier={payoutMultiplier}
             />
             <div className="left_top_symbols">
-              <SymbolTile symbol={11} />
+              <SymbolTile symbol={11} imageSymbol={9} />
             </div>
           </div>
 
