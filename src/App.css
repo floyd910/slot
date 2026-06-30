@@ -219,21 +219,3 @@ button:disabled {
   text-shadow: 0 1px 0 rgba(79, 52, 9, 0.65);
 }
 
-.child-slot-back {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  z-index: 100001;
-  min-height: 34px;
-  border: 1px solid rgba(255, 230, 150, 0.5);
-  border-radius: 8px;
-  padding: 7px 12px;
-  background: rgba(26, 19, 8, 0.9);
-  color: #ffe8a3;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.child-slot-back:hover {
-  background: rgba(48, 35, 12, 0.95);
-}
