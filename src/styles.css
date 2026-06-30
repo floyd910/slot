@@ -41,15 +41,26 @@ video {
 html,
 body,
 #root {
-  width: 100vw;
-  min-width: 980px;
+  width: 100%;
+  min-width: 0;
   height: 100vh;
+  height: 100svh;
+  height: 100dvh;
   min-height: 0;
   margin: 0;
   padding: 0;
   overflow: hidden;
   background: var(--bg);
   color: var(--text);
+}
+
+html {
+  overscroll-behavior: none;
+}
+
+body {
+  position: fixed;
+  inset: 0;
 }
 
 button {
@@ -75,8 +86,10 @@ button {
 }
 .app-root {
   position: relative;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
+  height: 100svh;
+  height: 100dvh;
   overflow: hidden;
   background: var(--bg);
 }
