@@ -21,6 +21,31 @@ const getChooserBackgroundAsset = () =>
     ? CHOOSER_BACKGROUND_ASSETS.max1280
     : CHOOSER_BACKGROUND_ASSETS.large;
 
+
+const notifySlotChooserReady = () => {
+  if (window.parent === window) return;
+
+  let targetOrigin = "*";
+  try {
+    targetOrigin = document.referrer ? new URL(document.referrer).origin : "*";
+  } catch {
+    targetOrigin = "*";
+  }
+
+  window.parent.postMessage(
+    {
+      source: "hiranmandi-iframe",
+      contractVersion: "1.0",
+      type: "SLOT_CHOOSER_READY",
+      payload: { assetsReady: true },
+      meta: {
+        timestamp: new Date().toISOString(),
+        viewportWidth: window.innerWidth,
+      },
+    },
+    targetOrigin,
+  );
+};
 const preloadImage = (src) =>
   new Promise((resolve) => {
     const image = new Image();
@@ -57,6 +82,7 @@ export default function App() {
     Promise.all(requiredAssets.map(preloadImage)).then(() => {
       if (!active) return;
       setChooserAssetsReady(true);
+      notifySlotChooserReady();
       Object.values(CHOOSER_BACKGROUND_ASSETS)
         .filter((src) => src !== backgroundAsset)
         .forEach(preloadImage);
