@@ -79,3 +79,9 @@
     padding: 25px 32px;
   }
 }
+
+@media (max-width: 540px) {
+  .slots {
+    justify-content: space-between;
+  }
+}
