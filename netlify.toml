@@ -4,7 +4,7 @@
 
 [[redirects]]
   from = "/soap-hiranmandi"
-  to = "http://5.187.2.138/soap/SlotHiranmandiSOAP.dll/soap/IInBet"
+  to = "http://5.187.2.138/soap/SlotHiranmandiSOAPFrame.dll/soap/IInBet"
   status = 200
   force = true
 

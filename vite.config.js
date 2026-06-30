@@ -10,7 +10,7 @@ export default defineConfig({
       "/soap-hiranmandi": {
         target: "http://5.187.2.138",
         changeOrigin: true,
-        rewrite: () => "/soap/SlotHiranmandiSOAP.dll/soap/IInBet",
+        rewrite: () => "/soap/SlotHiranmandiSOAPFrame.dll/soap/IInBet",
       },
     },
   },

@@ -3,11 +3,12 @@ import { getSoapEndpoint } from "./runtimeConfig.js";
 
 export const GAME_NUMERIC_ID = "36";
 export const BACKEND_TEST_PARAMS = {
-  idPartner: "1",
-  idKassi: "70",
+  login: "Terminal",
+  password: "Gefest",
+  idUser: "123213",
   idValute: "1",
-  sum: "10",
-  lines: "10",
+  sum: "1",
+  lines: "9",
   idGame: "36",
 };
 

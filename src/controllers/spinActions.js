@@ -14,6 +14,8 @@ import { getTicketWinAmount } from "../utils/gameResult.js";
 import { getNextSpinDelayMs } from "../utils/spinTiming.js";
 import { asNumber } from "../utils/number.js";
 
+const VALID_FRAME_LINE_COUNTS = new Set([1, 3, 5, 7, 9]);
+
 export const createSpinActions = ({
   autoPlayOnRef,
   emitLotteryRevealSounds,
@@ -67,14 +69,11 @@ export const createSpinActions = ({
     const isFreeSpin = freeSpinsLeft > 0;
     const testMode = isEnabled(context.testMode ?? context.demoMode);
     const effectiveDemo = isFreeSpin ? false : demo || testMode;
-    const totalStake = stake * selectedCombination.groups.length;
-    if (
-      !effectiveDemo &&
-      !isFreeSpin &&
-      Number(player?.balance ?? 0) < totalStake
-    ) {
-      setError(t("insufficientBalance"));
-      setLastKnownState("insufficient-balance");
+    const lineCount = selectedCombination.groups.length;
+    const totalStake = Number((stake * lineCount).toFixed(2));
+    if (!VALID_FRAME_LINE_COUNTS.has(lineCount)) {
+      setError("Invalid line count");
+      setLastKnownState("invalid-lines");
       setStatus("ready");
       liveSpinStateRef.current = {
         ...liveSpinStateRef.current,
@@ -83,25 +82,40 @@ export const createSpinActions = ({
       return null;
     }
     const requestId = buildRequestId("spin");
+    const spinStartBalance = Number(player?.balance ?? 0);
+    let stakeDeducted = false;
 
     try {
-      playSpinFeedback();
+      if (!effectiveDemo && !isFreeSpin && spinStartBalance < totalStake) {
+        setError(t("insufficientBalance"));
+        setLastKnownState("insufficient-balance");
+        setStatus("ready");
+        liveSpinStateRef.current = {
+          ...liveSpinStateRef.current,
+          status: "ready",
+        };
+        return null;
+      }
+
       setStatus("processing");
       liveSpinStateRef.current = {
         ...liveSpinStateRef.current,
         status: "processing",
       };
+
+      playSpinFeedback();
       if (!visualMode) setGridAnimation("spinning");
       setDoublingState(createEmptyDoublingState());
       setLastKnownState("spin-submitted");
       setError("");
       setSpinResult(null);
+      stakeDeducted = !effectiveDemo && !isFreeSpin;
       setPlayer((current) =>
         effectiveDemo || isFreeSpin
           ? current
           : {
               ...current,
-              balance: Number((current.balance - totalStake).toFixed(2)),
+              balance: Number((spinStartBalance - totalStake).toFixed(2)),
             },
       );
       const apiResult = await withTimeout(
@@ -224,7 +238,7 @@ export const createSpinActions = ({
       postEvent("UPDATE_BALANCE", {
         balance: Number(
           (
-            player.balance -
+            spinStartBalance -
             (effectiveDemo || isFreeSpin ? 0 : totalStake) +
             (shouldCreditWin ? result.WinSum : 0)
           ).toFixed(2),
@@ -238,7 +252,7 @@ export const createSpinActions = ({
       return result;
     } catch (spinError) {
       setGridAnimation("settled");
-      if (!effectiveDemo && !isFreeSpin) {
+      if (stakeDeducted) {
         setPlayer((current) =>
           current
             ? {

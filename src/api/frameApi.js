@@ -1,5 +1,17 @@
-﻿import { getRuntimeConfig, mergeRuntimeConfig, useBackendTestParams, useSoapBackend } from "./runtimeConfig.js";
-import { double as mockDouble, getGames as getMockGames, getPaytable as getMockPaytable, pay as mockPay, spin as mockSpin, createSession } from "./mockSlotBackend.js";
+import {
+  getRuntimeConfig,
+  mergeRuntimeConfig,
+  useBackendTestParams,
+  useSoapBackend,
+} from "./runtimeConfig.js";
+import {
+  double as mockDouble,
+  getGames as getMockGames,
+  getPaytable as getMockPaytable,
+  pay as mockPay,
+  spin as mockSpin,
+  createSession,
+} from "./mockSlotBackend.js";
 import { mapSpinPayload } from "./slotPayloadMappers.js";
 import { asNumber } from "../utils/number.js";
 import {
@@ -37,33 +49,64 @@ const validateSessionContext = (params) => {
 
 const buildSpinMessage = ({ stake, lines, isDemo, isFreeSpin }) => {
   const runtimeConfig = getRuntimeConfig();
+  const globalConfig = window.HIRANMANDI_FRAME_CONFIG ?? {};
   const forceTestParams = useBackendTestParams();
-  const idPartner = forceTestParams
-    ? BACKEND_TEST_PARAMS.idPartner
-    : runtimeConfig.idPartner ?? runtimeConfig.partnerId ?? "1";
-  const idKassi = forceTestParams
-    ? BACKEND_TEST_PARAMS.idKassi
-    : runtimeConfig.idKassi ?? "70";
+  const login = forceTestParams
+    ? BACKEND_TEST_PARAMS.login
+    : runtimeConfig.login ??
+      runtimeConfig.Login ??
+      runtimeConfig.slotLogin ??
+      globalConfig.login ??
+      globalConfig.Login ??
+      globalConfig.slotLogin ??
+      "Terminal";
+  const password = forceTestParams
+    ? BACKEND_TEST_PARAMS.password
+    : runtimeConfig.password ??
+      runtimeConfig.Password ??
+      runtimeConfig.slotPassword ??
+      globalConfig.password ??
+      globalConfig.Password ??
+      globalConfig.slotPassword ??
+      "Gefest";
+  const idUser = forceTestParams
+    ? BACKEND_TEST_PARAMS.idUser
+    : runtimeConfig.idUser ??
+      runtimeConfig.userId ??
+      runtimeConfig.playerId ??
+      globalConfig.idUser ??
+      globalConfig.userId ??
+      globalConfig.playerId ??
+      "demo-player";
   const idValute = forceTestParams
     ? BACKEND_TEST_PARAMS.idValute
-    : runtimeConfig.idValute ?? "1";
+    : runtimeConfig.idValute ?? globalConfig.idValute ?? "1";
+  const spinCurrency = forceTestParams
+    ? BACKEND_TEST_PARAMS.currency ?? BACKEND_TEST_PARAMS.idValute
+    : runtimeConfig.spinCurrency ??
+      runtimeConfig.Currency ??
+      runtimeConfig.currencyId ??
+      globalConfig.spinCurrency ??
+      globalConfig.Currency ??
+      globalConfig.currencyId ??
+      idValute;
   const spinSum = forceTestParams ? BACKEND_TEST_PARAMS.sum : stake;
-  const backendLines = forceTestParams
-    ? BACKEND_TEST_PARAMS.lines
-    : runtimeConfig.backendLines ?? lines;
+  const selectedLines = forceTestParams ? BACKEND_TEST_PARAMS.lines : lines;
   const idGame = forceTestParams
     ? BACKEND_TEST_PARAMS.idGame
-    : runtimeConfig.backendGameId ?? GAME_NUMERIC_ID;
+    : runtimeConfig.backendGameId ?? globalConfig.backendGameId ?? GAME_NUMERIC_ID;
 
   return {
     stake: asNumber(spinSum, stake),
-    xml: `<message MessageType="SetSlotSpinHiranmandi" MessageDateTime="${formatSoapDateTime()}" MessageFormatVersion="1.0">
+    xml: `<message MessageType="SetSlotSpinHiranmandiFrame" MessageDateTime="${formatSoapDateTime()}" MessageFormatVersion="1.0">
  <Spin
-   idPartner="${xmlEscape(idPartner)}"
-   idKassi="${xmlEscape(idKassi)}"
+   Login="${xmlEscape(login)}"
+   Password="${xmlEscape(password)}"
+   idUser="${xmlEscape(idUser)}"
    idValute="${xmlEscape(idValute)}"
+   currency="${xmlEscape(spinCurrency)}"
    Sum="${xmlEscape(spinSum)}"
-   Lines="${xmlEscape(backendLines)}"
+   Lines="${xmlEscape(selectedLines)}"
    idGame="${xmlEscape(idGame)}"
    DemoSpin="${isDemo ? 1 : 0}"
    FreeSpin="${isFreeSpin ? 1 : 0}"
@@ -83,10 +126,6 @@ const buildDoubleMessage = ({ idCard, wasDouble, sum }) => {
  />
 </message>`;
 };
-
-const buildPayMessage = ({ idCard }) => `<message MessageType="GetSlotPayHiranmandi">
- <Spin idCard="${xmlEscape(idCard)}"/>
-</message>`;
 
 export const frameApi = {
   async initSession(params) {
@@ -116,7 +155,9 @@ export const frameApi = {
     }
 
     const spinMessage = buildSpinMessage({ stake, lines, isDemo, isFreeSpin });
+    window.__HIRANMANDI_LAST_SOAP_REQUEST__ = spinMessage.xml;
     const document = await callSoap(spinMessage.xml);
+    window.__HIRANMANDI_LAST_SOAP_RESPONSE__ = new XMLSerializer().serializeToString(document);
     return mapSpinPayload(document, {
       stake: spinMessage.stake,
       lines,
@@ -146,13 +187,6 @@ export const frameApi = {
   },
 
   async pay({ idCard }) {
-    if (!useSoapBackend()) return mockPay({ idCard });
-
-    const document = await callSoap(buildPayMessage({ idCard }));
-    const attrs = readAttributes(document, "PayResult");
-    return {
-      idCard: attrs.idCard ?? idCard,
-      PayDate: attrs.PayDate ?? new Date().toISOString(),
-    };
+    return mockPay({ idCard });
   },
 };
