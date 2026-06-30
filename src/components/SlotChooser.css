@@ -1,5 +1,6 @@
 .slot-chooser {
   height: 100vh;
+  max-height: 100vh;
   background-image: var(--slot-chooser-bg);
   background-repeat: no-repeat;
   object-fit: cover;
@@ -60,7 +61,7 @@
 
 @media (max-width: 1129px) {
   .slots {
-    height: 100%;
+    height: 90%;
     gap: 32px;
   }
 
