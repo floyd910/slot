@@ -47,7 +47,7 @@ const validateSessionContext = (params) => {
   }
 };
 
-const buildSpinMessage = ({ stake, lines, isDemo, isFreeSpin }) => {
+const buildSpinMessage = ({ stake, totalStake, lines, isDemo, isFreeSpin }) => {
   const runtimeConfig = getRuntimeConfig();
   const globalConfig = window.HIRANMANDI_FRAME_CONFIG ?? {};
   const forceTestParams = useBackendTestParams();
@@ -90,14 +90,14 @@ const buildSpinMessage = ({ stake, lines, isDemo, isFreeSpin }) => {
       globalConfig.Currency ??
       globalConfig.currencyId ??
       idValute;
-  const spinSum = forceTestParams ? BACKEND_TEST_PARAMS.sum : stake;
+  const spinSum = forceTestParams ? BACKEND_TEST_PARAMS.sum : totalStake ?? stake;
   const selectedLines = forceTestParams ? BACKEND_TEST_PARAMS.lines : lines;
   const idGame = forceTestParams
     ? BACKEND_TEST_PARAMS.idGame
     : runtimeConfig.backendGameId ?? globalConfig.backendGameId ?? GAME_NUMERIC_ID;
 
   return {
-    stake: asNumber(spinSum, stake),
+    stake: asNumber(spinSum, totalStake ?? stake),
     xml: `<message MessageType="SetSlotSpinHiranmandiFrame" MessageDateTime="${formatSoapDateTime()}" MessageFormatVersion="1.0">
  <Spin
    Login="${xmlEscape(login)}"
@@ -142,7 +142,7 @@ export const frameApi = {
     return getMockPaytable();
   },
 
-  async spin({ stake, lines, isDemo, isFreeSpin, selectedCombination, requestId }) {
+  async spin({ stake, totalStake, lines, isDemo, isFreeSpin, selectedCombination, requestId }) {
     if (!useSoapBackend()) {
       return mockSpin({
         stake,
@@ -154,7 +154,7 @@ export const frameApi = {
       });
     }
 
-    const spinMessage = buildSpinMessage({ stake, lines, isDemo, isFreeSpin });
+    const spinMessage = buildSpinMessage({ stake, totalStake, lines, isDemo, isFreeSpin });
     window.__HIRANMANDI_LAST_SOAP_REQUEST__ = spinMessage.xml;
     const document = await callSoap(spinMessage.xml);
     window.__HIRANMANDI_LAST_SOAP_RESPONSE__ = new XMLSerializer().serializeToString(document);

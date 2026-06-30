@@ -1,0 +1,58 @@
+export const slotCatalog = [
+  {
+    id: "silk-fruits",
+    title: "Silk Fruits",
+    subtitle: "Classic 5-reel slot",
+    status: "coming",
+    accent: "#d94776",
+  },
+  {
+    id: "desert-treasures",
+    title: "Desert Treasures",
+    subtitle: "Bonus hunt adventure",
+    status: "coming",
+    accent: "#e5a443",
+  },
+  {
+    id: "hiranmandi",
+    title: "Hiranmandi Hushhol",
+    subtitle: "Coordinate lottery slot",
+    status: "ready",
+    accent: "#f2c14e",
+  },
+  {
+    id: "golden-dice",
+    title: "Golden Dice",
+    subtitle: "Table-style slot",
+    status: "coming",
+    accent: "#8bd36f",
+  },
+  {
+    id: "caravan-spins",
+    title: "Caravan Spins",
+    subtitle: "Travel reels",
+    status: "coming",
+    accent: "#58d5c9",
+  },
+  {
+    id: "royal-keno",
+    title: "Royal Keno",
+    subtitle: "Number draw game",
+    status: "coming",
+    accent: "#8fb3ff",
+  },
+  {
+    id: "star-bazaar",
+    title: "Star Bazaar",
+    subtitle: "Wild multiplier slot",
+    status: "coming",
+    accent: "#b58cff",
+  },
+  {
+    id: "double-bonus",
+    title: "Double Bonus",
+    subtitle: "Risk ladder feature",
+    status: "coming",
+    accent: "#ff7a59",
+  },
+];

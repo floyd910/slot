@@ -24,6 +24,7 @@ export default function BottomBar({
   onSpin,
   onDouble,
   onInfo,
+  onMenu,
 }) {
   const { toggleLanguage } = useLanguage();
   const showDouble = doubleOfferAvailable;
@@ -49,7 +50,8 @@ export default function BottomBar({
         <BasicButton
           type="menu"
           extraClass="language-button"
-          disabled={disabled}
+          disabled={disabled || !onMenu}
+          onClick={onMenu}
         />
         <BasicButton
           type="visualization"

@@ -1,21 +1,13 @@
 import "./StartupLoader.css";
 
-export default function StartupLoader({ videoSrc, ready, leaving }) {
+export default function StartupLoader({ ready, leaving }) {
   return (
     <div
       className={`startup-loader${ready ? " --ready" : ""}${leaving ? " --leaving" : ""}`}
       role="status"
       aria-live="polite"
+      aria-label="Loading game"
     >
-      <video
-        className="startup-loader__video"
-        src={videoSrc}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-      />
       <div className="startup-loader__shade" />
     </div>
   );

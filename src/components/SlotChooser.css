@@ -1,0 +1,80 @@
+.slot-chooser {
+  height: 100vh;
+  background-image: var(--slot-chooser-bg);
+  background-repeat: no-repeat;
+  object-fit: cover;
+  width: 100vw;
+  background-size: 100% 100%;
+  position: relative;
+  isolation: isolate;
+  padding: 50px 100px;
+  display: flex;
+  align-items: center;
+}
+
+.bg-overlay {
+  opacity: 0.4;
+  background: black;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.slots {
+  width: 100%;
+  height: 65%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 64px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+
+.slot {
+  width: calc(100% / 4 - 64px * 3 / 4);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  min-width: 104px;
+}
+
+.slot:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.slot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 1129px) {
+  .slots {
+    height: 100%;
+    gap: 32px;
+  }
+
+  .slot-chooser {
+    padding: 50px 50px;
+  }
+
+  .slot {
+    width: calc(100% / 3 - 32px * 2 / 3);
+  }
+}
+
+@media (max-width: 730px) {
+  .slot-chooser {
+    padding: 25px 32px;
+  }
+}

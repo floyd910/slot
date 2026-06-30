@@ -121,6 +121,7 @@ export const createSpinActions = ({
       const apiResult = await withTimeout(
         frameApi.spin({
           stake,
+          totalStake,
           lines: selectedCombination.groups.length,
           isDemo: effectiveDemo,
           isFreeSpin,

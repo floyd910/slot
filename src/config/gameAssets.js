@@ -1,4 +1,5 @@
-export const STARTUP_VIDEO_SRC = "/media/terminal-loader.mp4";
+export const SLOT_CHOOSER_BACKGROUND_SRC = "/assets/img/cover.png";
+export const SLOT_CHOOSER_BACKGROUND_1280_SRC = "/assets/img/landing-page-1280.png";
 
 const GAME_ASSET_DIR = "/img/extracted/\u0438\u0433\u0440\u0430-\u0425\u0443\u0448\u043a\u043e\u043b-\u044d\u043b\u0435\u043c\u0435\u043d\u0442\u044b-\u0438\u0433\u0440\u044b-1_0";
 const PAYTABLE_ASSET_DIR = "/img/extracted/\u0438\u0433\u0440\u0430-\u0425\u0443\u0448\u043a\u043e\u043b-\u044d\u043b\u0435\u043c\u0435\u043d\u0442\u044b-\u0442\u0430\u0431\u043b\u0438\u0446\u0430-\u0432\u044b\u0438\u0433\u0440\u044b\u0448\u0435\u0439-1_1";
@@ -49,6 +50,8 @@ export const CRITICAL_GAME_IMAGE_ASSETS = [
 
 export const STARTUP_ASSETS = {
   images: [
+    SLOT_CHOOSER_BACKGROUND_SRC,
+    SLOT_CHOOSER_BACKGROUND_1280_SRC,
     ...CRITICAL_GAME_IMAGE_ASSETS,
     PAYTABLE_ASSET_DIR + "/sprite_001_1282x1026_at_1_1.png",
     SIDE_BUTTON_ASSET_DIR + "/sprite_001_284x152_at_1_1.png",
@@ -65,5 +68,5 @@ export const STARTUP_ASSETS = {
     "/img/eldorado-winnings-table-bg.webp",
     "/img/eldorado-winnings-title-bg.webp",
   ],
-  videos: [STARTUP_VIDEO_SRC],
+  videos: [],
 };

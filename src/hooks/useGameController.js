@@ -45,16 +45,21 @@ import {
 
 const initialContext = readFrameParams();
 
-export function useGameController() {
+export function useGameController(selectedGameId) {
   const { t } = useLanguage();
   const tRef = useRef(t);
-  const [context, setContext] = useState(initialContext);
+  const bootGameId = selectedGameId ?? initialContext.gameId ?? null;
+  const [context, setContext] = useState(() =>
+    bootGameId && initialContext.gameId !== bootGameId
+      ? { ...initialContext, gameId: bootGameId }
+      : initialContext,
+  );
   const [status, setStatus] = useState("initial-loading");
   const [error, setError] = useState("");
   const [lastKnownState, setLastKnownState] = useState(null);
   const [player, setPlayer] = useState(null);
   const [games, setGames] = useState([]);
-  const [currentGame, setCurrentGame] = useState(initialContext.gameId ?? null);
+  const [currentGame, setCurrentGame] = useState(bootGameId);
   const [combinations, setCombinations] = useState([]);
   const [selectedCombinationId, setSelectedCombinationId] = useState(1);
   const [grid, setGrid] = useState({ A: [], B: [], C: [], D: [] });
@@ -703,4 +708,3 @@ export function useGameController() {
     },
   };
 }
-

@@ -4,12 +4,12 @@ import GameMenu from "../GameMenu.jsx";
 import Paytable from "../Paytable.jsx";
 import RuntimeState from "../RuntimeState.jsx";
 import StartupLoader from "../StartupLoader.jsx";
-import { GAME_HEADER_SRC, STARTUP_VIDEO_SRC } from "../../config/gameAssets.js";
+import { GAME_HEADER_SRC } from "../../config/gameAssets.js";
 import { useLanguage } from "../../i18n.jsx";
 import FreeSpinsPrompt from "./FreeSpinsPrompt.jsx";
 import GameContent from "./GameContent.jsx";
 
-export default function GameShell({ controller }) {
+export default function GameShell({ controller, onBackToSlots }) {
   const { isLanguageChanging, t } = useLanguage();
   const { actions, derived, state } = controller;
   const runtimeState = derived.runtimeStateVisible && !isLanguageChanging ? (
@@ -71,6 +71,7 @@ export default function GameShell({ controller }) {
                 onInfo={actions.loadPaytable}
                 onVisualToggle={actions.toggleVisualMode}
                 onAutoPlay={actions.toggleAutoPlay}
+                onMenu={onBackToSlots}
               />
             </>
           )}
@@ -99,7 +100,6 @@ export default function GameShell({ controller }) {
         )}
         {state.startupLoaderVisible && !isLanguageChanging && (
           <StartupLoader
-            videoSrc={STARTUP_VIDEO_SRC}
             ready={state.startupAssetsReady}
             leaving={state.startupLoaderLeaving}
           />
@@ -108,4 +108,3 @@ export default function GameShell({ controller }) {
     </div>
   );
 }
-
