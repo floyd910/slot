@@ -179,7 +179,7 @@ export function useGameController(selectedGameId) {
 
   useEffect(() => {
     let active = true;
-    withTimeout(preloadStartupAssets(), "Startup assets", 7000)
+    preloadStartupAssets()
       .catch(() => {})
       .then(() => {
         if (active) setStartupAssetsReady(true);

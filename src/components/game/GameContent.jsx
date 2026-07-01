@@ -38,7 +38,10 @@ export default function GameContent({ controller, runtimeState }) {
     );
   }
 
-  const moreInfoLines = t("moreInfo").split("\n");
+  const gridMissing = !derived.isVisualDoubling && !hasPlayableGrid(state.grid);
+  const alertMessage =
+    state.error ||
+    (gridMissing ? "Game session out of sync. Disconnecting board..." : "");
 
   return (
     <>
@@ -62,7 +65,7 @@ export default function GameContent({ controller, runtimeState }) {
         )}
       </aside>
       <section className="main-container__center" aria-busy={derived.isBusy}>
-        <GameAlert message={state.error} />
+        <GameAlert message={alertMessage} />
         {derived.isVisualDoubling ? (
           <View2DoubleScene
             amount={
@@ -78,7 +81,7 @@ export default function GameContent({ controller, runtimeState }) {
             onPick={actions.playFooterDouble}
           />
         ) : (
-          <>
+          !gridMissing && (
             <LotteryGrid
               grid={state.grid}
               revealKey={state.gridRevealKey}
@@ -91,7 +94,7 @@ export default function GameContent({ controller, runtimeState }) {
               scatterCells={state.spinResult?.scatterCells}
               doublingState={state.doublingState}
             />
-          </>
+          )
         )}
       </section>
 
@@ -108,4 +111,8 @@ export default function GameContent({ controller, runtimeState }) {
       )}
     </>
   );
+}
+
+function hasPlayableGrid(grid) {
+  return Boolean(grid?.A?.length && grid?.B?.length && grid?.C?.length);
 }

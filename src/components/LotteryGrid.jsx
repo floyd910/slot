@@ -18,7 +18,6 @@ export default function LotteryGrid({
   winningGroups = [],
   scatterCells = [],
   doublingState,
-  backendError = false,
   carpetCloseMs = 1455,
   carpetOpenMs = 1455,
 }) {
@@ -29,7 +28,11 @@ export default function LotteryGrid({
       )
       .filter((group) => Array.isArray(group) && group.length > 0);
 
-    return groups.length > 0 ? groups : winningCells.length > 0 ? [winningCells] : [];
+    return groups.length > 0
+      ? groups
+      : winningCells.length > 0
+        ? [winningCells]
+        : [];
   }, [winningGroups, winningCells]);
   const [activeWinGroup, setActiveWinGroup] = useState(0);
 
@@ -76,18 +79,8 @@ export default function LotteryGrid({
     !grid.C ||
     grid.C.length === 0;
 
-  if (backendError || isGridMissing) {
-    return (
-      <div className="lottery-grid lottery-grid--error">
-        <div className="lottery-grid-view1 lottery-grid-view1--error">
-          <div className="lottery-grid__error-message">
-            <h2>SYSTEM ERROR</h2>
-            <p>Game session out of sync. Disconnecting board...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (isGridMissing) return null;
+
 
   const topCells = rows.flatMap((row) =>
     grid[row].map((value, index) => ({
@@ -269,7 +262,9 @@ function View1Cell({
         </div>
       </div>
       {idxNumber < 5 && (
-        <div className="lottery-grid-view1-cell__index-number">{idxNumber + 1}</div>
+        <div className="lottery-grid-view1-cell__index-number">
+          {idxNumber + 1}
+        </div>
       )}
       {idxString && (
         <div className="lottery-grid-view1-cell__index-label">{idxString}</div>

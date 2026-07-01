@@ -1,10 +1,10 @@
-import { Suspense, lazy, useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import SlotChooser from "./components/SlotChooser.jsx";
 import StartupLoader from "./components/StartupLoader.jsx";
+import { preloadImage, preloadStartupAssets } from "./utils/mediaPreload.js";
 
-const SelectedSlotGame = lazy(
-  () => import("./components/game/SelectedSlotGame.jsx"),
-);
+const loadSelectedSlotGame = () => import("./components/game/SelectedSlotGame.jsx");
+const SelectedSlotGame = lazy(loadSelectedSlotGame);
 
 const CHOOSER_BACKGROUND_ASSETS = {
   large: "/assets/img/cover.png",
@@ -20,7 +20,6 @@ const getChooserBackgroundAsset = () =>
   window.matchMedia?.("(max-width: 1280px)").matches
     ? CHOOSER_BACKGROUND_ASSETS.max1280
     : CHOOSER_BACKGROUND_ASSETS.large;
-
 
 const notifySlotChooserReady = () => {
   if (window.parent === window) return;
@@ -46,55 +45,57 @@ const notifySlotChooserReady = () => {
     targetOrigin,
   );
 };
-const preloadImage = (src) =>
-  new Promise((resolve) => {
-    const image = new Image();
-    let settled = false;
-    const done = async () => {
-      if (settled) return;
-      settled = true;
-      if (image.decode) {
-        try {
-          await image.decode();
-        } catch {
-          // Some browsers reject decode for already-loaded images; paint can continue.
-        }
-      }
-      resolve();
-    };
 
-    image.decoding = "async";
-    image.fetchPriority = "high";
-    image.onload = done;
-    image.onerror = done;
-    image.src = src;
+const preloadChooserImage = (src) =>
+  preloadImage(src, {
+    decode: true,
+    fetchPriority: "high",
+    timeoutMs: null,
   });
 
 export default function App() {
   const [chooserAssetsReady, setChooserAssetsReady] = useState(false);
   const [selectedSlotId, setSelectedSlotId] = useState(null);
+  const [pendingSlotId, setPendingSlotId] = useState(null);
+  const openRequestRef = useRef(0);
 
   useEffect(() => {
     let active = true;
     const backgroundAsset = getChooserBackgroundAsset();
     const requiredAssets = [backgroundAsset, ...CHOOSER_TILE_ASSETS];
 
-    Promise.all(requiredAssets.map(preloadImage)).then(() => {
+    Promise.all(requiredAssets.map(preloadChooserImage)).then(() => {
       if (!active) return;
       setChooserAssetsReady(true);
       notifySlotChooserReady();
       Object.values(CHOOSER_BACKGROUND_ASSETS)
         .filter((src) => src !== backgroundAsset)
-        .forEach(preloadImage);
+        .forEach(preloadChooserImage);
     });
     return () => {
       active = false;
     };
   }, []);
 
-  const openSlot = (slot) => {
-    if (slot.status !== "ready") return;
+  const openSlot = async (slot) => {
+    if (slot.status !== "ready" || selectedSlotId || pendingSlotId) return;
+
+    const requestId = openRequestRef.current + 1;
+    openRequestRef.current = requestId;
+    setPendingSlotId(slot.id);
+
+    await loadSelectedSlotGame();
+    await preloadStartupAssets();
+
+    if (openRequestRef.current !== requestId) return;
     setSelectedSlotId(slot.id);
+    setPendingSlotId(null);
+  };
+
+  const closeSlot = () => {
+    openRequestRef.current += 1;
+    setPendingSlotId(null);
+    setSelectedSlotId(null);
   };
 
   if (!chooserAssetsReady) {
@@ -104,8 +105,13 @@ export default function App() {
   return (
     <div className="app-root" data-playing={selectedSlotId ? "true" : "false"}>
       <div className="app-slot-chooser">
-        <SlotChooser interactive={!selectedSlotId} onSelectSlot={openSlot} />
+        <SlotChooser
+          interactive={!selectedSlotId && !pendingSlotId}
+          onSelectSlot={openSlot}
+        />
       </div>
+
+      {pendingSlotId && <StartupLoader ready={false} leaving={false} />}
 
       {selectedSlotId && (
         <div className="app-selected-game">
@@ -113,7 +119,7 @@ export default function App() {
             <SelectedSlotGame
               key={selectedSlotId}
               slotId={selectedSlotId}
-              onBack={() => setSelectedSlotId(null)}
+              onBack={closeSlot}
             />
           </Suspense>
         </div>

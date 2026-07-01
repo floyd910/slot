@@ -135,7 +135,7 @@ export const loadAudioDurationMs = (src) =>
     audio.load();
   });
 
-export const preloadStartupAssets = async () => {
+const loadStartupAssets = async () => {
   const fontReady =
     document.fonts?.ready?.catch?.(() => {}) ?? Promise.resolve();
   const criticalImages = [
@@ -183,4 +183,11 @@ export const preloadStartupAssets = async () => {
     ...STARTUP_ASSETS.videos.map(preloadVideo),
     wait(900),
   ]);
+};
+
+let startupAssetsPromise = null;
+
+export const preloadStartupAssets = () => {
+  startupAssetsPromise ??= loadStartupAssets();
+  return startupAssetsPromise;
 };
