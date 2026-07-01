@@ -1,13 +1,13 @@
-﻿import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./LotteryGrid.css";
 import {
   VIEW2_SYMBOL_COMPONENTS,
   VIEW2_SYMBOL_GROUP_CYCLE_MS,
 } from "./view2Symbols/index.jsx";
-import { COMBO_BORDERS } from "../config/eldoradoAssets.js";
+import { COMBO_BORDERS } from "../config/view2Assets.js";
 
 const rows = ["A", "B", "C"];
-const ELDORADO_GROUP_CYCLE_MS = VIEW2_SYMBOL_GROUP_CYCLE_MS;
+const VIEW2_GROUP_CYCLE_MS = VIEW2_SYMBOL_GROUP_CYCLE_MS;
 
 export default function LotteryGrid({
   grid = {},
@@ -38,7 +38,7 @@ export default function LotteryGrid({
     if (groupedWins.length <= 1 || animationState !== "settled") return;
     const interval = window.setInterval(() => {
       setActiveWinGroup((index) => (index + 1) % groupedWins.length);
-    }, ELDORADO_GROUP_CYCLE_MS);
+    }, VIEW2_GROUP_CYCLE_MS);
     return () => window.clearInterval(interval);
   }, [animationState, groupedWins.length]);
 
@@ -47,7 +47,7 @@ export default function LotteryGrid({
       ? (groupedWins[activeWinGroup] ?? groupedWins[0])
       : winningCells;
   const marked = new Set([...activeWinningCells, ...scatterCells]);
-  const eldoradoWinningCells = new Set(winningCells);
+  const view2WinningCells = new Set(winningCells);
   const activeComboBorderCells = new Set(
     animationState === "settled" && groupedWins.length > 0
       ? (groupedWins[activeWinGroup] ?? groupedWins[0])
@@ -63,12 +63,10 @@ export default function LotteryGrid({
     ...activeComboBorderCells,
     ...(showScatterOnly ? scatterCells : []),
   ]);
-  const hasMarkedCells = marked.size > 0;
   const isRevealing = animationState === "revealing";
   const isSettled = animationState === "settled";
   const hideDigitsBeforeReveal = !isRevealing && !isSettled;
 
-  // Keep the board visible until a real backend operation reports an error.
   const isGridMissing =
     !grid ||
     !grid.A ||
@@ -80,51 +78,11 @@ export default function LotteryGrid({
 
   if (backendError || isGridMissing) {
     return (
-      <div
-        className="scoreboard-wrapper"
-        style={{ minHeight: "100%", height: "auto" }}
-      >
-        <div
-          className="digital-scoreboard --error-lockout-view"
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            minHeight: "340px",
-            background: "#0a0a0a",
-            border: "3px solid #ff3333",
-            borderRadius: "12px",
-          }}
-        >
-          <div
-            className="backend-error-message"
-            style={{
-              textAlign: "center",
-              color: "#ff3333",
-              fontFamily: "system-ui, sans-serif",
-              padding: "30px",
-            }}
-          >
-            <h2
-              style={{
-                fontSize: "2.2rem",
-                margin: "0 0 12px 0",
-                letterSpacing: "3px",
-                fontWeight: "800",
-              }}
-            >
-              SYSTEM ERROR
-            </h2>
-            <p
-              style={{
-                color: "#aaa",
-                margin: 0,
-                fontSize: "1.1rem",
-                fontWeight: "500",
-              }}
-            >
-              Game session out of sync. Disconnecting board...
-            </p>
+      <div className="lottery-grid lottery-grid--error">
+        <div className="lottery-grid-view1 lottery-grid-view1--error">
+          <div className="lottery-grid__error-message">
+            <h2>SYSTEM ERROR</h2>
+            <p>Game session out of sync. Disconnecting board...</p>
           </div>
         </div>
       </div>
@@ -146,14 +104,15 @@ export default function LotteryGrid({
       doublingState?.loading);
   const dRow = hasDoublingMarks ? doublingMarks : (grid.D ?? []);
 
-  // VIEW 1: Standard Digital View
   if (!visualMode) {
     return (
-      <div className="scoreboard-wrapper">
-        <div className={`digital-scoreboard${isRevealing ? " --closing" : ""}`}>
-          <div className="digital-scoreboard__top">
+      <div className="lottery-grid lottery-grid--view1">
+        <div
+          className={`lottery-grid-view1${isRevealing ? " lottery-grid-view1--closing" : ""}`}
+        >
+          <div className="lottery-grid-view1__top">
             {topCells.map((cell, index) => (
-              <GoldCell
+              <View1Cell
                 key={`${cell.coord}-${revealKey}`}
                 digit={cell.value}
                 idxNumber={index}
@@ -164,9 +123,9 @@ export default function LotteryGrid({
               />
             ))}
           </div>
-          <div className="digital-scoreboard__bottom">
+          <div className="lottery-grid-view1__bottom">
             {dRow.map((value, index) => (
-              <GoldCell
+              <View1Cell
                 key={`D${index}-${hasDoublingMarks ? doublingState.revealKey : revealKey}-${value}`}
                 digit={value}
                 idxNumber={index}
@@ -184,7 +143,6 @@ export default function LotteryGrid({
                     : isRevealing
                 }
                 concealed={!hasDoublingMarks && hideDigitsBeforeReveal}
-                loading={false}
               />
             ))}
           </div>
@@ -193,20 +151,18 @@ export default function LotteryGrid({
     );
   }
 
-  // VIEW 2: Eldorado View
   return (
-    <div className="scoreboard-wrapper --eldorado-view">
-      <div className="eldorado-scoreboard">
-        {topCells.map((cell, index) => (
-          <EldoradoCell
+    <div className="lottery-grid lottery-grid--view2">
+      <div className="lottery-grid-view2">
+        {topCells.map((cell) => (
+          <View2Cell
             key={`${cell.coord}-${revealKey}`}
             digit={cell.value}
-            idxNumber={index}
             highlighted={
               isSettled &&
               (showScatterOnly
                 ? visibleScatterCells.includes(cell.coord)
-                : eldoradoWinningCells.has(cell.coord))
+                : view2WinningCells.has(cell.coord))
             }
             comboBorder={
               isSettled && visibleComboBorderCells.has(cell.coord)
@@ -216,7 +172,7 @@ export default function LotteryGrid({
             animationKey={`${revealKey}-${cell.coord}-${cell.value}`}
           />
         ))}
-        <CarpetNice
+        <View2Cover
           animationState={animationState}
           closeMs={carpetCloseMs}
           openMs={carpetOpenMs}
@@ -226,29 +182,29 @@ export default function LotteryGrid({
   );
 }
 
-function CarpetNice({ animationState, closeMs, openMs }) {
+function View2Cover({ animationState, closeMs, openMs }) {
   const isRevealing = animationState === "revealing";
   const isSpinning = animationState === "spinning";
 
   return (
     <div
-      className={`carpet-nice${isSpinning ? " --spinning" : ""}${isRevealing ? " --revealing" : ""}${animationState === "idle" || animationState === "settled" ? " carpet-nice__hidden" : ""}`}
+      className={`lottery-grid-view2-cover${isSpinning ? " lottery-grid-view2-cover--spinning" : ""}${isRevealing ? " lottery-grid-view2-cover--revealing" : ""}${animationState === "idle" || animationState === "settled" ? " lottery-grid-view2-cover--hidden" : ""}`}
       style={{
         "--carpet-close-duration": `${closeMs}ms`,
         "--carpet-open-duration": `${openMs}ms`,
       }}
     >
       <div
-        className={`carpet-nice__item${isSpinning ? " --close" : ""}${isRevealing ? " --open" : ""}`}
+        className={`lottery-grid-view2-cover__sheet${isSpinning ? " lottery-grid-view2-cover__sheet--close" : ""}${isRevealing ? " lottery-grid-view2-cover__sheet--open" : ""}`}
       />
       <div
-        className={`carpet-nice__roll${isSpinning ? " --close" : ""}${isRevealing ? " --open" : ""}`}
+        className={`lottery-grid-view2-cover__roll${isSpinning ? " lottery-grid-view2-cover__roll--close" : ""}${isRevealing ? " lottery-grid-view2-cover__roll--open" : ""}`}
       />
     </div>
   );
 }
 
-function EldoradoCell({
+function View2Cell({
   digit,
   animated = false,
   highlighted = false,
@@ -256,7 +212,7 @@ function EldoradoCell({
   comboBorder = null,
   animationKey = "",
 }) {
-  const symbol = normalizeEldoradoDigit(digit);
+  const symbol = normalizeView2Digit(digit);
   const SymbolComponent =
     VIEW2_SYMBOL_COMPONENTS[symbol] ?? VIEW2_SYMBOL_COMPONENTS[0];
 
@@ -271,68 +227,53 @@ function EldoradoCell({
   );
 }
 
-function GoldCell({
+function View1Cell({
   digit,
   idxNumber,
   idxString,
-  showFlame = false,
   size = "",
   highlighted = false,
   dimmed = false,
   eraser = false,
   concealed = false,
-  loading = false,
 }) {
   const isScatter = digit === "SCATTER";
   const isDoublingMark = typeof digit === "string" && /^x[02]$/i.test(digit);
-  const eraserClass = eraser ? eraserPhase(idxNumber, size) : "";
   const revealDelay = eraser ? revealDelayMs(idxNumber, size) : 0;
-  const showClass = " --show";
-  const displayDigit = digit;
 
   return (
     <div
-      className={`gold-cell${size === "small" ? " --small" : ""}${isDoublingMark ? " --doubling-revealed" : ""}${!concealed && !eraser ? " --value-visible" : ""}${highlighted ? " --win-highlight" : ""}${eraserClass ? ` --revealing ${eraserClass}` : ""}${dimmed ? " --opacity" : ""}`}
+      className={`lottery-grid-view1-cell${size === "small" ? " lottery-grid-view1-cell--small" : ""}${isDoublingMark ? " lottery-grid-view1-cell--doubling-revealed" : ""}${!concealed && !eraser ? " lottery-grid-view1-cell--value-visible" : ""}${highlighted ? " lottery-grid-view1-cell--win-highlight" : ""}${eraser ? " lottery-grid-view1-cell--revealing" : ""}${dimmed ? " lottery-grid-view1-cell--dimmed" : ""}`}
+      style={
+        eraser
+          ? {
+              "--view1-cell-reveal-delay": `${revealDelay}ms`,
+            }
+          : undefined
+      }
     >
       <div
-        className={`gold-cell__wrapper${highlighted ? " --glow" : ""}${dimmed ? " --opacity" : ""}`}
+        className={`lottery-grid-view1-cell__wrapper${highlighted ? " lottery-grid-view1-cell__wrapper--glow" : ""}${dimmed ? " lottery-grid-view1-cell__wrapper--dimmed" : ""}`}
       >
-        <div className="gold-cell__container" />
+        <div className="lottery-grid-view1-cell__container" />
         <div
-          className={`gold-cell__img${showClass}${eraserClass ? ` --revealing ${eraserClass}` : ""}${concealed ? " --concealed" : ""}${isScatter ? " --stepFire" : ""}`}
-          style={
-            eraser
-              ? {
-                  "--gold-cell-reveal-delay": `${revealDelay}ms`,
-                }
-              : undefined
-          }
+          className={`lottery-grid-view1-cell__image${concealed ? " lottery-grid-view1-cell__image--concealed" : ""}${isScatter ? " lottery-grid-view1-cell__image--scatter" : ""}`}
         >
-          {!loading && !isScatter && (
+          {!isScatter && (
             <div
-              className={`gold-cell__item${isDoublingMark ? " --doubling" : ""}`}
+              className={`lottery-grid-view1-cell__value${isDoublingMark ? " lottery-grid-view1-cell__value--doubling" : ""}`}
             >
-              {displayDigit}
+              {digit}
             </div>
           )}
         </div>
       </div>
       {idxNumber < 5 && (
-        <div className="gold-cell__idx-number">{idxNumber + 1}</div>
+        <div className="lottery-grid-view1-cell__index-number">{idxNumber + 1}</div>
       )}
-      {idxString && <div className="gold-cell__idx-string">{idxString}</div>}
-      {showFlame && <div className="flame" />}
-      {loading && <SpinnerLoad />}
-    </div>
-  );
-}
-
-function SpinnerLoad() {
-  return (
-    <div className="spinner-load">
-      {Array.from({ length: 12 }, (_, index) => (
-        <div key={index} />
-      ))}
+      {idxString && (
+        <div className="lottery-grid-view1-cell__index-label">{idxString}</div>
+      )}
     </div>
   );
 }
@@ -344,24 +285,13 @@ function idxString(index) {
   return "";
 }
 
-function eraserPhase(index, size) {
-  if (size === "small") return "--first";
-  const column = index % 5;
-  return (
-    ["--first", "--second", "--third", "--fourth", "--fifth"][column] ??
-    "--first"
-  );
-}
-
 function revealDelayMs(index, size) {
   if (size === "small") return 0;
   return (index % 5) * 420;
 }
 
-function normalizeEldoradoDigit(value) {
+function normalizeView2Digit(value) {
   if (value === "SCATTER") return 10;
   const digit = Number(value);
   return Number.isFinite(digit) && digit >= 0 && digit <= 12 ? digit : 0;
 }
-
-

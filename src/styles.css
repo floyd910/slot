@@ -117,8 +117,8 @@ button {
   --slot-chooser-bg: url("/assets/img/cover.png");
 }
 
-@media (max-width: 1280px) {
-  :root {
-    --slot-chooser-bg: url("/assets/img/landing-page-1280.png");
-  }
+.flex {
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }

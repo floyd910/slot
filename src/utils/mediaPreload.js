@@ -1,4 +1,4 @@
-import { ELDORADO_VIEW_ASSETS } from "../config/eldoradoAssets.js";
+import { VIEW2_ASSETS } from "../config/view2Assets.js";
 import {
   CRITICAL_GAME_IMAGE_ASSETS,
   STARTUP_ASSETS,
@@ -142,7 +142,7 @@ export const preloadStartupAssets = async () => {
     ...new Set(CRITICAL_GAME_IMAGE_ASSETS.map(toPreloadUrl)),
   ].filter(Boolean);
   const view2Images = [
-    ...new Set(ELDORADO_VIEW_ASSETS.map(toPreloadUrl)),
+    ...new Set(VIEW2_ASSETS.map(toPreloadUrl)),
   ].filter((src) => src && !criticalImages.includes(src));
   const images = [
     ...new Set([

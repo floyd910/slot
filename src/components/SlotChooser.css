@@ -16,7 +16,10 @@
   background-image: var(--slot-chooser-bg);
   background-position: center center;
   background-repeat: no-repeat;
-  background-size: 100% 100%;
+  background-size: cover;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .bg-overlay {
@@ -53,6 +56,9 @@
   -webkit-appearance: none;
   cursor: pointer;
   line-height: 0;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .slot:disabled {
@@ -64,6 +70,11 @@
   display: block;
   width: 100%;
   height: auto;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 @media (max-width: 1129px) {

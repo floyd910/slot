@@ -74,7 +74,9 @@ function buildTableData(stake, selectedCombination) {
 
   return PAYOUT_ROWS.map((row) => ({
     id: row.symbol,
-    values: row.values.map((value) => formatPayoutValue(value, payoutMultiplier)),
+    values: row.values.map((value) =>
+      formatPayoutValue(value, payoutMultiplier),
+    ),
   }));
 }
 
@@ -169,7 +171,7 @@ export default function WinningsDashboard({
         </table>
       </div>
 
-      <div className="msg_box" ref={messageBoxRef}>
+      {/* <div className="msg_box" ref={messageBoxRef}>
         {messageRows.map(([label, value], index) => {
           const labelFontSize = Math.max(
             5,
@@ -195,7 +197,7 @@ export default function WinningsDashboard({
           );
         })}
         <p>{t("lotteryConsent")}</p>
-      </div>
+      </div> */}
     </div>
   );
 }

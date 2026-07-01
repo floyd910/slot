@@ -25,7 +25,7 @@ export const CARPET_ANIMATION_HALF_MS = getCarpetAnimationHalfMs(
   CARPET_SOUND_FALLBACK_MS,
 );
 
-export const RETRYABLE_CODES = new Set(["NETWORK_ERROR", "TIMEOUT"]);
+export const RETRYABLE_CODES = new Set(["NETWORK_ERROR", "NETWORK_UNREACHABLE", "BACKEND_UNAVAILABLE", "TIMEOUT"]);
 
 export const createDoubleState = () => ({
   active: false,

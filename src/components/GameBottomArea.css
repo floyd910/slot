@@ -1,8 +1,8 @@
 .game-bottom-area {
   position: absolute;
   left: 0;
-  right: var(--clone-rail-width);
-  bottom: 0;
+  right: 0;
+  bottom: var(--bottom-bar-height, 0px);
   z-index: 7;
   height: var(--clone-stage-bottom);
   padding: 1.35rem 3.1rem 0.6rem;

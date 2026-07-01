@@ -1,5 +1,11 @@
+import { REQUEST_TIMEOUT_MS } from "../config/gameSettings.js";
 import { wait } from "../utils/async.js";
 import { getSoapEndpoint } from "./runtimeConfig.js";
+import {
+  createSoapError,
+  normalizeTransportError,
+  parseSoapError,
+} from "./soapFaultParser.js";
 
 export const GAME_NUMERIC_ID = "36";
 export const BACKEND_TEST_PARAMS = {
@@ -7,6 +13,7 @@ export const BACKEND_TEST_PARAMS = {
   password: "Gefest",
   idUser: "123213",
   idValute: "1",
+  currency: "1",
   sum: "1",
   lines: "9",
   idGame: "36",
@@ -14,6 +21,7 @@ export const BACKEND_TEST_PARAMS = {
 
 const SOAP_NAMESPACE = "urn:InBetIntf-IInBet";
 const SOAP_ACTION = `${SOAP_NAMESPACE}#GetMessage`;
+const RETRYABLE_CODES = new Set(["NETWORK_ERROR", "NETWORK_UNREACHABLE", "BACKEND_UNAVAILABLE", "TIMEOUT"]);
 
 export const formatSoapDateTime = (date = new Date()) => {
   const pad = (value) => String(value).padStart(2, "0");
@@ -28,19 +36,18 @@ export const xmlEscape = (value) =>
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&apos;");
 
-const parseXml = (xml, label = "SOAP response") => {
+export const parseXml = (xml, label = "SOAP response", meta = {}) => {
   const document = new DOMParser().parseFromString(String(xml ?? ""), "text/xml");
-  const errorNode = document.querySelector("parsererror");
-  if (errorNode) {
-    const error = new Error(`Invalid ${label}`);
-    error.code = "NETWORK_ERROR";
-    throw error;
+  const parserError = parseSoapError(document, meta);
+  if (parserError?.code === "XML_PARSE_ERROR") {
+    parserError.message = `Invalid ${label}`;
+    throw parserError;
   }
   return document;
 };
 
 export const findNode = (document, localName) =>
-  Array.from(document.getElementsByTagName("*")).find(
+  Array.from(document?.getElementsByTagName?.("*") ?? []).find(
     (node) => node.localName === localName,
   );
 
@@ -53,16 +60,6 @@ export const readAttributes = (document, localName) => {
   }, {});
 };
 
-const throwBackendErrorIfPresent = (document) => {
-  const errorAttrs = readAttributes(document, "Error");
-  if (!Object.keys(errorAttrs).length) return;
-  const message = errorAttrs.ErrorType || "Backend returned an error";
-  const error = new Error(message);
-  error.code = "BACKEND_ERROR";
-  error.backendErrorId = errorAttrs.ErrorId;
-  throw error;
-};
-
 const buildSoapEnvelope = (innerXml) => `<?xml version="1.0" encoding="utf-8"?>
 <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/">
   <soap:Body soap:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/">
@@ -72,53 +69,152 @@ const buildSoapEnvelope = (innerXml) => `<?xml version="1.0" encoding="utf-8"?>
   </soap:Body>
 </soap:Envelope>`;
 
-export const callSoap = async (messageXml) => {
-  const response = await fetch(getSoapEndpoint(), {
-    method: "POST",
-    headers: {
-      "Content-Type": "text/xml; charset=utf-8",
-      SOAPAction: SOAP_ACTION,
-    },
-    body: buildSoapEnvelope(messageXml),
-  });
-
-  if (!response.ok) {
-    const error = new Error(`SOAP request failed with ${response.status}`);
-    error.code = "NETWORK_ERROR";
-    throw error;
-  }
-
-  const soapText = await response.text();
-  const soapDocument = parseXml(soapText, "SOAP envelope");
-  const fault = findNode(soapDocument, "Fault");
-  if (fault) {
-    const faultText = findNode(fault, "faultstring")?.textContent ?? "SOAP fault";
-    const error = new Error(faultText);
-    error.code = "NETWORK_ERROR";
-    throw error;
-  }
-
-  const returnNode = findNode(soapDocument, "return");
-  const payload = returnNode?.textContent?.trim();
-  if (!payload) {
-    const error = new Error("SOAP response did not include a return payload");
-    error.code = "NETWORK_ERROR";
-    throw error;
-  }
-  const payloadDocument = parseXml(payload, "game payload");
-  throwBackendErrorIfPresent(payloadDocument);
-  return payloadDocument;
+const logSoap = (event, meta, payload = {}) => {
+  const entry = {
+    event,
+    requestId: meta.requestId ?? null,
+    sessionId: meta.sessionId ?? null,
+    gameId: meta.gameId ?? null,
+    methodName: meta.methodName ?? null,
+    idCard: meta.idCard ?? null,
+    roundId: meta.roundId ?? null,
+    timestamp: new Date().toISOString(),
+    ...payload,
+  };
+  window.__HIRANMANDI_SOAP_LOG__ = [
+    ...(window.__HIRANMANDI_SOAP_LOG__ ?? []),
+    entry,
+  ].slice(-80);
+  if (import.meta.env?.DEV) console.info("[soap]", entry);
 };
 
-export const callSoapWithRetry = async (messageXml, attempts = 2) => {
-  let lastError;
-  for (let attempt = 0; attempt < attempts; attempt += 1) {
-    try {
-      return await callSoap(messageXml);
-    } catch (error) {
-      lastError = error;
-      if (attempt + 1 < attempts) await wait(450);
-    }
+const shouldRetry = (error) => RETRYABLE_CODES.has(error?.code);
+
+export class SoapClient {
+  constructor({ endpointResolver = getSoapEndpoint, timeoutMs = REQUEST_TIMEOUT_MS } = {}) {
+    this.endpointResolver = endpointResolver;
+    this.timeoutMs = timeoutMs;
   }
-  throw lastError;
+
+  async sendSoapRequest(methodName, xmlBody, options = {}) {
+    const attempts = Math.max(1, Number(options.retryAttempts ?? 1));
+    const meta = {
+      ...options.meta,
+      methodName,
+      requestId: options.requestId ?? options.meta?.requestId,
+      sessionId: options.sessionId ?? options.meta?.sessionId,
+      gameId: options.gameId ?? options.meta?.gameId,
+      idCard: options.idCard ?? options.meta?.idCard,
+      roundId: options.roundId ?? options.meta?.roundId,
+    };
+
+    let lastError;
+    for (let attempt = 1; attempt <= attempts; attempt += 1) {
+      try {
+        return await this.#sendOnce(methodName, xmlBody, {
+          ...options,
+          meta,
+          attempt,
+          attempts,
+        });
+      } catch (error) {
+        lastError = normalizeTransportError(error, meta);
+        logSoap("error", meta, {
+          attempt,
+          code: lastError.code,
+          message: lastError.message,
+        });
+        if (attempt >= attempts || !shouldRetry(lastError)) break;
+        await wait(options.retryDelayMs ?? 450);
+      }
+    }
+    throw lastError;
+  }
+
+  async #sendOnce(methodName, xmlBody, options) {
+    const endpoint = this.endpointResolver();
+    const timeoutMs = options.timeoutMs ?? this.timeoutMs;
+    const controller = new AbortController();
+    const timeout = window.setTimeout(() => controller.abort(), timeoutMs);
+    const meta = options.meta ?? {};
+    const envelope = buildSoapEnvelope(xmlBody);
+
+    logSoap("request", meta, { endpoint, attempt: options.attempt, attempts: options.attempts });
+    window.__HIRANMANDI_LAST_SOAP_REQUEST__ = xmlBody;
+
+    let response;
+    try {
+      response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/xml; charset=utf-8",
+          SOAPAction: SOAP_ACTION,
+        },
+        body: envelope,
+        signal: controller.signal,
+      });
+    } catch (error) {
+      throw normalizeTransportError(error, meta);
+    } finally {
+      window.clearTimeout(timeout);
+    }
+
+    if (!response.ok) {
+      throw createSoapError({
+        ...meta,
+        code: response.status >= 500 ? "BACKEND_UNAVAILABLE" : "NETWORK_ERROR",
+        message: `SOAP request failed with ${response.status}`,
+        details: { status: response.status, statusText: response.statusText },
+      });
+    }
+
+    const soapText = await response.text();
+    const soapDocument = parseXml(soapText, "SOAP envelope", meta);
+    const soapFault = parseSoapError(soapDocument, meta);
+    if (soapFault) throw soapFault;
+
+    const returnNode = findNode(soapDocument, "return");
+    const payload = returnNode?.textContent?.trim();
+    if (!payload) {
+      throw createSoapError({
+        ...meta,
+        code: "BACKEND_RESPONSE_ERROR",
+        message: "SOAP response did not include a return payload",
+      });
+    }
+
+    const payloadDocument = parseXml(payload, "game payload", meta);
+    const businessError = parseSoapError(payloadDocument, meta);
+    if (businessError) throw businessError;
+
+    window.__HIRANMANDI_LAST_SOAP_RESPONSE__ = payload;
+    logSoap("response", meta, { attempt: options.attempt });
+
+    return {
+      methodName,
+      payload,
+      payloadDocument,
+      soapDocument,
+      soapText,
+      meta,
+    };
+  }
+}
+
+export const soapClient = new SoapClient();
+
+export const sendSoapRequest = (methodName, xmlBody, options) =>
+  soapClient.sendSoapRequest(methodName, xmlBody, options);
+
+export const callSoap = async (messageXml, options = {}) => {
+  const response = await sendSoapRequest(options.methodName ?? "GetMessage", messageXml, options);
+  return response.payloadDocument;
+};
+
+export const callSoapWithRetry = async (messageXml, attempts = 2, options = {}) => {
+  const response = await sendSoapRequest(options.methodName ?? "GetMessage", messageXml, {
+    ...options,
+    retryAttempts: attempts,
+  });
+  return response.payloadDocument;
 };

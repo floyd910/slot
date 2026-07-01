@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { WIN_LINE_HIGHLIGHT_MS } from "../../config/gameSettings.js";
 
-export const ELDORADO_WIN_FRAME_MS = 85;
-export const ELDORADO_WIN_CYCLE_MS = WIN_LINE_HIGHLIGHT_MS;
+export const VIEW2_SYMBOL_WIN_FRAME_MS = 85;
+export const VIEW2_SYMBOL_WIN_CYCLE_MS = WIN_LINE_HIGHLIGHT_MS;
 export const VIEW2_SYMBOL_ASSETS = "/img/view2-symbols";
 
 export const view2SymbolAsset = (symbol, file) =>
@@ -33,10 +33,10 @@ const getPingPongFrameIndex = (tick, frameCount) => {
 
 const getFrameDurationMs = (frameMs, frameCount) => {
   if (frameMs) return frameMs;
-  if (frameCount <= 1) return ELDORADO_WIN_FRAME_MS;
+  if (frameCount <= 1) return VIEW2_SYMBOL_WIN_FRAME_MS;
   return Math.max(
-    ELDORADO_WIN_FRAME_MS,
-    Math.round(ELDORADO_WIN_CYCLE_MS / (frameCount * 2 - 2)),
+    VIEW2_SYMBOL_WIN_FRAME_MS,
+    Math.round(VIEW2_SYMBOL_WIN_CYCLE_MS / (frameCount * 2 - 2)),
   );
 };
 
@@ -64,7 +64,7 @@ export function View2SymbolBase({
     : 1;
   const frameDurationMs = activeWinFrames?.length > 1
     ? getFrameDurationMs(frameMs, activeWinFrames.length)
-    : ELDORADO_WIN_FRAME_MS;
+    : VIEW2_SYMBOL_WIN_FRAME_MS;
 
   useEffect(() => {
     setAnimationFrameTick(0);
@@ -88,16 +88,16 @@ export function View2SymbolBase({
         : getPingPongFrameIndex(animationFrameTick, activeWinFrames.length)
       : 0;
 
+  const rootClass = `lottery-grid-view2-cell${isDice ? " lottery-grid-view2-cell--dice" : ""}${highlighted || animated ? " lottery-grid-view2-cell--glow" : ""}${isDice && (highlighted || animated) ? " lottery-grid-view2-cell--dice-video-selected" : ""}${dimmed ? " lottery-grid-view2-cell--dimmed" : ""}`;
+
   return (
-    <div
-      className={`eldorado-cell${isDice ? " --dice" : ""}${highlighted || animated ? " --glow" : ""}${isDice && (highlighted || animated) ? " --dice-video-selected" : ""}${dimmed ? " --opacity" : ""}`}
-    >
-      <div className="eldorado-cell__container">
+    <div className={rootClass}>
+      <div className="lottery-grid-view2-cell__container">
         {background && (
           <img
             alt=""
             aria-hidden="true"
-            className="eldorado-cell__background"
+            className="lottery-grid-view2-cell__background"
             src={background}
           />
         )}
@@ -105,34 +105,34 @@ export function View2SymbolBase({
           <img
             alt=""
             aria-hidden="true"
-            className="eldorado-cell__combo-border"
+            className="lottery-grid-view2-cell__combo-border"
             src={comboBorder}
           />
         )}
         {isDice && shine && (highlighted || animated) && (
           <span
-            className="eldorado-cell__video-dice"
-            style={{ "--eldorado-dice-shine-image": `url("${shine}")` }}
+            className="lottery-grid-view2-cell__dice-shine"
+            style={{ "--view2-dice-shine-image": `url("${shine}")` }}
             aria-hidden="true"
           />
         )}
         {activeWinFrames?.length > 1 ? (
-          <span className="eldorado-cell__animation" aria-label="image">
+          <span className="lottery-grid-view2-cell__animation" aria-label="image">
             <img
               alt=""
               aria-hidden="true"
               src={activeWinFrames[frameIndex]}
-              className={`eldorado-cell__item --${symbol} --frame`}
+              className={`lottery-grid-view2-cell__image lottery-grid-view2-cell__image--symbol-${symbol} lottery-grid-view2-cell__image--frame`}
             />
           </span>
         ) : staticImage ? (
           <img
             alt="image"
             src={staticImage}
-            className={`eldorado-cell__item --${symbol}`}
+            className={`lottery-grid-view2-cell__image lottery-grid-view2-cell__image--symbol-${symbol}`}
           />
         ) : (
-          <span className={`eldorado-cell__fallback --${symbol}`}>
+          <span className={`lottery-grid-view2-cell__fallback lottery-grid-view2-cell__fallback--symbol-${symbol}`}>
             {symbol}
           </span>
         )}

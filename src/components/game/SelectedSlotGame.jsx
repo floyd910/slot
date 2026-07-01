@@ -1,9 +1,9 @@
-import GameShell from "./GameShell.jsx";
-import { useGameController } from "../../hooks/useGameController.js";
-import "../../App.css";
+import { getGameComponent } from "../../games/gameRegistry.js";
 
 export default function SelectedSlotGame({ slotId, onBack }) {
-  const controller = useGameController(slotId);
+  const GameComponent = getGameComponent(slotId);
 
-  return <GameShell controller={controller} onBackToSlots={onBack} />;
+  if (!GameComponent) return null;
+
+  return <GameComponent slotId={slotId} onBack={onBack} />;
 }

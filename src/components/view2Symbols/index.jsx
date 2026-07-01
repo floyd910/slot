@@ -12,7 +12,7 @@ import Symbol10, { symbol10Assets } from "./Symbol10.jsx";
 import Symbol11, { symbol11Assets } from "./Symbol11.jsx";
 import Symbol12, { symbol12Assets } from "./Symbol12.jsx";
 import {
-  ELDORADO_WIN_CYCLE_MS,
+  VIEW2_SYMBOL_WIN_CYCLE_MS,
   view2SymbolAssetSources,
 } from "./View2SymbolBase.jsx";
 
@@ -54,7 +54,7 @@ export const VIEW2_SYMBOL_ASSET_SOURCES = Object.values(VIEW2_SYMBOL_CONFIGS)
 const getSymbolCycleMs = (assets) => {
   if (assets.cycleMs) return assets.cycleMs;
   if (!assets.winFrames?.length || assets.winFrames.length <= 1) return 0;
-  if (!assets.frameMs) return ELDORADO_WIN_CYCLE_MS;
+  if (!assets.frameMs) return VIEW2_SYMBOL_WIN_CYCLE_MS;
   const frameCount = assets.forwardLoop
     ? assets.winFrames.length
     : assets.winFrames.length * 2 - 2;
@@ -63,4 +63,4 @@ const getSymbolCycleMs = (assets) => {
 
 export const VIEW2_SYMBOL_GROUP_CYCLE_MS =
   Math.max(...Object.values(VIEW2_SYMBOL_CONFIGS).map(getSymbolCycleMs)) ||
-  ELDORADO_WIN_CYCLE_MS;
+  VIEW2_SYMBOL_WIN_CYCLE_MS;

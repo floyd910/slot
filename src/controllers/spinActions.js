@@ -15,6 +15,12 @@ import { getNextSpinDelayMs } from "../utils/spinTiming.js";
 import { asNumber } from "../utils/number.js";
 
 const VALID_FRAME_LINE_COUNTS = new Set([1, 3, 5, 7, 9]);
+const UNKNOWN_SPIN_RESULT_CODES = new Set([
+  "TIMEOUT",
+  "NETWORK_ERROR",
+  "NETWORK_UNREACHABLE",
+  "BACKEND_UNAVAILABLE",
+]);
 
 export const createSpinActions = ({
   autoPlayOnRef,
@@ -253,7 +259,23 @@ export const createSpinActions = ({
       return result;
     } catch (spinError) {
       setGridAnimation("settled");
-      if (stakeDeducted) {
+      const resultUnknown = UNKNOWN_SPIN_RESULT_CODES.has(spinError?.code);
+
+      if (resultUnknown) {
+        await frameApi
+          .recoverAfterTimeout({
+            request: {
+              requestId,
+              sessionId: context.sessionId,
+              gameId: context.gameId,
+            },
+          })
+          .catch(() => null);
+        postEvent("RECOVERY_REQUIRED", {
+          requestId,
+          message: "Spin result is unknown; blind retry is disabled.",
+        });
+      } else if (stakeDeducted) {
         setPlayer((current) =>
           current
             ? {

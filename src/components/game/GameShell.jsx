@@ -12,23 +12,27 @@ import GameContent from "./GameContent.jsx";
 export default function GameShell({ controller, onBackToSlots }) {
   const { isLanguageChanging, t } = useLanguage();
   const { actions, derived, state } = controller;
-  const runtimeState = derived.runtimeStateVisible && !isLanguageChanging ? (
-    <RuntimeState
-      status={state.status}
-      error={state.error}
-      mode={state.context.mode}
-      onRetry={actions.init}
-    />
-  ) : null;
+  const runtimeState =
+    derived.runtimeStateVisible && !isLanguageChanging ? (
+      <RuntimeState
+        status={state.status}
+        error={state.error}
+        mode={state.context.mode}
+        onRetry={actions.init}
+      />
+    ) : null;
 
   return (
     <div
       className={derived.shellClass}
       data-module-mode={state.context.mode}
-      data-startup-loading={state.startupLoaderVisible && !isLanguageChanging ? "true" : "false"}
+      data-startup-loading={
+        state.startupLoaderVisible && !isLanguageChanging ? "true" : "false"
+      }
     >
       <div className="game_area">
-        <img className="header_img" alt="Betproduct.com" src={GAME_HEADER_SRC} />
+        <div className="bg-overlay"></div>
+        <div className="header_img"></div>
 
         <div className="game-main-layout">
           <div className="frame-content">

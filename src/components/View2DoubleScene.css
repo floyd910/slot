@@ -1,0 +1,224 @@
+.view2-double {
+  position: relative;
+  z-index: -1;
+  width: 115%;
+  margin-top: 0;
+  margin-left: -8%;
+  overflow: hidden;
+  aspect-ratio: 1336 / 437;
+  isolation: isolate;
+  transform: translateX(8%);
+}
+
+.view2-double__landscape,
+.view2-double__arches {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  user-select: none;
+}
+
+.view2-double__landscape {
+  z-index: 0;
+  object-fit: fill;
+}
+
+.view2-double__arches {
+  z-index: 1;
+  object-fit: fill;
+  transform: scale(1.18, 1.08);
+  transform-origin: right bottom;
+}
+
+.view2-double__character {
+  position: absolute;
+  right: 12%;
+  bottom: 4%;
+  z-index: 3;
+  width: 23%;
+  height: auto;
+  transform: translateX(-220px) scaleY(0.67);
+  transform-origin: center bottom;
+  pointer-events: none;
+  user-select: none;
+}
+
+.doubling-desktop__ladder {
+  position: absolute;
+  top: 0;
+  left: calc(12% - 85px);
+  z-index: 4;
+  display: flex;
+  width: 16%;
+  height: 79%;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.doubling-desktop__ladder > img {
+  position: absolute;
+  width: 9%;
+  height: 100%;
+}
+
+.doubling-desktop__ladder > img:first-child {
+  left: calc(50% - 35px);
+  transform: translateX(-100%);
+}
+
+.doubling-desktop__ladder > img:nth-child(2) {
+  left: calc(50% + 35px);
+}
+
+.doubling-desktop__levels {
+  position: absolute;
+  top: 16.456%;
+  right: 7%;
+  bottom: auto;
+  left: 7%;
+  display: flex;
+  height: 83.544%;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.doubling-desktop__level {
+  position: relative;
+  display: grid;
+  height: 13%;
+  place-items: center;
+}
+
+.doubling-desktop__level img {
+  position: absolute;
+  width: 100%;
+  height: calc(100% + 10px);
+}
+
+.doubling-desktop__level span {
+  position: relative;
+  z-index: 1;
+  color: #35140d;
+  font-family: Arial Black, Arial, sans-serif;
+  font-size: clamp(0.7rem, 1.65vw, 1.5rem);
+  font-weight: 900;
+}
+
+.view2-double__choices {
+  position: absolute;
+  top: 48%;
+  left: 27%;
+  z-index: 5;
+  display: flex;
+  width: 29%;
+  justify-content: center;
+  gap: 2%;
+  transform: translate(-15px, calc(-50% + 5px));
+}
+
+.view2-double__choice {
+  position: relative;
+  display: flex;
+  flex: 0 0 calc(46% - 30px);
+  width: calc(46% - 30px);
+  align-items: flex-end;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  aspect-ratio: 144 / 137;
+  isolation: isolate;
+  transform: scaleY(0.5);
+  transform-origin: center bottom;
+}
+
+.view2-double__choice--right {
+  transform: scaleX(-1) scaleY(0.5);
+}
+
+.view2-double__chest-frame {
+  position: absolute;
+  bottom: 0;
+  left: -6.94445%;
+  width: 113.8889%;
+  height: calc(100% + 120px);
+  overflow: visible;
+}
+
+.view2-double__chest-frame img {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  display: block;
+  width: 87.8049%;
+  height: 100%;
+  object-fit: fill;
+  transform: translateX(-50%);
+}
+
+.view2-double__chest-frame img[src*="sprite_013_144x137_at_333_1554"] {
+  height: calc(100% - 40px);
+}
+
+.view2-double__chest-frame img[src*="sprite_014_164x160_at_1_1558"] {
+  left: 0;
+  width: 100%;
+  transform: none;
+}
+
+.view2-double__choice--left .view2-double__chest-frame img[src*="sprite_014_164x160_at_1_1558"],
+.view2-double__choice--right .view2-double__chest-frame img[src*="sprite_014_164x160_at_1_1558"] {
+  left: 5px;
+}
+
+.view2-double__choice-highlight {
+  position: absolute;
+  top: 0;
+  z-index: 4;
+  width: calc(14% - 20px);
+  height: 58%;
+  object-fit: fill;
+  filter: hue-rotate(42deg) saturate(0.72) brightness(2.25) contrast(0.76);
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.view2-double__choice-highlight--left {
+  left: 34.5%;
+}
+
+.view2-double__choice-highlight--right {
+  left: calc(48.5% - 30px);
+  transform: translateX(-50%) scaleX(-1);
+}
+
+.doubling-desktop__result {
+  position: absolute;
+  top: calc(74% + 15px);
+  left: calc(50% - 175px);
+  z-index: 6;
+  width: 15%;
+  transform: translate(-50%, -50%);
+}
+
+.doubling-desktop__result img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.doubling-desktop__result span {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  color: #35140d;
+  font-family: Arial Black, Arial, sans-serif;
+  font-size: clamp(0.7rem, 1.75vw, 1.55rem);
+  font-weight: 900;
+  place-items: center;
+}
+
+.view2-double__content {
+  width: 100%;
+}

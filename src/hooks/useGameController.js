@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { frameApi } from "../api/frameApi.js";
-import { ELDORADO_VIEW_ASSETS } from "../config/eldoradoAssets.js";
+import { VIEW2_ASSETS } from "../config/view2Assets.js";
 import {
   CARPET_ANIMATION_HALF_MS,
   CARPET_SOUND_SRC,
@@ -191,7 +191,7 @@ export function useGameController(selectedGameId) {
 
   useEffect(() => {
     if (!visualMode) return;
-    ELDORADO_VIEW_ASSETS.forEach((src) => {
+    VIEW2_ASSETS.forEach((src) => {
       preloadImage(src);
     });
   }, [visualMode]);
@@ -625,7 +625,7 @@ export function useGameController(selectedGameId) {
     (!pendingTicketWin && !canAffordSpin);
   const hideHeader =
     context.mode === "embedded" && context.featureFlags?.hiddenHeader !== false;
-  const shellClass = `frame-app mode-${context.mode} theme-${context.theme}${hideHeader ? " headerless" : ""}${expandedBoard || visualMode ? " expanded-board" : ""}${visualMode ? " view-2 --eldorado" : " view-1"}${isVisualDoubling ? " doubling-active" : ""}`;
+  const shellClass = `frame-app mode-${context.mode} theme-${context.theme}${hideHeader ? " headerless" : ""}${expandedBoard || visualMode ? " expanded-board" : ""}${visualMode ? " view-2" : " view-1"}${isVisualDoubling ? " doubling-active" : ""}`;
   const runtimeStateVisible = !["ready", "empty", "processing"].includes(status);
 
   const pressSpinButton = () => {

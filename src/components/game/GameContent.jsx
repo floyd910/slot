@@ -1,8 +1,8 @@
 import CombinationSelector from "../CombinationSelector.jsx";
 import GameAlert from "../GameAlert.jsx";
 import DoubleMode from "../DoubleMode.jsx";
-import EldoradoDoubleScene from "../EldoradoDoubleScene.jsx";
-import EldoradoPurchasePanel from "../EldoradoPurchasePanel.jsx";
+import View2DoubleScene from "../View2DoubleScene.jsx";
+import View2PurchasePanel from "../View2PurchasePanel.jsx";
 import Lobby from "../Lobby.jsx";
 import LotteryGrid from "../LotteryGrid.jsx";
 import WinningsDashboard from "../WinningDashboard.jsx";
@@ -44,7 +44,7 @@ export default function GameContent({ controller, runtimeState }) {
     <>
       <aside className="main-container__left">
         {derived.isVisualDoubling ? (
-          <EldoradoPurchasePanel
+          <View2PurchasePanel
             amount={
               state.doublingState.currentAmount ?? state.spinResult?.WinSum ?? 0
             }
@@ -64,7 +64,7 @@ export default function GameContent({ controller, runtimeState }) {
       <section className="main-container__center" aria-busy={derived.isBusy}>
         <GameAlert message={state.error} />
         {derived.isVisualDoubling ? (
-          <EldoradoDoubleScene
+          <View2DoubleScene
             amount={
               state.doublingState.currentAmount ?? state.spinResult?.WinSum ?? 0
             }
@@ -91,10 +91,6 @@ export default function GameContent({ controller, runtimeState }) {
               scatterCells={state.spinResult?.scatterCells}
               doublingState={state.doublingState}
             />
-            <span className="info_msg">
-              {moreInfoLines[0]} <br />
-              {moreInfoLines[1]}
-            </span>
           </>
         )}
       </section>

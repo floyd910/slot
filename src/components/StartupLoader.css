@@ -7,10 +7,12 @@
   background-image: var(--slot-chooser-bg);
   background-position: center center;
   background-repeat: no-repeat;
-  background-size: 100% 100%;
+  background-size: cover;
   opacity: 1;
   pointer-events: all;
-  transition: opacity 0.45s ease, visibility 0.45s ease;
+  transition:
+    opacity 0.45s ease,
+    visibility 0.45s ease;
 }
 
 .startup-loader__shade {

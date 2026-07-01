@@ -26,6 +26,7 @@ export default function SlotChooser({ interactive = true, onSelectSlot }) {
                   decoding="async"
                   fetchPriority="high"
                   loading="eager"
+                  draggable={false}
                 />
               ) : (
                 <img
@@ -34,6 +35,7 @@ export default function SlotChooser({ interactive = true, onSelectSlot }) {
                   decoding="async"
                   fetchPriority="low"
                   loading="eager"
+                  draggable={false}
                 />
               )}
             </button>
