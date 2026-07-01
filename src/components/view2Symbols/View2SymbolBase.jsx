@@ -51,7 +51,6 @@ export function View2SymbolBase({
   frameMs = null,
   animated = false,
   highlighted = false,
-  dimmed = false,
   comboBorder = null,
   animationKey = "",
 }) {
@@ -88,7 +87,7 @@ export function View2SymbolBase({
         : getPingPongFrameIndex(animationFrameTick, activeWinFrames.length)
       : 0;
 
-  const rootClass = `lottery-grid-view2-cell${isDice ? " lottery-grid-view2-cell--dice" : ""}${highlighted || animated ? " lottery-grid-view2-cell--glow" : ""}${isDice && (highlighted || animated) ? " lottery-grid-view2-cell--dice-video-selected" : ""}${dimmed ? " lottery-grid-view2-cell--dimmed" : ""}`;
+  const rootClass = `lottery-grid-view2-cell${isDice ? " lottery-grid-view2-cell--dice" : ""}`;
 
   return (
     <div className={rootClass}>
@@ -122,17 +121,17 @@ export function View2SymbolBase({
               alt=""
               aria-hidden="true"
               src={activeWinFrames[frameIndex]}
-              className={`lottery-grid-view2-cell__image lottery-grid-view2-cell__image--symbol-${symbol} lottery-grid-view2-cell__image--frame`}
+              className="lottery-grid-view2-cell__image"
             />
           </span>
         ) : staticImage ? (
           <img
             alt="image"
             src={staticImage}
-            className={`lottery-grid-view2-cell__image lottery-grid-view2-cell__image--symbol-${symbol}`}
+            className="lottery-grid-view2-cell__image"
           />
         ) : (
-          <span className={`lottery-grid-view2-cell__fallback lottery-grid-view2-cell__fallback--symbol-${symbol}`}>
+          <span className="lottery-grid-view2-cell__fallback">
             {symbol}
           </span>
         )}

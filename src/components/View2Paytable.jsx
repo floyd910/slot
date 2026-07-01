@@ -1,6 +1,6 @@
 import "./View2Paytable.css";
-import { PAYOUT_ROWS, formatPayoutValue } from "../utils/payoutTable.js";
 import { VIEW2_SYMBOL_CONFIGS } from "./view2Symbols/index.jsx";
+import { getView2MatchPayout } from "../viewModels/view2PaytableViewModel.js";
 
 const VIEW2_INFO_BACKGROUND =
   "/img/extracted/%D0%B8%D0%B3%D1%80%D0%B0-%D0%A5%D1%83%D1%88%D0%BA%D0%BE%D0%BB-%D1%8D%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82%D1%8B-%D0%B8%D0%B3%D1%80%D1%8B-1_0/sprite_001_1282x1026_at_1_1.png";
@@ -22,19 +22,11 @@ const VIEW2_COPY = {
   },
 };
 
-const symbolRows = new Map(PAYOUT_ROWS.map((row) => [row.symbol, row]));
-
 const getSymbolImage = (symbol) =>
   SYMBOL_FRAME[symbol]
     ? `/img/view2-symbols/symbol${symbol}/${SYMBOL_FRAME[symbol]}`
     : (VIEW2_SYMBOL_CONFIGS[symbol]?.staticImage ??
       `/img/view2-symbols/symbol${symbol}/1.png`);
-
-const getMatchPayout = (symbol, matchCount, payoutMultiplier) =>
-  formatPayoutValue(
-    symbolRows.get(symbol)?.values[matchCount - 1],
-    payoutMultiplier,
-  );
 
 function SymbolTile({ symbol, imageSymbol = symbol, className = "" }) {
   return (
@@ -55,7 +47,7 @@ function PayoutRows({ symbol, counts, payoutMultiplier, compact = false }) {
   return (
     <div className={`view2-info-payout-list${compact ? " --compact" : ""}`}>
       {counts.map((count) => {
-        const value = getMatchPayout(symbol, count, payoutMultiplier);
+        const value = getView2MatchPayout(symbol, count, payoutMultiplier);
 
         return (
           <div className="view2-info-payout-row" key={`${symbol}-${count}`}>

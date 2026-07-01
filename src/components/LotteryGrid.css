@@ -17,14 +17,6 @@
   height: 100%;
 }
 
-.lottery-grid-view1::before,
-.lottery-grid-view2::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
 .lottery-grid-view1__top {
   position: absolute;
   top: 20.32%;
@@ -55,7 +47,12 @@
   width: 100%;
   margin: 0;
   color: #050505;
-  font-family: Arial Black, Impact, Ubuntu, Arial, sans-serif;
+  font-family:
+    Arial Black,
+    Impact,
+    Ubuntu,
+    Arial,
+    sans-serif;
   font-size: 64px;
   font-weight: 900;
   line-height: 1;
@@ -67,22 +64,13 @@
   font-size: 0;
 }
 
-.lottery-grid-view1-cell--dimmed,
-.lottery-grid-view1-cell__wrapper--dimmed {
-  opacity: 0.5;
-}
-
 .lottery-grid-view1-cell__wrapper {
   position: relative;
   z-index: 1;
   width: 100%;
-  height: auto;
   overflow: hidden;
-  border: 0;
-  border-radius: 0;
-  background: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_010_101x101_at_249_875.png") center / 100% 100% no-repeat;
-  box-shadow: none;
-  transition: none;
+  background: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_010_101x101_at_249_875.png")
+    center / 100% 100% no-repeat;
 }
 
 .lottery-grid-view1-cell__wrapper--glow {
@@ -104,11 +92,8 @@
 .lottery-grid-view1__top
   .lottery-grid-view1-cell--revealing
   .lottery-grid-view1-cell__wrapper {
-  animation: lottery-grid-view1-cell-bg-reveal 0s linear var(--view1-cell-reveal-delay, 0ms) forwards;
-}
-
-.lottery-grid-view1__bottom .lottery-grid-view1-cell__wrapper {
-  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_010_101x101_at_249_875.png");
+  animation: lottery-grid-view1-cell-bg-reveal 0s linear
+    var(--view1-cell-reveal-delay, 0ms) forwards;
 }
 
 .lottery-grid-view1__bottom
@@ -121,7 +106,6 @@
   display: block;
   width: 100%;
   padding-bottom: 69.47%;
-  border-radius: 0;
 }
 
 .lottery-grid-view1-cell--small .lottery-grid-view1-cell__container {
@@ -138,12 +122,7 @@
   justify-content: center;
   width: 82%;
   height: 82%;
-  overflow: visible;
-  border-radius: 0;
-  background: transparent;
-  mask-image: none;
   transform: translate(-50%, -50%);
-  -webkit-mask-image: none;
 }
 
 .lottery-grid-view1-cell--small .lottery-grid-view1-cell__image {
@@ -173,7 +152,8 @@
 
 .lottery-grid-view1-cell--revealing .lottery-grid-view1-cell__value {
   visibility: hidden;
-  animation: lottery-grid-view1-cell-value-visible 0s linear var(--view1-cell-reveal-delay, 0ms) forwards;
+  animation: lottery-grid-view1-cell-value-visible 0s linear
+    var(--view1-cell-reveal-delay, 0ms) forwards;
 }
 
 .lottery-grid-view1-cell__image--concealed .lottery-grid-view1-cell__value {
@@ -229,15 +209,6 @@
   justify-items: center;
   min-height: 0;
   padding: 0.5%;
-  border: 0;
-  background: transparent;
-  backdrop-filter: none;
-}
-
-.lottery-grid-view2::before {
-  border-radius: 0.8333333333rem;
-  box-shadow: none;
-  filter: blur(0.2px);
 }
 
 .lottery-grid-view2-cell {
@@ -245,16 +216,11 @@
   height: 100%;
 }
 
-.lottery-grid-view2-cell--dimmed {
-  opacity: 0.3;
-}
-
 .lottery-grid-view2-cell__container {
   position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
-  padding-bottom: 0;
 }
 
 .lottery-grid-view2-cell__image {
@@ -264,14 +230,12 @@
   z-index: 1;
   width: 100%;
   height: 100%;
-  object-fit: fill;
   transform: translate(-50%, -50%);
 }
 
 .lottery-grid-view2-cell--dice .lottery-grid-view2-cell__image {
   width: 60%;
   height: 70%;
-  object-fit: fill;
 }
 
 .lottery-grid-view2-cell__background {
@@ -280,7 +244,6 @@
   z-index: 0;
   width: 100%;
   height: 100%;
-  object-fit: fill;
 }
 
 .lottery-grid-view2-cell__combo-border {
@@ -289,7 +252,6 @@
   z-index: 3;
   width: 100%;
   height: 100%;
-  object-fit: fill;
   pointer-events: none;
 }
 
@@ -297,10 +259,6 @@
   position: absolute;
   inset: 0;
   z-index: 2;
-}
-
-.lottery-grid-view2-cell__animation .lottery-grid-view2-cell__image {
-  opacity: 1;
 }
 
 .lottery-grid-view2-cell__fallback {
@@ -313,7 +271,11 @@
   border: 0.12rem solid rgba(255, 229, 139, 0.92);
   border-radius: 50%;
   background:
-    radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.34), transparent 24%),
+    radial-gradient(
+      circle at 35% 28%,
+      rgba(255, 255, 255, 0.34),
+      transparent 24%
+    ),
     linear-gradient(180deg, #f1c75d 0%, #a8661d 55%, #3f2110 100%);
   box-shadow:
     inset 0 0 0 0.15rem rgba(72, 34, 8, 0.42),
@@ -331,7 +293,6 @@
   position: absolute;
   inset: 0;
   z-index: 5;
-  background-image: none;
   pointer-events: none;
   animation: lottery-grid-view2-dice-shine-edge-path 2.8s linear infinite;
 }
@@ -341,7 +302,10 @@
   content: "";
   position: absolute;
   inset: 0;
-  background-image: var(--view2-dice-shine-image, url("/img/reference/dice-shine-video-sprite.png"));
+  background-image: var(
+    --view2-dice-shine-image,
+    url("/img/reference/dice-shine-video-sprite.png")
+  );
   background-repeat: no-repeat;
   background-size: 1000% 600%;
   pointer-events: none;
@@ -349,14 +313,16 @@
 
 .lottery-grid-view2-cell__dice-shine::before {
   background-position: 33.3333% 0%;
-  animation: lottery-grid-view2-dice-base-frame-visibility 2.8s steps(1, end) infinite;
+  animation: lottery-grid-view2-dice-base-frame-visibility 2.8s steps(1, end)
+    infinite;
 }
 
 .lottery-grid-view2-cell__dice-shine::after {
   background-position: 22.2222% 0%;
   opacity: 0;
   transform: translate3d(-9.78%, -9%, 0);
-  animation: lottery-grid-view2-dice-bottom-frame-visibility 2.8s steps(1, end) infinite;
+  animation: lottery-grid-view2-dice-bottom-frame-visibility 2.8s steps(1, end)
+    infinite;
 }
 
 .lottery-grid-view2-cover {
@@ -375,12 +341,6 @@
   opacity: 0;
 }
 
-.lottery-grid-view2-cover--spinning,
-.lottery-grid-view2-cover--revealing {
-  opacity: 1;
-  visibility: visible;
-}
-
 .lottery-grid-view2-cover__sheet {
   position: absolute;
   inset: 0;
@@ -392,11 +352,13 @@
 }
 
 .lottery-grid-view2-cover__sheet--close {
-  animation: lottery-grid-view2-cover-close var(--carpet-close-duration, 1.455s) linear forwards;
+  animation: lottery-grid-view2-cover-close var(--carpet-close-duration, 1.455s)
+    linear forwards;
 }
 
 .lottery-grid-view2-cover__sheet--open {
-  animation: lottery-grid-view2-cover-open var(--carpet-open-duration, 1.455s) linear forwards;
+  animation: lottery-grid-view2-cover-open var(--carpet-open-duration, 1.455s)
+    linear forwards;
 }
 
 .lottery-grid-view2-cover__roll {
@@ -411,17 +373,14 @@
 }
 
 .lottery-grid-view2-cover__roll--close {
-  animation: lottery-grid-view2-cover-roll-close var(--carpet-close-duration, 1.455s) linear forwards;
+  animation: lottery-grid-view2-cover-roll-close
+    var(--carpet-close-duration, 1.455s) linear forwards;
 }
 
 .lottery-grid-view2-cover__roll--open {
-  animation: lottery-grid-view2-cover-roll-open var(--carpet-open-duration, 1.455s) linear forwards;
+  animation: lottery-grid-view2-cover-roll-open
+    var(--carpet-open-duration, 1.455s) linear forwards;
   transform: scaleX(-1);
-}
-
-.expanded-board .lottery-grid-view1 {
-  height: 100%;
-  transform: none;
 }
 
 .expanded-board .lottery-grid-view1__top,
@@ -433,8 +392,6 @@
   width: 90%;
   height: calc(32.9402173925vw - 14.8230978261px);
   aspect-ratio: auto;
-  background: transparent;
-  background-image: none;
 }
 
 @keyframes lottery-grid-view1-cell-bg-reveal {

@@ -1,5 +1,7 @@
-import "./CombinationSelector.css";
+import { useMemo } from "react";
 import { useLanguage } from "../i18n.jsx";
+import { buildCombinationSelectorItems } from "../viewModels/combinationSelectorViewModel.js";
+import "./CombinationSelector.css";
 
 export default function CombinationSelector({
   combinations,
@@ -8,65 +10,47 @@ export default function CombinationSelector({
   onSelect,
 }) {
   const { t } = useLanguage();
+  const items = useMemo(
+    () => buildCombinationSelectorItems(combinations, selectedCombinationId),
+    [combinations, selectedCombinationId],
+  );
+
   return (
     <div className={`combination-group${disabled ? " --disabled" : ""}`}>
       <label>
-        Выбор лотерейной <br />
-        комбинации
+        Р’С‹Р±РѕСЂ Р»РѕС‚РµСЂРµР№РЅРѕР№ <br />
+        РєРѕРјР±РёРЅР°С†РёРё
       </label>
-      {combinations.map((combo) => (
+      {items.map((item) => (
         <div
-          key={combo.id}
-          className={`combination-item${combo.id === selectedCombinationId ? " --glow" : ""}`}
-          id={`combi-${combo.id}`}
+          key={item.id}
+          className={`combination-item${item.isSelected ? " --glow" : ""}`}
+          id={`combi-${item.id}`}
           role="button"
           tabIndex={disabled ? -1 : 0}
           onClick={() => {
-            if (!disabled) onSelect(combo.id);
+            if (!disabled) onSelect(item.id);
           }}
           onKeyDown={(event) => {
             if (disabled || (event.key !== "Enter" && event.key !== " "))
               return;
             event.preventDefault();
-            onSelect(combo.id);
+            onSelect(item.id);
           }}
         >
           <div className="combination-info">
             <h4 className="combination-item__title">{t("combination")}</h4>
             <p className="combination-item__subTitle">
-              <span className="flex">
-                {t("coordinateGroup")} {t("coordinates")}
-              </span>
-              <span ckassName="flex">
-                {renderCombinationTexts(combo, t("coordinates").length)}{" "}
-                {combo.id !== 1 && <>{t("orCombination")}</>}
-              </span>
+              {t("coordinateGroup")} {t("coordinates")}{" "}
+              {item.displayTexts.map((text, index) => (
+                <span key={`${item.id}-${text}-${index}`}>{text}</span>
+              ))}{" "}
+              {item.id !== 1 && <>{t("orCombination")}</>}
             </p>
           </div>
-          <span className="combination-item__count">{combo.title}</span>
+          <span className="combination-item__count">{item.count}</span>
         </div>
       ))}
     </div>
   );
-}
-
-function getCombinationTexts(combo) {
-  if (Array.isArray(combo.displayGroups)) return combo.displayGroups;
-  return (combo.groups ?? []).map((group) =>
-    group.map(formatCoordinate).join("-"),
-  );
-}
-
-function renderCombinationTexts(combo, labelLength) {
-  return getCombinationTexts(combo).flatMap((text, index, list) => {
-    const item = <>{text}</>;
-    return item;
-  });
-}
-
-function formatCoordinate(coord) {
-  return String(coord)
-    .replace(/^A/, "\u0410")
-    .replace(/^B/, "\u0412")
-    .replace(/^C/, "\u0421");
 }

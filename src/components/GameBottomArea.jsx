@@ -1,8 +1,6 @@
 import "./GameBottomArea.css";
 import { useLanguage } from "../i18n.jsx";
-import { getTicketWinAmount } from "../utils/gameResult.js";
-
-const formatMoney = (value) => Number(value ?? 0).toFixed(2);
+import { buildGameBottomAreaViewModel } from "../viewModels/gameBottomAreaViewModel.js";
 
 export default function GameBottomArea({
   player,
@@ -13,23 +11,34 @@ export default function GameBottomArea({
   revealComplete = true,
 }) {
   const { t } = useLanguage();
-  const combinationCount = selectedCombination?.groups?.length ?? 1;
-  const cashback = Number(player?.balance ?? 0) * 0.1;
-  const ticketWin = revealComplete ? getTicketWinAmount(spinResult) : 0;
+  const view = buildGameBottomAreaViewModel({
+    player,
+    revealComplete,
+    selectedCombination,
+    spinResult,
+    stake,
+    t,
+    totalPurchase,
+  });
 
   return (
     <section className="game-bottom-area" aria-label={t("gameStatus")}>
       <div className="game-bottom-area__top">
-        <div className="game-bottom-area__message">{t("chooseCoordinateGroup")}</div>
-        <div className="game-bottom-area__message">{t("minimumPurchase")}</div>
+        {view.messages.map((message) => (
+          <div className="game-bottom-area__message" key={message}>
+            {message}
+          </div>
+        ))}
       </div>
       <div className="game-bottom-area__fields">
-        <BottomField title={t("balance")} value={formatMoney(player?.balance)} />
-        <BottomField title={t("purchaseAmount")} value={formatMoney(totalPurchase)} />
-        <BottomField title={t("cashback")} value={formatMoney(cashback)} />
-        <BottomField title="" value={formatMoney(ticketWin)} />
-        <BottomField title={t("lotteryCombination")} value={combinationCount} compact />
-        <BottomField title={t("lotteryBet")} value={formatMoney(stake)} />
+        {view.fields.map((field, index) => (
+          <BottomField
+            key={`${field.title}-${index}`}
+            compact={field.compact}
+            title={field.title}
+            value={field.value}
+          />
+        ))}
       </div>
     </section>
   );

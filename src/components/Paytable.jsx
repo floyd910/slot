@@ -1,18 +1,9 @@
-import { useEffect } from "react";
 import "./Paytable.css";
 import { useLanguage } from "../i18n.jsx";
 import View2Paytable from "./View2Paytable.jsx";
-import {
-  BASE_PAYOUT_STAKE,
-  PAYOUT_COLUMNS,
-  PAYOUT_ROWS,
-  formatPayoutGroup,
-  formatPayoutStake,
-  formatPayoutValue,
-  getCombinationGroups,
-  getCombinationNumber,
-  getPayoutMultiplier,
-} from "../utils/payoutTable.js";
+import { useEscapeKey } from "../hooks/useEscapeKey.js";
+import { BASE_PAYOUT_STAKE } from "../utils/payoutTable.js";
+import { buildStandardPaytableViewModel } from "../viewModels/paytableViewModel.js";
 
 const PAYTABLE_COPY = {
   ru: {
@@ -65,21 +56,8 @@ export default function Paytable({
 }) {
   const { isLanguageChanging, language, t } = useLanguage();
   const copy = PAYTABLE_COPY[language] ?? PAYTABLE_COPY.ru;
-  const combinationNumber = getCombinationNumber(selectedCombination);
-  const combinationGroups = getCombinationGroups(
-    selectedCombination,
-    combinationNumber,
-  );
-  const payoutMultiplier = getPayoutMultiplier(stake, selectedCombination);
-
-  useEffect(() => {
-    const closeOnEscape = (event) => {
-      if (event.key === "Escape") onClose?.();
-    };
-
-    window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [onClose]);
+  const view = buildStandardPaytableViewModel({ stake, selectedCombination });
+  useEscapeKey(onClose);
 
   return (
     <section
@@ -89,7 +67,7 @@ export default function Paytable({
       {loading && !isLanguageChanging && <div className="info-paytable-state">{t("loading")}</div>}
       {error && <div className="info-paytable-state --error">{error}</div>}
       {!loading && !error && visualMode && (
-        <View2Paytable language={language} payoutMultiplier={payoutMultiplier} />
+        <View2Paytable language={language} payoutMultiplier={view.payoutMultiplier} />
       )}
       {!loading && !error && !visualMode && (
         <div className="info-paytable">
@@ -100,7 +78,7 @@ export default function Paytable({
               <col className="info-paytable__combo-col" />
               <col className="info-paytable__groups-col" />
               <col className="info-paytable__symbol-col" />
-              {PAYOUT_COLUMNS.map((column) => (
+              {view.columns.map((column) => (
                 <col className="info-paytable__payout-col" key={column} />
               ))}
             </colgroup>
@@ -110,36 +88,36 @@ export default function Paytable({
                 <th rowSpan="2">{renderLines(copy.combinationHeader)}</th>
                 <th rowSpan="2">{renderLines(copy.groupsHeader)}</th>
                 <th rowSpan="2">{renderLines(copy.symbolHeader)}</th>
-                <th colSpan={PAYOUT_COLUMNS.length}>{renderLines(copy.payoutHeader)}</th>
+                <th colSpan={view.columns.length}>{renderLines(copy.payoutHeader)}</th>
               </tr>
               <tr>
-                {PAYOUT_COLUMNS.map((column) => (
+                {view.columns.map((column) => (
                   <th key={column}>{column}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
-              {PAYOUT_ROWS.map((row, index) => (
+              {view.rows.map((row, index) => (
                 <tr key={row.symbol}>
                   {index === 0 && (
                     <>
-                      <td className="info-paytable__merged" rowSpan={PAYOUT_ROWS.length}>
-                        {formatPayoutStake(stake)}
+                      <td className="info-paytable__merged" rowSpan={view.rowSpan}>
+                        {view.stakeLabel}
                       </td>
-                      <td className="info-paytable__merged" rowSpan={PAYOUT_ROWS.length}>
-                        {combinationNumber}
+                      <td className="info-paytable__merged" rowSpan={view.rowSpan}>
+                        {view.combinationNumber}
                       </td>
-                      <td className="info-paytable__merged --groups" rowSpan={PAYOUT_ROWS.length}>
-                        {combinationGroups.map((group) => (
-                          <span key={formatPayoutGroup(group)}>{formatPayoutGroup(group)}</span>
+                      <td className="info-paytable__merged --groups" rowSpan={view.rowSpan}>
+                        {view.groupLabels.map((groupLabel) => (
+                          <span key={groupLabel}>{groupLabel}</span>
                         ))}
                       </td>
                     </>
                   )}
                   <td className="info-paytable__symbol">{row.symbol}</td>
                   {row.values.map((value, valueIndex) => (
-                    <td className="info-paytable__value" key={`${row.symbol}-${PAYOUT_COLUMNS[valueIndex]}`}>
-                      {formatPayoutValue(value, payoutMultiplier)}
+                    <td className="info-paytable__value" key={`${row.symbol}-${view.columns[valueIndex]}`}>
+                      {value}
                     </td>
                   ))}
                 </tr>

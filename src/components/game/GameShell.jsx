@@ -4,7 +4,7 @@ import GameMenu from "../GameMenu.jsx";
 import Paytable from "../Paytable.jsx";
 import RuntimeState from "../RuntimeState.jsx";
 import StartupLoader from "../StartupLoader.jsx";
-import { GAME_HEADER_SRC } from "../../config/gameAssets.js";
+import { GAME3_COVER_SRC } from "../../config/gameAssets.js";
 import { useLanguage } from "../../i18n.jsx";
 import FreeSpinsPrompt from "./FreeSpinsPrompt.jsx";
 import GameContent from "./GameContent.jsx";
@@ -31,6 +31,15 @@ export default function GameShell({ controller, onBackToSlots }) {
       }
     >
       <div className="game_area">
+        <img
+          className="game_area__background"
+          src={GAME3_COVER_SRC}
+          alt=""
+          aria-hidden="true"
+          decoding="async"
+          fetchPriority="high"
+          draggable={false}
+        />
         <div className="bg-overlay"></div>
         <div className="header_img"></div>
 

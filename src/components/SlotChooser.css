@@ -17,8 +17,16 @@
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.slot-chooser,
+.slot-chooser * {
+  -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
+  -webkit-user-drag: none;
   -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
 }
 
@@ -56,9 +64,7 @@
   -webkit-appearance: none;
   cursor: pointer;
   line-height: 0;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
+  touch-action: manipulation;
 }
 
 .slot:disabled {
@@ -71,10 +77,6 @@
   width: 100%;
   height: auto;
   pointer-events: none;
-  -webkit-user-drag: none;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
 }
 
 @media (max-width: 1129px) {

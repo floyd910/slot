@@ -7,14 +7,16 @@ import Lobby from "../Lobby.jsx";
 import LotteryGrid from "../LotteryGrid.jsx";
 import WinningsDashboard from "../WinningDashboard.jsx";
 import { useLanguage } from "../../i18n.jsx";
+import { buildGameContentViewModel } from "../../viewModels/gameContentViewModel.js";
 
 export default function GameContent({ controller, runtimeState }) {
   const { t } = useLanguage();
   const { actions, derived, state } = controller;
+  const view = buildGameContentViewModel({ derived, state });
 
   if (runtimeState) return runtimeState;
 
-  if (!state.currentGame) {
+  if (view.showLobby) {
     return (
       <Lobby
         games={state.games}
@@ -38,15 +40,10 @@ export default function GameContent({ controller, runtimeState }) {
     );
   }
 
-  const gridMissing = !derived.isVisualDoubling && !hasPlayableGrid(state.grid);
-  const alertMessage =
-    state.error ||
-    (gridMissing ? "Game session out of sync. Disconnecting board..." : "");
-
   return (
     <>
       <aside className="main-container__left">
-        {derived.isVisualDoubling ? (
+        {view.showVisualDouble ? (
           <View2PurchasePanel
             amount={
               state.doublingState.currentAmount ?? state.spinResult?.WinSum ?? 0
@@ -65,8 +62,8 @@ export default function GameContent({ controller, runtimeState }) {
         )}
       </aside>
       <section className="main-container__center" aria-busy={derived.isBusy}>
-        <GameAlert message={alertMessage} />
-        {derived.isVisualDoubling ? (
+        <GameAlert message={view.alertMessage} />
+        {view.showVisualDouble ? (
           <View2DoubleScene
             amount={
               state.doublingState.currentAmount ?? state.spinResult?.WinSum ?? 0
@@ -81,7 +78,7 @@ export default function GameContent({ controller, runtimeState }) {
             onPick={actions.playFooterDouble}
           />
         ) : (
-          !gridMissing && (
+          view.showStandardGame && (
             <LotteryGrid
               grid={state.grid}
               revealKey={state.gridRevealKey}
@@ -98,7 +95,7 @@ export default function GameContent({ controller, runtimeState }) {
         )}
       </section>
 
-      {!derived.isVisualDoubling && (
+      {view.showRightPanel && (
         <div className="main-container__right">
           <WinningsDashboard
             stake={state.stake}
@@ -111,8 +108,4 @@ export default function GameContent({ controller, runtimeState }) {
       )}
     </>
   );
-}
-
-function hasPlayableGrid(grid) {
-  return Boolean(grid?.A?.length && grid?.B?.length && grid?.C?.length);
 }

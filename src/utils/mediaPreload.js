@@ -1,13 +1,13 @@
 import { VIEW2_ASSETS } from "../config/view2Assets.js";
 import {
-  CRITICAL_GAME_IMAGE_ASSETS,
+  DEFERRED_GAME_IMAGE_ASSETS,
+  FIRST_PAINT_GAME_IMAGE_ASSETS,
   STARTUP_ASSETS,
 } from "../config/gameAssets.js";
 import {
   CARPET_SOUND_FALLBACK_MS,
   IMAGE_PRELOAD_TIMEOUT_MS,
 } from "../config/gameSettings.js";
-import { wait } from "./async.js";
 
 const CSS_URL_PATTERN = /url\(\s*(['"]?)(.*?)\1\s*\)/g;
 
@@ -107,7 +107,7 @@ export const preloadImage = (
       resolve(normalizedSrc);
     };
 
-    image.decoding = decode ? "sync" : "async";
+    image.decoding = "async";
     image.fetchPriority = fetchPriority;
     image.onload = finish;
     image.onerror = fail;
@@ -129,6 +129,14 @@ export const preloadRequiredImages = (sources) =>
     fetchPriority: "high",
     rejectOnError: true,
     timeoutMs: null,
+  });
+
+const preloadDeferredImages = (sources) =>
+  preloadImages(sources, {
+    decode: false,
+    fetchPriority: "low",
+    rejectOnError: false,
+    timeoutMs: IMAGE_PRELOAD_TIMEOUT_MS,
   });
 
 const preloadVideo = (src) =>
@@ -177,25 +185,30 @@ export const loadAudioDurationMs = (src) =>
     audio.load();
   });
 
+const fontReady = () => document.fonts?.ready?.catch?.(() => {}) ?? Promise.resolve();
+
 const loadStartupAssets = async () => {
-  const fontReady =
-    document.fonts?.ready?.catch?.(() => {}) ?? Promise.resolve();
-  const requiredImages = uniqueUrls([
+  await preloadRequiredImages(FIRST_PAINT_GAME_IMAGE_ASSETS);
+};
+
+const loadDeferredStartupAssets = async () => {
+  const criticalUrls = new Set(uniqueUrls(FIRST_PAINT_GAME_IMAGE_ASSETS));
+  const deferredImages = uniqueUrls([
     ...STARTUP_ASSETS.images,
-    ...CRITICAL_GAME_IMAGE_ASSETS,
+    ...DEFERRED_GAME_IMAGE_ASSETS,
     ...VIEW2_ASSETS,
     ...collectStylesheetImageUrls(),
-  ]);
+  ]).filter((src) => !criticalUrls.has(src));
 
-  await preloadRequiredImages(requiredImages);
   await Promise.all([
-    fontReady,
+    preloadDeferredImages(deferredImages),
+    fontReady(),
     ...STARTUP_ASSETS.videos.map(preloadVideo),
-    wait(900),
   ]);
 };
 
 let startupAssetsPromise = null;
+let deferredStartupAssetsPromise = null;
 
 export const preloadStartupAssets = () => {
   startupAssetsPromise ??= loadStartupAssets().catch((error) => {
@@ -203,4 +216,12 @@ export const preloadStartupAssets = () => {
     throw error;
   });
   return startupAssetsPromise;
+};
+
+export const preloadDeferredStartupAssets = () => {
+  deferredStartupAssetsPromise ??= loadDeferredStartupAssets().catch((error) => {
+    deferredStartupAssetsPromise = null;
+    throw error;
+  });
+  return deferredStartupAssetsPromise;
 };
