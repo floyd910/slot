@@ -1,5 +1,17 @@
 export const SLOT_CHOOSER_BACKGROUND_SRC = "/assets/img/cover.png";
-export const SLOT_CHOOSER_BACKGROUND_1280_SRC = "/assets/img/landing-page-1280.png";
+export const SLOT_CHOOSER_TILE_ASSETS = [
+  "/assets/img/xiramandi-makor.png",
+  "/assets/img/logo-frame.png",
+];
+
+export const GAME3_COVER_SRC = "/assets/img/game3-cover.png";
+export const GAME3_LOGO_SRC = "/assets/img/game3-logo.png";
+export const GAME3_LOGO_ORNAMENT_SRC = "/assets/img/game3-logo-ornament.png";
+export const GAME3_SHELL_ASSETS = [
+  GAME3_COVER_SRC,
+  GAME3_LOGO_SRC,
+  GAME3_LOGO_ORNAMENT_SRC,
+];
 
 const GAME_ASSET_DIR = "/img/extracted/\u0438\u0433\u0440\u0430-\u0425\u0443\u0448\u043a\u043e\u043b-\u044d\u043b\u0435\u043c\u0435\u043d\u0442\u044b-\u0438\u0433\u0440\u044b-1_0";
 const PAYTABLE_ASSET_DIR = "/img/extracted/\u0438\u0433\u0440\u0430-\u0425\u0443\u0448\u043a\u043e\u043b-\u044d\u043b\u0435\u043c\u0435\u043d\u0442\u044b-\u0442\u0430\u0431\u043b\u0438\u0446\u0430-\u0432\u044b\u0438\u0433\u0440\u044b\u0448\u0435\u0439-1_1";
@@ -42,6 +54,7 @@ export const DOUBLE_SCENE_ASSETS = [
 ].map((file) => DOUBLE_SCENE_ASSET_DIR + "/" + file);
 
 export const CRITICAL_GAME_IMAGE_ASSETS = [
+  ...GAME3_SHELL_ASSETS,
   GAME_AREA_BACKGROUND_SRC,
   GAME_AREA_FOOTER_SRC,
   GAME_HEADER_SRC,
@@ -51,7 +64,7 @@ export const CRITICAL_GAME_IMAGE_ASSETS = [
 export const STARTUP_ASSETS = {
   images: [
     SLOT_CHOOSER_BACKGROUND_SRC,
-    SLOT_CHOOSER_BACKGROUND_1280_SRC,
+    ...SLOT_CHOOSER_TILE_ASSETS,
     ...CRITICAL_GAME_IMAGE_ASSETS,
     PAYTABLE_ASSET_DIR + "/sprite_001_1282x1026_at_1_1.png",
     SIDE_BUTTON_ASSET_DIR + "/sprite_001_284x152_at_1_1.png",

@@ -1,25 +1,17 @@
 import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import SlotChooser from "./components/SlotChooser.jsx";
 import StartupLoader from "./components/StartupLoader.jsx";
-import { preloadImage, preloadStartupAssets } from "./utils/mediaPreload.js";
+import {
+  SLOT_CHOOSER_BACKGROUND_SRC,
+  SLOT_CHOOSER_TILE_ASSETS,
+} from "./config/gameAssets.js";
+import {
+  preloadRequiredImages,
+  preloadStartupAssets,
+} from "./utils/mediaPreload.js";
 
 const loadSelectedSlotGame = () => import("./components/game/SelectedSlotGame.jsx");
 const SelectedSlotGame = lazy(loadSelectedSlotGame);
-
-const CHOOSER_BACKGROUND_ASSETS = {
-  large: "/assets/img/cover.png",
-  max1280: "/assets/img/landing-page-1280.png",
-};
-
-const CHOOSER_TILE_ASSETS = [
-  "/assets/img/xiramandi-makor.png",
-  "/assets/img/logo-frame.png",
-];
-
-const getChooserBackgroundAsset = () =>
-  window.matchMedia?.("(max-width: 1280px)").matches
-    ? CHOOSER_BACKGROUND_ASSETS.max1280
-    : CHOOSER_BACKGROUND_ASSETS.large;
 
 const notifySlotChooserReady = () => {
   if (window.parent === window) return;
@@ -46,36 +38,38 @@ const notifySlotChooserReady = () => {
   );
 };
 
-const preloadChooserImage = (src) =>
-  preloadImage(src, {
-    decode: true,
-    fetchPriority: "high",
-    timeoutMs: null,
-  });
-
 export default function App() {
   const [chooserAssetsReady, setChooserAssetsReady] = useState(false);
   const [selectedSlotId, setSelectedSlotId] = useState(null);
   const [pendingSlotId, setPendingSlotId] = useState(null);
+  const chooserReadyNotifiedRef = useRef(false);
   const openRequestRef = useRef(0);
 
   useEffect(() => {
     let active = true;
-    const backgroundAsset = getChooserBackgroundAsset();
-    const requiredAssets = [backgroundAsset, ...CHOOSER_TILE_ASSETS];
+    const requiredAssets = [SLOT_CHOOSER_BACKGROUND_SRC, ...SLOT_CHOOSER_TILE_ASSETS];
 
-    Promise.all(requiredAssets.map(preloadChooserImage)).then(() => {
-      if (!active) return;
-      setChooserAssetsReady(true);
-      notifySlotChooserReady();
-      Object.values(CHOOSER_BACKGROUND_ASSETS)
-        .filter((src) => src !== backgroundAsset)
-        .forEach(preloadChooserImage);
-    });
+    preloadRequiredImages(requiredAssets)
+      .then(() => {
+        if (!active) return;
+        setChooserAssetsReady(true);
+      })
+      .catch((assetError) => {
+        console.error(assetError);
+      });
     return () => {
       active = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (!chooserAssetsReady || chooserReadyNotifiedRef.current) return;
+    chooserReadyNotifiedRef.current = true;
+    const firstFrame = window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(notifySlotChooserReady);
+    });
+    return () => window.cancelAnimationFrame(firstFrame);
+  }, [chooserAssetsReady]);
 
   const openSlot = async (slot) => {
     if (slot.status !== "ready" || selectedSlotId || pendingSlotId) return;
@@ -84,8 +78,13 @@ export default function App() {
     openRequestRef.current = requestId;
     setPendingSlotId(slot.id);
 
-    await loadSelectedSlotGame();
-    await preloadStartupAssets();
+    try {
+      await loadSelectedSlotGame();
+      await preloadStartupAssets();
+    } catch (assetError) {
+      console.error(assetError);
+      return;
+    }
 
     if (openRequestRef.current !== requestId) return;
     setSelectedSlotId(slot.id);

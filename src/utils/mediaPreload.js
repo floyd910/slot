@@ -20,6 +20,10 @@ export const toPreloadUrl = (src) => {
   }
 };
 
+const uniqueUrls = (sources) => [
+  ...new Set(sources.map(toPreloadUrl).filter(Boolean)),
+];
+
 const collectCssImageUrlsFromText = (text, urls) => {
   CSS_URL_PATTERN.lastIndex = 0;
   let match = CSS_URL_PATTERN.exec(text);
@@ -58,20 +62,30 @@ export const preloadImage = (
   {
     decode = true,
     fetchPriority = "high",
+    rejectOnError = false,
     timeoutMs = IMAGE_PRELOAD_TIMEOUT_MS,
   } = {},
 ) =>
-  new Promise((resolve) => {
+  new Promise((resolve, reject) => {
     const normalizedSrc = toPreloadUrl(src);
     if (!normalizedSrc) {
       resolve();
       return;
     }
+
     const image = new Image();
     let settled = false;
-    const done = async () => {
+    let timeoutId = null;
+
+    const clearTimer = () => {
+      if (timeoutId) window.clearTimeout(timeoutId);
+      timeoutId = null;
+    };
+
+    const finish = async () => {
       if (settled) return;
       settled = true;
+      clearTimer();
       if (decode && image.decode) {
         try {
           await image.decode();
@@ -79,14 +93,42 @@ export const preloadImage = (
           // Loaded images can still reject decode in some browsers.
         }
       }
-      resolve();
+      resolve(normalizedSrc);
     };
-    image.decoding = "async";
+
+    const fail = () => {
+      if (settled) return;
+      settled = true;
+      clearTimer();
+      if (rejectOnError) {
+        reject(new Error(`Failed to preload required image: ${normalizedSrc}`));
+        return;
+      }
+      resolve(normalizedSrc);
+    };
+
+    image.decoding = decode ? "sync" : "async";
     image.fetchPriority = fetchPriority;
-    image.onload = done;
-    image.onerror = done;
-    if (timeoutMs) window.setTimeout(done, timeoutMs);
+    image.onload = finish;
+    image.onerror = fail;
+    if (timeoutMs) {
+      timeoutId = window.setTimeout(() => {
+        if (rejectOnError) fail();
+        else finish();
+      }, timeoutMs);
+    }
     image.src = normalizedSrc;
+  });
+
+export const preloadImages = (sources, options = {}) =>
+  Promise.all(uniqueUrls(sources).map((src) => preloadImage(src, options)));
+
+export const preloadRequiredImages = (sources) =>
+  preloadImages(sources, {
+    decode: true,
+    fetchPriority: "high",
+    rejectOnError: true,
+    timeoutMs: null,
   });
 
 const preloadVideo = (src) =>
@@ -138,48 +180,16 @@ export const loadAudioDurationMs = (src) =>
 const loadStartupAssets = async () => {
   const fontReady =
     document.fonts?.ready?.catch?.(() => {}) ?? Promise.resolve();
-  const criticalImages = [
-    ...new Set(CRITICAL_GAME_IMAGE_ASSETS.map(toPreloadUrl)),
-  ].filter(Boolean);
-  const view2Images = [
-    ...new Set(VIEW2_ASSETS.map(toPreloadUrl)),
-  ].filter((src) => src && !criticalImages.includes(src));
-  const images = [
-    ...new Set([
-      ...STARTUP_ASSETS.images.map(toPreloadUrl),
-      ...collectStylesheetImageUrls(),
-    ]),
-  ].filter(
-    (src) => src && !criticalImages.includes(src) && !view2Images.includes(src),
-  );
+  const requiredImages = uniqueUrls([
+    ...STARTUP_ASSETS.images,
+    ...CRITICAL_GAME_IMAGE_ASSETS,
+    ...VIEW2_ASSETS,
+    ...collectStylesheetImageUrls(),
+  ]);
 
-  await Promise.all(
-    criticalImages.map((src) =>
-      preloadImage(src, {
-        decode: true,
-        fetchPriority: "high",
-        timeoutMs: null,
-      }),
-    ),
-  );
-  await Promise.all(
-    view2Images.map((src) =>
-      preloadImage(src, {
-        decode: true,
-        fetchPriority: "high",
-        timeoutMs: null,
-      }),
-    ),
-  );
+  await preloadRequiredImages(requiredImages);
   await Promise.all([
     fontReady,
-    ...images.map((src) =>
-      preloadImage(src, {
-        decode: false,
-        fetchPriority: "low",
-        timeoutMs: IMAGE_PRELOAD_TIMEOUT_MS,
-      }),
-    ),
     ...STARTUP_ASSETS.videos.map(preloadVideo),
     wait(900),
   ]);
@@ -188,6 +198,9 @@ const loadStartupAssets = async () => {
 let startupAssetsPromise = null;
 
 export const preloadStartupAssets = () => {
-  startupAssetsPromise ??= loadStartupAssets();
+  startupAssetsPromise ??= loadStartupAssets().catch((error) => {
+    startupAssetsPromise = null;
+    throw error;
+  });
   return startupAssetsPromise;
 };

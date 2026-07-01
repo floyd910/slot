@@ -180,9 +180,12 @@ export function useGameController(selectedGameId) {
   useEffect(() => {
     let active = true;
     preloadStartupAssets()
-      .catch(() => {})
       .then(() => {
         if (active) setStartupAssetsReady(true);
+      })
+      .catch((assetError) => {
+        console.error(assetError);
+        if (active) setError(assetError?.message || "Required game assets failed to load");
       });
     return () => {
       active = false;
