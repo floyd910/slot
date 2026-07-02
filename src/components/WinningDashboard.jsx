@@ -6,10 +6,7 @@ import {
 } from "../viewModels/winningDashboardViewModel.js";
 import "./WinningDashboard.css";
 
-export default function WinningsDashboard({
-  stake = 10,
-  selectedCombination,
-}) {
+export default function WinningsDashboard({ stake = 10, selectedCombination }) {
   const { t } = useLanguage();
   const tableRows = useMemo(
     () => buildWinningDashboardRows(stake, selectedCombination),
@@ -18,21 +15,11 @@ export default function WinningsDashboard({
 
   return (
     <div>
-      <div className="winnings-table">
-        <h2 className="winnings-table__title">{t("winningsTable")}</h2>
-        <table className="winnings-table__container">
-          <colgroup>
-            <col className="winnings-table__col --symbol" />
-            {WINNING_DASHBOARD_COLUMNS.map((column) => (
-              <col
-                className={`winnings-table__col ${column.className}`}
-                key={column.label}
-              />
-            ))}
-          </colgroup>
+      <div className="payouts">
+        <h2 className="payouts_title">{t("winningsTable")}</h2>
+        <table>
           <thead>
             <tr>
-              <th></th>
               {WINNING_DASHBOARD_COLUMNS.map((column) => (
                 <th key={column.label}>{column.label}</th>
               ))}
@@ -41,9 +28,14 @@ export default function WinningsDashboard({
           <tbody>
             {tableRows.map((row) => (
               <tr key={row.id}>
-                <td>{row.id}</td>
+                <td>
+                  <div className="payout-cell">{row.id}</div>
+                </td>
+
                 {WINNING_DASHBOARD_COLUMNS.map((column, index) => (
-                  <td key={column.label}>{row.values[index]}</td>
+                  <td key={column.label}>
+                    <div className="payout-cell">{row.values[index]}</div>
+                  </td>
                 ))}
               </tr>
             ))}

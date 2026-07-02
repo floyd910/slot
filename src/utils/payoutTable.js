@@ -1,20 +1,20 @@
 export const BASE_PAYOUT_STAKE = 0.1;
-export const PAYOUT_COLUMNS = ["x", "x2", "x3", "x4", "x5"];
+export const PAYOUT_COLUMNS = ["x1", "x2", "x3", "x4", "x5"];
 
 export const PAYOUT_ROWS = [
-  { symbol: 0, values: [null, 0.2, 0.5, 2, 50] },
-  { symbol: 1, values: [null, 0.2, 0.5, 2.5, 10] },
-  { symbol: 2, values: [null, null, 0.5, 2.5, 10] },
-  { symbol: 3, values: [null, null, 0.5, 2.5, 10] },
-  { symbol: 4, values: [null, null, 0.5, 2.5, 10] },
-  { symbol: 5, values: [null, null, 1, 5, 12.5] },
-  { symbol: 6, values: [null, null, 1, 5, 12.5] },
-  { symbol: 7, values: [null, null, 1.5, 7.5, 25] },
-  { symbol: 8, values: [null, null, 1.5, 7.5, 25] },
-  { symbol: 9, values: [null, null, 2, 10, 40] },
-  { symbol: 10, values: [null, 0.2, 2.5, 12.5, 75] },
-  { symbol: 11, values: [null, 0.2, 2.5, 12.5, 75] },
-  { symbol: 12, values: [null, 1, 25, 250, 900] },
+  { symbol: 0, values: [0.2, 0.5, 2, 50] },
+  { symbol: 1, values: [0.2, 0.5, 2.5, 10] },
+  { symbol: 2, values: [null, 0.5, 2.5, 10] },
+  { symbol: 3, values: [null, 0.5, 2.5, 10] },
+  { symbol: 4, values: [null, 0.5, 2.5, 10] },
+  { symbol: 5, values: [null, 1, 5, 12.5] },
+  { symbol: 6, values: [null, 1, 5, 12.5] },
+  { symbol: 7, values: [null, 1.5, 7.5, 25] },
+  { symbol: 8, values: [null, 1.5, 7.5, 25] },
+  { symbol: 9, values: [null, 2, 10, 40] },
+  { symbol: 10, values: [0.2, 2.5, 12.5, 75] },
+  { symbol: 11, values: [0.2, 2.5, 12.5, 75] },
+  { symbol: 12, values: [1, 25, 250, 900] },
 ];
 
 const FALLBACK_GROUPS = {
@@ -69,8 +69,14 @@ export const getCombinationNumber = (selectedCombination) => {
   return Number.isFinite(id) && id > 0 ? id : 1;
 };
 
-export const getCombinationGroups = (selectedCombination, combinationNumber) => {
-  if (Array.isArray(selectedCombination?.groups) && selectedCombination.groups.length > 0) {
+export const getCombinationGroups = (
+  selectedCombination,
+  combinationNumber,
+) => {
+  if (
+    Array.isArray(selectedCombination?.groups) &&
+    selectedCombination.groups.length > 0
+  ) {
     return selectedCombination.groups;
   }
 
