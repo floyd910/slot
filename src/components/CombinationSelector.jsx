@@ -18,8 +18,8 @@ export default function CombinationSelector({
   return (
     <div className={`combination-group${disabled ? " --disabled" : ""}`}>
       <label>
-        Р’С‹Р±РѕСЂ Р»РѕС‚РµСЂРµР№РЅРѕР№ <br />
-        РєРѕРјР±РёРЅР°С†РёРё
+        Выбор лотерейной <br />
+        комбинации
       </label>
       {items.map((item) => (
         <div

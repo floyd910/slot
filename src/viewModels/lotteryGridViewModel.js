@@ -1,3 +1,4 @@
+import { LOTTERY_REVEAL_STEP_MS } from "../config/gameSettings.js";
 import { COMBO_BORDERS } from "../config/view2Assets.js";
 
 const ROWS = ["A", "B", "C"];
@@ -80,7 +81,7 @@ export function buildLotteryGridViewModel({
       bottomCells: bottomValues.map((value, index) => ({
         key: `D${index}-${hasDoublingMarks ? doublingState?.revealKey : revealKey}-${value}`,
         digit: value,
-        idxNumber: index,
+        idxNumber: hasDoublingMarks ? index : topCells.length + index,
         idxString: index === 0 ? "D" : "",
         size: "small",
         highlighted: hasDoublingMarks
@@ -143,8 +144,8 @@ export function getIndexLabel(index) {
 }
 
 export function getRevealDelayMs(index, size) {
-  if (size === "small") return 0;
-  return (index % 5) * 420;
+  if (size === "small" && index < 5) return 0;
+  return (index % 5) * LOTTERY_REVEAL_STEP_MS;
 }
 
 export function normalizeView2Digit(value) {

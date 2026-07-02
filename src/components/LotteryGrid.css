@@ -1,14 +1,3 @@
-.lottery-grid {
-  position: relative;
-  flex: 0 0 auto;
-  width: 100%;
-  max-width: none;
-  aspect-ratio: 920 / 551;
-  padding: 0;
-  box-sizing: border-box;
-  background-size: 100% 100%;
-}
-
 .lottery-grid-view1,
 .lottery-grid-view2 {
   position: absolute;
@@ -17,76 +6,120 @@
   height: 100%;
 }
 
-.lottery-grid-view1__top {
-  position: absolute;
-  top: 20.32%;
-  left: 10.87%;
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  grid-template-rows: repeat(3, minmax(0, 1fr));
-  width: 82.06%;
-  height: 54.82%;
-  gap: 3.5% 3.31%;
-  margin: 0;
+.lottery-grid-view1 {
+  display: flex;
+  padding: 16px;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
 }
 
+.lottery-grid-view1__top,
 .lottery-grid-view1__bottom {
-  position: absolute;
-  top: 78.63%;
-  left: 25.22%;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  width: 54.13%;
-  height: 10.33%;
-  gap: 0 4.02%;
-  margin: 0;
+  justify-items: end;
+  gap: 8px;
+  align-self: stretch;
+}
+
+.lottery-grid-view1 .hr {
+  width: 493px;
+  height: 1px;
+  background: rgba(77, 77, 77, 0.4);
+}
+
+.lottery-grid-view1__row {
+  display: grid;
+  grid-template-columns: 32px auto;
+  align-items: center;
+  column-gap: 8px;
+  width: max-content;
+  max-width: 100%;
+}
+
+.lottery-grid-view1__row--numbered .lottery-grid-view1__row-label {
+  margin-top: 24px;
+}
+
+.lottery-grid-view1__row-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  color: #fff;
+  text-align: center;
+  font-family: Roboto, sans-serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.lottery-grid-view1__row-content {
+  display: grid;
+  gap: 4px;
+}
+
+.lottery-grid-view1__column-labels,
+.lottery-grid-view1__row-cells {
+  display: grid;
+  grid-template-columns: repeat(5, 85.8px);
+  gap: 8px;
+}
+
+.lottery-grid-view1__column-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 20px;
+  color: #fff;
+  text-align: center;
+  font-family: Roboto, sans-serif;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.lottery-grid-view1__bottom .lottery-grid-view1__column-label {
+  font-size: 18px;
 }
 
 .lottery-grid-view1-cell {
-  position: relative;
-  width: 100%;
-  margin: 0;
-  color: #050505;
-  font-family:
-    Arial Black,
-    Impact,
-    Ubuntu,
-    Arial,
-    sans-serif;
-  font-size: 64px;
-  font-weight: 900;
-  line-height: 1;
-}
-
-.lottery-grid-view1-cell--small {
-  width: 100%;
-  padding-top: 0;
-  font-size: 0;
+  /* width: 85.8px;  <- Optional: Grid handles width now, but you can keep it as a fallback */
+  height: 100px;
+  display: grid; /* Changed to grid for centering content */
+  place-items: center; /* Shorthand for justify-items and align-items: center */
+  border-radius: 8px;
+  background: linear-gradient(145deg, #e1bf64 0%, #aa7c11 46.63%, #e6c36a 100%);
 }
 
 .lottery-grid-view1-cell__wrapper {
   position: relative;
   z-index: 1;
-  width: 100%;
+  width: 76px;
+  height: 52px;
   overflow: hidden;
-  background: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_010_101x101_at_249_875.png")
-    center / 100% 100% no-repeat;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 
 .lottery-grid-view1-cell__wrapper--glow {
-  box-shadow: 0 0 0.3333333333rem 0.1666666667rem gold;
 }
 
 .lottery-grid-view1__top
   .lottery-grid-view1-cell--value-visible
   .lottery-grid-view1-cell__wrapper {
-  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_004_101x101_at_302_606.png");
+  background-image: url("/assets/img/paintbrush.png");
+  position: relative;
+  z-index: 99999;
 }
 
 .lottery-grid-view1__top
   .lottery-grid-view1-cell--win-highlight
   .lottery-grid-view1-cell__wrapper {
-  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_012_101x101_at_249_978.png");
+  background-image: url("/assets/img/paintbrush.png");
 }
 
 .lottery-grid-view1__top
@@ -99,17 +132,7 @@
 .lottery-grid-view1__bottom
   .lottery-grid-view1-cell--doubling-revealed
   .lottery-grid-view1-cell__wrapper {
-  background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_008_67x67_at_352_835.png");
-}
-
-.lottery-grid-view1-cell__container {
-  display: block;
-  width: 100%;
-  padding-bottom: 69.47%;
-}
-
-.lottery-grid-view1-cell--small .lottery-grid-view1-cell__container {
-  padding-bottom: 70.24%;
+  background-image: url("/assets/img/paintbrush.png");
 }
 
 .lottery-grid-view1-cell__image {
@@ -133,13 +156,12 @@
 .lottery-grid-view1-cell__value {
   position: relative;
   z-index: 4;
-  color: #050505;
-  font: inherit;
-  line-height: 1;
-  text-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.38),
-    0 0 2px rgba(255, 231, 120, 0.34);
-  transform: translateY(-2px);
+  color: #000;
+  font-family: UnifrakturCook, serif;
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 40px;
 }
 
 .lottery-grid-view1-cell__value--doubling {
@@ -396,7 +418,7 @@
 
 @keyframes lottery-grid-view1-cell-bg-reveal {
   to {
-    background-image: url("/img/extracted/тут-фон--выбор-игр-первая-страница-и-сразу-лоторейный-режим_удвоение-7_0/sprite_004_101x101_at_302_606.png");
+    background-image: url("/assets/img/paintbrush.png");
   }
 }
 

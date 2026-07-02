@@ -34,18 +34,26 @@ export default function LotteryGrid({
   if (model.isGridMissing) return null;
 
   if (model.mode === "view1") {
+    const topRows = ["A", "B", "C"].map((label, index) => ({
+      label,
+      cells: model.topCells.slice(index * 5, index * 5 + 5),
+    }));
+
     return (
       <div className="lottery-grid lottery-grid--view1">
         <div className="lottery-grid-view1">
           <div className="lottery-grid-view1__top">
-            {model.topCells.map((cell) => (
-              <View1Cell key={cell.key} {...cell} />
+            {topRows.map((row) => (
+              <View1Row
+                key={row.label}
+                {...row}
+                showColumnNumbers={row.label === "A"}
+              />
             ))}
           </div>
+          <div className="hr"></div>
           <div className="lottery-grid-view1__bottom">
-            {model.bottomCells.map((cell) => (
-              <View1Cell key={cell.key} {...cell} />
-            ))}
+            <View1Row label="D" cells={model.bottomCells} showColumnNumbers />
           </div>
         </div>
       </div>
@@ -107,10 +115,40 @@ function View2Cell({
   );
 }
 
+function View1Row({ label, cells, showColumnNumbers = false }) {
+  return (
+    <div
+      className={`lottery-grid-view1__row${showColumnNumbers ? " lottery-grid-view1__row--numbered" : ""}`}
+    >
+      <div className="lottery-grid-view1__row-label" aria-hidden="true">
+        {label}
+      </div>
+      <div className="lottery-grid-view1__row-content">
+        {showColumnNumbers && (
+          <div className="lottery-grid-view1__column-labels" aria-hidden="true">
+            {cells.map((cell, index) => (
+              <div
+                key={`column-label-${cell.key}`}
+                className="lottery-grid-view1__column-label"
+              >
+                {index + 1}
+              </div>
+            ))}
+          </div>
+        )}
+        <div className="lottery-grid-view1__row-cells">
+          {cells.map((cell) => (
+            <View1Cell key={cell.key} {...cell} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function View1Cell({
   digit,
   idxNumber,
-  idxString,
   size = "",
   highlighted = false,
   eraser = false,
@@ -147,14 +185,6 @@ function View1Cell({
           )}
         </div>
       </div>
-      {idxNumber < 5 && (
-        <div className="lottery-grid-view1-cell__index-number">
-          {idxNumber + 1}
-        </div>
-      )}
-      {idxString && (
-        <div className="lottery-grid-view1-cell__index-label">{idxString}</div>
-      )}
     </div>
   );
 }
