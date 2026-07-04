@@ -12,8 +12,9 @@ import GameContent from "./GameContent.jsx";
 export default function GameShell({ controller, onBackToSlots }) {
   const { isLanguageChanging, t } = useLanguage();
   const { actions, derived, state } = controller;
+  const showStartupLoader = state.startupLoaderVisible && !isLanguageChanging;
   const runtimeState =
-    derived.runtimeStateVisible && !isLanguageChanging ? (
+    derived.runtimeStateVisible && !isLanguageChanging && !showStartupLoader ? (
       <RuntimeState
         status={state.status}
         error={state.error}
@@ -26,9 +27,7 @@ export default function GameShell({ controller, onBackToSlots }) {
     <div
       className={derived.shellClass}
       data-module-mode={state.context.mode}
-      data-startup-loading={
-        state.startupLoaderVisible && !isLanguageChanging ? "true" : "false"
-      }
+      data-startup-loading={showStartupLoader ? "true" : "false"}
     >
       <div className="game_area">
         <img
@@ -49,16 +48,20 @@ export default function GameShell({ controller, onBackToSlots }) {
           </div>
           {!runtimeState && (
             <>
-              <GameBottomArea
+              {/* <GameBottomArea
                 player={state.player}
                 stake={state.stake}
-                totalPurchase={derived.totalPurchase}
                 selectedCombination={derived.selectedCombination}
                 spinResult={state.spinResult}
                 revealComplete={state.gridAnimation === "settled"}
-              />
+              /> */}
               <BottomBar
+                player={state.player}
+                stake={state.stake}
+                selectedCombination={derived.selectedCombination}
+                totalPurchase={derived.totalPurchase}
                 spinResult={state.spinResult}
+                revealComplete={state.gridAnimation === "settled"}
                 disabled={derived.isBusy}
                 spinDisabled={derived.spinButtonDisabled}
                 spinFeedbackActive={state.spinFeedbackActive}
@@ -74,7 +77,9 @@ export default function GameShell({ controller, onBackToSlots }) {
                 autoPlayOn={state.autoPlayOn}
                 infoActive={state.showPaytable}
                 onIncreaseCombination={() => actions.cycleCombination(1)}
+                onDecreaseCombination={() => actions.cycleCombination(-1)}
                 onIncreaseStake={() => actions.cycleStake(1)}
+                onDecreaseStake={() => actions.cycleStake(-1)}
                 onSpin={actions.pressSpinButton}
                 onDouble={
                   state.visualMode
@@ -111,7 +116,7 @@ export default function GameShell({ controller, onBackToSlots }) {
         {state.showFreeSpinPrompt && (
           <FreeSpinsPrompt count={state.freeSpinsTotal} />
         )}
-        {state.startupLoaderVisible && !isLanguageChanging && (
+        {showStartupLoader && (
           <StartupLoader
             ready={state.startupAssetsReady}
             leaving={state.startupLoaderLeaving}

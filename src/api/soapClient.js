@@ -8,16 +8,6 @@ import {
 } from "./soapFaultParser.js";
 
 export const GAME_NUMERIC_ID = "36";
-export const BACKEND_TEST_PARAMS = {
-  login: "Terminal",
-  password: "Gefest",
-  idUser: "123213",
-  idValute: "1",
-  currency: "1",
-  sum: "1",
-  lines: "9",
-  idGame: "36",
-};
 
 const SOAP_NAMESPACE = "urn:InBetIntf-IInBet";
 const SOAP_ACTION = `${SOAP_NAMESPACE}#GetMessage`;

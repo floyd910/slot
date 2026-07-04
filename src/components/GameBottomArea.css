@@ -45,7 +45,7 @@
 
 .game-bottom-area__fields {
   display: grid;
-  grid-template-columns: 1.08fr 1.08fr 1.08fr 1.08fr 0.82fr 0.82fr;
+  grid-template-columns: 1.08fr 1.08fr 0.82fr 0.82fr;
   gap: 1.25rem;
   align-items: end;
   width: 100%;
@@ -97,8 +97,8 @@
   white-space: nowrap;
 }
 
-.game-bottom-field:nth-child(5) .game-bottom-field__value,
-.game-bottom-field:nth-child(6) .game-bottom-field__value {
+.game-bottom-field:nth-child(3) .game-bottom-field__value,
+.game-bottom-field:nth-child(4) .game-bottom-field__value {
   color: #a6c916;
   text-shadow:
     0 0 0.35rem rgba(139, 176, 0, 0.75),

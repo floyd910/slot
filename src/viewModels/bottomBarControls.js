@@ -23,75 +23,75 @@ export function buildBottomBarControls({
   viewSwitchDisabled,
   visualMode,
 }) {
-  const canDouble =
-    !disabled && doubleOfferAvailable && !doublingState?.loading;
+  // const canDouble =
+  //   !disabled && doubleOfferAvailable && !doublingState?.loading;
 
   return [
-    {
-      kind: "takeMoney",
-      disabled,
-      onClick: onCollect,
-      type: "takeMoney",
-    },
-    {
-      active: infoActive,
-      disabled,
-      extraClass: "information-button",
-      onClick: onInfo,
-      type: "information",
-    },
-    {
-      extraClass: "language-button",
-      onClick: toggleLanguage,
-      suppressPressFeedback: true,
-      type: "language",
-    },
-    {
-      disabled: disabled || !onMenu,
-      extraClass: "language-button",
-      onClick: onMenu,
-      type: "menu",
-    },
-    {
-      active: visualMode,
-      disabled: disabled || viewSwitchDisabled,
-      extraClass: "language-button",
-      onClick: onVisualToggle,
-      type: "visualization",
-    },
-    isVisualDoubling
-      ? {
-          disabled,
-          extraClass: "language-button",
-          onClick: onPickLeft,
-          type: "left",
-        }
-      : doubleOfferAvailable
-        ? {
-            disabled: !canDouble,
-            extraClass: "language-button",
-            onClick: onDouble,
-            type: "double",
-          }
-        : {
-            disabled: disabled || paytableControlsLocked,
-            extraClass: "language-button",
-            onClick: onIncreaseStake,
-            type: "betAmount",
-          },
-    isVisualDoubling
-      ? {
-          disabled,
-          extraClass: "language-button",
-          onClick: onPickRight,
-          type: "right",
-        }
-      : {
-          disabled: disabled || paytableControlsLocked,
-          extraClass: "language-button",
-          onClick: onIncreaseCombination,
-          type: "lotteryCombination",
-        },
+    // {
+    //   kind: "takeMoney",
+    //   disabled,
+    //   onClick: onCollect,
+    //   type: "takeMoney",
+    // },
+    // {
+    //   active: infoActive,
+    //   disabled,
+    //   extraClass: "information-button",
+    //   onClick: onInfo,
+    //   type: "information",
+    // },
+    // {
+    //   extraClass: "language-button",
+    //   onClick: toggleLanguage,
+    //   suppressPressFeedback: true,
+    //   type: "language",
+    // },
+    // {
+    //   disabled: disabled || !onMenu,
+    //   extraClass: "language-button",
+    //   onClick: onMenu,
+    //   type: "menu",
+    // },
+    // {
+    //   active: visualMode,
+    //   disabled: disabled || viewSwitchDisabled,
+    //   extraClass: "language-button",
+    //   onClick: onVisualToggle,
+    //   type: "visualization",
+    // },
+    // isVisualDoubling
+    //   ? {
+    //       disabled,
+    //       extraClass: "language-button",
+    //       onClick: onPickLeft,
+    //       type: "left",
+    //     }
+    //   : doubleOfferAvailable
+    //     ? {
+    //         disabled: !canDouble,
+    //         extraClass: "language-button",
+    //         onClick: onDouble,
+    //         type: "double",
+    //       }
+    //     : {
+    //         disabled: disabled || paytableControlsLocked,
+    //         extraClass: "language-button",
+    //         onClick: onIncreaseStake,
+    //         type: "betAmount",
+    //       },
+    // isVisualDoubling
+    //   ? {
+    //       disabled,
+    //       extraClass: "language-button",
+    //       onClick: onPickRight,
+    //       type: "right",
+    //     }
+    //   : {
+    //       disabled: disabled || paytableControlsLocked,
+    //       extraClass: "language-button",
+    //       onClick: onIncreaseCombination,
+    //       type: "lotteryCombination",
+    //     },
     {
       active: autoPlayOn,
       disabled: disabled && !autoPlayOn,

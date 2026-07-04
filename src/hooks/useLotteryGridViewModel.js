@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { VIEW2_SYMBOL_GROUP_CYCLE_MS } from "../components/view2Symbols/index.jsx";
+import { VIEW1_WIN_LINE_HIGHLIGHT_MS } from "../config/gameSettings.js";
 import {
   buildLotteryGridViewModel,
   getGroupedWins,
@@ -21,18 +22,30 @@ export function useLotteryGridViewModel({
     () => getGroupedWins(winningGroups, winningCells),
     [winningGroups, winningCells],
   );
-  const [activeWinGroup, setActiveWinGroup] = useState(0);
+  const [activeWinGroup, setActiveWinGroup] = useState(null);
 
   useEffect(() => {
+    setActiveWinGroup(visualMode ? 0 : null);
+    if (groupedWins.length === 0 || animationState !== "settled") return;
+
     setActiveWinGroup(0);
-    if (groupedWins.length <= 1 || animationState !== "settled") return;
+    if (groupedWins.length === 1) return;
 
-    const interval = window.setInterval(() => {
-      setActiveWinGroup((index) => (index + 1) % groupedWins.length);
-    }, VIEW2_SYMBOL_GROUP_CYCLE_MS);
+    const cycleMs = visualMode
+      ? VIEW2_SYMBOL_GROUP_CYCLE_MS
+      : VIEW1_WIN_LINE_HIGHLIGHT_MS;
+    let timeoutId;
 
-    return () => window.clearInterval(interval);
-  }, [animationState, groupedWins.length]);
+    const scheduleNext = () => {
+      timeoutId = window.setTimeout(() => {
+        setActiveWinGroup((index) => ((index ?? 0) + 1) % groupedWins.length);
+        scheduleNext();
+      }, cycleMs);
+    };
+
+    scheduleNext();
+    return () => window.clearTimeout(timeoutId);
+  }, [animationState, groupedWins.length, visualMode]);
 
   return useMemo(
     () =>

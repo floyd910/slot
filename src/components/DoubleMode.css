@@ -64,4 +64,27 @@
 
 .double-scene .collect-button {
   grid-column: 2;
+  display: flex;
+  height: 66px;
+  padding: 4px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(58, 212, 55, 0.7) 0%, rgba(48, 170, 17, 0.7) 46.63%, rgba(67, 191, 36, 0.7) 100%);
+  box-shadow:
+    0 0 4px 1px rgba(68, 255, 0, 0.5) inset,
+    0 0 12.5px 0 #00ff48;
+  flex: 1 0 0;
+  color: #fff;
+  text-align: center;
+  font-family: Roboto;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
+  letter-spacing: 0.45px;
+  text-transform: uppercase;
+  white-space: nowrap;
 }

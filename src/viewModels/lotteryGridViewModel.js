@@ -52,12 +52,13 @@ export function buildLotteryGridViewModel({
   const hideDigitsBeforeReveal = !isRevealing && !isSettled;
   const topCells = buildTopCells(grid);
   const activeWinningCells =
-    isSettled && groupedWins.length > 0
+    isSettled && groupedWins.length > 0 && activeWinGroup != null
       ? (groupedWins[activeWinGroup] ?? groupedWins[0])
-      : winningCells;
+      : [];
 
   if (!visualMode) {
-    const marked = new Set([...activeWinningCells, ...scatterCells]);
+    const lineWinMarked = new Set(activeWinningCells);
+    const marked = new Set([...lineWinMarked, ...scatterCells]);
     const doublingMarks = doublingState?.marks ?? [];
     const hasDoublingMarks =
       animationState !== "spinning" &&
@@ -75,6 +76,7 @@ export function buildLotteryGridViewModel({
         idxNumber: index,
         idxString: getIndexLabel(index),
         highlighted: marked.has(cell.coord),
+        lineWinHighlighted: lineWinMarked.has(cell.coord),
         eraser: isRevealing,
         concealed: hideDigitsBeforeReveal,
       })),

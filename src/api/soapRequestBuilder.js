@@ -1,7 +1,11 @@
 import { asNumber } from "../utils/number.js";
-import { getRuntimeConfig, useBackendTestParams } from "./runtimeConfig.js";
 import {
-  BACKEND_TEST_PARAMS,
+  getBackendTestParams,
+  getFrontendEnvConfig,
+  getRuntimeConfig,
+  useBackendTestParams,
+} from "./runtimeConfig.js";
+import {
   GAME_NUMERIC_ID,
   formatSoapDateTime,
   xmlEscape,
@@ -14,9 +18,11 @@ const getGlobalConfig = () => window.HIRANMANDI_FRAME_CONFIG ?? {};
 export const buildSpinRequest = ({ stake, totalStake, lines, isDemo, isFreeSpin } = {}) => {
   const runtimeConfig = getRuntimeConfig();
   const globalConfig = getGlobalConfig();
+  const envConfig = getFrontendEnvConfig();
+  const testParams = getBackendTestParams();
   const forceTestParams = useBackendTestParams();
   const login = forceTestParams
-    ? BACKEND_TEST_PARAMS.login
+    ? testParams.login
     : readConfigValue(
         runtimeConfig.login,
         runtimeConfig.Login,
@@ -24,10 +30,10 @@ export const buildSpinRequest = ({ stake, totalStake, lines, isDemo, isFreeSpin 
         globalConfig.login,
         globalConfig.Login,
         globalConfig.slotLogin,
-        "Terminal",
+        envConfig.login,
       );
   const password = forceTestParams
-    ? BACKEND_TEST_PARAMS.password
+    ? testParams.password
     : readConfigValue(
         runtimeConfig.password,
         runtimeConfig.Password,
@@ -35,10 +41,10 @@ export const buildSpinRequest = ({ stake, totalStake, lines, isDemo, isFreeSpin 
         globalConfig.password,
         globalConfig.Password,
         globalConfig.slotPassword,
-        "Gefest",
+        envConfig.password,
       );
   const idUser = forceTestParams
-    ? BACKEND_TEST_PARAMS.idUser
+    ? testParams.idUser
     : readConfigValue(
         runtimeConfig.idUser,
         runtimeConfig.userId,
@@ -46,13 +52,14 @@ export const buildSpinRequest = ({ stake, totalStake, lines, isDemo, isFreeSpin 
         globalConfig.idUser,
         globalConfig.userId,
         globalConfig.playerId,
+        envConfig.idUser,
         "demo-player",
       );
   const idValute = forceTestParams
-    ? BACKEND_TEST_PARAMS.idValute
-    : readConfigValue(runtimeConfig.idValute, globalConfig.idValute, "1");
+    ? testParams.idValute
+    : readConfigValue(runtimeConfig.idValute, globalConfig.idValute, envConfig.idValute, "1");
   const currency = forceTestParams
-    ? readConfigValue(BACKEND_TEST_PARAMS.currency, BACKEND_TEST_PARAMS.idValute)
+    ? readConfigValue(testParams.currency, testParams.idValute, idValute)
     : readConfigValue(
         runtimeConfig.spinCurrency,
         runtimeConfig.Currency,
@@ -62,13 +69,14 @@ export const buildSpinRequest = ({ stake, totalStake, lines, isDemo, isFreeSpin 
         globalConfig.Currency,
         globalConfig.currencyId,
         globalConfig.currency,
+        envConfig.currency,
         idValute,
       );
-  const sum = forceTestParams ? BACKEND_TEST_PARAMS.sum : totalStake ?? stake;
-  const selectedLines = forceTestParams ? BACKEND_TEST_PARAMS.lines : lines;
+  const sum = forceTestParams ? readConfigValue(testParams.sum, totalStake, stake) : totalStake ?? stake;
+  const selectedLines = forceTestParams ? readConfigValue(testParams.lines, lines) : lines;
   const idGame = forceTestParams
-    ? BACKEND_TEST_PARAMS.idGame
-    : readConfigValue(runtimeConfig.backendGameId, globalConfig.backendGameId, GAME_NUMERIC_ID);
+    ? readConfigValue(testParams.idGame, GAME_NUMERIC_ID)
+    : readConfigValue(runtimeConfig.backendGameId, globalConfig.backendGameId, envConfig.backendGameId, GAME_NUMERIC_ID);
 
   return {
     methodName: "SetSlotSpinHiranmandiFrame",

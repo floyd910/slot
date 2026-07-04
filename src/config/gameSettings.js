@@ -9,6 +9,7 @@ export const LOTTERY_REVEAL_SETTLE_MS =
 
 export const NEXT_SPIN_DELAY_MS = 1000;
 export const WIN_LINE_HIGHLIGHT_MS = 1530;
+export const VIEW1_WIN_LINE_HIGHLIGHT_MS = 2000;
 export const DOUBLE_MAX_STEPS = 5;
 export const DOUBLE_RESULT_REVEAL_MS = 1500;
 export const DOUBLE_LOSS_RESET_MS = 2700;

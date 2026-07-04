@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
+import { getFrontendEnvConfig } from "../api/runtimeConfig.js";
 
 export const CONTRACT_VERSION = "1.0";
 export const MODULE_VERSION = "0.1.0";
@@ -43,6 +44,13 @@ const safeJson = (value) => {
   }
 };
 
+const withoutEmptyValues = (values) =>
+  Object.fromEntries(
+    Object.entries(values ?? {}).filter(
+      ([, value]) => value != null && value !== "",
+    ),
+  );
+
 const readStoredContext = () => {
   try {
     return safeJson(window.sessionStorage.getItem(RECOVERY_KEY)) ?? {};
@@ -77,6 +85,7 @@ const referrerOrigin = () => {
 export function readFrameParams() {
   const search = new URLSearchParams(window.location.search);
   const globalConfig = window.HIRANMANDI_FRAME_CONFIG ?? {};
+  const envConfig = getFrontendEnvConfig();
   const stored = readStoredContext();
   const queryDemoMode = search.get("demoMode");
   const queryTestMode = search.get("testMode");
@@ -112,7 +121,7 @@ export function readFrameParams() {
   };
 
   const isFramed = window.parent !== window;
-  const mode = queryContext.mode ?? globalConfig.mode ?? stored.mode ?? (isFramed ? "embedded" : "standalone");
+  const mode = queryContext.mode ?? globalConfig.mode ?? envConfig.mode ?? stored.mode ?? (isFramed ? "embedded" : "standalone");
   const allowedOrigins = [
     ...(queryContext.allowedOrigins ?? []),
     ...(globalConfig.allowedOrigins ?? []),
@@ -121,12 +130,13 @@ export function readFrameParams() {
   ].filter(Boolean);
 
   return {
-    ...stored,
-    ...globalConfig,
-    ...queryContext,
+    ...withoutEmptyValues(stored),
+    ...withoutEmptyValues(envConfig),
+    ...withoutEmptyValues(globalConfig),
+    ...withoutEmptyValues(queryContext),
     mode: mode === "embedded" ? "embedded" : "standalone",
-    locale: queryContext.locale ?? globalConfig.locale ?? stored.locale ?? "en",
-    currency: queryContext.currency ?? globalConfig.currency ?? stored.currency ?? "GEL",
+    locale: queryContext.locale ?? globalConfig.locale ?? envConfig.locale ?? stored.locale ?? "en",
+    currency: queryContext.currency ?? globalConfig.currency ?? envConfig.currency ?? stored.currency ?? "GEL",
     theme: queryContext.theme ?? globalConfig.theme ?? stored.theme ?? "dark",
     allowedOrigins: Array.from(new Set(allowedOrigins)),
     featureFlags: {
@@ -134,7 +144,7 @@ export function readFrameParams() {
       ...(globalConfig.featureFlags ?? {}),
       ...(queryContext.featureFlags ?? {}),
     },
-    initSource: search.toString() ? "query" : globalConfig.token || globalConfig.sessionId ? "global-config" : stored.sessionId ? "recovered" : "missing",
+    initSource: search.toString() ? "query" : globalConfig.token || globalConfig.sessionId ? "global-config" : envConfig.token || envConfig.sessionId ? "env" : stored.sessionId ? "recovered" : "missing",
     isFramed,
   };
 }

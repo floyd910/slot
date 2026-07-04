@@ -9,7 +9,6 @@ export function buildGameBottomAreaViewModel({
   spinResult,
   stake,
   t,
-  totalPurchase,
 }) {
   const combinationCount = selectedCombination?.groups?.length ?? 1;
   const cashback = Number(player?.balance ?? 0) * 0.1;
@@ -18,8 +17,6 @@ export function buildGameBottomAreaViewModel({
   return {
     messages: [t("chooseCoordinateGroup"), t("minimumPurchase")],
     fields: [
-      { title: t("balance"), value: formatMoney(player?.balance) },
-      { title: t("purchaseAmount"), value: formatMoney(totalPurchase) },
       { title: t("cashback"), value: formatMoney(cashback) },
       { title: "", value: formatMoney(ticketWin) },
       {

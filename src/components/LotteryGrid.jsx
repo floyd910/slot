@@ -63,8 +63,8 @@ export default function LotteryGrid({
   return (
     <div className="lottery-grid lottery-grid--view2">
       <div className="lottery-grid-view2">
-        {model.cells.map((cell) => (
-          <View2Cell key={cell.key} {...cell} />
+        {model.cells.map(({ key, ...cell }) => (
+          <View2Cell key={key} {...cell} />
         ))}
         <View2Cover {...model.cover} />
       </div>
@@ -137,8 +137,8 @@ function View1Row({ label, cells, showColumnNumbers = false }) {
           </div>
         )}
         <div className="lottery-grid-view1__row-cells">
-          {cells.map((cell) => (
-            <View1Cell key={cell.key} {...cell} />
+          {cells.map(({ key, ...cell }) => (
+            <View1Cell key={key} {...cell} />
           ))}
         </div>
       </div>
@@ -151,6 +151,7 @@ function View1Cell({
   idxNumber,
   size = "",
   highlighted = false,
+  lineWinHighlighted = false,
   eraser = false,
   concealed = false,
 }) {
@@ -160,7 +161,7 @@ function View1Cell({
 
   return (
     <div
-      className={`lottery-grid-view1-cell${size === "small" ? " lottery-grid-view1-cell--small" : ""}${isDoublingMark ? " lottery-grid-view1-cell--doubling-revealed" : ""}${!concealed && !eraser ? " lottery-grid-view1-cell--value-visible" : ""}${highlighted ? " lottery-grid-view1-cell--win-highlight" : ""}${eraser ? " lottery-grid-view1-cell--revealing" : ""}`}
+      className={`lottery-grid-view1-cell${size === "small" ? " lottery-grid-view1-cell--small" : ""}${isDoublingMark ? " lottery-grid-view1-cell--doubling-revealed" : ""}${!concealed && !eraser ? " lottery-grid-view1-cell--value-visible" : ""}${lineWinHighlighted ? " lottery-grid-view1-cell--win-highlight" : ""}${eraser ? " lottery-grid-view1-cell--revealing" : ""}`}
       style={
         eraser
           ? {

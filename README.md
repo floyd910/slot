@@ -8,16 +8,18 @@ React/Vite frontend for the Hiranmandi iframe game. The normal local flow is the
 npm run dev
 ```
 
-Open the direct SOAP flow:
+For local SOAP flow, `.env.local` should contain only frontend-safe config copied from `.env.example`. Do not put SOAP login/password, session tokens, player ids, or partner secrets in `VITE_*` variables; those values are public in the browser. Real SOAP credentials must stay server-side. Then open:
 
 ```text
-http://localhost:5174/?mode=standalone&token=partner-token&sessionId=partner-session&idUser=123213&login=Terminal&password=Gefest&gameId=hiranmandi&currency=GEL&locale=en&idValute=1&balance=1250&backendMode=soap&testMode=false&demoMode=false&backendTestParams=false
+http://localhost:5174/?mode=standalone&backendMode=soap&testMode=false&demoMode=false&backendTestParams=false
 ```
+
+Frontend env variables are shipped to the browser. Use them only for safe public config such as endpoint path, backend mode, game id, and locale.
 
 Use mock UI mode instead of SOAP:
 
 ```text
-http://localhost:5174/?mode=standalone&token=partner-token&sessionId=partner-session&userId=partner-user&gameId=hiranmandi&currency=GEL&locale=en&backendMode=mock&testMode=true
+http://localhost:5174/?mode=standalone&backendMode=mock&testMode=true
 ```
 
 ## SOAP Spin Flow
@@ -68,10 +70,11 @@ Supported query parameters include:
 
 ```text
 mode, token, sessionId/session, gameId/game, locale/language/lang, currency,
-idUser/userId/playerId, login/Login/slotLogin, password/Password/slotPassword,
 idValute, balance, soapEndpoint, backendMode, testMode, demoMode,
 backendTestParams, theme, returnUrl, featureFlags, allowedOrigins
 ```
+
+Do not put SOAP login/password in `.env` or query strings. For real play, keep SOAP credentials in the backend/proxy and send the iframe only the safe runtime context it needs.
 
 Minimum standalone context:
 
@@ -91,7 +94,7 @@ The iframe posts events with this envelope:
   payload: {},
   meta: {
     requestId: "evt-...",
-    sessionId: "partner-session",
+    sessionId: "...",
     moduleVersion: "0.1.0",
     mode: "embedded",
     gameId: "hiranmandi",

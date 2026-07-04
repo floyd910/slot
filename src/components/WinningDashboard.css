@@ -6,8 +6,7 @@
 }
 
 .payouts {
-  padding: 16px;
-  padding-bottom: 0px;
+  padding: 16px 16px 10px 16px;
 }
 
 .payouts table {
@@ -72,8 +71,4 @@
   align-items: center;
   width: 100%;
   padding: 0 4px;
-}
-
-.payouts tr:last-child {
-  height: 31px !important;
 }

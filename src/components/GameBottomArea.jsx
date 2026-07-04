@@ -5,7 +5,6 @@ import { buildGameBottomAreaViewModel } from "../viewModels/gameBottomAreaViewMo
 export default function GameBottomArea({
   player,
   stake,
-  totalPurchase,
   selectedCombination,
   spinResult,
   revealComplete = true,
@@ -18,7 +17,6 @@ export default function GameBottomArea({
     spinResult,
     stake,
     t,
-    totalPurchase,
   });
 
   return (
