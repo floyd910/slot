@@ -3,14 +3,12 @@ export function buildBottomBarControls({
   disabled,
   doubleOfferAvailable,
   doublingState,
-  infoActive,
   isVisualDoubling,
   onAutoPlay,
   onCollect,
   onDouble,
   onIncreaseCombination,
   onIncreaseStake,
-  onInfo,
   onMenu,
   onPickLeft,
   onPickRight,
@@ -31,13 +29,6 @@ export function buildBottomBarControls({
     //   disabled,
     //   onClick: onCollect,
     //   type: "takeMoney",
-    // },
-    // {
-    //   active: infoActive,
-    //   disabled,
-    //   extraClass: "information-button",
-    //   onClick: onInfo,
-    //   type: "information",
     // },
     // {
     //   extraClass: "language-button",
@@ -113,7 +104,10 @@ export function getBottomBarLabel(type, { language, t }) {
     betAmount: t("betAmount"),
     double: t("double"),
     information: t("info"),
-    language: language === "ru" ? "\u0422\u041e\u04b6\u0418\u041a\u04e2" : "\u0420\u0423\u0421\u0421\u041a\u0418\u0419",
+    language:
+      language === "ru"
+        ? "\u0422\u041e\u04b6\u0418\u041a\u04e2"
+        : "\u0420\u0423\u0421\u0421\u041a\u0418\u0419",
     left: t("left"),
     lotteryCombination: t("lotteryCombination"),
     menu: t("menu"),

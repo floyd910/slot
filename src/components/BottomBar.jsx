@@ -25,29 +25,52 @@ export default function BottomBar(props) {
 
   return (
     <footer className="bottom-bar">
-      <BottomBarMetric title={t("balance")} value={balance} />
-      <BottomBarMetric title={t("purchaseAmount")} value={totalPurchase} />
-      <BottomBarMetric title={t("win")} value={currentWin} accent />
-      <BottomBarStepper
-        disabled={chooserDisabled}
-        label={t("lotteryBet")}
-        onDecrease={props.onDecreaseStake}
-        onIncrease={props.onIncreaseStake}
-        value={formatMoney(props.stake)}
-        variant="bet"
-      />
-      <BottomBarStepper
-        disabled={chooserDisabled}
-        label={t("lotteryCombination")}
-        onDecrease={props.onDecreaseCombination}
-        onIncrease={props.onIncreaseCombination}
-        value={formatCombinationValue(props.selectedCombination)}
-        variant="combination"
-      />
+      <div className="footer-block">
+        <BottomBarMetric title={t("balance")} value={balance} />
+        <BottomBarMetric title={t("purchaseAmount")} value={totalPurchase} />
+        <BottomBarMetric title={t("win")} value={currentWin} accent />
+        <BottomBarStepper
+          disabled={chooserDisabled}
+          label={t("lotteryBet")}
+          onDecrease={props.onDecreaseStake}
+          onIncrease={props.onIncreaseStake}
+          value={formatMoney(props.stake)}
+          variant="bet"
+        />
+        <BottomBarStepper
+          disabled={chooserDisabled}
+          label={t("lotteryCombination")}
+          onDecrease={props.onDecreaseCombination}
+          onIncrease={props.onIncreaseCombination}
+          value={formatCombinationValue(props.selectedCombination)}
+          variant="combination"
+        />
+        <button
+          aria-pressed={props.infoActive}
+          className="information-button"
+          disabled={props.disabled}
+          onClick={props.onInfo}
+          type="button"
+        >
+          <span> {t("info")}</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+            viewBox="0 0 30 30"
+            fill="none"
+          >
+            <path
+              d="M15 2.5C21.9035 2.5 27.5 8.09644 27.5 15C27.5 21.9035 21.9035 27.5 15 27.5C8.09644 27.5 2.5 21.9035 2.5 15C2.5 8.09644 8.09644 2.5 15 2.5ZM11.875 13.75V16.25H13.75V18.75H11.875V21.25H18.125V18.75H16.25V15C16.25 14.3096 15.6904 13.75 15 13.75H11.875ZM14.6875 8.75C13.8245 8.75 13.125 9.44955 13.125 10.3125C13.125 11.1755 13.8245 11.875 14.6875 11.875C15.5505 11.875 16.25 11.1755 16.25 10.3125C16.25 9.44955 15.5505 8.75 14.6875 8.75Z"
+              fill="white"
+            />
+          </svg>
+        </button>
 
-      {controls.map((control) =>
-        renderBottomBarControl(control, { language, t }),
-      )}
+        {controls.map((control) =>
+          renderBottomBarControl(control, { language, t }),
+        )}
+      </div>
     </footer>
   );
 }

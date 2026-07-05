@@ -1,4 +1,5 @@
 import "./Paytable.css";
+import { createPortal } from "react-dom";
 import { useLanguage } from "../i18n.jsx";
 import View2Paytable from "./View2Paytable.jsx";
 import { useEscapeKey } from "../hooks/useEscapeKey.js";
@@ -59,11 +60,19 @@ export default function Paytable({
   const view = buildStandardPaytableViewModel({ stake, selectedCombination });
   useEscapeKey(onClose);
 
-  return (
+  const modal = (
     <section
       className={`info-modal${visualMode ? " --view2" : ""}`}
       aria-label={copy.title}
     >
+      <button
+        className="info-modal__close"
+        onClick={onClose}
+        type="button"
+        aria-label="Close info"
+      >
+        X
+      </button>
       {loading && !isLanguageChanging && <div className="info-paytable-state">{t("loading")}</div>}
       {error && <div className="info-paytable-state --error">{error}</div>}
       {!loading && !error && visualMode && (
@@ -128,4 +137,6 @@ export default function Paytable({
       )}
     </section>
   );
+
+  return createPortal(modal, document.body);
 }
