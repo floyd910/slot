@@ -11,7 +11,11 @@ export default function Game3({ slotId, onBack }) {
 
   return (
     <>
-      <Header />
+      <Header
+        onViewToggle={controller.actions.toggleVisualMode}
+        viewSwitchDisabled={controller.derived.viewSwitchDisabled}
+        visualMode={controller.state.visualMode}
+      />
       <GameShell controller={controller} onBackToSlots={onBack} />
     </>
   );

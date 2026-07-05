@@ -15,7 +15,6 @@ export function buildBottomBarControls({
   onPickLeft,
   onPickRight,
   onSpin,
-  onVisualToggle,
   paytableControlsLocked,
   spinDisabled,
   spinFeedbackActive,
@@ -56,7 +55,6 @@ export function buildBottomBarControls({
     //   active: visualMode,
     //   disabled: disabled || viewSwitchDisabled,
     //   extraClass: "language-button",
-    //   onClick: onVisualToggle,
     //   type: "visualization",
     // },
     // isVisualDoubling

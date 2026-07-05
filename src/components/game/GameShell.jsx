@@ -87,7 +87,6 @@ export default function GameShell({ controller, onBackToSlots }) {
                     : actions.playFooterDouble
                 }
                 onInfo={actions.loadPaytable}
-                onVisualToggle={actions.toggleVisualMode}
                 onAutoPlay={actions.toggleAutoPlay}
                 onMenu={onBackToSlots}
               />

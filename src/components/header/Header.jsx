@@ -1,12 +1,19 @@
 import React from "react";
 import "./Header.css";
 
-const Header = () => {
+const Header = ({ onViewToggle, viewSwitchDisabled = false, visualMode = false }) => {
   return (
     <header>
       <div className="lang-chooser"></div>
       <div className="header-btns">
-        <button className="view-changer">
+        <button
+          type="button"
+          className={`view-changer${visualMode ? " active" : ""}`}
+          onClick={onViewToggle}
+          disabled={viewSwitchDisabled}
+          aria-pressed={visualMode}
+          aria-label={visualMode ? "Switch to lottery view" : "Switch to visual view"}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="32"
