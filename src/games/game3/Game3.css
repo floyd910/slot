@@ -254,27 +254,7 @@ button:disabled {
  
 } */
 
-@media (max-height: 1025px) {
-  .main-container__center {
-    height: 403px;
-  }
-
-  .lottery-grid-view1-cell {
-    height: 64px;
-  }
-
-  .main-container__left,
-  .main-container__right {
-    height: 540px;
-    overflow-y: auto;
-  }
-
-  .header_img {
-    top: -48px;
-  }
-}
-
-@media (min-width: 1280px) and (max-width: 1920px) {
+@media (min-width: 1441px) and (max-width: 1920px) {
   .lottery-grid-view1__column-labels,
   .lottery-grid-view1__row-cells {
     grid-template-columns: repeat(5, 90px);
@@ -285,125 +265,109 @@ button:disabled {
   }
 }
 
+/* height 1024 */
+@media (max-width: 1440px) {
+  .game-main-layout {
+    margin-top: -130px;
+  }
+
+  .main-container__left,
+  .main-container__right {
+    height: 540px;
+    overflow: auto;
+  }
+
+  .main-container__center {
+    width: 525px;
+    height: 403px;
+  }
+
+  .lottery-grid-view1-cell {
+    height: 64px;
+  }
+
+  .header_img {
+    top: -48px;
+  }
+}
+
+/* height 770 */
+
 @media (max-width: 1280px) {
+  .main-container__left,
+  .main-container__right {
+    display: none;
+  }
+
+  .game-main-layout {
+    margin-top: 0;
+  }
+
+  .main-container__center {
+    height: 347px;
+  }
+
+  .lottery-grid-view1-cell {
+    height: 50px;
+  }
+}
+
+/* height 1029 */
+@media (max-width: 1024px) {
+  .main-container__center {
+    width: 525px;
+    height: 547px;
+  }
+
+  .lottery-grid-view1-cell {
+    height: 100px;
+  }
+
   .footer-block-desktop {
     display: none;
   }
 
   .footer-block-tablet {
     display: flex;
-    width: 100%;
-    max-width: calc(100% - 48px);
-  }
-  .main-container__left,
-  .main-container__right {
-    /* height: 474px; */
-    width: 260px;
-  }
-
-  .header_img {
-    height: auto;
-  }
-
-  .main-container__center {
-    width: 418px;
-    /* height: 357px; */
-  }
-
-  .lottery-grid-view1__column-labels,
-  .lottery-grid-view1__row-cells {
-    grid-template-columns: repeat(5, 61.4px);
-  }
-
-  .payouts th {
-    min-width: 35px;
-  }
-
-  .payouts th:first-child {
-    min-width: 12px;
-  }
-
-  .payouts {
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
-  .lottery-grid-view1-cell__wrapper {
-    width: 47px;
-    /* height: 32px; */
+    max-width: calc(100% - 40px);
   }
 }
 
-@media (max-width: 1024px) {
-  .lottery-grid-view1-cell__wrapper {
-    width: 80%;
-    height: 80%;
-  }
+/* height 956px */
+
+@media (max-width: 720px) {
   .header_img {
-    /* width: 470px; */
+    width: 419.213px;
     height: auto;
-  }
-  .main-container__center {
-    width: 90%;
-    /* height: 357px; */
+    top: 0;
   }
 
-  .lottery-grid-view1 {
-    padding-right: 22px;
-  }
-
-  .game-main-layout {
-    margin-top: 60px;
-  }
-
-  .lottery-grid-view1__row {
-    width: 100%;
-    grid-template-columns: 32px minmax(0, 1fr);
-  }
-
-  .lottery-grid-view1__row-content,
-  .lottery-grid-view1__column-labels,
-  .lottery-grid-view1__row-cells {
-    width: 100%;
-    min-width: 0;
-  }
-
-  .lottery-grid-view1__column-labels,
-  .lottery-grid-view1__row-cells {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-
-  .main-container__left,
-  .main-container__right {
-    display: none;
-  }
-
-  /* .lottery-grid-view1-cell {
-    height: 50px;
-  } */
-  .main-container__left,
-  .main-container__right {
-    display: none;
-  }
-}
-
-@media (max-width: 780px) {
   .footer-block-tablet {
     display: none;
   }
 
-  .header_img {
-    top: 0;
-    width: 100%;
-  }
-
   .footer-block-mobile {
     display: flex;
-    max-width: calc(100% - 40px);
+    max-width: calc(100% - 22px);
   }
 
-  .game-main-layout {
-    margin-top: 20px;
+  .main-container__center {
+    width: 418px;
+    height: 347px;
+  }
+
+  .lottery-grid-view1__column-labels,
+  .lottery-grid-view1__row-cells {
+    grid-template-columns: repeat(5, 62.4px);
+  }
+
+  .lottery-grid-view1-cell {
+    height: 50px;
+  }
+
+  header {
+    padding-left: 16px;
+    padding-right: 16px;
   }
 }
 
@@ -412,42 +376,61 @@ button:disabled {
     padding-left: 8px;
     padding-right: 8px;
   }
-  .lottery-grid-view1 {
-    padding: 8.254px;
-    gap: 4px;
+
+  .header_img {
+    width: 240px;
   }
 
-  .lottery-grid-view1-cell__value {
-    font-size: 24px;
+  .main-container__center {
+    width: calc(100% - 22px);
+    max-width: 440px;
+    height: 183px;
+  }
+
+  .lottery-grid-view1 {
+    padding: 8.25px;
+    padding-right: 16px;
+    gap: 8px;
+  }
+
+  .lottery-grid-view1__top,
+  .lottery-grid-view1__bottom {
+    width: 100%;
+    justify-items: stretch;
+  }
+
+  .lottery-grid-view1__row {
+    width: 100%;
+    grid-template-columns: 32px minmax(0, 1fr);
   }
 
   .lottery-grid-view1__row-label,
   .lottery-grid-view1__column-label {
-    font-size: 12.3px;
-  }
-
-  .lottery-grid-view1__bottom .lottery-grid-view1__column-label {
-    font-size: 9.2px;
-  }
-  .footer-block-mobile {
-    max-width: calc(100% - 22px);
-    left: 11px;
-    position: fixed;
-    bottom: 0;
-  }
-
-  .game-main-layout {
-    width: calc(100% - 22px);
-    margin-top: -20px;
-  }
-
-  .frame-content,
-  .main-container__center {
-    width: 100%;
-    height: 193px;
+    color: #fff;
+    text-align: center;
+    font-family: Roboto;
+    font-size: 12.381px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
   }
 
   .lottery-grid-view1-cell {
-    height: 25.794px;
+    height: 18.794px;
+  }
+
+  .lottery-grid-view1__column-labels,
+  .lottery-grid-view1__row-cells {
+    width: 100%;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .lottery-grid-view1-cell__value {
+    color: #000;
+    font-family: UnifrakturCook;
+    font-size: 24.762px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 20.635px; /* 83.333% */
   }
 }

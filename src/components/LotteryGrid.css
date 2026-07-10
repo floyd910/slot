@@ -100,8 +100,8 @@
 .lottery-grid-view1-cell__wrapper {
   position: relative;
   z-index: 1;
-  width: 76px;
-  height: 52px;
+  width: 80%;
+  height: 80%;
   overflow: hidden;
   background-position: center;
   background-repeat: no-repeat;
