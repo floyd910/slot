@@ -443,3 +443,13 @@ button:disabled {
     margin-top: -60px;
   }
 }
+
+@media (max-width: 440px) and (min-height: 700px) {
+  .lottery-grid-view1-cell {
+    height: 60.794px;
+  }
+
+  .main-container__center {
+    height: 350px;
+  }
+}
