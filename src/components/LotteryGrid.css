@@ -2,12 +2,14 @@
 .lottery-grid-view2 {
   position: absolute;
   inset: 0;
+  box-sizing: border-box;
   width: 100%;
   height: 100%;
 }
 
 .lottery-grid-view1 {
   display: flex;
+  box-sizing: border-box;
   padding: 16px;
   flex-direction: column;
   gap: 16px;
@@ -21,7 +23,7 @@
 }
 
 .lottery-grid-view1 .hr {
-  width: 493px;
+  width: 100%;
   height: 1px;
   background: rgba(77, 77, 77, 0.4);
 }

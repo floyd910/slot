@@ -26,14 +26,13 @@
 
 .game_area {
   position: relative;
-  isolation: isolate;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
   height: 100vh;
   padding: 0;
-  overflow: hidden;
+  overflow: visible;
   margin-top: 48px;
   background: #111;
 }
@@ -68,7 +67,8 @@
   background-size: contain;
   margin: auto;
   position: relative;
-  z-index: 1;
+  z-index: 6;
+  margin-top: 0;
 }
 
 .top-bar,
@@ -80,13 +80,13 @@
 }
 
 .game-main-layout {
-  position: relative;
-  z-index: 2;
-  display: block;
+  position: absolute;
+  z-index: 7;
+  top: 0;
   width: 100%;
-  height: 100%;
   min-height: 0;
-  margin-top: 0px;
+  height: calc(100vh - 48px);
+  justify-content: space-between;
 }
 
 .game-main-layout > .frame-content {
@@ -97,10 +97,11 @@
   width: 100%;
   min-width: 0;
   min-height: 0;
-  overflow: hidden;
   background: transparent;
   box-shadow: none;
   gap: 32px;
+  margin-top: 130px;
+  z-index: 7;
 }
 
 .primary-button,
@@ -153,13 +154,20 @@ button:disabled {
 
 .main-container__left {
   width: 298px;
+  box-sizing: border-box;
   border-radius: 24px;
   background: rgba(13, 13, 13, 0.6);
   display: flex;
   padding: 16px;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: stretch;
   gap: 8px;
+}
+
+.main-container__left .combination-group {
+  width: 100%;
+  flex: 0 0 auto;
+  overflow: visible;
 }
 
 .main-container__right {
@@ -242,24 +250,204 @@ button:disabled {
   text-shadow: 0 1px 0 rgba(79, 52, 9, 0.65);
 }
 
-@media (min-width: 1280px) and (max-width: 1920px) {
-  .game-main-layout {
-    margin-top: -200px;
-  }
+/* @media (max-height: 1085px) {
+ 
+} */
 
+@media (max-height: 1025px) {
   .main-container__center {
-    width: 565px;
     height: 403px;
-  }
-
-  .lottery-grid-view1__column-labels,
-  .lottery-grid-view1__row-cells {
-    display: grid;
-    grid-template-columns: repeat(5, 92px);
-    gap: 8px;
   }
 
   .lottery-grid-view1-cell {
     height: 64px;
+  }
+
+  .main-container__left,
+  .main-container__right {
+    height: 540px;
+    overflow-y: auto;
+  }
+
+  .header_img {
+    top: -48px;
+  }
+}
+
+@media (min-width: 1280px) and (max-width: 1920px) {
+  .lottery-grid-view1__column-labels,
+  .lottery-grid-view1__row-cells {
+    grid-template-columns: repeat(5, 90px);
+  }
+
+  .main-container__center {
+    width: 565px;
+  }
+}
+
+@media (max-width: 1280px) {
+  .footer-block-desktop {
+    display: none;
+  }
+
+  .footer-block-tablet {
+    display: flex;
+    width: 100%;
+    max-width: calc(100% - 48px);
+  }
+  .main-container__left,
+  .main-container__right {
+    /* height: 474px; */
+    width: 260px;
+  }
+
+  .header_img {
+    height: auto;
+  }
+
+  .main-container__center {
+    width: 418px;
+    /* height: 357px; */
+  }
+
+  .lottery-grid-view1__column-labels,
+  .lottery-grid-view1__row-cells {
+    grid-template-columns: repeat(5, 61.4px);
+  }
+
+  .payouts th {
+    min-width: 35px;
+  }
+
+  .payouts th:first-child {
+    min-width: 12px;
+  }
+
+  .payouts {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .lottery-grid-view1-cell__wrapper {
+    width: 47px;
+    /* height: 32px; */
+  }
+}
+
+@media (max-width: 1024px) {
+  .lottery-grid-view1-cell__wrapper {
+    width: 80%;
+    height: 80%;
+  }
+  .header_img {
+    /* width: 470px; */
+    height: auto;
+  }
+  .main-container__center {
+    width: 90%;
+    /* height: 357px; */
+  }
+
+  .lottery-grid-view1 {
+    padding-right: 22px;
+  }
+
+  .game-main-layout {
+    margin-top: 60px;
+  }
+
+  .lottery-grid-view1__row {
+    width: 100%;
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+
+  .lottery-grid-view1__row-content,
+  .lottery-grid-view1__column-labels,
+  .lottery-grid-view1__row-cells {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .lottery-grid-view1__column-labels,
+  .lottery-grid-view1__row-cells {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .main-container__left,
+  .main-container__right {
+    display: none;
+  }
+
+  /* .lottery-grid-view1-cell {
+    height: 50px;
+  } */
+  .main-container__left,
+  .main-container__right {
+    display: none;
+  }
+}
+
+@media (max-width: 780px) {
+  .footer-block-tablet {
+    display: none;
+  }
+
+  .header_img {
+    top: 0;
+    width: 100%;
+  }
+
+  .footer-block-mobile {
+    display: flex;
+    max-width: calc(100% - 40px);
+  }
+
+  .game-main-layout {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 440px) {
+  header {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  .lottery-grid-view1 {
+    padding: 8.254px;
+    gap: 4px;
+  }
+
+  .lottery-grid-view1-cell__value {
+    font-size: 24px;
+  }
+
+  .lottery-grid-view1__row-label,
+  .lottery-grid-view1__column-label {
+    font-size: 12.3px;
+  }
+
+  .lottery-grid-view1__bottom .lottery-grid-view1__column-label {
+    font-size: 9.2px;
+  }
+  .footer-block-mobile {
+    max-width: calc(100% - 22px);
+    left: 11px;
+    position: fixed;
+    bottom: 0;
+  }
+
+  .game-main-layout {
+    width: calc(100% - 22px);
+    margin-top: -20px;
+  }
+
+  .frame-content,
+  .main-container__center {
+    width: 100%;
+    height: 193px;
+  }
+
+  .lottery-grid-view1-cell {
+    height: 25.794px;
   }
 }

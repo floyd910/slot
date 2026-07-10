@@ -25,7 +25,7 @@ export default function BottomBar(props) {
 
   return (
     <footer className="bottom-bar">
-      <div className="footer-block">
+      <div className="footer-block footer-block-desktop">
         <BottomBarMetric title={t("balance")} value={balance} />
         <BottomBarMetric title={t("purchaseAmount")} value={totalPurchase} />
         <BottomBarMetric title={t("win")} value={currentWin} accent />
@@ -45,33 +45,118 @@ export default function BottomBar(props) {
           value={formatCombinationValue(props.selectedCombination)}
           variant="combination"
         />
-        <button
-          aria-pressed={props.infoActive}
-          className="information-button"
+        <InfoButton
+          active={props.infoActive}
           disabled={props.disabled}
+          label={t("info")}
           onClick={props.onInfo}
-          type="button"
-        >
-          <span> {t("info")}</span>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="30"
-            height="30"
-            viewBox="0 0 30 30"
-            fill="none"
-          >
-            <path
-              d="M15 2.5C21.9035 2.5 27.5 8.09644 27.5 15C27.5 21.9035 21.9035 27.5 15 27.5C8.09644 27.5 2.5 21.9035 2.5 15C2.5 8.09644 8.09644 2.5 15 2.5ZM11.875 13.75V16.25H13.75V18.75H11.875V21.25H18.125V18.75H16.25V15C16.25 14.3096 15.6904 13.75 15 13.75H11.875ZM14.6875 8.75C13.8245 8.75 13.125 9.44955 13.125 10.3125C13.125 11.1755 13.8245 11.875 14.6875 11.875C15.5505 11.875 16.25 11.1755 16.25 10.3125C16.25 9.44955 15.5505 8.75 14.6875 8.75Z"
-              fill="white"
-            />
-          </svg>
-        </button>
+        />
 
         {controls.map((control) =>
           renderBottomBarControl(control, { language, t }),
         )}
       </div>
+
+      <div className="footer-block-tablet footer-block">
+        <div className="footer-flex">
+          <InfoButton
+            active={props.infoActive}
+            disabled={props.disabled}
+            label={t("info")}
+            onClick={props.onInfo}
+          />
+          <BottomBarMetric title={t("win")} value={currentWin} accent />
+          <BottomBarMetric title={t("balance")} value={balance} />
+          <BottomBarMetric title={t("purchaseAmount")} value={totalPurchase} />
+        </div>
+
+        <div className="footer-flex">
+          <BottomBarStepper
+            disabled={chooserDisabled}
+            label={t("lotteryBet")}
+            onDecrease={props.onDecreaseStake}
+            onIncrease={props.onIncreaseStake}
+            value={formatMoney(props.stake)}
+            variant="bet"
+          />
+          <BottomBarStepper
+            disabled={chooserDisabled}
+            label={t("lotteryCombination")}
+            onDecrease={props.onDecreaseCombination}
+            onIncrease={props.onIncreaseCombination}
+            value={formatCombinationValue(props.selectedCombination)}
+            variant="combination"
+          />
+          {controls.map((control) =>
+            renderBottomBarControl(control, { language, t }),
+          )}
+        </div>
+      </div>
+
+      <div className="footer-block-mobile footer-block">
+        <InfoButton
+          active={props.infoActive}
+          disabled={props.disabled}
+          label={t("info")}
+          onClick={props.onInfo}
+        />
+        <BottomBarMetric title={t("win")} value={currentWin} accent />
+        <div className="footer-flex">
+          <BottomBarMetric title={t("balance")} value={balance} />
+          <BottomBarMetric title={t("purchaseAmount")} value={totalPurchase} />
+        </div>
+
+        <div className="footer-flex">
+          <BottomBarStepper
+            disabled={chooserDisabled}
+            label={t("lotteryBet")}
+            onDecrease={props.onDecreaseStake}
+            onIncrease={props.onIncreaseStake}
+            value={formatMoney(props.stake)}
+            variant="bet"
+          />
+          <BottomBarStepper
+            disabled={chooserDisabled}
+            label={t("lotteryCombination")}
+            onDecrease={props.onDecreaseCombination}
+            onIncrease={props.onIncreaseCombination}
+            value={formatCombinationValue(props.selectedCombination)}
+            variant="combination"
+          />
+        </div>
+        <div className="footer-flex">
+          {controls.map((control) =>
+            renderBottomBarControl(control, { language, t }),
+          )}
+        </div>
+      </div>
     </footer>
+  );
+}
+
+function InfoButton({ active, disabled, label, onClick }) {
+  return (
+    <button
+      aria-pressed={active}
+      className="information-button"
+      disabled={disabled}
+      onClick={onClick}
+      type="button"
+    >
+      <span> {label}</span>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="30"
+        height="30"
+        viewBox="0 0 30 30"
+        fill="none"
+      >
+        <path
+          d="M15 2.5C21.9035 2.5 27.5 8.09644 27.5 15C27.5 21.9035 21.9035 27.5 15 27.5C8.09644 27.5 2.5 21.9035 2.5 15C2.5 8.09644 8.09644 2.5 15 2.5ZM11.875 13.75V16.25H13.75V18.75H11.875V21.25H18.125V18.75H16.25V15C16.25 14.3096 15.6904 13.75 15 13.75H11.875ZM14.6875 8.75C13.8245 8.75 13.125 9.44955 13.125 10.3125C13.125 11.1755 13.8245 11.875 14.6875 11.875C15.5505 11.875 16.25 11.1755 16.25 10.3125C16.25 9.44955 15.5505 8.75 14.6875 8.75Z"
+          fill="white"
+        />
+      </svg>
+    </button>
   );
 }
 
@@ -115,7 +200,19 @@ function BottomBarStepper({
     <div
       className={`bottom-bar-stepper --${variant}${disabled ? " --disabled" : ""}`}
     >
-      <div className="bottom-bar-stepper__title">{label}</div>
+      <div className="bottom-bar-stepper__title">
+        {label.split(" ").map((word, index, words) => (
+          <span key={`${word}-${index}`}>
+            {word}
+            {index < words.length - 1 && (
+              <>
+                <span className="bottom-bar-stepper__title-space"> </span>
+                <br className="bottom-bar-stepper__title-break" />
+              </>
+            )}
+          </span>
+        ))}
+      </div>
       <div
         className="bottom-bar-stepper__control"
         role="group"
