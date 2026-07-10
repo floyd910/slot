@@ -266,7 +266,7 @@ button:disabled {
 }
 
 /* height 1024 */
-@media (max-width: 1440px) {
+@media (max-width: 1980px) {
   .game-main-layout {
     margin-top: -130px;
   }
@@ -289,6 +289,11 @@ button:disabled {
   .header_img {
     top: -48px;
   }
+
+  .lottery-grid-view1__column-labels,
+  .lottery-grid-view1__row-cells {
+    grid-template-columns: repeat(5, 82.4px);
+  }
 }
 
 /* height 770 */
@@ -310,19 +315,6 @@ button:disabled {
   .lottery-grid-view1-cell {
     height: 50px;
   }
-}
-
-/* height 1029 */
-@media (max-width: 1024px) {
-  .main-container__center {
-    width: 525px;
-    height: 547px;
-  }
-
-  .lottery-grid-view1-cell {
-    height: 100px;
-  }
-
   .footer-block-desktop {
     display: none;
   }
@@ -331,6 +323,18 @@ button:disabled {
     display: flex;
     max-width: calc(100% - 40px);
   }
+}
+
+/* height 1029 */
+@media (max-width: 1024px) {
+  /* .main-container__center {
+    width: 525px;
+    height: 547px;
+  }
+
+  .lottery-grid-view1-cell {
+    height: 100px;
+  } */
 }
 
 /* height 956px */
