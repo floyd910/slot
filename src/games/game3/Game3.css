@@ -384,7 +384,7 @@ button:disabled {
   .main-container__center {
     width: calc(100% - 22px);
     max-width: 440px;
-    height: 183px;
+    height: 207px;
   }
 
   .lottery-grid-view1 {
@@ -405,7 +405,8 @@ button:disabled {
   }
 
   .lottery-grid-view1__row-label,
-  .lottery-grid-view1__column-label {
+  .lottery-grid-view1__column-label,
+  .lottery-grid-view1__bottom .lottery-grid-view1__column-label {
     color: #fff;
     text-align: center;
     font-family: Roboto;
@@ -416,7 +417,7 @@ button:disabled {
   }
 
   .lottery-grid-view1-cell {
-    height: 18.794px;
+    height: 25.794px;
   }
 
   .lottery-grid-view1__column-labels,
@@ -432,5 +433,9 @@ button:disabled {
     font-style: normal;
     font-weight: 700;
     line-height: 20.635px; /* 83.333% */
+  }
+
+  .game-main-layout {
+    margin-top: -60px;
   }
 }
