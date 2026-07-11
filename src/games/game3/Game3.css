@@ -187,6 +187,10 @@ button:disabled {
   display: none;
 }
 
+.view-2 .frame-content {
+  top: 77px;
+}
+
 .view-2 .main-container__center {
   width: 59.58%;
   margin-left: 0;
@@ -255,6 +259,11 @@ button:disabled {
 } */
 
 @media (min-width: 1441px) and (max-width: 1920px) {
+  .view-2 .frame-content {
+    top: auto;
+    margin-top: 49px;
+  }
+
   .lottery-grid-view1__column-labels,
   .lottery-grid-view1__row-cells {
     grid-template-columns: repeat(5, 90px);
@@ -267,8 +276,14 @@ button:disabled {
 
 /* height 1024 */
 @media (max-width: 1980px) {
-  .game-main-layout {
-    margin-top: -130px;
+  .frame-content {
+    position: absolute;
+    top: -135px;
+  }
+
+  .view-2 .frame-content {
+    position: static;
+    margin-top: 150px;
   }
 
   .main-container__left,
@@ -299,6 +314,16 @@ button:disabled {
 /* height 770 */
 
 @media (max-width: 1280px) {
+  .view-2 .lottery-grid-view2-cell {
+    width: 170px;
+    height: 110px;
+  }
+
+  .view-2 .lottery-grid-view2 {
+    column-gap: 16px;
+    row-gap: 16px;
+    padding-inline: 16px;
+  }
   .main-container__left,
   .main-container__right {
     display: none;
@@ -308,6 +333,10 @@ button:disabled {
     margin-top: 0;
   }
 
+  .frame-content {
+    position: relative;
+    top: 0;
+  }
   .main-container__center {
     height: 347px;
   }
@@ -327,6 +356,10 @@ button:disabled {
 
 /* height 1029 */
 @media (max-width: 1024px) {
+  .view-2 .lottery-grid-view2-cell {
+    width: 136px;
+    height: 88px;
+  }
   /* .main-container__center {
     width: 525px;
     height: 547px;
@@ -376,6 +409,9 @@ button:disabled {
 }
 
 @media (max-width: 440px) {
+  .view-2 .frame-content {
+    margin-top: 80px;
+  }
   header {
     padding-left: 8px;
     padding-right: 8px;
@@ -439,8 +475,8 @@ button:disabled {
     line-height: 20.635px; /* 83.333% */
   }
 
-  .game-main-layout {
-    margin-top: -60px;
+  .frame-content {
+    top: -60px;
   }
 }
 
@@ -451,5 +487,38 @@ button:disabled {
 
   .main-container__center {
     height: 350px;
+  }
+
+  .view-2 .lottery-grid-view2-cell {
+    height: 96px !important;
+  }
+}
+
+.view-2 .main-container__center {
+  width: max-content;
+  height: max-content;
+}
+
+@media (max-width: 750px) {
+  .view-2 .main-container__center {
+    width: calc(100% - 22px);
+  }
+
+  .view-2 .game-main-layout .lottery-grid--view2 {
+    width: 100%;
+  }
+
+  .view-2 .lottery-grid-view2 {
+    box-sizing: border-box;
+    width: 100%;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    column-gap: 8px;
+    row-gap: 8px;
+    padding: 8px;
+  }
+
+  .view-2 .lottery-grid-view2-cell {
+    width: 100%;
+    height: 48px;
   }
 }

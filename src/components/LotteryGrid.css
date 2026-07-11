@@ -225,20 +225,27 @@
 
 .lottery-grid-view2 {
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  grid-template-rows: repeat(3, calc((100% - 60px - 0.9%) / 3));
-  column-gap: 2.7%;
-  row-gap: 0.45%;
+  grid-template-columns: repeat(5, max-content);
+  grid-template-rows: repeat(3, max-content);
+  column-gap: 24px;
+  row-gap: 24px;
   align-content: start;
   align-items: center;
   justify-items: center;
   min-height: 0;
   padding: 0.5%;
+  border-radius: 24px;
+  background: rgba(13, 13, 13, 0.6);
+  box-shadow:
+    0 0 10px 1px rgba(255, 255, 255, 0.1) inset,
+    0 4px 6px 0 rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  padding: 16px 24px;
 }
 
 .lottery-grid-view2-cell {
-  width: 100%;
-  height: 100%;
+  width: 200px;
+  height: 130px;
 }
 
 .lottery-grid-view2-cell__container {
@@ -352,14 +359,14 @@
 
 .lottery-grid-view2-cover {
   position: absolute;
-  top: 0;
-  right: -0.5rem;
-  bottom: auto;
-  left: -0.7916666667rem;
+  top: 50%;
+  left: 0;
   z-index: 4;
-  height: calc(100% - 30px);
+  width: calc(100% + 25px);
+  height: calc(100% + 35px);
   overflow: hidden;
   pointer-events: none;
+  transform: translateY(-50%);
 }
 
 .lottery-grid-view2-cover--hidden {
@@ -528,4 +535,16 @@
     left: 100%;
     width: 0;
   }
+}
+
+.view-2 .lottery-grid-view2 {
+  position: relative;
+  inset: auto;
+  width: max-content;
+  height: max-content;
+}
+
+.view-2 .game-main-layout .lottery-grid--view2 {
+  width: max-content;
+  height: max-content;
 }
