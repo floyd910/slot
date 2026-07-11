@@ -11,6 +11,8 @@ import {
 
 const CSS_URL_PATTERN = /url\(\s*(['"]?)(.*?)\1\s*\)/g;
 
+const retainedPreloadedImages = new Map();
+
 export const toPreloadUrl = (src) => {
   if (!src || src.startsWith("data:") || src.startsWith("blob:")) return "";
   try {
@@ -73,7 +75,18 @@ export const preloadImage = (
       return;
     }
 
-    const image = new Image();
+    const retainedImage = retainedPreloadedImages.get(normalizedSrc);
+    if (retainedImage?.complete && retainedImage.naturalWidth > 0) {
+      if (decode && retainedImage.decode) {
+        retainedImage.decode().catch(() => {}).finally(() => resolve(normalizedSrc));
+      } else {
+        resolve(normalizedSrc);
+      }
+      return;
+    }
+
+    const image = retainedImage ?? new Image();
+    retainedPreloadedImages.set(normalizedSrc, image);
     let settled = false;
     let timeoutId = null;
 
@@ -188,7 +201,19 @@ export const loadAudioDurationMs = (src) =>
 const fontReady = () => document.fonts?.ready?.catch?.(() => {}) ?? Promise.resolve();
 
 const loadStartupAssets = async () => {
-  await preloadRequiredImages(FIRST_PAINT_GAME_IMAGE_ASSETS);
+  const requiredImages = uniqueUrls([
+    ...STARTUP_ASSETS.images,
+    ...FIRST_PAINT_GAME_IMAGE_ASSETS,
+    ...DEFERRED_GAME_IMAGE_ASSETS,
+    ...VIEW2_ASSETS,
+    ...collectStylesheetImageUrls(),
+  ]);
+
+  await Promise.all([
+    preloadRequiredImages(requiredImages),
+    fontReady(),
+    ...STARTUP_ASSETS.videos.map(preloadVideo),
+  ]);
 };
 
 const loadDeferredStartupAssets = async () => {
@@ -207,16 +232,11 @@ const loadDeferredStartupAssets = async () => {
   ]);
 };
 
-let startupAssetsPromise = null;
 let deferredStartupAssetsPromise = null;
 
-export const preloadStartupAssets = () => {
-  startupAssetsPromise ??= loadStartupAssets().catch((error) => {
-    startupAssetsPromise = null;
-    throw error;
-  });
-  return startupAssetsPromise;
-};
+// Run on every gate entry so CSS loaded by a newly imported game chunk is included.
+// Browser caching makes already loaded assets resolve immediately.
+export const preloadStartupAssets = () => loadStartupAssets();
 
 export const preloadDeferredStartupAssets = () => {
   deferredStartupAssetsPromise ??= loadDeferredStartupAssets().catch((error) => {

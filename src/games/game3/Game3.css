@@ -11,9 +11,6 @@
   cursor: wait;
 }
 
-.frame-app[data-startup-loading="true"] .game-main-layout {
-  visibility: hidden;
-}
 .frame-app.theme-light {
   color-scheme: light;
   --bg: #f4f1e8;
