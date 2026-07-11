@@ -209,8 +209,21 @@ const loadStartupAssets = async () => {
     ...collectStylesheetImageUrls(),
   ]);
 
+  const animationImages = requiredImages.filter((src) =>
+    src.includes("/assets/img/animations/"),
+  );
+  const decodedImages = requiredImages.filter(
+    (src) => !src.includes("/assets/img/animations/"),
+  );
+
   await Promise.all([
-    preloadRequiredImages(requiredImages),
+    preloadRequiredImages(decodedImages),
+    preloadImages(animationImages, {
+      decode: false,
+      fetchPriority: "high",
+      rejectOnError: true,
+      timeoutMs: null,
+    }),
     fontReady(),
     ...STARTUP_ASSETS.videos.map(preloadVideo),
   ]);

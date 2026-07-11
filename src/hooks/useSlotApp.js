@@ -14,15 +14,6 @@ const SLOT_CHOOSER_REQUIRED_ASSETS = [
   ...SLOT_CHOOSER_TILE_ASSETS,
 ];
 
-const deferWork = (work) => {
-  if ("requestIdleCallback" in window) {
-    const idleId = window.requestIdleCallback(work, { timeout: 1800 });
-    return () => window.cancelIdleCallback(idleId);
-  }
-
-  const timerId = window.setTimeout(work, 300);
-  return () => window.clearTimeout(timerId);
-};
 
 const waitForAnimationFrame = () =>
   new Promise((resolve) => window.requestAnimationFrame(resolve));
@@ -119,12 +110,6 @@ export function useSlotApp({ loadSelectedSlotGame }) {
     return notifyAfterPaint();
   }, [chooserAssetsReady]);
 
-  useEffect(() => {
-    if (!chooserAssetsReady) return undefined;
-    return deferWork(() => {
-      preloadStartupAssets().catch((assetError) => console.error(assetError));
-    });
-  }, [chooserAssetsReady]);
 
   const openSlot = async (slot) => {
     if (slot.status !== "ready" || selectedSlotId || pendingSlotId) return;
