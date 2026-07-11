@@ -97,7 +97,6 @@ export function buildLotteryGridViewModel({
     };
   }
 
-  const view2WinningCells = new Set(winningCells);
   const activeComboBorderCells = new Set(
     isSettled && groupedWins.length > 0
       ? (groupedWins[activeWinGroup] ?? groupedWins[0])
@@ -128,7 +127,7 @@ export function buildLotteryGridViewModel({
         isSettled &&
         (showScatterOnly
           ? scatterCells.includes(cell.coord)
-          : view2WinningCells.has(cell.coord)),
+          : activeComboBorderCells.has(cell.coord)),
       comboBorder:
         isSettled && visibleComboBorderCells.has(cell.coord)
           ? activeComboBorder
