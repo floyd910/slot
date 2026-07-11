@@ -17,6 +17,7 @@ export const view2SymbolAssetSources = (assets) =>
   [
     assets.background,
     assets.staticImage,
+    assets.animatedImage,
     assets.shine,
     assets.videoSrc,
     assets.winFrames,
@@ -43,6 +44,7 @@ const getFrameDurationMs = (frameMs, frameCount) => {
 export function View2SymbolBase({
   symbol,
   staticImage,
+  animatedImage = null,
   background,
   winFrames = [],
   shine = null,
@@ -55,7 +57,9 @@ export function View2SymbolBase({
   animationKey = "",
 }) {
   const [animationFrameTick, setAnimationFrameTick] = useState(0);
-  const activeWinFrames = (highlighted || animated) ? winFrames : null;
+  const animationActive = highlighted || animated;
+  const activeAnimatedImage = animationActive ? animatedImage : null;
+  const activeWinFrames = animationActive ? winFrames : null;
   const frameCycleLength = activeWinFrames?.length > 1
     ? forwardLoop
       ? activeWinFrames.length
@@ -100,7 +104,15 @@ export function View2SymbolBase({
             src={background}
           />
         )}
-        {activeWinFrames?.length > 1 ? (
+        {activeAnimatedImage ? (
+          <img
+            key={`${animationKey}-${activeAnimatedImage}`}
+            alt=""
+            aria-hidden="true"
+            src={activeAnimatedImage}
+            className="lottery-grid-view2-cell__image"
+          />
+        ) : activeWinFrames?.length > 1 ? (
           <span className="lottery-grid-view2-cell__animation" aria-label="image">
             <img
               alt=""
