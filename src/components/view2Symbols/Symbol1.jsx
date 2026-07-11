@@ -1,8 +1,7 @@
 import { View2SymbolBase, view2SymbolAsset } from "./View2SymbolBase.jsx";
 
 export const symbol1Assets = {
-  staticImage: view2SymbolAsset(1, "1.png"),
-  background: view2SymbolAsset(1, "background.png"),
+  staticImage: "/assets/img/view2-symbol-1-static.png?v=20260711-1",
   shine: view2SymbolAsset(1, "shine.png"),
   isDice: true,
 };

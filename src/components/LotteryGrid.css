@@ -248,6 +248,30 @@
   height: 130px;
 }
 
+.lottery-grid-view2-cell--symbol-1 .lottery-grid-view2-cell__container {
+  background: linear-gradient(145deg, #648ee1 0%, #1116aa 46.63%, #648ee1 100%), #fff;
+}
+
+.lottery-grid-view2-cell--symbol-2 .lottery-grid-view2-cell__container {
+  background: linear-gradient(145deg, #e1bf64 0%, #aa7c11 46.63%, #e6c36a 100%), #fff;
+}
+
+.lottery-grid-view2-cell--symbol-3 .lottery-grid-view2-cell__container {
+  background: linear-gradient(145deg, #e16464 0%, #aa1111 46.63%, #e16464 100%), #fff;
+}
+
+.lottery-grid-view2-cell--symbol-4 .lottery-grid-view2-cell__container {
+  background: linear-gradient(145deg, #e1a264 0%, #aa4c11 46.63%, #e1a264 100%), #fff;
+}
+
+.lottery-grid-view2-cell--symbol-5 .lottery-grid-view2-cell__container {
+  background: linear-gradient(145deg, #6ee164 0%, #00880e 46.63%, #6ee164 100%), #fff;
+}
+
+.lottery-grid-view2-cell--symbol-6 .lottery-grid-view2-cell__container {
+  background: linear-gradient(145deg, #cc64e1 0%, #790091 46.63%, #cc64e1 100%), #fff;
+}
+
 .lottery-grid-view2-cell__container {
   position: relative;
   width: 100%;
@@ -266,8 +290,8 @@
 }
 
 .lottery-grid-view2-cell--dice .lottery-grid-view2-cell__image {
-  width: 60%;
-  height: 70%;
+  width: 100px;
+  height: 108px;
 }
 
 .lottery-grid-view2-cell__background {
@@ -547,4 +571,18 @@
 .view-2 .game-main-layout .lottery-grid--view2 {
   width: max-content;
   height: max-content;
+}
+
+@media (max-width: 1024px) {
+  .lottery-grid-view2-cell--dice .lottery-grid-view2-cell__image {
+    width: 80px;
+    height: 86px;
+  }
+}
+
+@media (max-width: 720px) {
+  .lottery-grid-view2-cell--dice .lottery-grid-view2-cell__image {
+    width: 44px;
+    height: 47px;
+  }
 }
