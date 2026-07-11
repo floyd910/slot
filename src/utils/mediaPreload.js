@@ -209,21 +209,12 @@ const loadStartupAssets = async () => {
     ...collectStylesheetImageUrls(),
   ]);
 
-  const animationImages = requiredImages.filter((src) =>
-    src.includes("/assets/img/animations/"),
-  );
   const decodedImages = requiredImages.filter(
     (src) => !src.includes("/assets/img/animations/"),
   );
 
   await Promise.all([
     preloadRequiredImages(decodedImages),
-    preloadImages(animationImages, {
-      decode: false,
-      fetchPriority: "high",
-      rejectOnError: true,
-      timeoutMs: null,
-    }),
     fontReady(),
     ...STARTUP_ASSETS.videos.map(preloadVideo),
   ]);
@@ -258,3 +249,14 @@ export const preloadDeferredStartupAssets = () => {
   });
   return deferredStartupAssetsPromise;
 };
+
+export const preloadWinAnimations = () =>
+  preloadImages(
+    VIEW2_ASSETS.filter((src) => src.includes("/assets/img/animations/")),
+    {
+      decode: false,
+      fetchPriority: "low",
+      rejectOnError: false,
+      timeoutMs: IMAGE_PRELOAD_TIMEOUT_MS,
+    },
+  );

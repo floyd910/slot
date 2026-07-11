@@ -137,6 +137,10 @@ export function useSlotApp({ loadSelectedSlotGame }) {
 
     if (openRequestRef.current !== requestId) return;
     setPendingSlotId(null);
+
+    // Win animations are not visible at startup; warm them in the background
+    // after the fully rendered game is revealed.
+    preloadWinAnimations().catch((assetError) => console.error(assetError));
   };
 
   const closeSlot = () => {
