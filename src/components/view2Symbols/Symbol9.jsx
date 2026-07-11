@@ -1,14 +1,12 @@
-import {
-  View2SymbolBase,
-  view2SymbolAsset,
-  view2SymbolFrames,
-} from "./View2SymbolBase.jsx";
+import { View2SymbolBase } from "./View2SymbolBase.jsx";
 
 export const symbol9Assets = {
-  staticImage: view2SymbolAsset(11, "1.png"),
-  background: view2SymbolAsset(11, "background.png"),
-  winFrames: view2SymbolFrames(11, 7),
-  frameMs: 250,
+  staticImage: "/assets/img/view2-symbol-9-static.png?v=20260711-2",
+  winFrames: Array.from({ length: 144 }, (_, index) =>
+    `/assets/img/nine/frame_${String(index).padStart(3, "0")}_delay-0.04s.png`,
+  ),
+  forwardLoop: true,
+  frameMs: 40,
 };
 export default function Symbol9(props) {
   return <View2SymbolBase symbol={9} {...symbol9Assets} {...props} />;

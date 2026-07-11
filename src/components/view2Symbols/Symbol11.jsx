@@ -1,11 +1,12 @@
-import { View2SymbolBase, view2SymbolAsset, view2SymbolFrames } from "./View2SymbolBase.jsx";
+import { View2SymbolBase } from "./View2SymbolBase.jsx";
 
 export const symbol11Assets = {
-  staticImage: view2SymbolAsset(9, "1.png"),
-  background: view2SymbolAsset(9, "background.png"),
-  winFrames: view2SymbolFrames(9, 8),
+  staticImage: "/assets/img/view2-symbol-11-static.png?v=20260711-1",
+  winFrames: Array.from({ length: 144 }, (_, index) =>
+    `/assets/img/eleven/frame_${String(index).padStart(3, "0")}_delay-0.04s.png`,
+  ),
   forwardLoop: true,
-  frameMs: 250,
+  frameMs: 40,
 };
 
 export default function Symbol11(props) {

@@ -87,7 +87,7 @@ export function View2SymbolBase({
         : getPingPongFrameIndex(animationFrameTick, activeWinFrames.length)
       : 0;
 
-  const rootClass = `lottery-grid-view2-cell lottery-grid-view2-cell--symbol-${symbol}${isDice ? " lottery-grid-view2-cell--dice" : ""}`;
+  const rootClass = `lottery-grid-view2-cell lottery-grid-view2-cell--symbol-${symbol}${isDice ? " lottery-grid-view2-cell--dice" : ""}${highlighted ? " lottery-grid-view2-cell--highlighted" : ""}`;
 
   return (
     <div className={rootClass}>
@@ -98,13 +98,6 @@ export function View2SymbolBase({
             aria-hidden="true"
             className="lottery-grid-view2-cell__background"
             src={background}
-          />
-        )}
-        {isDice && shine && (highlighted || animated) && (
-          <span
-            className="lottery-grid-view2-cell__dice-shine"
-            style={{ "--view2-dice-shine-image": `url("${shine}")` }}
-            aria-hidden="true"
           />
         )}
         {activeWinFrames?.length > 1 ? (
