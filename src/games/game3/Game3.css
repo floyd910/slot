@@ -518,4 +518,8 @@ button:disabled {
     width: 100%;
     height: 48px;
   }
+
+  .view-2 .lottery-grid-view2-cover {
+    width: 100%;
+  }
 }

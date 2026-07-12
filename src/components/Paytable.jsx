@@ -81,6 +81,26 @@ export default function Paytable({
       {!loading && !error && !visualMode && (
         <div className="info-paytable">
           <h2 className="info-paytable__title">{copy.title}</h2>
+          <table className="info-paytable__summary">
+            <thead>
+              <tr>
+                <th>{renderLines(copy.stakeHeader)}</th>
+                <th>{renderLines(copy.combinationHeader)}</th>
+                <th>{renderLines(copy.groupsHeader)}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{view.stakeLabel}</td>
+                <td>{view.combinationNumber}</td>
+                <td className="--groups">
+                  {view.groupLabels.map((groupLabel) => (
+                    <span key={groupLabel}>{groupLabel}</span>
+                  ))}
+                </td>
+              </tr>
+            </tbody>
+          </table>
           <table className="info-paytable__table">
             <colgroup>
               <col className="info-paytable__stake-col" />

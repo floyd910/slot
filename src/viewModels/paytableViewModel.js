@@ -18,7 +18,7 @@ export function buildStandardPaytableViewModel({ stake, selectedCombination }) {
   const payoutMultiplier = getPayoutMultiplier(stake, selectedCombination);
 
   return {
-    columns: PAYOUT_COLUMNS,
+    columns: PAYOUT_COLUMNS.slice(1, 5),
     combinationNumber,
     groupLabels: combinationGroups.map(formatPayoutGroup),
     payoutMultiplier,
