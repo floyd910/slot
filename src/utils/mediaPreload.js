@@ -202,11 +202,10 @@ const fontReady = () => document.fonts?.ready?.catch?.(() => {}) ?? Promise.reso
 
 const loadStartupAssets = async () => {
   const requiredImages = uniqueUrls([
-    ...STARTUP_ASSETS.images,
     ...FIRST_PAINT_GAME_IMAGE_ASSETS,
-    ...DEFERRED_GAME_IMAGE_ASSETS,
-    ...VIEW2_ASSETS,
-    ...collectStylesheetImageUrls(),
+    ...VIEW2_ASSETS.filter(
+      (src) => !src.includes("/assets/img/animations/"),
+    ),
   ]);
 
   const decodedImages = requiredImages.filter(

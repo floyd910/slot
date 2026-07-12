@@ -1,6 +1,26 @@
+import { useEffect, useState } from "react";
 import "./StartupLoader.css";
 
 export default function StartupLoader({ ready, leaving }) {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if (ready) {
+      setProgress(100);
+      return undefined;
+    }
+
+    const interval = window.setInterval(() => {
+      setProgress((current) => {
+        if (current >= 95) return current;
+        const step = current < 60 ? 4 : current < 85 ? 2 : 1;
+        return Math.min(95, current + step);
+      });
+    }, 120);
+
+    return () => window.clearInterval(interval);
+  }, [ready]);
+
   return (
     <div
       className={`startup-loader${ready ? " --ready" : ""}${leaving ? " --leaving" : ""}`}
@@ -9,6 +29,16 @@ export default function StartupLoader({ ready, leaving }) {
       aria-label="Loading game"
     >
       <div className="startup-loader__shade" />
+      <div className="startup-loader__progress" aria-label={`${progress}% loaded`}>
+        <div className="startup-loader__progress-track">
+          <div
+            className="startup-loader__progress-fill"
+            style={{ width: `${progress}%` }}
+          >
+            <span className="startup-loader__progress-value">{progress}%</span>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
