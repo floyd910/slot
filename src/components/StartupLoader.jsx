@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import "./StartupLoader.css";
 
-export default function StartupLoader({ ready, leaving }) {
+export default function StartupLoader({ ready, leaving, variant = "default" }) {
   const [progress, setProgress] = useState(0);
+  const isBrandLoader = variant === "brand";
 
   useEffect(() => {
     if (ready) {
@@ -21,24 +22,34 @@ export default function StartupLoader({ ready, leaving }) {
     return () => window.clearInterval(interval);
   }, [ready]);
 
+  const progressBar = (
+    <div className="startup-loader__progress" aria-label={`${progress}% loaded`}>
+      <div className="startup-loader__progress-track">
+        <div
+          className="startup-loader__progress-fill"
+          style={{ width: `${progress}%` }}
+        />
+        <span className="startup-loader__progress-value">{progress}%</span>
+      </div>
+    </div>
+  );
+
   return (
     <div
-      className={`startup-loader${ready ? " --ready" : ""}${leaving ? " --leaving" : ""}`}
+      className={`startup-loader startup-loader--${variant}${ready ? " --ready" : ""}${leaving ? " --leaving" : ""}`}
       role="status"
       aria-live="polite"
       aria-label="Loading game"
     >
       <div className="startup-loader__shade" />
-      <div className="startup-loader__progress" aria-label={`${progress}% loaded`}>
-        <div className="startup-loader__progress-track">
-          <div
-            className="startup-loader__progress-fill"
-            style={{ width: `${progress}%` }}
-          >
-            <span className="startup-loader__progress-value">{progress}%</span>
-          </div>
+      {isBrandLoader ? (
+        <div className="startup-loader__brand">
+          <div className="startup-loader__brand-wordmark">betproduct.com</div>
+          {progressBar}
         </div>
-      </div>
+      ) : (
+        progressBar
+      )}
     </div>
   );
 }

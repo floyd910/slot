@@ -519,4 +519,8 @@ button:disabled {
   .view-1 .frame-content {
     margin-top: 160px !important;
   }
+
+  .bottom-bar {
+    bottom: 41px;
+  }
 }

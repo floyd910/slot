@@ -15,11 +15,21 @@
     visibility 0.45s ease;
 }
 
+.startup-loader--brand {
+  display: grid;
+  place-items: center;
+  background: #050506;
+}
+
 .startup-loader__shade {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.4);
   pointer-events: none;
+}
+
+.startup-loader--brand .startup-loader__shade {
+  display: none;
 }
 
 .startup-loader.--leaving {
@@ -28,6 +38,29 @@
   pointer-events: none;
 }
 
+.startup-loader__brand {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  width: min(360px, 84vw);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  transform: translate(-50%, -50%);
+}
+
+.startup-loader__brand-wordmark {
+  color: #b9bec7;
+  font-family: Roboto, Arial, sans-serif;
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  text-align: center;
+  white-space: nowrap;
+}
 .startup-loader__progress {
   position: absolute;
   right: clamp(16px, 5vw, 80px);
@@ -44,23 +77,31 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
-.startup-loader__progress-value {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  color: #fff;
-  font-size: 10px;
-  line-height: 1;
-  transform: translateY(-50%);
+.startup-loader--brand .startup-loader__progress {
+  position: static;
+  width: 100%;
+  max-width: 240px;
+  margin: 0;
+  font-family: Roboto, Arial, sans-serif;
+  text-shadow: none;
 }
 
 .startup-loader__progress-track {
+  position: relative;
   box-sizing: border-box;
   height: 16px;
   overflow: hidden;
   border: 2px solid #e1bf64;
   border-radius: 16px;
   background: rgba(0, 0, 0, 0.55);
+}
+
+.startup-loader--brand .startup-loader__progress-track {
+  height: 6px;
+  overflow: visible;
+  border: 0;
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
 }
 
 .startup-loader__progress-fill {
@@ -70,4 +111,28 @@
   border-radius: 16px;
   background: linear-gradient(270deg, #aa7c11 0%, rgba(225, 191, 100, 0.35) 100%);
   transition: width 0.15s ease-out;
+}
+
+.startup-loader--brand .startup-loader__progress-fill {
+  background: linear-gradient(90deg, #8f7433 0%, #c7aa61 100%);
+}
+
+.startup-loader__progress-value {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  transform: translate(-50%, -50%);
+}
+
+.startup-loader--brand .startup-loader__progress-value {
+  top: calc(100% + 9px);
+  color: #8d929b;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
 }

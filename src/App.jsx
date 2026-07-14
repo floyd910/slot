@@ -10,7 +10,7 @@ export default function App() {
   const slotApp = useSlotApp({ loadSelectedSlotGame });
 
   if (!slotApp.chooserAssetsReady) {
-    return <StartupLoader ready={false} leaving={false} />;
+    return <StartupLoader ready={false} leaving={false} variant="brand" />;
   }
 
   return (

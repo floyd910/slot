@@ -30,10 +30,108 @@
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Prosto+One&family=Roboto:ital,wght@0,100..900;1,100..900&family=UnifrakturCook:wght@700&display=swap"
       rel="stylesheet"
     />
+    <style>
+      html,
+      body,
+      #root {
+        width: 100%;
+        min-width: 320px;
+        height: 100%;
+        margin: 0;
+        background: #050506;
+      }
+
+      .boot-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: grid;
+        place-items: center;
+        background: #050506;
+      }
+
+      .boot-loader__content {
+        width: min(360px, 84vw);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .boot-loader__brand {
+        color: #b9bec7;
+        font-family: Roboto, Arial, sans-serif;
+        font-size: clamp(22px, 3vw, 32px);
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+      }
+
+      .boot-loader__progress {
+        width: min(240px, 70vw);
+        display: grid;
+        justify-items: center;
+        gap: 9px;
+      }
+
+      .boot-loader__track {
+        width: 100%;
+        height: 6px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
+      }
+
+      .boot-loader__fill {
+        width: 10%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #8f7433 0%, #c7aa61 100%);
+        animation: boot-loader-fill 1.2s ease-in-out infinite;
+      }
+
+      .boot-loader__percent {
+        color: #8d929b;
+        font-family: Roboto, Arial, sans-serif;
+        font-size: 11px;
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: 0.03em;
+      }
+
+      @keyframes boot-loader-fill {
+        0% {
+          width: 10%;
+          opacity: 0.7;
+        }
+        50% {
+          width: 28%;
+          opacity: 1;
+        }
+        100% {
+          width: 10%;
+          opacity: 0.7;
+        }
+      }
+    </style>
     <title>Hiranmandi iframe</title>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="boot-loader" role="status" aria-label="Loading game">
+        <div class="boot-loader__content">
+          <div class="boot-loader__brand">betproduct.com</div>
+          <div class="boot-loader__progress" aria-label="0% loaded">
+            <div class="boot-loader__track">
+              <div class="boot-loader__fill"></div>
+            </div>
+            <div class="boot-loader__percent">0%</div>
+          </div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
