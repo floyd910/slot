@@ -43,6 +43,7 @@ export function buildLotteryGridViewModel({
   revealKey,
   scatterCells = [],
   visualMode,
+  autoSequence = false,
   winningCells = [],
 }) {
   if (hasGridMissing(grid)) return { isGridMissing: true };
@@ -97,15 +98,15 @@ export function buildLotteryGridViewModel({
     };
   }
 
+  const hasActiveLineWin =
+    isSettled && groupedWins.length > 0 && activeWinGroup != null;
   const activeComboBorderCells = new Set(
-    isSettled && groupedWins.length > 0
-      ? (groupedWins[activeWinGroup] ?? groupedWins[0])
-      : [],
+    hasActiveLineWin ? (groupedWins[activeWinGroup] ?? []) : [],
   );
   const showScatterOnly = scatterCells.length >= 2;
   const activeComboBorder =
-    isSettled && (groupedWins.length > 0 || showScatterOnly)
-      ? COMBO_BORDERS[activeWinGroup % COMBO_BORDERS.length]
+    isSettled && (hasActiveLineWin || showScatterOnly)
+      ? COMBO_BORDERS[(activeWinGroup ?? 0) % COMBO_BORDERS.length]
       : null;
   const visibleComboBorderCells = new Set([
     ...activeComboBorderCells,
@@ -127,12 +128,13 @@ export function buildLotteryGridViewModel({
         isSettled &&
         (showScatterOnly
           ? scatterCells.includes(cell.coord)
-          : activeComboBorderCells.has(cell.coord)),
+          : hasActiveLineWin && activeComboBorderCells.has(cell.coord)),
       comboBorder:
         isSettled && visibleComboBorderCells.has(cell.coord)
           ? activeComboBorder
           : null,
       animationKey: `${revealKey}-${cell.coord}-${cell.value}`,
+      autoSequence,
     })),
   };
 }

@@ -51,14 +51,20 @@ export function View2SymbolBase({
   isDice = false,
   forwardLoop = false,
   frameMs = null,
+  cycleMs = null,
+  singlePlayMs = null,
   animated = false,
+  autoSequence = false,
   highlighted = false,
   comboBorder = null,
   animationKey = "",
 }) {
   const [animationFrameTick, setAnimationFrameTick] = useState(0);
+  const [animatedImageDone, setAnimatedImageDone] = useState(false);
   const animationActive = highlighted || animated;
-  const activeAnimatedImage = animationActive ? animatedImage : null;
+  const animatedImagePlayMs =
+    singlePlayMs ?? (cycleMs ? Math.round(cycleMs / 2) : VIEW2_SYMBOL_WIN_CYCLE_MS);
+  const activeAnimatedImage = animationActive && (!autoSequence || !animatedImageDone) ? animatedImage : null;
   const activeWinFrames = animationActive ? winFrames : null;
   const frameCycleLength = activeWinFrames?.length > 1
     ? forwardLoop
@@ -68,6 +74,22 @@ export function View2SymbolBase({
   const frameDurationMs = activeWinFrames?.length > 1
     ? getFrameDurationMs(frameMs, activeWinFrames.length)
     : VIEW2_SYMBOL_WIN_FRAME_MS;
+
+  useEffect(() => {
+    setAnimatedImageDone(false);
+    if (!autoSequence || !animationActive || !animatedImage) return undefined;
+    const timeoutId = window.setTimeout(
+      () => setAnimatedImageDone(true),
+      animatedImagePlayMs,
+    );
+    return () => window.clearTimeout(timeoutId);
+  }, [
+    animatedImage,
+    animatedImagePlayMs,
+    animationActive,
+    animationKey,
+    symbol,
+  ]);
 
   useEffect(() => {
     setAnimationFrameTick(0);

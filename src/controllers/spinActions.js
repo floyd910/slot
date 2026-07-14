@@ -369,7 +369,11 @@ export const createSpinActions = ({
         const result = await handleSpin({ freeSpinAuto: true });
         if (!result) break;
         if (liveSpinStateRef.current.freeSpinsLeft > 0)
-          await wait(getNextSpinDelayMs(result));
+          await wait(
+            getNextSpinDelayMs(result, {
+              visualMode: liveSpinStateRef.current.visualMode,
+            }),
+          );
       }
     } finally {
       freeSpinRunRef.current = false;
@@ -380,7 +384,11 @@ export const createSpinActions = ({
     if (freeSpinRunRef.current || showFreeSpinPrompt) return;
     const result = await handleSpin();
     if (!result) return;
-    await wait(getNextSpinDelayMs(result));
+    await wait(
+      getNextSpinDelayMs(result, {
+        visualMode: liveSpinStateRef.current.visualMode,
+      }),
+    );
     if (!autoPlayOnRef.current) return;
     await collectWin();
   };

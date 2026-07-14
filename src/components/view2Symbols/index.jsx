@@ -61,6 +61,12 @@ const getSymbolCycleMs = (assets) => {
   return Math.max(frameCount, 1) * assets.frameMs;
 };
 
+const getSymbolHighlightMs = (assets) => {
+  if (assets.singlePlayMs) return assets.singlePlayMs;
+  if (assets.animatedImage && assets.cycleMs) return Math.round(assets.cycleMs / 2);
+  return getSymbolCycleMs(assets);
+};
+
 export const VIEW2_SYMBOL_GROUP_CYCLE_MS =
-  Math.max(...Object.values(VIEW2_SYMBOL_CONFIGS).map(getSymbolCycleMs)) ||
+  Math.max(...Object.values(VIEW2_SYMBOL_CONFIGS).map(getSymbolHighlightMs)) ||
   VIEW2_SYMBOL_WIN_CYCLE_MS;

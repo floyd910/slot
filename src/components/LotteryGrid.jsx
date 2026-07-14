@@ -11,6 +11,7 @@ export default function LotteryGrid({
   revealKey = 0,
   animationState = "idle",
   visualMode,
+  autoSequence = false,
   winningCells = [],
   winningGroups = [],
   scatterCells = [],
@@ -27,6 +28,7 @@ export default function LotteryGrid({
     revealKey,
     scatterCells,
     visualMode,
+    autoSequence,
     winningCells,
     winningGroups,
   });
@@ -96,6 +98,7 @@ function View2Cover({ animationState, closeMs, openMs }) {
 
 function View2Cell({
   digit,
+  autoSequence = false,
   animated = false,
   highlighted = false,
   comboBorder = null,
@@ -108,6 +111,7 @@ function View2Cell({
   return (
     <SymbolComponent
       animated={animated}
+      autoSequence={autoSequence}
       highlighted={highlighted}
       comboBorder={comboBorder}
       animationKey={animationKey}

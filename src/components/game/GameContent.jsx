@@ -84,6 +84,7 @@ export default function GameContent({ controller, runtimeState }) {
               revealKey={state.gridRevealKey}
               animationState={state.gridAnimation}
               visualMode={state.visualMode}
+              autoSequence={state.autoPlayOn}
               carpetCloseMs={state.carpetCloseMs}
               carpetOpenMs={state.carpetOpenMs}
               winningCells={state.spinResult?.winningCells}

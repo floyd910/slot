@@ -15,6 +15,7 @@ export function useLotteryGridViewModel({
   revealKey,
   scatterCells,
   visualMode,
+  autoSequence = false,
   winningCells,
   winningGroups,
 }) {
@@ -29,12 +30,31 @@ export function useLotteryGridViewModel({
     if (groupedWins.length === 0 || animationState !== "settled") return;
 
     setActiveWinGroup(0);
-    if (groupedWins.length === 1) return;
-
     const cycleMs = visualMode
       ? VIEW2_SYMBOL_GROUP_CYCLE_MS
       : VIEW1_WIN_LINE_HIGHLIGHT_MS;
     let timeoutId;
+
+    if (visualMode && autoSequence) {
+      let nextIndex = 1;
+      const scheduleNext = () => {
+        timeoutId = window.setTimeout(() => {
+          if (nextIndex >= groupedWins.length) {
+            setActiveWinGroup(null);
+            return;
+          }
+
+          setActiveWinGroup(nextIndex);
+          nextIndex += 1;
+          scheduleNext();
+        }, cycleMs);
+      };
+
+      scheduleNext();
+      return () => window.clearTimeout(timeoutId);
+    }
+
+    if (groupedWins.length === 1) return;
 
     const scheduleNext = () => {
       timeoutId = window.setTimeout(() => {
@@ -45,7 +65,7 @@ export function useLotteryGridViewModel({
 
     scheduleNext();
     return () => window.clearTimeout(timeoutId);
-  }, [animationState, groupedWins.length, visualMode]);
+  }, [animationState, autoSequence, groupedWins.length, revealKey, visualMode]);
 
   return useMemo(
     () =>
@@ -60,6 +80,7 @@ export function useLotteryGridViewModel({
         revealKey,
         scatterCells,
         visualMode,
+        autoSequence,
         winningCells,
       }),
     [
@@ -73,6 +94,7 @@ export function useLotteryGridViewModel({
       revealKey,
       scatterCells,
       visualMode,
+      autoSequence,
       winningCells,
     ],
   );
