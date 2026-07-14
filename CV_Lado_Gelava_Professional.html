@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lado Gelava — Full Stack Engineer</title>
+  <style>
+    @page { size: A4; margin: 14mm 16mm 13mm; }
+    * { box-sizing: border-box; }
+    :root { --ink:#18202a; --muted:#5b6673; --accent:#176b87; --pale:#edf5f7; --rule:#d6e0e4; }
+    body { margin:0; background:#e8ecef; color:var(--ink); font:10pt/1.38 Arial, Helvetica, sans-serif; }
+    .page { width:210mm; min-height:297mm; margin:12mm auto; background:#fff; padding:14mm 16mm 13mm; box-shadow:0 6px 28px #0002; }
+    header { border-bottom:2.5px solid var(--accent); padding-bottom:5mm; margin-bottom:5mm; }
+    h1 { margin:0; font-size:27pt; line-height:1; letter-spacing:.2px; }
+    .role { margin:2mm 0 3mm; color:var(--accent); font-size:13pt; font-weight:700; }
+    .contact { display:flex; flex-wrap:wrap; gap:1.2mm 6mm; color:var(--muted); font-size:9.5pt; }
+    .contact a { color:inherit; text-decoration:none; }
+    h2 { margin:4.5mm 0 2.2mm; color:var(--accent); font-size:11.5pt; letter-spacing:1.3px; text-transform:uppercase; }
+    .summary { margin:0; font-size:10.5pt; }
+    .skills { display:grid; grid-template-columns:31mm 1fr; gap:1.2mm 4mm; }
+    .skills strong { color:var(--ink); }
+    .skills span { color:var(--muted); }
+    .job { margin-bottom:3.8mm; break-inside:avoid; }
+    .job-head { display:grid; grid-template-columns:1fr auto; align-items:baseline; gap:4mm; }
+    h3 { margin:0; font-size:11pt; }
+    .company { color:var(--accent); font-weight:700; }
+    time { color:var(--muted); font-size:9.5pt; white-space:nowrap; }
+    ul { margin:1.3mm 0 0; padding-left:5mm; }
+    li { margin:.7mm 0; padding-left:.8mm; }
+    li::marker { color:var(--accent); }
+    .projects { display:grid; grid-template-columns:1fr 1fr; gap:3mm 7mm; }
+    .project { break-inside:avoid; }
+    .project h3 { margin-bottom:.8mm; }
+    .project p { margin:0; color:var(--muted); }
+    .footer-grid { display:block; }
+    .small { color:var(--muted); }
+    .page-break { break-before:page; page-break-before:always; padding-top:10mm; }
+    @media print { body { background:#fff; } .page { width:auto; min-height:0; margin:0; padding:0; box-shadow:none; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <h1>Lado Gelava</h1>
+      <div class="role">Full Stack Engineer</div>
+      <div class="contact">
+        <span>ld.gelava&#8203;@gmail.&#8203;com</span>
+        <span>+995 550 05 17 49</span>
+        <span>github.&#8203;com/floyd910</span>
+        <span>Georgia</span>
+      </div>
+    </header>
+
+    <section>
+      <h2>Professional Summary</h2>
+      <p class="summary">Full Stack Engineer with 4 years of professional web-development experience, specializing in React, Next.js and TypeScript. Experienced in shipping financial applications, gaming products and B2B iframe integrations in close collaboration with backend teams. Combines strong UI implementation with practical API, Node.js and database knowledge to deliver responsive, maintainable production software.</p>
+    </section>
+
+    <section>
+      <h2>Core Skills</h2>
+      <div class="skills">
+        <strong>Frontend</strong><span>JavaScript, TypeScript, React, Next.js, React Native, HTML5, CSS3, responsive UI</span>
+        <strong>Backend &amp; Data</strong><span>Node.js, Express.js, REST API integration, MySQL, PostgreSQL, MongoDB</span>
+        <strong>Tools &amp; Cloud</strong><span>Git, Google Cloud, cross-functional collaboration</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>Professional Experience</h2>
+
+      <article class="job">
+        <div class="job-head"><h3>React.js Frontend Developer · <span class="company">Betproduct</span></h3><time>May 2026–Present</time></div>
+        <ul>
+          <li>Build production-ready frontends for slot games using React.js, delivering responsive and maintainable gameplay interfaces for B2B casino distribution.</li>
+          <li>Own the iframe integration from the frontend side, enabling casino operators to embed games reliably within their platforms.</li>
+          <li>Implement host-game communication and balance-control flows, coordinating game state, player sessions and balance updates between embedded slots and casino systems.</li>
+        </ul>
+      </article>
+      <article class="job">
+        <div class="job-head"><h3>Next.js Frontend Developer (Freelance) · <span class="company">Lockz</span></h3><time>Jun 2024–Mar 2026</time></div>
+        <ul>
+          <li>Built and maintained the frontend of a fantasy-sports gaming platform using Next.js and TypeScript in collaboration with a PHP backend team.</li>
+          <li>Developed a B2B iframe integration that enabled partner casino platforms to embed Lockz games while the host platform retains control of authentication and wallet management.</li>
+          <li>Translated product and integration requirements into reusable UI components, responsive layouts and stable frontend flows.</li>
+        </ul>
+      </article>
+
+      <article class="job">
+        <div class="job-head"><h3>React Frontend Developer · <span class="company">Citadeli</span></h3><time>Nov 2021–Nov 2022</time></div>
+        <ul>
+          <li>Built and maintained the frontend of an internal financial-management application with spreadsheet-style workflows for company-wide finance operations.</li>
+          <li>Integrated backend APIs with the PHP team and improved application performance, responsiveness and consistency across devices.</li>
+          <li>Refined UI/UX for complex financial data entry and management, making internal workflows clearer and easier to use.</li>
+        </ul>
+      </article>
+
+      <article class="job">
+        <div class="job-head"><h3>Full-Stack Web Developer · <span class="company">Exceed Team / Websmart</span></h3><time>May 2019–May 2020</time></div>
+        <ul>
+          <li>Progressed from intern to Junior Developer while building full-stack web applications with the MERN stack.</li>
+          <li>Developed React interfaces, Node.js/Express APIs and MongoDB-backed features using component-based architecture and state management.</li>
+          <li>Contributed across the delivery lifecycle, from feature implementation and API integration to debugging and maintenance.</li>
+        </ul>
+      </article>
+
+      <article class="job">
+        <div class="job-head"><h3>Content Manager, Journalist &amp; Website Administrator · <span class="company">Cardplayer / Adjarabet</span></h3><time>Dec 2015–Aug 2019</time></div>
+        <ul>
+          <li>Managed content for an online poker publication; wrote articles, conducted interviews and covered major local and international poker events.</li>
+          <li>Maintained website content and publishing quality in a fast-moving digital environment.</li>
+        </ul>
+      </article>
+    </section>
+
+    <section>
+      <h2>Selected Projects</h2>
+      <div class="projects">
+        <article class="project"><h3><span>Goldshop.&#8203;</span><span>ge</span></h3><p>Designed and built a full-stack e-commerce website using React, Node.js, Express and MongoDB without a pre-existing UI/UX design.</p></article>
+        <article class="project"><h3><span>Lingwing.&#8203;</span><span>com</span></h3><p>Rebuilt the frontend from Angular to Next.js and TypeScript in collaboration with Node.js backend developers.</p></article>
+        <article class="project"><h3><span>Lockz.&#8203;</span><span>com</span></h3><p>Built the Next.js and TypeScript frontend in collaboration with a PHP backend team.</p></article>
+        <article class="project"><h3><span>Gmpc.&#8203;</span><span>xyz</span></h3><p>Implemented Discord authentication for a Webflow website using vanilla JavaScript.</p></article>
+      </div>
+    </section>
+
+    <div class="footer-grid">
+      <section><h2>Education</h2><strong>Certificate in Front-End Development</strong><br><span class="small">Smart Academy · 2019</span><h2>Languages</h2><span class="small">Georgian · English · Russian</span></section>
+    </div>
+  </main>
+</body>
+</html>
+
+
