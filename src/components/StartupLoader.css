@@ -110,7 +110,7 @@
   overflow: hidden;
   border-radius: 16px;
   background: linear-gradient(270deg, #aa7c11 0%, rgba(225, 191, 100, 0.35) 100%);
-  transition: width 0.15s ease-out;
+  transition: width 0.32s ease-out;
 }
 
 .startup-loader--brand .startup-loader__progress-fill {
@@ -136,3 +136,4 @@
   font-weight: 500;
   letter-spacing: 0.03em;
 }
+
