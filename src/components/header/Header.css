@@ -18,3 +18,23 @@ header {
   align-items: center;
   justify-content: center;
 }
+
+.header-btns button {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  line-height: 0;
+}
+
+.sound-changer__icon {
+  display: block;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+}

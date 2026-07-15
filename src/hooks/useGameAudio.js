@@ -42,6 +42,7 @@ const effectSources = [...new Set(Object.values(media))];
 export function useGameAudio() {
   const cacheRef = useRef(new Map());
   const backgroundRef = useRef(null);
+  const activePlaybackRef = useRef(new Set());
   const contextRef = useRef(null);
   const bufferRef = useRef(new Map());
   const bufferPromiseRef = useRef(new Map());
@@ -112,9 +113,19 @@ export function useGameAudio() {
       source.connect(gain).connect(context.destination);
       source.start(0);
 
-      return {
-        stop: () => source.stop(),
+      const playback = {
+        stop: () => {
+          try {
+            source.stop();
+          } catch {
+            // Source may already be stopped by the browser.
+          }
+        },
       };
+      activePlaybackRef.current.add(playback);
+      source.onended = () => activePlaybackRef.current.delete(playback);
+
+      return playback;
     },
     [getAudioContext],
   );
@@ -135,6 +146,12 @@ export function useGameAudio() {
       if (restart) audio.currentTime = 0;
       const playback = audio.play();
       if (playback?.catch) playback.catch(() => {});
+      activePlaybackRef.current.add(audio);
+      audio.addEventListener(
+        "ended",
+        () => activePlaybackRef.current.delete(audio),
+        { once: true },
+      );
       return audio;
     },
     [getAudio, playBuffer, warmBuffer],
@@ -164,6 +181,29 @@ export function useGameAudio() {
     backgroundRef.current = null;
   }, []);
 
+  const stopAllAudio = useCallback(() => {
+    activePlaybackRef.current.forEach((playback) => {
+      if (playback.pause) {
+        playback.pause();
+        playback.currentTime = 0;
+      }
+      if (playback.stop) playback.stop();
+    });
+    activePlaybackRef.current.clear();
+
+    cacheRef.current.forEach((audio) => {
+      audio.pause();
+      audio.currentTime = 0;
+    });
+
+    if (backgroundRef.current?.pause) {
+      backgroundRef.current.pause();
+      backgroundRef.current.currentTime = 0;
+    }
+    if (backgroundRef.current?.stop) backgroundRef.current.stop();
+    backgroundRef.current = null;
+  }, []);
+
   useEffect(() => {
     effectSources.forEach((src) => {
       const audio = getAudio(src);
@@ -184,6 +224,10 @@ export function useGameAudio() {
 
   return useCallback(
     (event, payload) => {
+      if (event === "stopAll") {
+        stopAllAudio();
+        return;
+      }
       unlockAudio();
       if (event === "background")
         playBackground("/media/eldorado-main-theme.39d363ed.mp3");
@@ -205,6 +249,7 @@ export function useGameAudio() {
         receipt.volume = 0.4;
         const playback = receipt.play();
         if (playback?.catch) playback.catch(() => {});
+        activePlaybackRef.current.add(receipt);
       }
       if (event === "cashout") playSrc(media.cashout, { volume: 0.85 });
       if (event === "double") playSrc(media.double, { volume: 0.8 });
@@ -217,6 +262,6 @@ export function useGameAudio() {
         });
       }
     },
-    [getAudio, playBackground, playSrc, stopBackground],
+    [getAudio, playBackground, playSrc, stopAllAudio, stopBackground],
   );
 }

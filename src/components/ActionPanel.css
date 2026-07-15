@@ -68,3 +68,12 @@
 }
 
 
+
+.menu-top__sound-icon {
+  width: 3.1875rem;
+  height: 2.5rem;
+}
+
+.menu-top__control[data-action="sound"] {
+  width: 3.1875rem;
+}

@@ -12,7 +12,9 @@ export default function Game3({ slotId, onBack }) {
   return (
     <>
       <Header
+        onSoundToggle={controller.actions.toggleSound}
         onViewToggle={controller.actions.toggleVisualMode}
+        soundEnabled={controller.state.soundEnabled}
         viewSwitchDisabled={controller.derived.viewSwitchDisabled}
         visualMode={controller.state.visualMode}
       />

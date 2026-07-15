@@ -119,6 +119,10 @@ export function useGameController(selectedGameId) {
     [playSound, soundEnabled, visualMode],
   );
 
+  useEffect(() => {
+    if (!soundEnabled) playSound("stopAll");
+  }, [playSound, soundEnabled]);
+
   const emitLotteryRevealSounds = useCallback(() => {
     window.requestAnimationFrame(() => {
       Array.from({ length: LOTTERY_REVEAL_COLUMNS }, (_, index) => {
@@ -226,6 +230,7 @@ export function useGameController(selectedGameId) {
       player,
       selectedCombination,
       spinResult,
+      soundEnabled,
       stake,
       status,
       visualMode,
@@ -574,6 +579,15 @@ export function useGameController(selectedGameId) {
       visualMode,
     });
 
+  const toggleSound = () => {
+    if (soundEnabled) {
+      playSound("stopAll");
+    } else {
+      playSound("click");
+    }
+    setSoundEnabled((value) => !value);
+  };
+
   const toggleVisualMode = () => {
     if (viewSwitchDisabled) return;
     emitSound("click");
@@ -655,6 +669,7 @@ export function useGameController(selectedGameId) {
       setShowPaytable,
       startFreeSpinRun,
       toggleAutoPlay,
+      toggleSound,
       toggleVisualMode,
       enterVisualDouble,
     },
@@ -684,6 +699,7 @@ export function useGameController(selectedGameId) {
       spinFeedbackActive,
       spinHistory,
       spinResult,
+      soundEnabled,
       stake,
       startupAssetsReady,
       startupLoaderLeaving,
