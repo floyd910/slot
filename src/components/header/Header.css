@@ -38,3 +38,118 @@ header {
   height: 32px;
   flex: 0 0 32px;
 }
+.lang-chooser {
+  position: relative;
+  z-index: 10;
+}
+
+.lang-chooser__button,
+.lang-chooser__option {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  color: #fff;
+  font-family: Roboto, sans-serif;
+  white-space: nowrap;
+}
+
+.lang-chooser__button {
+  min-width: 0;
+  height: 32px;
+  justify-content: flex-start;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.lang-chooser__button:hover {
+  background: transparent;
+}
+
+.lang-chooser__option:hover,
+.lang-chooser__option.active {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.lang-chooser__flag {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.lang-chooser__flag-image {
+  display: block;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.lang-chooser__flag-fallback {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.lang-chooser__label {
+  flex: 0 1 auto;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.lang-chooser__chevron {
+  display: block;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  flex: 0 0 24px;
+}
+
+.lang-chooser__menu {
+  position: fixed;
+  top: 46px;
+  left: 32px;
+  display: grid;
+  gap: 8px;
+  min-width: 180px;
+  padding: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 4px;
+  background: #0d0d0d;
+  z-index: 2147483647;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.34);
+}
+
+.lang-chooser__option {
+  width: 100%;
+  min-height: 48px;
+  justify-content: flex-start;
+  padding: 8px 12px;
+  border-radius: 3px;
+  background: transparent;
+  color: #fff;
+  text-align: center;
+  font-family: Roboto, sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
+  letter-spacing: 0.45px;
+  text-transform: uppercase;
+}
+
+

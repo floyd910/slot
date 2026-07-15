@@ -190,10 +190,15 @@ export function LanguageProvider({ children }) {
   const [language, setLanguage] = useState("ru");
   const [isLanguageChanging, setIsLanguageChanging] = useState(false);
 
-  const toggleLanguage = useCallback(() => {
+  const selectLanguage = useCallback((nextLanguage) => {
+    if (!copy[nextLanguage]) return;
     setIsLanguageChanging(true);
-    setLanguage((current) => (current === "ru" ? "tg" : "ru"));
+    setLanguage(nextLanguage);
   }, []);
+
+  const toggleLanguage = useCallback(() => {
+    selectLanguage(language === "ru" ? "tg" : "ru");
+  }, [language, selectLanguage]);
 
   useEffect(() => {
     if (!isLanguageChanging) return undefined;
@@ -209,10 +214,11 @@ export function LanguageProvider({ children }) {
     () => ({
       language,
       isLanguageChanging,
+      selectLanguage,
       toggleLanguage,
       t: (key) => copy[language][key] ?? copy.ru[key] ?? key,
     }),
-    [isLanguageChanging, language, toggleLanguage],
+    [isLanguageChanging, language, selectLanguage, toggleLanguage],
   );
 
   return (

@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { useLanguage } from "../../i18n.jsx";
 import "./Header.css";
 
 function SoundOnIcon() {
@@ -41,6 +43,38 @@ function SoundOffIcon() {
   );
 }
 
+const MENU_FLAG_OFFSET = 20;
+
+const LANGUAGE_OPTIONS = [
+  {
+    code: "ru",
+    flagLabel: "RU",
+    flagSrc: "/img/header/flag-ru.png",
+    label: "\u0420\u0443\u0441\u0441\u043A\u0438\u0439",
+  },
+  {
+    code: "tg",
+    flagLabel: "TG",
+    flagSrc: "/img/header/flag-tg.png",
+    label: "\u0422\u043E\u04B7\u0438\u043A\u04E3",
+  },
+];
+
+
+function LanguageFlag({ option }) {
+  if (option.flagSrc) {
+    return (
+      <img
+        className="lang-chooser__flag-image"
+        src={option.flagSrc}
+        alt=""
+        aria-hidden="true"
+      />
+    );
+  }
+
+  return <span className="lang-chooser__flag-fallback">{option.flagLabel}</span>;
+}
 const Header = ({
   onSoundToggle,
   onViewToggle,
@@ -48,9 +82,84 @@ const Header = ({
   viewSwitchDisabled = false,
   visualMode = false,
 }) => {
+  const { language, selectLanguage } = useLanguage();
+  const [languageOpen, setLanguageOpen] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ left: 32, top: 46 });
+  const languageButtonRef = useRef(null);
+  const languageFlagRef = useRef(null);
+  const activeLanguage =
+    LANGUAGE_OPTIONS.find((option) => option.code === language) ??
+    LANGUAGE_OPTIONS[0];
+
+  const chooseLanguage = (code) => {
+    selectLanguage(code);
+    setLanguageOpen(false);
+  };
+
+  const toggleLanguageMenu = () => {
+    const buttonRect = languageButtonRef.current?.getBoundingClientRect();
+    if (buttonRect) {
+      setMenuPosition({
+        left: buttonRect.left - 20,
+        top: buttonRect.bottom + 6,
+      });
+    }
+    setLanguageOpen((open) => !open);
+  };
+
+  const languageMenu =
+    languageOpen && typeof document !== "undefined"
+      ? createPortal(
+          <div
+            className="lang-chooser__menu"
+            role="listbox"
+            aria-label="Language"
+            style={{ left: `${menuPosition.left}px`, top: `${menuPosition.top}px` }}
+          >
+            {LANGUAGE_OPTIONS.map((option) => (
+              <button
+                key={option.code}
+                type="button"
+                className={`lang-chooser__option${option.code === language ? " active" : ""}`}
+                role="option"
+                aria-selected={option.code === language}
+                onClick={() => chooseLanguage(option.code)}
+              >
+                <span className="lang-chooser__flag" aria-hidden="true">
+                  <LanguageFlag option={option} />
+                </span>
+                <span>{option.label}</span>
+              </button>
+            ))}
+          </div>,
+          document.body,
+        )
+      : null;
+
   return (
     <header>
-      <div className="lang-chooser"></div>
+      <div className="lang-chooser">
+        <button
+          ref={languageButtonRef}
+          type="button"
+          className="lang-chooser__button"
+          aria-haspopup="listbox"
+          aria-expanded={languageOpen}
+          onClick={toggleLanguageMenu}
+        >
+          <span className="lang-chooser__flag" aria-hidden="true">
+            <LanguageFlag option={activeLanguage} />
+          </span>
+          <span className="lang-chooser__label">{activeLanguage.label}</span>
+          <img
+            className="lang-chooser__chevron"
+            src="/img/header/language-arrow.png"
+            alt=""
+            aria-hidden="true"
+          />
+        </button>
+        {languageMenu}
+      </div>
       <div className="header-btns">
         <button
           type="button"
@@ -119,3 +228,6 @@ const Header = ({
 };
 
 export default Header;
+
+
+
