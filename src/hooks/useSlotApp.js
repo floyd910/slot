@@ -7,6 +7,7 @@ import { notifySlotChooserReady } from "../services/frameReadyNotifier.js";
 import {
   preloadRequiredImages,
   preloadStartupAssets,
+  preloadWinAnimations,
 } from "../utils/mediaPreload.js";
 
 const SLOT_CHOOSER_REQUIRED_ASSETS = [

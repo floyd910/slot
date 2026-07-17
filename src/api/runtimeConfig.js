@@ -10,9 +10,14 @@ const readEnvValue = (...names) =>
 
 export const getFrontendEnvConfig = () => ({
   backendMode: readEnvValue("VITE_HIRANMANDI_BACKEND_MODE"),
+  demoMode: readEnvValue("VITE_HIRANMANDI_DEMO_MODE"),
   gameId: readEnvValue("VITE_HIRANMANDI_GAME_ID"),
+  idKassi: readEnvValue("VITE_HIRANMANDI_ID_KASSI"),
+  idPartner: readEnvValue("VITE_HIRANMANDI_ID_PARTNER", "VITE_HIRANMANDI_PARTNER_ID"),
+  idValute: readEnvValue("VITE_HIRANMANDI_ID_VALUTE"),
   locale: readEnvValue("VITE_HIRANMANDI_LOCALE"),
   soapEndpoint: readEnvValue("VITE_HIRANMANDI_SOAP_ENDPOINT"),
+  testMode: readEnvValue("VITE_HIRANMANDI_TEST_MODE"),
 });
 
 export const getBackendTestParams = () => ({});

@@ -11,116 +11,91 @@ import {
   xmlEscape,
 } from "./soapClient.js";
 
-const readConfigValue = (...values) => values.find((value) => value != null && value !== "");
+const FRAME_SPIN_DEFAULTS = {
+  idPartner: "1",
+  idKassi: "70",
+  idValute: "1",
+  idUser: "1",
+  login: "Terminal",
+  password: "Gefest",
+  idGame: GAME_NUMERIC_ID,
+};
+
+const readConfigValue = (...values) =>
+  values.find((value) => value != null && value !== "");
 
 const getGlobalConfig = () => window.HIRANMANDI_FRAME_CONFIG ?? {};
 
-export const buildSpinRequest = ({ stake, totalStake, lines, isDemo, isFreeSpin } = {}) => {
-  const runtimeConfig = getRuntimeConfig();
-  const globalConfig = getGlobalConfig();
-  const envConfig = getFrontendEnvConfig();
+const getSpinValue = (testParams, key, fallback) =>
+  useBackendTestParams()
+    ? readConfigValue(testParams[key], fallback, FRAME_SPIN_DEFAULTS[key])
+    : fallback;
+
+export const buildSpinRequest = ({ stake, totalStake, lines, isFreeSpin } = {}) => {
   const testParams = getBackendTestParams();
-  const forceTestParams = useBackendTestParams();
-  const login = forceTestParams
-    ? testParams.login
-    : readConfigValue(
-        runtimeConfig.login,
-        runtimeConfig.Login,
-        runtimeConfig.slotLogin,
-        globalConfig.login,
-        globalConfig.Login,
-        globalConfig.slotLogin,
-        envConfig.login,
-      );
-  const password = forceTestParams
-    ? testParams.password
-    : readConfigValue(
-        runtimeConfig.password,
-        runtimeConfig.Password,
-        runtimeConfig.slotPassword,
-        globalConfig.password,
-        globalConfig.Password,
-        globalConfig.slotPassword,
-        envConfig.password,
-      );
-  const idUser = forceTestParams
-    ? testParams.idUser
-    : readConfigValue(
-        runtimeConfig.idUser,
-        runtimeConfig.userId,
-        runtimeConfig.playerId,
-        globalConfig.idUser,
-        globalConfig.userId,
-        globalConfig.playerId,
-        envConfig.idUser,
-        "demo-player",
-      );
-  const idValute = forceTestParams
-    ? testParams.idValute
-    : readConfigValue(runtimeConfig.idValute, globalConfig.idValute, envConfig.idValute, "1");
-  const currency = forceTestParams
-    ? readConfigValue(testParams.currency, testParams.idValute, idValute)
-    : readConfigValue(
-        runtimeConfig.spinCurrency,
-        runtimeConfig.Currency,
-        runtimeConfig.currencyId,
-        runtimeConfig.currency,
-        globalConfig.spinCurrency,
-        globalConfig.Currency,
-        globalConfig.currencyId,
-        globalConfig.currency,
-        envConfig.currency,
-        idValute,
-      );
-  const sum = forceTestParams ? readConfigValue(testParams.sum, totalStake, stake) : totalStake ?? stake;
-  const selectedLines = forceTestParams ? readConfigValue(testParams.lines, lines) : lines;
-  const idGame = forceTestParams
-    ? readConfigValue(testParams.idGame, GAME_NUMERIC_ID)
-    : readConfigValue(runtimeConfig.backendGameId, globalConfig.backendGameId, envConfig.backendGameId, GAME_NUMERIC_ID);
+  const sum = getSpinValue(testParams, "sum", totalStake ?? stake);
+  const selectedLines = getSpinValue(testParams, "lines", lines);
+  const spin = {
+    idPartner: getSpinValue(testParams, "idPartner", FRAME_SPIN_DEFAULTS.idPartner),
+    idKassi: getSpinValue(testParams, "idKassi", FRAME_SPIN_DEFAULTS.idKassi),
+    idValute: getSpinValue(testParams, "idValute", FRAME_SPIN_DEFAULTS.idValute),
+    sum,
+    selectedLines,
+    idUser: getSpinValue(testParams, "idUser", FRAME_SPIN_DEFAULTS.idUser),
+    login: getSpinValue(testParams, "login", FRAME_SPIN_DEFAULTS.login),
+    password: getSpinValue(testParams, "password", FRAME_SPIN_DEFAULTS.password),
+    idGame: getSpinValue(testParams, "idGame", FRAME_SPIN_DEFAULTS.idGame),
+  };
+
+  const spinAttributes = [
+    ["idPartner", spin.idPartner],
+    ["idKassi", spin.idKassi],
+    ["idValute", spin.idValute],
+    ["Sum", spin.sum],
+    ["Lines", spin.selectedLines],
+    ["idUser", spin.idUser],
+    ["Login", spin.login],
+    ["Password", spin.password],
+    ["idGame", spin.idGame],
+    ["DemoSpin", "0"],
+    ["FreeSpin", isFreeSpin ? "1" : "0"],
+  ]
+    .map(([key, value]) => `${key}="${xmlEscape(value)}"`)
+    .join(" ");
 
   return {
     methodName: "SetSlotSpinHiranmandiFrame",
     stake: asNumber(sum, totalStake ?? stake),
     lines: selectedLines,
-    xml: `<message MessageType="SetSlotSpinHiranmandiFrame" MessageDateTime="${formatSoapDateTime()}" MessageFormatVersion="1.0">
- <Spin
-   Login="${xmlEscape(login)}"
-   Password="${xmlEscape(password)}"
-   idUser="${xmlEscape(idUser)}"
-   idValute="${xmlEscape(idValute)}"
-   currency="${xmlEscape(currency)}"
-   Sum="${xmlEscape(sum)}"
-   Lines="${xmlEscape(selectedLines)}"
-   idGame="${xmlEscape(idGame)}"
-   DemoSpin="${isDemo ? 1 : 0}"
-   FreeSpin="${isFreeSpin ? 1 : 0}"
- />
-</message>`,
+    xml: `<message MessageType="SetSlotSpinHiranmandiFrame" MessageDateTime="${formatSoapDateTime()}" MessageFormatVersion="1.0"><Spin ${spinAttributes} /></message>`,
   };
 };
 
 export const buildDoubleRequest = ({ idCard, wasDouble, sum } = {}) => {
   const runtimeConfig = getRuntimeConfig();
+  const globalConfig = getGlobalConfig();
+  const envConfig = getFrontendEnvConfig();
+  const idPartner = readConfigValue(
+    runtimeConfig.idPartner,
+    runtimeConfig.partnerId,
+    globalConfig.idPartner,
+    globalConfig.partnerId,
+    envConfig.idPartner,
+    "1",
+  );
 
   return {
     methodName: "GetSlotDubleHiranmandi",
     idCard,
     wasDouble,
-    xml: `<message MessageType="GetSlotDubleHiranmandi">
- <Spin
-   idPartner="${xmlEscape(runtimeConfig.idPartner ?? runtimeConfig.partnerId ?? "1")}"
-   idCard="${xmlEscape(idCard)}"
-   WasDouble="${xmlEscape(wasDouble)}"
-   Sum="${xmlEscape(sum)}"
- />
-</message>`,
+    xml: `<message MessageType="GetSlotDubleHiranmandi" MessageDateTime="${formatSoapDateTime()}" MessageFormatVersion="1.0"><Spin idPartner="${xmlEscape(idPartner)}" idCard="${xmlEscape(idCard)}" WasDouble="${xmlEscape(wasDouble)}" Sum="${xmlEscape(sum)}" /></message>`,
   };
 };
 
 export const buildPayRequest = ({ idCard } = {}) => ({
   methodName: "PaySlotHiranmandiFrame",
   idCard,
-  xml: `<message MessageType="PaySlotHiranmandiFrame">
- <Pay idCard="${xmlEscape(idCard)}" />
-</message>`,
+  xml: `<message MessageType="PaySlotHiranmandiFrame"><Pay idCard="${xmlEscape(idCard)}" /></message>`,
 });
+
+

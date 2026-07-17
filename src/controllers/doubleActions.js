@@ -181,7 +181,7 @@ export const createDoubleActions = ({
       const result = await withTimeout(
         frameApi.double({
           idCard: spinResult.idCard,
-          wasDouble: step,
+          wasDouble: step + 1,
           sum: currentAmount,
           side,
           requestId: buildRequestId("double"),
@@ -283,7 +283,7 @@ export const createDoubleActions = ({
       const result = await withTimeout(
         frameApi.double({
           idCard: spinResult.idCard,
-          wasDouble: doubleState.step,
+          wasDouble: doubleState.step + 1,
           sum: getTicketWinAmount(spinResult, doublingState),
           side,
           requestId: buildRequestId("double"),

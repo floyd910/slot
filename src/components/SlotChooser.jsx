@@ -29,7 +29,7 @@ export default function SlotChooser({ interactive = true, onSelectSlot }) {
               src={slot.imageSrc}
               alt={slot.alt}
               decoding="async"
-              fetchPriority={slot.fetchPriority}
+              fetchpriority={slot.fetchPriority}
               loading="eager"
               draggable={false}
             />

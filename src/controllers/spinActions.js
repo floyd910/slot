@@ -8,7 +8,6 @@ import {
 } from "../config/gameSettings.js";
 import { buildRequestId } from "../hooks/useFrameBridge.js";
 import { wait, withTimeout } from "../utils/async.js";
-import { isEnabled } from "../utils/featureFlags.js";
 import { getAwardedFreeSpinCount } from "../utils/freeSpins.js";
 import { getTicketWinAmount } from "../utils/gameResult.js";
 import { getNextSpinDelayMs } from "../utils/spinTiming.js";
@@ -49,7 +48,7 @@ export const createSpinActions = ({
   showFreeSpinPrompt,
   t,
 }) => {
-  const handleSpin = async ({ demo = false, freeSpinAuto = false } = {}) => {
+  const handleSpin = async ({ freeSpinAuto = false } = {}) => {
     const {
       carpetCloseMs,
       context,
@@ -73,8 +72,7 @@ export const createSpinActions = ({
       return null;
     }
     const isFreeSpin = freeSpinsLeft > 0;
-    const testMode = isEnabled(context.testMode ?? context.demoMode);
-    const effectiveDemo = isFreeSpin ? false : demo || testMode;
+    const effectiveDemo = false;
     const lineCount = selectedCombination.groups.length;
     const totalStake = Number((stake * lineCount).toFixed(2));
     if (!VALID_FRAME_LINE_COUNTS.has(lineCount)) {
@@ -151,8 +149,7 @@ export const createSpinActions = ({
       const awardedFreeSpins = getAwardedFreeSpinCount(result);
       const ticketWinAmount = getTicketWinAmount(result);
       const isDigitWin = ticketWinAmount > 0;
-      const shouldCreditWin =
-        !effectiveDemo && result.WinSum > 0 && !isDigitWin;
+      const shouldCreditWin = !effectiveDemo && result.WinSum > 0;
       if (visualMode) {
         setGrid(result.grid);
         setGridRevealKey((key) => key + 1);
@@ -182,10 +179,19 @@ export const createSpinActions = ({
         doublingState: nextDoublingState,
       };
       if (shouldCreditWin) {
-        setPlayer((current) => ({
-          ...current,
-          balance: Number((current.balance + result.WinSum).toFixed(2)),
-        }));
+        setPlayer((current) => {
+          if (!current) return current;
+
+          const nextPlayer = {
+            ...current,
+            balance: Number((current.balance + result.WinSum).toFixed(2)),
+          };
+          liveSpinStateRef.current = {
+            ...liveSpinStateRef.current,
+            player: nextPlayer,
+          };
+          return nextPlayer;
+        });
       }
       setSpinHistory((current) =>
         [
@@ -400,3 +406,4 @@ export const createSpinActions = ({
     startFreeSpinRun,
   };
 };
+

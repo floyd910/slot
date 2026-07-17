@@ -2,12 +2,7 @@ import "./View2Paytable.css";
 import { VIEW2_SYMBOL_CONFIGS } from "./view2Symbols/index.jsx";
 import { getView2MatchPayout } from "../viewModels/view2PaytableViewModel.js";
 
-const VIEW2_INFO_BACKGROUND =
-  "/img/extracted/%D0%B8%D0%B3%D1%80%D0%B0-%D0%A5%D1%83%D1%88%D0%BA%D0%BE%D0%BB-%D1%8D%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82%D1%8B-%D0%B8%D0%B3%D1%80%D1%8B-1_0/sprite_001_1282x1026_at_1_1.png";
 
-const SYMBOL_FRAME = {
-  12: "4.png",
-};
 
 const VIEW2_COPY = {
   ru: {
@@ -23,10 +18,7 @@ const VIEW2_COPY = {
 };
 
 const getSymbolImage = (symbol) =>
-  SYMBOL_FRAME[symbol]
-    ? `/img/view2-symbols/symbol${symbol}/${SYMBOL_FRAME[symbol]}`
-    : (VIEW2_SYMBOL_CONFIGS[symbol]?.staticImage ??
-      `/img/view2-symbols/symbol${symbol}/1.png`);
+  VIEW2_SYMBOL_CONFIGS[symbol]?.staticImage ?? `/img/view2-symbols/symbol${symbol}/1.png`;
 
 function SymbolTile({ symbol, imageSymbol = symbol, className = "" }) {
   return (
@@ -78,7 +70,6 @@ export default function View2Paytable({ language, payoutMultiplier }) {
   return (
     <div
       className="view2-info-paytable"
-      style={{ "--view2-info-bg": `url("${VIEW2_INFO_BACKGROUND}")` }}
       aria-label={copy.ariaLabel}
     >
       {/* 
@@ -119,7 +110,11 @@ export default function View2Paytable({ language, payoutMultiplier }) {
         <div className="info-top-right">
           <div className="top-symbols">
             <SymbolTile symbol={10} className="--decor --top-right-a" />
-            <SymbolTile symbol={9} imageSymbol={11} className="--decor --top-right-b" />
+            <SymbolTile
+              symbol={9}
+              imageSymbol={11}
+              className="--decor --top-right-b"
+            />
           </div>
 
           <PayoutCard
@@ -171,7 +166,7 @@ export default function View2Paytable({ language, payoutMultiplier }) {
               />
             </div>
           </div>
-          <span className="view2-info-coeff-card__arrow" aria-hidden="true" />
+          <img className="view2-info-coeff-card__arrow" src="/assets/img/view2-coeff-arrow.png" alt="" aria-hidden="true" />
           <p className="view2-info-coeff-card__text">
             {copy.coefficient.map((line) => (
               <span key={line}>{line}</span>
@@ -210,3 +205,4 @@ export default function View2Paytable({ language, payoutMultiplier }) {
     </div>
   );
 }
+

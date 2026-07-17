@@ -135,6 +135,15 @@ export function readFrameParams() {
     ...withoutEmptyValues(globalConfig),
     ...withoutEmptyValues(queryContext),
     mode: mode === "embedded" ? "embedded" : "standalone",
+    demoMode: queryContext.demoMode ?? globalConfig.demoMode ?? envConfig.demoMode ?? "false",
+    testMode:
+      queryContext.testMode ??
+      globalConfig.testMode ??
+      envConfig.testMode ??
+      queryContext.demoMode ??
+      globalConfig.demoMode ??
+      envConfig.demoMode ??
+      "false",
     locale: queryContext.locale ?? globalConfig.locale ?? envConfig.locale ?? stored.locale ?? "en",
     currency: queryContext.currency ?? globalConfig.currency ?? envConfig.currency ?? stored.currency ?? "GEL",
     theme: queryContext.theme ?? globalConfig.theme ?? stored.theme ?? "dark",

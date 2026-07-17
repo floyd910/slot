@@ -37,10 +37,10 @@ When the player clicks a combination, the selected combination count is sent dir
 ```xml
 <message MessageType="SetSlotSpinHiranmandiFrame" MessageFormatVersion="1.0">
   <Spin
+    idValute="..."
+    idUser="..."
     Login="..."
     Password="..."
-    idUser="..."
-    idValute="..."
     Sum="..."
     Lines="..."
     idGame="36"
@@ -107,3 +107,4 @@ The iframe posts events with this envelope:
 Host commands: `INIT_CONTEXT`, `UPDATE_THEME`, `UPDATE_LOCALE`, `UPDATE_BALANCE`, `FORCE_RELOAD`, `OPEN_MODAL`, `CLOSE_MODULE`.
 
 The `pay` call is still locally mocked because the processed/pay backend call is disabled for now.
+
