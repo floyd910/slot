@@ -116,7 +116,7 @@
   display: flex;
   gap: 0;
   width: 100%;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
 }
 
 .info-top-left .top-symbols {
@@ -326,7 +326,7 @@
 }
 
 .left-bottom {
-  margin-top: -35px;
+  margin-top: -65px;
 }
 
 .left-top,
@@ -385,13 +385,14 @@
 .left-top .symbol-5 {
   position: relative;
   z-index: 6;
-  margin-top: -25px;
+  margin-top: -45px;
   margin-right: -10px;
-  margin-left: 25px;
+  margin-left: 5px;
 }
 
 .left-top .symbol-6 {
-  margin-left: -10px;
+  margin-top: -20px;
+  margin-left: -30px;
 }
 
 .right-bottom .symbol-2 {
@@ -438,7 +439,11 @@
 }
 
 .view2-info-symbol.symbol-5 .view2-info-symbol__item {
-  transform: translateY(-30px) rotate(-20.607deg);
+  transform: translateY(-50px) rotate(-20.607deg);
+}
+
+.view2-info-symbol.symbol-6 .view2-info-symbol__item {
+  transform: translateY(-20px);
 }
 
 .view2-info-symbol.symbol-7 {
@@ -469,6 +474,17 @@
   height: 102.341px;
 }
 
+@media (max-width: 1440px) {
+  .view2-info-symbol.symbol-7,
+  .info-top-right .view2-info-symbol.--top-right-b {
+    transform: translateY(25px);
+  }
+
+  .info-top-right .top-symbols {
+    transform: translate(-50px, 0);
+  }
+}
+
 .main-card-top .view2-info-symbol {
   width: 300px;
   height: 200px;
@@ -494,16 +510,22 @@
 }
 
 .view2-info-symbol.--coeff-bag {
+  position: relative;
   flex: 0 0 165px;
   width: 165px;
+  height: auto;
   min-height: 0;
+  align-self: stretch;
   z-index: 4;
 }
 
 .view2-info-symbol.--coeff-bag .view2-info-symbol__item {
-  width: 165px;
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: block;
+  width: 145px;
+  max-width: none;
   height: 100%;
-  object-fit: contain;
 }
 
 .view2-info-coeff-card {
