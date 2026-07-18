@@ -5,6 +5,7 @@ import {
   STARTUP_ASSETS,
 } from "../config/gameAssets.js";
 import {
+  CARPET_SOUND_SRC,
   CARPET_SOUND_FALLBACK_MS,
   IMAGE_PRELOAD_TIMEOUT_MS,
 } from "../config/gameSettings.js";
@@ -12,6 +13,7 @@ import {
 const CSS_URL_PATTERN = /url\(\s*(['"]?)(.*?)\1\s*\)/g;
 
 const retainedPreloadedImages = new Map();
+const retainedPreloadedAudio = new Map();
 
 export const toPreloadUrl = (src) => {
   if (!src || src.startsWith("data:") || src.startsWith("blob:")) return "";
@@ -172,6 +174,36 @@ const preloadVideo = (src) =>
     video.load();
   });
 
+const preloadRequiredAudio = (src) =>
+  new Promise((resolve, reject) => {
+    const normalizedSrc = toPreloadUrl(src);
+    const retainedAudio = retainedPreloadedAudio.get(normalizedSrc);
+    if (retainedAudio?.readyState >= HTMLMediaElement.HAVE_ENOUGH_DATA) {
+      resolve(normalizedSrc);
+      return;
+    }
+
+    const audio = retainedAudio ?? new Audio();
+    retainedPreloadedAudio.set(normalizedSrc, audio);
+    const cleanup = () => {
+      audio.removeEventListener("canplaythrough", done);
+      audio.removeEventListener("error", fail);
+    };
+    const done = () => {
+      cleanup();
+      resolve(normalizedSrc);
+    };
+    const fail = () => {
+      cleanup();
+      reject(new Error(`Failed to preload required audio: ${normalizedSrc}`));
+    };
+
+    audio.preload = "auto";
+    audio.addEventListener("canplaythrough", done, { once: true });
+    audio.addEventListener("error", fail, { once: true });
+    audio.src = normalizedSrc;
+    audio.load();
+  });
 export const loadAudioDurationMs = (src) =>
   new Promise((resolve) => {
     const audio = new Audio(src);
@@ -214,6 +246,7 @@ const loadStartupAssets = async () => {
 
   await Promise.all([
     preloadRequiredImages(decodedImages),
+    preloadRequiredAudio(CARPET_SOUND_SRC),
     fontReady(),
     ...STARTUP_ASSETS.videos.map(preloadVideo),
   ]);

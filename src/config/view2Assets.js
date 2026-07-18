@@ -1,6 +1,10 @@
 import { VIEW2_SYMBOL_ASSET_SOURCES } from "../components/view2Symbols/index.jsx";
 
 const LINE_ASSETS = "/img/extracted/\u041b\u0438\u043d\u0438\u0438-\u0438-\u041a\u043e\u0441\u0442\u0438-1_00";
+export const VIEW2_CARPET_ASSETS = [
+  "/assets/img/view2-carpet-open.png",
+  "/img/extracted/\u0438\u0433\u0440\u0430-\u0425\u0443\u0448\u043a\u043e\u043b-\u044d\u043b\u0435\u043c\u0435\u043d\u0442\u044b-\u0438\u0433\u0440\u044b-1_0/sprite_002_201x653_at_1289_1.png",
+];
 
 export const COMBO_BORDERS = [
   LINE_ASSETS + "/sprite_005_102x102_at_1847_432.png",
@@ -32,6 +36,7 @@ export const VIEW2_ASSETS = [
     collectImageSources(
       VIEW2_SYMBOL_ASSET_SOURCES,
       COMBO_BORDERS,
+      VIEW2_CARPET_ASSETS,
       "/img/extracted/\u0421\u043b\u043e\u0442_\u0418\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441-\u043a\u043e\u0432\u0435\u0440-\u0434\u043b\u044f-\u0440\u043e\u0437\u044b\u0433\u0440\u044b\u0448\u0430-\u0432\u0438\u0437\u0443\u0430\u043b\u0438\u0437\u0430\u0446\u0438\u0438/sprite_001_1145x666_at_3_3.png",
       "/img/extracted/\u0438\u0433\u0440\u0430-\u0425\u0443\u0448\u043a\u043e\u043b-\u044d\u043b\u0435\u043c\u0435\u043d\u0442\u044b-\u0438\u0433\u0440\u044b-1_0/sprite_002_201x653_at_1289_1.png",
     ),
