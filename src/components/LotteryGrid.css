@@ -420,6 +420,8 @@
   overflow: hidden;
   pointer-events: none;
   transform: translateY(-50%);
+  /* --close is the first, opening half despite its legacy name. */
+  --carpet-first-half-roll-width: 17.5%;
 }
 
 .lottery-grid-view2-cover--hidden {
@@ -461,6 +463,7 @@
   animation: lottery-grid-view2-cover-roll-close
     var(--carpet-close-duration, 1.455s) linear forwards;
 }
+
 
 .lottery-grid-view2-cover__roll--open {
   animation: lottery-grid-view2-cover-roll-open
@@ -545,7 +548,9 @@
 @keyframes lottery-grid-view2-cover-close {
   0% {
     background-position: 0;
-    clip-path: inset(0 100% 0 0);
+    clip-path: inset(
+      0 calc(100% - var(--carpet-first-half-roll-width)) 0 0
+    );
   }
 
   100% {
