@@ -31,7 +31,7 @@ const getSpinValue = (testParams, key, fallback) =>
     ? readConfigValue(testParams[key], fallback, FRAME_SPIN_DEFAULTS[key])
     : fallback;
 
-export const buildSpinRequest = ({ stake, totalStake, lines, isFreeSpin } = {}) => {
+export const buildSpinRequest = ({ stake, totalStake, lines, isDemo, isFreeSpin } = {}) => {
   const testParams = getBackendTestParams();
   const sum = getSpinValue(testParams, "sum", totalStake ?? stake);
   const selectedLines = getSpinValue(testParams, "lines", lines);
@@ -57,7 +57,7 @@ export const buildSpinRequest = ({ stake, totalStake, lines, isFreeSpin } = {}) 
     ["Login", spin.login],
     ["Password", spin.password],
     ["idGame", spin.idGame],
-    ["DemoSpin", "0"],
+    ["DemoSpin", isDemo ? "1" : "0"],
     ["FreeSpin", isFreeSpin ? "1" : "0"],
   ]
     .map(([key, value]) => `${key}="${xmlEscape(value)}"`)
@@ -97,5 +97,6 @@ export const buildPayRequest = ({ idCard } = {}) => ({
   idCard,
   xml: `<message MessageType="PaySlotHiranmandiFrame"><Pay idCard="${xmlEscape(idCard)}" /></message>`,
 });
+
 
 

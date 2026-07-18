@@ -8,6 +8,12 @@ export const GAME3_COVER_SRC = "/assets/img/game3-cover.png";
 export const GAME3_LOGO_SRC = "/assets/img/game3-logo.png";
 export const GAME3_LOGO_ORNAMENT_SRC = "/assets/img/game3-logo-ornament.png";
 export const GAME3_SHELL_ASSETS = [GAME3_COVER_SRC, GAME3_LOGO_SRC];
+export const LOTTERY_PAINTBRUSH_SRC = "/assets/img/paintbrush.png";
+export const LANGUAGE_CHOOSER_ASSETS = [
+  "/img/header/flag-ru.png",
+  "/img/header/flag-tg.png",
+  "/img/header/language-arrow.png",
+];
 
 const GAME_ASSET_DIR = "/img/extracted/\u0438\u0433\u0440\u0430-\u0425\u0443\u0448\u043a\u043e\u043b-\u044d\u043b\u0435\u043c\u0435\u043d\u0442\u044b-\u0438\u0433\u0440\u044b-1_0";
 const PAYTABLE_ASSET_DIR = "/img/extracted/\u0438\u0433\u0440\u0430-\u0425\u0443\u0448\u043a\u043e\u043b-\u044d\u043b\u0435\u043c\u0435\u043d\u0442\u044b-\u0442\u0430\u0431\u043b\u0438\u0446\u0430-\u0432\u044b\u0438\u0433\u0440\u044b\u0448\u0435\u0439-1_1";
@@ -69,6 +75,8 @@ export const DOUBLE_SCENE_ASSETS = [
 
 export const FIRST_PAINT_GAME_IMAGE_ASSETS = [
   ...GAME3_SHELL_ASSETS,
+  LOTTERY_PAINTBRUSH_SRC,
+  ...LANGUAGE_CHOOSER_ASSETS,
   ...VIEW1_GRID_ASSETS,
   ...BOTTOM_BAR_ASSETS,
 ];

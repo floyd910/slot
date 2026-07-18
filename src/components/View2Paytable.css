@@ -430,7 +430,7 @@
 }
 
 .view2-info-symbol.symbol-2 .view2-info-symbol__item {
-  transform: translateY(-55px);
+  transform: translateY(-80px);
 }
 
 .view2-info-symbol.symbol-3 .view2-info-symbol__item {
@@ -438,7 +438,7 @@
 }
 
 .view2-info-symbol.symbol-5 .view2-info-symbol__item {
-  transform: translateY(-20px) rotate(-20.607deg);
+  transform: translateY(-30px) rotate(-20.607deg);
 }
 
 .view2-info-symbol.symbol-7 {
@@ -506,9 +506,6 @@
   object-fit: contain;
 }
 
-
-
-
-
-
-
+.view2-info-coeff-card {
+  height: 320px;
+}

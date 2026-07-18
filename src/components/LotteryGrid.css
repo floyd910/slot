@@ -254,27 +254,33 @@
 }
 
 .lottery-grid-view2-cell--symbol-1 .lottery-grid-view2-cell__container {
-  background: linear-gradient(145deg, #648ee1 0%, #1116aa 46.63%, #648ee1 100%), #fff;
+  background:
+    linear-gradient(145deg, #648ee1 0%, #1116aa 46.63%, #648ee1 100%), #fff;
 }
 
 .lottery-grid-view2-cell--symbol-2 .lottery-grid-view2-cell__container {
-  background: linear-gradient(145deg, #e1bf64 0%, #aa7c11 46.63%, #e6c36a 100%), #fff;
+  background:
+    linear-gradient(145deg, #e1bf64 0%, #aa7c11 46.63%, #e6c36a 100%), #fff;
 }
 
 .lottery-grid-view2-cell--symbol-3 .lottery-grid-view2-cell__container {
-  background: linear-gradient(145deg, #e16464 0%, #aa1111 46.63%, #e16464 100%), #fff;
+  background:
+    linear-gradient(145deg, #e16464 0%, #aa1111 46.63%, #e16464 100%), #fff;
 }
 
 .lottery-grid-view2-cell--symbol-4 .lottery-grid-view2-cell__container {
-  background: linear-gradient(145deg, #e1a264 0%, #aa4c11 46.63%, #e1a264 100%), #fff;
+  background:
+    linear-gradient(145deg, #e1a264 0%, #aa4c11 46.63%, #e1a264 100%), #fff;
 }
 
 .lottery-grid-view2-cell--symbol-5 .lottery-grid-view2-cell__container {
-  background: linear-gradient(145deg, #6ee164 0%, #00880e 46.63%, #6ee164 100%), #fff;
+  background:
+    linear-gradient(145deg, #6ee164 0%, #00880e 46.63%, #6ee164 100%), #fff;
 }
 
 .lottery-grid-view2-cell--symbol-6 .lottery-grid-view2-cell__container {
-  background: linear-gradient(145deg, #cc64e1 0%, #790091 46.63%, #cc64e1 100%), #fff;
+  background:
+    linear-gradient(145deg, #cc64e1 0%, #790091 46.63%, #cc64e1 100%), #fff;
 }
 
 .lottery-grid-view2-cell__container {
@@ -294,15 +300,18 @@
   transform: translate(-50%, -50%);
 }
 
-.lottery-grid-view2-cell:not(.lottery-grid-view2-cell--dice) .lottery-grid-view2-cell__animation,
-.lottery-grid-view2-cell:not(.lottery-grid-view2-cell--dice) .lottery-grid-view2-cell__image {
+.lottery-grid-view2-cell:not(.lottery-grid-view2-cell--dice)
+  .lottery-grid-view2-cell__animation,
+.lottery-grid-view2-cell:not(.lottery-grid-view2-cell--dice)
+  .lottery-grid-view2-cell__image {
   inset: 0;
   display: block;
   width: 100%;
   height: 100%;
 }
 
-.lottery-grid-view2-cell:not(.lottery-grid-view2-cell--dice) .lottery-grid-view2-cell__image {
+.lottery-grid-view2-cell:not(.lottery-grid-view2-cell--dice)
+  .lottery-grid-view2-cell__image {
   top: 0;
   left: 0;
   object-fit: fill;
@@ -411,6 +420,8 @@
   overflow: hidden;
   pointer-events: none;
   transform: translateY(-50%);
+  --carpet-edge-conceal: 8px;
+  --carpet-roll-open-bg-size: 156% 100%;
 }
 
 .lottery-grid-view2-cover--hidden {
@@ -421,7 +432,7 @@
   position: absolute;
   inset: 0;
   z-index: 4;
-  background-image: url("/img/extracted/Слот_Интерфейс-ковер-для-розыгрыша-визуализации/sprite_001_1145x666_at_3_3.png");
+  background-image: url("/assets/img/view2-carpet-open.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100% 100%;
@@ -457,6 +468,8 @@
   animation: lottery-grid-view2-cover-roll-open
     var(--carpet-open-duration, 1.455s) linear forwards;
   transform: scaleX(-1);
+  background-position: left center;
+  background-size: var(--carpet-roll-open-bg-size);
 }
 
 .expanded-board .lottery-grid-view1__top,
@@ -553,7 +566,7 @@
 
   100% {
     background-position: 100%;
-    clip-path: inset(0 0 0 100%);
+    clip-path: inset(0 0 0 calc(100% + var(--carpet-edge-conceal)));
   }
 }
 
@@ -606,4 +619,3 @@
     height: 47px;
   }
 }
-

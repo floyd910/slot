@@ -13,6 +13,7 @@ import { getTicketWinAmount } from "../utils/gameResult.js";
 import { getNextSpinDelayMs } from "../utils/spinTiming.js";
 import { asNumber } from "../utils/number.js";
 
+const FORCE_DEMO_SPINS = true;
 const VALID_FRAME_LINE_COUNTS = new Set([1, 3, 5, 7, 9]);
 const UNKNOWN_SPIN_RESULT_CODES = new Set([
   "TIMEOUT",
@@ -72,7 +73,7 @@ export const createSpinActions = ({
       return null;
     }
     const isFreeSpin = freeSpinsLeft > 0;
-    const effectiveDemo = false;
+    const effectiveDemo = FORCE_DEMO_SPINS;
     const lineCount = selectedCombination.groups.length;
     const totalStake = Number((stake * lineCount).toFixed(2));
     if (!VALID_FRAME_LINE_COUNTS.has(lineCount)) {
@@ -406,4 +407,6 @@ export const createSpinActions = ({
     startFreeSpinRun,
   };
 };
+
+
 
