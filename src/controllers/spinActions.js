@@ -91,7 +91,7 @@ export const createSpinActions = ({
     let stakeDeducted = false;
 
     try {
-      if (!effectiveDemo && !isFreeSpin && spinStartBalance < totalStake) {
+      if (!isFreeSpin && spinStartBalance < totalStake) {
         setError(t("insufficientBalance"));
         setLastKnownState("insufficient-balance");
         setStatus("ready");
@@ -114,9 +114,9 @@ export const createSpinActions = ({
       setLastKnownState("spin-submitted");
       setError("");
       setSpinResult(null);
-      stakeDeducted = !effectiveDemo && !isFreeSpin;
+      stakeDeducted = !isFreeSpin;
       setPlayer((current) =>
-        effectiveDemo || isFreeSpin
+        isFreeSpin
           ? current
           : {
               ...current,
@@ -150,7 +150,7 @@ export const createSpinActions = ({
       const awardedFreeSpins = getAwardedFreeSpinCount(result);
       const ticketWinAmount = getTicketWinAmount(result);
       const isDigitWin = ticketWinAmount > 0;
-      const shouldCreditWin = !effectiveDemo && result.WinSum > 0;
+      const shouldCreditWin = result.WinSum > 0;
       if (visualMode) {
         setGrid(result.grid);
         setGridRevealKey((key) => key + 1);
@@ -179,21 +179,6 @@ export const createSpinActions = ({
         spinResult: nextSpinResult,
         doublingState: nextDoublingState,
       };
-      if (shouldCreditWin) {
-        setPlayer((current) => {
-          if (!current) return current;
-
-          const nextPlayer = {
-            ...current,
-            balance: Number((current.balance + result.WinSum).toFixed(2)),
-          };
-          liveSpinStateRef.current = {
-            ...liveSpinStateRef.current,
-            player: nextPlayer,
-          };
-          return nextPlayer;
-        });
-      }
       setSpinHistory((current) =>
         [
           {
@@ -239,6 +224,22 @@ export const createSpinActions = ({
       }
 
       await wait(LOTTERY_REVEAL_SETTLE_MS);
+      if (shouldCreditWin) {
+
+        setPlayer((current) => {
+          if (!current) return current;
+
+          const nextPlayer = {
+            ...current,
+            balance: Number((current.balance + result.WinSum).toFixed(2)),
+          };
+          liveSpinStateRef.current = {
+            ...liveSpinStateRef.current,
+            player: nextPlayer,
+          };
+          return nextPlayer;
+        });
+      }
       setStatus("ready");
       liveSpinStateRef.current = {
         ...liveSpinStateRef.current,
@@ -253,7 +254,7 @@ export const createSpinActions = ({
         balance: Number(
           (
             spinStartBalance -
-            (effectiveDemo || isFreeSpin ? 0 : totalStake) +
+            (isFreeSpin ? 0 : totalStake) +
             (shouldCreditWin ? result.WinSum : 0)
           ).toFixed(2),
         ),
@@ -375,12 +376,13 @@ export const createSpinActions = ({
       while (liveSpinStateRef.current.freeSpinsLeft > 0) {
         const result = await handleSpin({ freeSpinAuto: true });
         if (!result) break;
-        if (liveSpinStateRef.current.freeSpinsLeft > 0)
+        if (liveSpinStateRef.current.freeSpinsLeft > 0) {
           await wait(
             getNextSpinDelayMs(result, {
               visualMode: liveSpinStateRef.current.visualMode,
             }),
           );
+        }
       }
     } finally {
       freeSpinRunRef.current = false;
