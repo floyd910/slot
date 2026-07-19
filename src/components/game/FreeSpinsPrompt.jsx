@@ -1,30 +1,39 @@
-import { normalizeFreeSpinCount } from "../../utils/freeSpins.js";
+import { useLanguage } from "../../i18n.jsx";
 
-const FREE_SPINS_PROMPT_COPY = {
-  intro: "\u0414\u043b\u044f \u043d\u0430\u0447\u0430\u043b\u0430 \u0440\u043e\u0437\u044b\u0433\u0440\u044b\u0448\u0430",
-  ticketLabel: "\u0431\u0435\u0441\u043f\u043b\u0430\u0442\u043d\u044b\u0445 \u043b\u043e\u0442\u0435\u0440\u0435\u0439\u043d\u044b\u0445 \u043a\u0432\u0438\u0442\u0430\u043d\u0446\u0438\u0439",
-  action: "\u043d\u0430\u0436\u043c\u0438\u0442\u0435 \u043d\u0430 \u043a\u043d\u043e\u043f\u043a\u0443 \"\u0423\u0447\u0430\u0441\u0442\u0432\u043e\u0432\u0430\u0442\u044c \u0432 \u0442\u0438\u0440\u0430\u0436\u0435\"",
+const BONUS_ROUND_TITLE = {
+  ru: "\u0411\u041e\u041d\u0423\u0421\u041d\u042b\u0419 \u0420\u0410\u0423\u041d\u0414",
+  tg: "\u0414\u0410\u0412\u0420\u0418 \u0411\u041e\u041d\u0423\u0421\u04e2",
 };
 
-export default function FreeSpinsPrompt({ count }) {
-  const freeSpinCount = normalizeFreeSpinCount(count);
-  const lines = [
-    FREE_SPINS_PROMPT_COPY.intro,
-    `${freeSpinCount} ${FREE_SPINS_PROMPT_COPY.ticketLabel}`,
-    FREE_SPINS_PROMPT_COPY.action,
-  ];
+const START_FREE_SPIN_ROUND = {
+  ru: "\u041d\u0410\u0427\u0410\u0422\u042c \u0420\u0410\u0423\u041d\u0414 \u0424\u0420\u0418\u0421\u041f\u0418\u041d\u041e\u0412",
+  tg: "\u041e\u0492\u041e\u0417\u0418 \u0414\u0410\u0412\u0420\u0418 \u0422\u0418\u0420\u0410\u0416\u04b2\u041e\u0418 \u0420\u041e\u0419\u0413\u041e\u041d",
+};
+
+const FREE_SPINS_REWARD_TEXT = {
+  ru: "\u0412\u042b \u041f\u041e\u041b\u0423\u0427\u0418\u041b\u0418 15 \u0424\u0420\u0418\u0421\u041f\u0418\u041d\u041e\u0412",
+  tg: "\u0428\u0423\u041c\u041e 15 \u0422\u0418\u0420\u0410\u0416\u0418 \u0420\u041e\u0419\u0413\u041e\u041d \u0413\u0418\u0420\u0418\u0424\u0422\u0415\u0414",
+};
+
+export default function FreeSpinsPrompt({ onStart }) {
+  const { language } = useLanguage();
 
   return (
     <div className="free-spins-modal" role="dialog" aria-modal="true">
       <div className="free-spins-modal__card">
+        <h2 className="free-spins-modal__title">
+          {BONUS_ROUND_TITLE[language] ?? BONUS_ROUND_TITLE.ru}
+        </h2>
         <p className="free-spins-modal__text">
-          {lines.map((line, index) => (
-            <span key={line}>
-              {line}
-              {index < lines.length - 1 && <br />}
-            </span>
-          ))}
+          {FREE_SPINS_REWARD_TEXT[language] ?? FREE_SPINS_REWARD_TEXT.ru}
         </p>
+        <button
+          className="free-spins-modal__start"
+          type="button"
+          onClick={onStart}
+        >
+          {START_FREE_SPIN_ROUND[language] ?? START_FREE_SPIN_ROUND.ru}
+        </button>
       </div>
     </div>
   );

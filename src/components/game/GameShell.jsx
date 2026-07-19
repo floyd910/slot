@@ -153,7 +153,9 @@ export default function GameShell({ controller, onBackToSlots }) {
           />
         )}
         {state.showFreeSpinPrompt && (
-          <FreeSpinsPrompt count={state.freeSpinsTotal} />
+          <FreeSpinsPrompt
+            onStart={actions.startFreeSpinRun}
+          />
         )}
         {showStartupLoader && (
           <StartupLoader
