@@ -101,6 +101,7 @@ function View2Cell({
   autoSequence = false,
   animated = false,
   highlighted = false,
+  scatterHighlighted = false,
   comboBorder = null,
   animationKey = "",
 }) {
@@ -113,6 +114,7 @@ function View2Cell({
       animated={animated}
       autoSequence={autoSequence}
       highlighted={highlighted}
+      scatterHighlighted={scatterHighlighted}
       comboBorder={comboBorder}
       animationKey={animationKey}
     />

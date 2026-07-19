@@ -56,6 +56,7 @@ export function View2SymbolBase({
   animated = false,
   autoSequence = false,
   highlighted = false,
+  scatterHighlighted = false,
   comboBorder = null,
   animationKey = "",
 }) {
@@ -113,7 +114,7 @@ export function View2SymbolBase({
         : getPingPongFrameIndex(animationFrameTick, activeWinFrames.length)
       : 0;
 
-  const rootClass = `lottery-grid-view2-cell lottery-grid-view2-cell--symbol-${symbol}${isDice ? " lottery-grid-view2-cell--dice" : ""}${highlighted ? " lottery-grid-view2-cell--highlighted" : ""}`;
+  const rootClass = `lottery-grid-view2-cell lottery-grid-view2-cell--symbol-${symbol}${isDice ? " lottery-grid-view2-cell--dice" : ""}${highlighted ? " lottery-grid-view2-cell--highlighted" : ""}${scatterHighlighted ? " lottery-grid-view2-cell--scatter-highlighted" : ""}`;
 
   return (
     <div className={rootClass}>

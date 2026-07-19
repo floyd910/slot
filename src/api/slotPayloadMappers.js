@@ -174,9 +174,10 @@ export const mapSpinPayload = (document, params) => {
   const backendKoffs = readKoffValues(document, attrs);
   const backendWinSum = asNumber(attrs.WinSum, 0);
   const backendLineWins = mapBackendLineWins(backendKoffs, grid);
-  const freeSpin = asNumber(attrs.FreeSpin);
+const freeSpin = asNumber(attrs.FreeSpin);
   const gold = asNumber(attrs.Gold);
-  const scatterCells = freeSpin > 0 ? getScatterCells(grid) : [];
+  const detectedScatterCells = getScatterCells(grid);
+  const scatterCells = detectedScatterCells.length >= 2 ? detectedScatterCells : [];
   const scatterCount = scatterCells.length;
   const winningCells = [
     ...new Set(backendLineWins.flatMap((line) => line.winningCells)),
