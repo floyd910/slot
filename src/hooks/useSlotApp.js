@@ -19,10 +19,16 @@ const SLOT_CHOOSER_REQUIRED_ASSETS = [
 const waitForAnimationFrame = () =>
   new Promise((resolve) => window.requestAnimationFrame(resolve));
 
+const MOUNTED_IMAGE_WAIT_MS = 8000;
+
 const waitForMountedImage = async (image) => {
   if (!image.complete || image.naturalWidth === 0) {
     await new Promise((resolve) => {
-      const done = () => resolve();
+      const timeoutId = window.setTimeout(resolve, MOUNTED_IMAGE_WAIT_MS);
+      const done = () => {
+        window.clearTimeout(timeoutId);
+        resolve();
+      };
       image.addEventListener("load", done, { once: true });
       image.addEventListener("error", done, { once: true });
     });
@@ -30,7 +36,12 @@ const waitForMountedImage = async (image) => {
 
   if (image.decode) {
     try {
-      await image.decode();
+      await Promise.race([
+        image.decode(),
+        new Promise((resolve) =>
+          window.setTimeout(resolve, MOUNTED_IMAGE_WAIT_MS),
+        ),
+      ]);
     } catch {
       // A loaded browser-cached image can reject a redundant decode request.
     }

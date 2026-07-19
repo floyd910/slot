@@ -551,6 +551,20 @@ button:disabled {
   width: 100%;
 }
 
+@media (max-width: 1024px) {
+  .view2-info-inline {
+    width: 100vw;
+    height: calc(100vh - 48px);
+    padding-inline: 0;
+    grid-template-columns: minmax(0, 100vw);
+    grid-template-rows: minmax(0, 100%);
+  }
+
+  .view2-info-inline .view2-info-paytable {
+    height: 100%;
+  }
+}
+
 @media (max-width: 1440px) {
   .view2-info-inline__close-wrap {
     position: relative;

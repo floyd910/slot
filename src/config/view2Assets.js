@@ -2,7 +2,7 @@ import { VIEW2_SYMBOL_ASSET_SOURCES } from "../components/view2Symbols/index.jsx
 
 const LINE_ASSETS = "/img/extracted/\u041b\u0438\u043d\u0438\u0438-\u0438-\u041a\u043e\u0441\u0442\u0438-1_00";
 export const VIEW2_CARPET_ASSETS = [
-  "/assets/img/view2-carpet-open.png",
+  "/assets/img/view2-carpet-open.webp",
   "/img/extracted/\u0438\u0433\u0440\u0430-\u0425\u0443\u0448\u043a\u043e\u043b-\u044d\u043b\u0435\u043c\u0435\u043d\u0442\u044b-\u0438\u0433\u0440\u044b-1_0/sprite_002_201x653_at_1289_1.png",
 ];
 

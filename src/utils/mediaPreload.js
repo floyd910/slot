@@ -14,6 +14,8 @@ const CSS_URL_PATTERN = /url\(\s*(['"]?)(.*?)\1\s*\)/g;
 
 const retainedPreloadedImages = new Map();
 const retainedPreloadedAudio = new Map();
+let startupAssetsPromise = null;
+const IMAGE_DECODE_TIMEOUT_MS = 8000;
 
 export const toPreloadUrl = (src) => {
   if (!src || src.startsWith("data:") || src.startsWith("blob:")) return "";
@@ -103,7 +105,12 @@ export const preloadImage = (
       clearTimer();
       if (decode && image.decode) {
         try {
-          await image.decode();
+          await Promise.race([
+            image.decode(),
+            new Promise((resolve) =>
+              window.setTimeout(resolve, IMAGE_DECODE_TIMEOUT_MS),
+            ),
+          ]);
         } catch {
           // Loaded images can still reject decode in some browsers.
         }
@@ -128,8 +135,16 @@ export const preloadImage = (
     image.onerror = fail;
     if (timeoutMs) {
       timeoutId = window.setTimeout(() => {
-        if (rejectOnError) fail();
-        else finish();
+        if (settled) return;
+        settled = true;
+        clearTimer();
+        if (rejectOnError) {
+          reject(
+            new Error(`Timed out preloading required image: ${normalizedSrc}`),
+          );
+        } else {
+          resolve(normalizedSrc);
+        }
       }, timeoutMs);
     }
     image.src = normalizedSrc;
@@ -142,8 +157,8 @@ export const preloadRequiredImages = (sources) =>
   preloadImages(sources, {
     decode: true,
     fetchPriority: "high",
-    rejectOnError: true,
-    timeoutMs: null,
+    rejectOnError: false,
+    timeoutMs: 12000,
   });
 
 const preloadDeferredImages = (sources) =>
@@ -204,6 +219,13 @@ const preloadRequiredAudio = (src) =>
     audio.src = normalizedSrc;
     audio.load();
   });
+
+const warmStartupAudio = () => {
+  preloadRequiredAudio(CARPET_SOUND_SRC).catch(() => {
+    // Mobile browsers may defer media loading until a user gesture. Audio is
+    // optional for first paint, so it must never hold the game loader open.
+  });
+};
 export const loadAudioDurationMs = (src) =>
   new Promise((resolve) => {
     const audio = new Audio(src);
@@ -230,26 +252,22 @@ export const loadAudioDurationMs = (src) =>
     audio.load();
   });
 
-const fontReady = () => document.fonts?.ready?.catch?.(() => {}) ?? Promise.resolve();
-
-const loadStartupAssets = async () => {
-  const requiredImages = uniqueUrls([
-    ...FIRST_PAINT_GAME_IMAGE_ASSETS,
-    ...VIEW2_ASSETS.filter(
-      (src) => !src.includes("/assets/img/animations/"),
-    ),
+const fontReady = () =>
+  Promise.race([
+    document.fonts?.ready?.catch?.(() => {}) ?? Promise.resolve(),
+    new Promise((resolve) => window.setTimeout(resolve, 5000)),
   ]);
 
-  const decodedImages = requiredImages.filter(
-    (src) => !src.includes("/assets/img/animations/"),
-  );
+const loadStartupAssets = async () => {
+  const decodedImages = uniqueUrls(FIRST_PAINT_GAME_IMAGE_ASSETS);
 
   await Promise.all([
     preloadRequiredImages(decodedImages),
-    preloadRequiredAudio(CARPET_SOUND_SRC),
     fontReady(),
     ...STARTUP_ASSETS.videos.map(preloadVideo),
   ]);
+
+  warmStartupAudio();
 };
 
 const loadDeferredStartupAssets = async () => {
@@ -270,9 +288,15 @@ const loadDeferredStartupAssets = async () => {
 
 let deferredStartupAssetsPromise = null;
 
-// Run on every gate entry so CSS loaded by a newly imported game chunk is included.
-// Browser caching makes already loaded assets resolve immediately.
-export const preloadStartupAssets = () => loadStartupAssets();
+// The shell and controller enter the same gate during startup. Share one load
+// so mobile devices do not repeat decode work or attach duplicate media waits.
+export const preloadStartupAssets = () => {
+  startupAssetsPromise ??= loadStartupAssets().catch((error) => {
+    startupAssetsPromise = null;
+    throw error;
+  });
+  return startupAssetsPromise;
+};
 
 export const preloadDeferredStartupAssets = () => {
   deferredStartupAssetsPromise ??= loadDeferredStartupAssets().catch((error) => {

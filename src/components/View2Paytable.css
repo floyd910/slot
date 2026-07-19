@@ -531,3 +531,145 @@
 .view2-info-coeff-card {
   height: 320px;
 }
+
+@media (max-width: 1280px) {
+  .view2-info-card.--left-top,
+  .view2-info-card.--right-top {
+    width: calc(80% + 40px);
+  }
+
+  .info-bottom-left .view2-info-card,
+  .info-bottom-right .view2-info-card {
+    width: calc(70% + 40px);
+  }
+
+  .left-bottom,
+  .right-bottom {
+    transform: translateY(-20px);
+  }
+
+  .info-bottom-right {
+    transform: translateX(-20px);
+  }
+
+  .zero-card-top {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    transform: translateY(-20px);
+  }
+
+  .view2-info-symbol.--coeff-bag {
+    flex-basis: 135px;
+    height: 105px;
+    align-self: center;
+  }
+
+  .view2-info-symbol.--coeff-bag .view2-info-symbol__item {
+    top: 50%;
+    bottom: auto;
+    left: 50%;
+    height: 105px;
+    transform: translate(-50%, -50%);
+  }
+
+  .view2-info-coeff-card__payout .view2-info-payout-row:last-child {
+    background:
+      linear-gradient(
+        320deg,
+        rgba(20, 0, 5, 0.64) 2.87%,
+        rgba(87, 2, 112, 0.64) 46.83%,
+        rgba(20, 0, 5, 0.64) 97.13%
+      ),
+      rgba(255, 255, 255, 0.1);
+  }
+
+  .view2-info-coeff-card__arrow,
+  .view2-info-coeff-card__text {
+    display: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  .view2-info-paytable {
+    width: 100vw;
+    max-width: none;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .info-top,
+  .info-bottom {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) minmax(0, 1fr);
+    width: 100%;
+    gap: 8px;
+  }
+
+  .info-bottom {
+    margin-top: 8px;
+  }
+
+
+  .info-top-right,
+  .info-bottom-left,
+  .info-bottom-right {
+    align-items: center;
+  }
+
+  .top-symbols {
+    margin-bottom: 8px;
+  }
+
+  .info-top-left .top-symbols,
+  .info-top-right .top-symbols {
+    margin-inline: 0;
+  }
+
+
+  .left-bottom,
+  .left-top,
+  .right-top,
+  .right-bottom {
+    align-items: center;
+    padding-left: 0;
+    transform: none;
+  }
+
+  .info-bottom-right {
+    transform: none;
+  }
+
+  .left_top_symbols,
+  .left-top .left_top_symbols,
+  .right-top .left_top_symbols,
+  .right-bottom .left_top_symbols {
+    align-items: center;
+  }
+
+  .right-top .left_top_symbols,
+  .right-bottom .left_top_symbols {
+    order: -1;
+  }
+
+  .zero-card-top {
+    gap: 8px;
+    transform: none;
+  }
+
+
+  .view2-info-coeff-card__arrow {
+    display: block;
+  }
+
+  .view2-info-coeff-card__text {
+    display: block;
+  }
+
+  .left-bottom,
+  .left-top,
+  .right-top,
+  .right-bottom {
+    flex-direction: column;
+  }
+}
