@@ -246,7 +246,7 @@ button:disabled {
   color: #ffe1a2;
   text-align: center;
   font-family: Roboto, sans-serif;
-  font-size: 42px;
+  font-size: 32px;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
@@ -278,6 +278,19 @@ button:disabled {
   font-family: Roboto, sans-serif;
   font-weight: bold;
   cursor: pointer;
+}
+.free-spins-modal__multiplier {
+  margin: 0;
+  text-align: center;
+  font-family: Roboto, sans-serif;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 40px;
+  background: linear-gradient(145deg, #aa7c11 2.4%, #e1bf64 55.29%, #e6c36a 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 @media (max-width: 440px) {
   .free-spins-modal {
@@ -475,6 +488,19 @@ button:disabled {
   }
 }
 
+.free-spins-modal__multiplier {
+  margin: 0;
+  text-align: center;
+  font-family: Roboto, sans-serif;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 40px;
+  background: linear-gradient(145deg, #aa7c11 2.4%, #e1bf64 55.29%, #e6c36a 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 @media (max-width: 440px) {
   header {
     padding-left: 8px;

@@ -15,6 +15,10 @@ const FREE_SPINS_REWARD_TEXT = {
   tg: "\u0428\u0423\u041c\u041e 15 \u0422\u0418\u0420\u0410\u0416\u0418 \u0420\u041e\u0419\u0413\u041e\u041d \u0413\u0418\u0420\u0418\u0424\u0422\u0415\u0414",
 };
 
+const FREE_SPINS_MULTIPLIER_TEXT = {
+  ru: "\u041c\u041d\u041e\u0416\u0418\u0422\u0415\u041b\u042c X3",
+  tg: "\u0417\u0410\u0420\u0411\u041a\u0423\u041d\u0410\u041d\u0414\u0410 X3",
+};
 export default function FreeSpinsPrompt({ onStart }) {
   const { language } = useLanguage();
 
@@ -26,6 +30,10 @@ export default function FreeSpinsPrompt({ onStart }) {
         </h2>
         <p className="free-spins-modal__text">
           {FREE_SPINS_REWARD_TEXT[language] ?? FREE_SPINS_REWARD_TEXT.ru}
+        </p>
+        <p className="free-spins-modal__multiplier">
+          {FREE_SPINS_MULTIPLIER_TEXT[language] ??
+            FREE_SPINS_MULTIPLIER_TEXT.ru}
         </p>
         <button
           className="free-spins-modal__start"
