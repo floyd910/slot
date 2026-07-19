@@ -24,11 +24,11 @@ export function buildView2DoubleSceneViewModel({
   return {
     amountLabel: numericAmount === 0 ? "0" : numericAmount.toFixed(2),
     assets: {
-      arches: view2DoubleAsset("sprite_010_1336x542_at_1_947.png"),
+      arches: view2DoubleAsset("sprite_010_1336x542_at_1_947.webp"),
       character: view2DoubleAsset("sprite_005_250x305_at_1611_1.png"),
       ladderLeft: view2DoubleAsset("sprite_002_21x194_at_1339_1.png"),
       ladderRight: view2DoubleAsset("sprite_003_21x194_at_1419_1.png"),
-      landscape: view2DoubleAsset("sprite_001_1336x542_at_1_1.png"),
+      landscape: view2DoubleAsset("sprite_001_1336x542_at_1_1.webp"),
       pickHighlight: view2DoubleAsset("sprite_004_159x351_at_1447_1.png"),
       resultFrame: view2DoubleAsset("sprite_012_203x57_at_4_1494.png"),
     },

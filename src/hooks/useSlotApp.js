@@ -3,6 +3,7 @@ import {
   SLOT_CHOOSER_BACKGROUND_SRC,
   SLOT_CHOOSER_TILE_ASSETS,
 } from "../config/gameAssets.js";
+import { VIEW2_CARPET_ASSETS } from "../config/view2Assets.js";
 import { notifySlotChooserReady } from "../services/frameReadyNotifier.js";
 import {
   preloadRequiredImages,
@@ -13,6 +14,7 @@ import {
 const SLOT_CHOOSER_REQUIRED_ASSETS = [
   SLOT_CHOOSER_BACKGROUND_SRC,
   ...SLOT_CHOOSER_TILE_ASSETS,
+  VIEW2_CARPET_ASSETS[0],
 ];
 
 
@@ -122,7 +124,6 @@ export function useSlotApp({ loadSelectedSlotGame }) {
     return notifyAfterPaint();
   }, [chooserAssetsReady]);
 
-
   const openSlot = async (slot) => {
     if (slot.status !== "ready" || selectedSlotId || pendingSlotId) return;
 
@@ -135,6 +136,7 @@ export function useSlotApp({ loadSelectedSlotGame }) {
       // every referenced asset before switching away from the loader.
       await loadSelectedSlotGame();
       await preloadStartupAssets();
+      await preloadDeferredStartupAssets();
     } catch (assetError) {
       console.error(assetError);
       if (openRequestRef.current === requestId) setPendingSlotId(null);
@@ -149,10 +151,6 @@ export function useSlotApp({ loadSelectedSlotGame }) {
 
     if (openRequestRef.current !== requestId) return;
     setPendingSlotId(null);
-
-    preloadDeferredStartupAssets().catch((assetError) =>
-      console.error(assetError),
-    );
   };
 
   const closeSlot = () => {

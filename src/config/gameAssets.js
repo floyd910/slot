@@ -25,9 +25,9 @@ const VIEW1_GRID_ASSET_DIR = DOUBLE_SCENE_ASSET_DIR.replace(
 );
 
 export const GAME_AREA_BACKGROUND_SRC =
-  GAME_ASSET_DIR + "/sprite_001_1282x1026_at_1_1.png";
+  GAME_ASSET_DIR + "/sprite_001_1282x1026_at_1_1.webp";
 export const GAME_AREA_FOOTER_SRC =
-  GAME_ASSET_DIR + "/sprite_015_1282x196_at_1_1029.png";
+  GAME_ASSET_DIR + "/sprite_015_1282x196_at_1_1029.webp";
 export const GAME_HEADER_SRC =
   GAME_ASSET_DIR + "/sprite_003_398x172_at_1492_1.png";
 
@@ -46,7 +46,7 @@ export const BOTTOM_BAR_ASSETS = Array.from({ length: 12 }, (_, index) =>
 );
 
 export const DOUBLE_SCENE_ASSETS = [
-  "sprite_001_1336x542_at_1_1.png",
+  "sprite_001_1336x542_at_1_1.webp",
   "sprite_002_21x194_at_1339_1.png",
   "sprite_003_21x194_at_1419_1.png",
   "sprite_004_159x351_at_1447_1.png",
@@ -55,7 +55,7 @@ export const DOUBLE_SCENE_ASSETS = [
   "sprite_007_17x140_at_1343_196.png",
   "sprite_008_18x139_at_1422_197.png",
   "sprite_009_1336x396_at_1_545.png",
-  "sprite_010_1336x542_at_1_947.png",
+  "sprite_010_1336x542_at_1_947.webp",
   "sprite_011_160x59_at_211_1491.png",
   "sprite_012_203x57_at_4_1494.png",
   "sprite_013_144x137_at_333_1554.png",
@@ -87,7 +87,7 @@ export const DEFERRED_GAME_IMAGE_ASSETS = [
   GAME_AREA_FOOTER_SRC,
   GAME_HEADER_SRC,
   ...DOUBLE_SCENE_ASSETS,
-  PAYTABLE_ASSET_DIR + "/sprite_001_1282x1026_at_1_1.png",
+  PAYTABLE_ASSET_DIR + "/sprite_001_1282x1026_at_1_1.webp",
   "/img/eldorado-winnings-table-bg.webp",
   "/img/eldorado-winnings-title-bg.webp",
 ];

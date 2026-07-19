@@ -315,6 +315,19 @@ export const preloadStartupAssets = () => {
   return startupAssetsPromise;
 };
 
+export const preloadView2FirstPaintAssets = () =>
+  preloadImages(
+    VIEW2_ASSETS.filter(
+      (src) => !src.includes("/assets/img/animations/"),
+    ),
+    {
+      decode: true,
+      fetchPriority: "high",
+      rejectOnError: false,
+      timeoutMs: 30000,
+    },
+  );
+
 export const preloadDeferredStartupAssets = () => {
   deferredStartupAssetsPromise ??= loadDeferredStartupAssets().catch((error) => {
     deferredStartupAssetsPromise = null;
