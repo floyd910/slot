@@ -73,6 +73,8 @@ export const createSpinActions = ({
       return null;
     }
     const isFreeSpin = freeSpinsLeft > 0;
+    const creditWinOnReveal =
+      isFreeSpin || freeSpinAuto || autoPlayOnRef.current;
     const effectiveDemo = FORCE_DEMO_SPINS;
     const lineCount = selectedCombination.groups.length;
     const totalStake = Number((stake * lineCount).toFixed(2));
@@ -150,7 +152,7 @@ export const createSpinActions = ({
       const awardedFreeSpins = getAwardedFreeSpinCount(result);
       const ticketWinAmount = getTicketWinAmount(result);
       const isDigitWin = ticketWinAmount > 0;
-      const shouldCreditWin = result.WinSum > 0;
+      const shouldCreditWin = result.WinSum > 0 && creditWinOnReveal;
       if (visualMode) {
         setGrid(result.grid);
         setGridRevealKey((key) => key + 1);
