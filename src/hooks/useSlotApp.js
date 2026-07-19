@@ -6,8 +6,8 @@ import {
 import { notifySlotChooserReady } from "../services/frameReadyNotifier.js";
 import {
   preloadRequiredImages,
+  preloadDeferredStartupAssets,
   preloadStartupAssets,
-  preloadWinAnimations,
 } from "../utils/mediaPreload.js";
 
 const SLOT_CHOOSER_REQUIRED_ASSETS = [
@@ -150,9 +150,9 @@ export function useSlotApp({ loadSelectedSlotGame }) {
     if (openRequestRef.current !== requestId) return;
     setPendingSlotId(null);
 
-    // Win animations are not visible at startup; warm them in the background
-    // after the fully rendered game is revealed.
-    preloadWinAnimations().catch((assetError) => console.error(assetError));
+    preloadDeferredStartupAssets().catch((assetError) =>
+      console.error(assetError),
+    );
   };
 
   const closeSlot = () => {

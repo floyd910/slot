@@ -1,7 +1,7 @@
 import { View2SymbolBase } from "./View2SymbolBase.jsx";
 
 export const symbol4Assets = {
-  staticImage: "/assets/img/view2-symbol-4-static.png?v=20260711-1",
+  staticImage: "/assets/img/view2-symbol-4-static.webp?v=20260711-1",
   isDice: true,
 };
 

@@ -114,7 +114,7 @@ button {
   z-index: 1;
 }
 :root {
-  --slot-chooser-bg: url("/assets/img/cover.png");
+  --slot-chooser-bg: url("/assets/img/cover.webp");
 }
 
 

@@ -1,5 +1,5 @@
-const READY_SLOT_IMAGE = "/assets/img/xiramandi-makor.png";
-const PENDING_SLOT_IMAGE = "/assets/img/logo-frame.png";
+const READY_SLOT_IMAGE = "/assets/img/xiramandi-makor.webp";
+const PENDING_SLOT_IMAGE = "/assets/img/logo-frame.webp";
 
 export function buildSlotChooserItems({ interactive, slots }) {
   return slots.map((slot) => {

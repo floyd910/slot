@@ -1,12 +1,12 @@
-export const SLOT_CHOOSER_BACKGROUND_SRC = "/assets/img/cover.png";
+export const SLOT_CHOOSER_BACKGROUND_SRC = "/assets/img/cover.webp";
 export const SLOT_CHOOSER_TILE_ASSETS = [
-  "/assets/img/xiramandi-makor.png",
-  "/assets/img/logo-frame.png",
+  "/assets/img/xiramandi-makor.webp",
+  "/assets/img/logo-frame.webp",
 ];
 
-export const GAME3_COVER_SRC = "/assets/img/game3-cover.png";
-export const GAME3_LOGO_SRC = "/assets/img/game3-logo.png";
-export const GAME3_LOGO_ORNAMENT_SRC = "/assets/img/game3-logo-ornament.png";
+export const GAME3_COVER_SRC = "/assets/img/game3-cover.webp";
+export const GAME3_LOGO_SRC = "/assets/img/game3-logo.webp";
+export const GAME3_LOGO_ORNAMENT_SRC = "/assets/img/game3-logo-ornament.webp";
 export const GAME3_SHELL_ASSETS = [GAME3_COVER_SRC, GAME3_LOGO_SRC];
 export const LOTTERY_PAINTBRUSH_SRC = "/assets/img/paintbrush.png";
 export const LANGUAGE_CHOOSER_ASSETS = [
@@ -101,5 +101,26 @@ export const STARTUP_ASSETS = {
     ...FIRST_PAINT_GAME_IMAGE_ASSETS,
     ...DEFERRED_GAME_IMAGE_ASSETS,
   ],
-  videos: [],
+videos: [],
+  audio: [
+    "/media/pressing-bet-amount-button.8819b8f6.mp3",
+    "/media/button-press-sound.mp3",
+    "/media/eldorado-carpet-sound.a486c07e.mp3",
+    "/media/carpet.ogg",
+    "/media/receipt-erase.6a92056f.mp3",
+    "/media/receipt-win-drop-sound.11ff43ce.mp3",
+    "/media/digit-short.82a63348.mp3",
+    "/media/eldorado-breakdown-chests-win.d57fe223.mp3",
+    "/media/eldorado-breakdown-chests-loss.3f504635.mp3",
+    "/media/eldorado-getting-free-tickets.e179cf46.mp3",
+    "/media/eldorado-after-bonus-game.e179cf46.mp3",
+    "/media/eldorado-win-sound-0.af398794.mp3",
+    "/media/eldorado-win-sound-12.feef7474.mp3",
+    "/media/eldorado-win-sound-3.93572e53.mp3",
+    "/media/eldorado-win-sound-4.3552ce60.mp3",
+    "/media/eldorado-win-sound-5.6a8b0cf6.mp3",
+    "/media/eldorado-win-sound-6.ca0cf425.mp3",
+    "/media/eldorado-win-sound-7.924ed6af.mp3",
+    "/media/eldorado-win-sound-8.131fcfc1.mp3",
+  ],
 };

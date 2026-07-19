@@ -16,7 +16,6 @@ const retainedPreloadedImages = new Map();
 const retainedPreloadedAudio = new Map();
 let startupAssetsPromise = null;
 const IMAGE_DECODE_TIMEOUT_MS = 8000;
-
 export const toPreloadUrl = (src) => {
   if (!src || src.startsWith("data:") || src.startsWith("blob:")) return "";
   try {
@@ -163,10 +162,10 @@ export const preloadRequiredImages = (sources) =>
 
 const preloadDeferredImages = (sources) =>
   preloadImages(sources, {
-    decode: false,
-    fetchPriority: "low",
+    decode: true,
+    fetchPriority: "high",
     rejectOnError: false,
-    timeoutMs: IMAGE_PRELOAD_TIMEOUT_MS,
+    timeoutMs: 30000,
   });
 
 const preloadVideo = (src) =>
@@ -188,6 +187,22 @@ const preloadVideo = (src) =>
     video.src = src;
     video.load();
   });
+
+const preloadAudioData = async (src) => {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), 30000);
+  try {
+    const response = await fetch(toPreloadUrl(src), {
+      cache: "force-cache",
+      signal: controller.signal,
+    });
+    if (response.ok) await response.arrayBuffer();
+  } catch {
+    // A media request failure must not leave the startup overlay stuck.
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+};
 
 const preloadRequiredAudio = (src) =>
   new Promise((resolve, reject) => {
@@ -226,6 +241,7 @@ const warmStartupAudio = () => {
     // optional for first paint, so it must never hold the game loader open.
   });
 };
+
 export const loadAudioDurationMs = (src) =>
   new Promise((resolve) => {
     const audio = new Audio(src);
@@ -281,6 +297,7 @@ const loadDeferredStartupAssets = async () => {
 
   await Promise.all([
     preloadDeferredImages(deferredImages),
+    ...STARTUP_ASSETS.audio.map(preloadAudioData),
     fontReady(),
     ...STARTUP_ASSETS.videos.map(preloadVideo),
   ]);
