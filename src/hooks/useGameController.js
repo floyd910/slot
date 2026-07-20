@@ -81,6 +81,7 @@ export function useGameController(selectedGameId) {
   const [doublingState, setDoublingState] = useState(createEmptyDoublingState);
   const [autoPlayOn, setAutoPlayOn] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const soundEnabledRef = useRef(true);
   const [showGameMenu, setShowGameMenu] = useState(false);
   const [spinHistory, setSpinHistory] = useState([]);
   const [spinFeedbackActive, setSpinFeedbackActive] = useState(false);
@@ -110,13 +111,13 @@ export function useGameController(selectedGameId) {
     (event, payload) => {
       if (visualMode && event !== "carpet") return;
       if (visualMode && event === "carpet") {
-        if (soundEnabled) playSound(event, payload);
+        if (soundEnabledRef.current) playSound(event, payload);
         return;
       }
       if (!["reveal", "stopReveal", "win"].includes(event)) return;
-      if (soundEnabled) playSound(event, payload);
+      if (soundEnabledRef.current) playSound(event, payload);
     },
-    [playSound, soundEnabled, visualMode],
+    [playSound, visualMode],
   );
 
   useEffect(() => {
@@ -580,12 +581,14 @@ export function useGameController(selectedGameId) {
     });
 
   const toggleSound = () => {
-    if (soundEnabled) {
+    const nextSoundEnabled = !soundEnabledRef.current;
+    soundEnabledRef.current = nextSoundEnabled;
+    if (!nextSoundEnabled) {
       playSound("stopAll");
     } else {
       playSound("click");
     }
-    setSoundEnabled((value) => !value);
+    setSoundEnabled(nextSoundEnabled);
   };
 
   const toggleVisualMode = () => {

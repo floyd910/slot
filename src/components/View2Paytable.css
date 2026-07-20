@@ -591,6 +591,39 @@
 }
 
 @media (max-width: 1024px) {
+  .view2-info-paytable,
+  .view2-info-paytable * {
+    margin: 0 !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+  }
+
+  .view2-info-card.--left-top,
+  .view2-info-card.--right-top,
+  .info-bottom-left .view2-info-card,
+  .info-bottom-right .view2-info-card {
+    width: 235px;
+  }
+
+  .view2-info-main-card {
+    width: 265px;
+    justify-self: center;
+  }
+  .view2-info-main-card .view2-info-symbol.--free-bag {
+    left: auto;
+    top: auto;
+    width: 113.212px;
+    margin: 0;
+    align-self: center;
+  }
+
+  .main-card-top {
+    flex-direction: column;
+    align-items: center;
+  }
+
   .view2-info-paytable {
     width: 100vw;
     max-width: none;
@@ -606,8 +639,61 @@
     gap: 8px;
   }
 
+  .info-top {
+    justify-content: center;
+  }
+  .info-top-left,
+  .info-top-right {
+    z-index: 5;
+    width: 235px;
+  }
+  .info-top-left .top-symbols .view2-info-symbol__item,
+  .info-top-right .top-symbols .view2-info-symbol__item {
+    width: 110.727px;
+    height: 82.341px;
+  }
+  .info-top-left .top-symbols,
+  .info-top-right .top-symbols {
+    box-sizing: border-box;
+    align-self: stretch;
+    width: 100%;
+    justify-content: center;
+    gap: 10px;
+  }
+  .info-top-right .top-symbols {
+    justify-content: flex-end;
+    transform: none;
+  }
+
+  .info-top-left .top-symbols .view2-info-symbol,
+  .info-top-right .top-symbols .view2-info-symbol {
+    flex: 0 0 110.727px;
+    width: 110.727px;
+    height: 82.341px;
+  }
+
+  .info-top-left {
+    justify-self: start;
+  }
+
+  .info-top-right {
+    justify-self: end;
+    align-items: flex-end;
+  }
+
   .info-bottom {
-    margin-top: 8px;
+    margin: 0;
+  }
+
+  .info-top-left,
+  .info-top-right,
+  .info-bottom-left,
+  .info-bottom-right,
+  .left-bottom,
+  .left-top,
+  .right-top,
+  .right-bottom {
+    margin: 0;
   }
 
 
@@ -616,9 +702,18 @@
   .info-bottom-right {
     align-items: center;
   }
+  .info-top-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end !important;
+  }
+
+  .info-top-right > * {
+    align-self: flex-end;
+  }
 
   .top-symbols {
-    margin-bottom: 8px;
+    margin-bottom: 40px !important;
   }
 
   .info-top-left .top-symbols,

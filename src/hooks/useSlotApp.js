@@ -7,8 +7,8 @@ import { VIEW2_CARPET_ASSETS } from "../config/view2Assets.js";
 import { notifySlotChooserReady } from "../services/frameReadyNotifier.js";
 import {
   preloadRequiredImages,
-  preloadDeferredStartupAssets,
   preloadStartupAssets,
+  scheduleDeferredStartupAssets,
 } from "../utils/mediaPreload.js";
 
 const SLOT_CHOOSER_REQUIRED_ASSETS = [
@@ -132,11 +132,9 @@ export function useSlotApp({ loadSelectedSlotGame }) {
     setPendingSlotId(slot.id);
 
     try {
-      // Import the complete game and its CSS first, then discover and preload
-      // every referenced asset before switching away from the loader.
+      // Block only on code and assets required by the first game paint.
       await loadSelectedSlotGame();
       await preloadStartupAssets();
-      await preloadDeferredStartupAssets();
     } catch (assetError) {
       console.error(assetError);
       if (openRequestRef.current === requestId) setPendingSlotId(null);
@@ -151,6 +149,7 @@ export function useSlotApp({ loadSelectedSlotGame }) {
 
     if (openRequestRef.current !== requestId) return;
     setPendingSlotId(null);
+    scheduleDeferredStartupAssets();
   };
 
   const closeSlot = () => {

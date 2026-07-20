@@ -64,7 +64,7 @@ export function buildLotteryGridViewModel({
 
   if (!visualMode) {
     const showScatterOnly = isSettled && visibleScatterCells.length >= 2;
-    const lineWinMarked = new Set(showScatterOnly ? [] : activeWinningCells);
+    const lineWinMarked = new Set(activeWinningCells);
     const marked = new Set([
       ...lineWinMarked,
       ...(showScatterOnly ? visibleScatterCells : []),
@@ -135,9 +135,8 @@ export function buildLotteryGridViewModel({
       digit: cell.value,
       highlighted:
         isSettled &&
-        (showScatterOnly
-          ? visibleScatterCells.includes(cell.coord)
-          : hasActiveLineWin && activeComboBorderCells.has(cell.coord)),
+        ((showScatterOnly && visibleScatterCells.includes(cell.coord)) ||
+          (hasActiveLineWin && activeComboBorderCells.has(cell.coord))),
       scatterHighlighted:
         isSettled && showScatterOnly && visibleScatterCells.includes(cell.coord),
       comboBorder:

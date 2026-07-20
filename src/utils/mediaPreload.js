@@ -160,13 +160,29 @@ export const preloadRequiredImages = (sources) =>
     timeoutMs: 12000,
   });
 
+const runWithConcurrency = async (items, limit, task) => {
+  let nextIndex = 0;
+  const worker = async () => {
+    while (nextIndex < items.length) {
+      const item = items[nextIndex];
+      nextIndex += 1;
+      await task(item);
+    }
+  };
+  await Promise.all(
+    Array.from({ length: Math.min(limit, items.length) }, worker),
+  );
+};
+
 const preloadDeferredImages = (sources) =>
-  preloadImages(sources, {
-    decode: true,
-    fetchPriority: "high",
-    rejectOnError: false,
-    timeoutMs: 30000,
-  });
+  runWithConcurrency(uniqueUrls(sources), 4, (src) =>
+    preloadImage(src, {
+      decode: false,
+      fetchPriority: "low",
+      rejectOnError: false,
+      timeoutMs: 30000,
+    }),
+  );
 
 const preloadVideo = (src) =>
   new Promise((resolve) => {
@@ -295,12 +311,9 @@ const loadDeferredStartupAssets = async () => {
     ...collectStylesheetImageUrls(),
   ]).filter((src) => !criticalUrls.has(src));
 
-  await Promise.all([
-    preloadDeferredImages(deferredImages),
-    ...STARTUP_ASSETS.audio.map(preloadAudioData),
-    fontReady(),
-    ...STARTUP_ASSETS.videos.map(preloadVideo),
-  ]);
+  await preloadDeferredImages(deferredImages);
+  await runWithConcurrency(STARTUP_ASSETS.audio, 2, preloadAudioData);
+  await Promise.all(STARTUP_ASSETS.videos.map(preloadVideo));
 };
 
 let deferredStartupAssetsPromise = null;
@@ -336,6 +349,18 @@ export const preloadDeferredStartupAssets = () => {
   return deferredStartupAssetsPromise;
 };
 
+export const scheduleDeferredStartupAssets = () => {
+  const start = () => {
+    preloadDeferredStartupAssets().catch((error) => console.error(error));
+  };
+
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback(start, { timeout: 1500 });
+    return;
+  }
+
+  window.setTimeout(start, 0);
+};
 export const preloadWinAnimations = () =>
   preloadImages(
     VIEW2_ASSETS.filter((src) => src.includes("/assets/img/animations/")),
