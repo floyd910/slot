@@ -64,7 +64,7 @@ export function View2SymbolBase({
   const [animatedImageDone, setAnimatedImageDone] = useState(false);
   const animationActive = highlighted || animated;
   const animatedImagePlayMs =
-    singlePlayMs ?? (cycleMs ? Math.round(cycleMs / 2) : VIEW2_SYMBOL_WIN_CYCLE_MS);
+    singlePlayMs ?? cycleMs ?? VIEW2_SYMBOL_WIN_CYCLE_MS;
   const activeAnimatedImage = animationActive && (!autoSequence || !animatedImageDone) ? animatedImage : null;
   const activeWinFrames = animationActive ? winFrames : null;
   const frameCycleLength = activeWinFrames?.length > 1

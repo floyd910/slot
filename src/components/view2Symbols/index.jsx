@@ -63,7 +63,7 @@ const getSymbolCycleMs = (assets) => {
 
 const getSymbolHighlightMs = (assets) => {
   if (assets.singlePlayMs) return assets.singlePlayMs;
-  if (assets.animatedImage && assets.cycleMs) return Math.round(assets.cycleMs / 2);
+  if (assets.animatedImage && assets.cycleMs) return assets.cycleMs;
   return getSymbolCycleMs(assets);
 };
 

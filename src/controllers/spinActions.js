@@ -152,7 +152,8 @@ export const createSpinActions = ({
       const awardedFreeSpins = getAwardedFreeSpinCount(result);
       const ticketWinAmount = getTicketWinAmount(result);
       const isDigitWin = ticketWinAmount > 0;
-      const shouldCreditWin = result.WinSum > 0 && creditWinOnReveal;
+      const shouldCreditWin =
+        result.WinSum > 0 && (creditWinOnReveal || awardedFreeSpins > 0);
       if (visualMode) {
         setGrid(result.grid);
         setGridRevealKey((key) => key + 1);
