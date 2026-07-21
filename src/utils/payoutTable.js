@@ -1,20 +1,21 @@
-export const BASE_PAYOUT_STAKE = 0.1;
+export const BASE_PAYOUT_STAKE = 1;
+export const BASE_ZERO_PAYOUT_COMBINATION = 9;
 export const PAYOUT_COLUMNS = ["x1", "x2", "x3", "x4", "x5"];
 
 export const PAYOUT_ROWS = [
-  { symbol: 0, values: [0.2, 0.5, 2, 50] },
-  { symbol: 1, values: [0.2, 0.5, 2.5, 10] },
-  { symbol: 2, values: [null, 0.5, 2.5, 10] },
-  { symbol: 3, values: [null, 0.5, 2.5, 10] },
-  { symbol: 4, values: [null, 0.5, 2.5, 10] },
-  { symbol: 5, values: [null, 1, 5, 12.5] },
-  { symbol: 6, values: [null, 1, 5, 12.5] },
-  { symbol: 7, values: [null, 1.5, 7.5, 25] },
-  { symbol: 8, values: [null, 1.5, 7.5, 25] },
-  { symbol: 9, values: [null, 2, 10, 40] },
-  { symbol: 10, values: [0.2, 2.5, 12.5, 75] },
-  { symbol: 11, values: [0.2, 2.5, 12.5, 75] },
-  { symbol: 12, values: [1, 25, 250, 900] },
+  { symbol: 0, values: [18, 45, 180, 4500] },
+  { symbol: 1, values: [2, 5, 25, 100] },
+  { symbol: 2, values: [null, 5, 25, 100] },
+  { symbol: 3, values: [null, 5, 25, 100] },
+  { symbol: 4, values: [null, 5, 25, 100] },
+  { symbol: 5, values: [null, 10, 50, 125] },
+  { symbol: 6, values: [null, 10, 50, 125] },
+  { symbol: 7, values: [null, 15, 75, 250] },
+  { symbol: 8, values: [null, 15, 75, 250] },
+  { symbol: 9, values: [null, 20, 100, 400] },
+  { symbol: 10, values: [2, 25, 125, 750] },
+  { symbol: 11, values: [2, 25, 125, 750] },
+  { symbol: 12, values: [10, 250, 2500, 9000] },
 ];
 
 const FALLBACK_GROUPS = {
@@ -83,13 +84,19 @@ export const getCombinationGroups = (
   return FALLBACK_GROUPS[combinationNumber] ?? FALLBACK_GROUPS[1];
 };
 
-export const getPayoutMultiplier = (stake, selectedCombination) =>
-  (toPayoutNumber(stake, BASE_PAYOUT_STAKE) / BASE_PAYOUT_STAKE) *
-  getCombinationNumber(selectedCombination);
+export const getPayoutMultiplier = (stake, selectedCombination, symbol) => {
+  const betMultiplier =
+    toPayoutNumber(stake, BASE_PAYOUT_STAKE) / BASE_PAYOUT_STAKE;
+  if (Number(symbol) !== 0) return betMultiplier;
+  return (
+    betMultiplier *
+    (getCombinationNumber(selectedCombination) / BASE_ZERO_PAYOUT_COMBINATION)
+  );
+};
 
 export const formatPayoutValue = (baseValue, multiplier) => {
   if (baseValue == null) return "";
-  return (baseValue * multiplier).toFixed(2);
+  return Number((baseValue * multiplier).toFixed(2)).toString();
 };
 
 export const formatPayoutStake = (stake) =>

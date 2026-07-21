@@ -31,9 +31,9 @@ const getSpinValue = (testParams, key, fallback) =>
     ? readConfigValue(testParams[key], fallback, FRAME_SPIN_DEFAULTS[key])
     : fallback;
 
-export const buildSpinRequest = ({ stake, totalStake, lines, isDemo, isFreeSpin } = {}) => {
+export const buildSpinRequest = ({ stake, lines, isDemo, isFreeSpin } = {}) => {
   const testParams = getBackendTestParams();
-  const sum = getSpinValue(testParams, "sum", totalStake ?? stake);
+  const sum = getSpinValue(testParams, "sum", stake);
   const selectedLines = getSpinValue(testParams, "lines", lines);
   const spin = {
     idPartner: getSpinValue(testParams, "idPartner", FRAME_SPIN_DEFAULTS.idPartner),
@@ -65,7 +65,7 @@ export const buildSpinRequest = ({ stake, totalStake, lines, isDemo, isFreeSpin 
 
   return {
     methodName: "SetSlotSpinHiranmandiFrame",
-    stake: asNumber(sum, totalStake ?? stake),
+    stake: asNumber(sum, stake),
     lines: selectedLines,
     xml: `<message MessageType="SetSlotSpinHiranmandiFrame" MessageDateTime="${formatSoapDateTime()}" MessageFormatVersion="1.0"><Spin ${spinAttributes} /></message>`,
   };

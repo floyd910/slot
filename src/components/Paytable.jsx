@@ -76,7 +76,11 @@ export default function Paytable({
       {loading && !isLanguageChanging && <div className="info-paytable-state">{t("loading")}</div>}
       {error && <div className="info-paytable-state --error">{error}</div>}
       {!loading && !error && visualMode && (
-        <View2Paytable language={language} payoutMultiplier={view.payoutMultiplier} />
+        <View2Paytable
+          language={language}
+          payoutMultiplier={view.payoutMultiplier}
+          zeroPayoutMultiplier={view.zeroPayoutMultiplier}
+        />
       )}
       {!loading && !error && !visualMode && (
         <div className="info-paytable">

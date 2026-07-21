@@ -16,6 +16,11 @@ export function buildStandardPaytableViewModel({ stake, selectedCombination }) {
     combinationNumber,
   );
   const payoutMultiplier = getPayoutMultiplier(stake, selectedCombination);
+  const zeroPayoutMultiplier = getPayoutMultiplier(
+    stake,
+    selectedCombination,
+    0,
+  );
 
   return {
     columns: PAYOUT_COLUMNS.slice(1, 5),
@@ -26,7 +31,10 @@ export function buildStandardPaytableViewModel({ stake, selectedCombination }) {
     rows: PAYOUT_ROWS.map((row) => ({
       symbol: row.symbol,
       values: row.values.map((value) =>
-        formatPayoutValue(value, payoutMultiplier),
+        formatPayoutValue(
+          value,
+          getPayoutMultiplier(stake, selectedCombination, row.symbol),
+        ),
       ),
     })),
     stakeLabel: formatPayoutStake(stake),

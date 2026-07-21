@@ -64,7 +64,11 @@ function PayoutCard({ className, symbol, counts, payoutMultiplier }) {
   );
 }
 
-export default function View2Paytable({ language, payoutMultiplier }) {
+export default function View2Paytable({
+  language,
+  payoutMultiplier,
+  zeroPayoutMultiplier = payoutMultiplier,
+}) {
   const copy = VIEW2_COPY[language] ?? VIEW2_COPY.ru;
 
   return (
@@ -121,7 +125,7 @@ export default function View2Paytable({ language, payoutMultiplier }) {
             className="--right-top"
             symbol={10}
             counts={[5, 4, 3, 2]}
-            payoutMultiplier={payoutMultiplier}
+            payoutMultiplier={zeroPayoutMultiplier}
           />
         </div>
       </div>
@@ -161,7 +165,7 @@ export default function View2Paytable({ language, payoutMultiplier }) {
               <PayoutRows
                 symbol={0}
                 counts={[5, 4, 3, 2]}
-                payoutMultiplier={payoutMultiplier}
+                payoutMultiplier={zeroPayoutMultiplier}
                 compact
               />
             </div>

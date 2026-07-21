@@ -76,6 +76,7 @@ export default function GameShell({ controller, onBackToSlots }) {
               <View2Paytable
                 language={language}
                 payoutMultiplier={paytableView.payoutMultiplier}
+                zeroPayoutMultiplier={paytableView.zeroPayoutMultiplier}
               />
             )}
           </section>
