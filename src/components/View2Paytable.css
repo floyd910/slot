@@ -148,17 +148,17 @@
   justify-content: space-between;
   column-gap: 24px;
   width: 100%;
-  height: 28.879px;
+  min-height: 28.879px;
   box-sizing: border-box;
   margin-bottom: 10px;
-  padding: 0 8.251px;
+  padding: 4px 8.251px;
   border-radius: 8.251px;
   background: rgba(255, 255, 255, 0.1);
   font-family: "Prosto One", Arial, Helvetica, sans-serif;
   font-size: 22.69px;
   font-style: normal;
   font-weight: 400;
-  line-height: 18.565px;
+  line-height: normal;
   white-space: nowrap;
 }
 
@@ -278,7 +278,7 @@
   height: auto;
   min-height: 28.879px;
   margin-bottom: 0;
-  padding: 10px 20px;
+  padding: 4px 20px;
   border-radius: 0;
   background: transparent;
   box-shadow: none;
