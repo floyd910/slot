@@ -32,6 +32,7 @@ import {
   loadAudioDurationMs,
   preloadImage,
   preloadStartupAssets,
+  preloadView2FirstPaintAssets,
 } from "../utils/mediaPreload.js";
 import { normalizeRuntimeStatus } from "../utils/runtimeStatus.js";
 import { useGameAudio } from "./useGameAudio.js";
@@ -196,6 +197,13 @@ export function useGameController(selectedGameId) {
       active = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (!startupAssetsReady) return;
+    preloadView2FirstPaintAssets().catch((assetError) => {
+      console.error("View 2 static asset preload failed", assetError);
+    });
+  }, [startupAssetsReady]);
 
   useEffect(() => {
     if (!visualMode) return;
