@@ -152,4 +152,11 @@ header {
   text-transform: uppercase;
 }
 
-
+@media (max-width: 1024px) {
+  .header-btns > button {
+    flex: 0 0 32px;
+    width: 32px;
+    min-width: 32px;
+    max-width: 32px;
+  }
+}

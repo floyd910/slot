@@ -114,6 +114,7 @@
 
 .top-symbols {
   display: flex;
+  flex-direction: row;
   gap: 0;
   width: 100%;
   margin-bottom: 30px;
@@ -212,6 +213,12 @@
 .main-card-top .view2-info-payout-list {
   width: 100%;
   margin-top: 20px;
+}
+
+@media (min-width: 1024px) {
+  .main-card-top .view2-info-payout-list {
+    transform: translateY(-20px);
+  }
 }
 
 .view2-info-main-card .view2-info-payout-list {
@@ -356,6 +363,7 @@
   line-height: 0;
 }
 
+
 .left-top .left_top_symbols .view2-info-symbol,
 .right-bottom .left_top_symbols .view2-info-symbol {
   margin-top: 0;
@@ -380,6 +388,7 @@
 
 .left-bottom .symbol-1 {
   margin-top: 70px;
+  transform: translateX(-30px);
 }
 
 .left-top .symbol-5 {
@@ -388,11 +397,13 @@
   margin-top: -45px;
   margin-right: -10px;
   margin-left: 5px;
+  transform: translateX(-30px);
 }
 
 .left-top .symbol-6 {
   margin-top: -20px;
   margin-left: -30px;
+  transform: translateX(-30px);
 }
 
 .right-bottom .symbol-2 {
@@ -446,18 +457,14 @@
   transform: translateY(-20px);
 }
 
-.view2-info-symbol.symbol-7 {
-  margin-top: 0;
+.info-top-left .top-symbols > .view2-info-symbol:first-child,
+.info-top-right .top-symbols > .view2-info-symbol:first-child {
+  margin: 26px -24px 0 0;
 }
 
-.view2-info-symbol.symbol-8 {
-  margin-top: 24px;
-  margin-left: -24px;
-}
-
-.info-top-right .symbol-10 {
-  margin-top: 26px;
-  margin-right: -24px;
+.info-top-left .top-symbols > .view2-info-symbol:last-child,
+.info-top-right .top-symbols > .view2-info-symbol:last-child {
+  margin: 0;
 }
 
 .info-bottom .view2-info-symbol {
@@ -475,7 +482,12 @@
 }
 
 @media (max-width: 1440px) {
-  .view2-info-symbol.symbol-7,
+  .left-top .view2-info-symbol.symbol-5,
+  .left-top .view2-info-symbol.symbol-6 {
+    transform: translateX(-10px);
+  }
+
+  .view2-info-symbol.symbol-8,
   .info-top-right .view2-info-symbol.--top-right-b {
     transform: translateY(25px);
   }
@@ -591,6 +603,24 @@
 }
 
 @media (max-width: 1024px) {
+  .left-top .view2-info-symbol.symbol-5,
+  .left-top .view2-info-symbol.symbol-6,
+  .left-bottom .view2-info-symbol.symbol-1 {
+    transform: translateX(-45px);
+  }
+
+  .left-bottom .view2-info-symbol.symbol-1 {
+    transform: translate(-45px, 20px);
+  }
+
+.view2-info-coeff-card {
+    width: 287px;
+    height: auto;
+    padding: 16px;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
   .view2-info-paytable,
   .view2-info-paytable * {
     margin: 0 !important;
@@ -604,7 +634,7 @@
   .view2-info-card.--right-top,
   .info-bottom-left .view2-info-card,
   .info-bottom-right .view2-info-card {
-    width: 235px;
+    width: 215px;
   }
 
   .view2-info-main-card {
@@ -643,7 +673,9 @@
     justify-content: center;
   }
   .info-top-left,
-  .info-top-right {
+  .info-top-right,
+  .info-bottom-left,
+  .info-bottom-right {
     z-index: 5;
     width: 235px;
   }
@@ -657,11 +689,11 @@
     box-sizing: border-box;
     align-self: stretch;
     width: 100%;
-    justify-content: center;
+    justify-content: flex-end;
     gap: 10px;
   }
+  .info-top-left .top-symbols,
   .info-top-right .top-symbols {
-    justify-content: flex-end;
     transform: none;
   }
 
@@ -672,17 +704,64 @@
     height: 82.341px;
   }
 
+  .info-top-right .top-symbols .view2-info-symbol.symbol-11 {
+    margin-left: auto !important;
+  }
+
+  .info-bottom-right .right-top .view2-info-symbol.symbol-9 {
+    margin-right: -30px !important;
+    transform: translate(30px, 20px);
+  }
+
+
   .info-top-left {
     justify-self: start;
   }
 
-  .info-top-right {
+  .info-top-right,
+  .info-bottom-right {
     justify-self: end;
     align-items: flex-end;
   }
 
-  .info-bottom {
+  .info-top-left,
+  .info-bottom-left {
+    justify-self: start;
+    align-items: flex-start;
+  }
+
+  .info-bottom-left,
+  .info-bottom-right {
+    margin-top: -250px !important;
+  }
+  .info-bottom-right {
+    margin-top: -250px !important;
+  }
+
+  .info-bottom .left_top_symbols,
+  .info-bottom .view2-info-symbol.symbol-1,
+  .info-bottom .view2-info-symbol.symbol-2,
+  .info-bottom .view2-info-symbol.symbol-3,
+  .info-bottom .view2-info-symbol.symbol-4,
+  .info-bottom .view2-info-symbol.symbol-5,
+  .info-bottom .view2-info-symbol.symbol-6,
+  .info-bottom .view2-info-symbol.symbol-1 .view2-info-symbol__item,
+  .info-bottom .view2-info-symbol.symbol-2 .view2-info-symbol__item,
+  .info-bottom .view2-info-symbol.symbol-3 .view2-info-symbol__item,
+  .info-bottom .view2-info-symbol.symbol-4 .view2-info-symbol__item,
+  .info-bottom .view2-info-symbol.symbol-5 .view2-info-symbol__item,
+  .info-bottom .view2-info-symbol.symbol-6 .view2-info-symbol__item {
+    width: 104px;
+    height: 105px;
+  }
+
+.info-bottom {
     margin: 0;
+    justify-content: center;
+  }
+
+  .info-bottom > .view2-info-coeff-card {
+    justify-self: center;
   }
 
   .info-top-left,
@@ -702,18 +781,25 @@
   .info-bottom-right {
     align-items: center;
   }
-  .info-top-right {
+  .info-top-right,
+  .info-bottom-right {
     display: flex;
     flex-direction: column;
     align-items: flex-end !important;
   }
 
-  .info-top-right > * {
+  .info-bottom-right {
+    gap: 24px;
+  }
+
+  .info-top-right > *,
+  .info-bottom-right > * {
     align-self: flex-end;
   }
 
   .top-symbols {
-    margin-bottom: 40px !important;
+    margin-top: 25px !important;
+    margin-bottom: 8px !important;
   }
 
   .info-top-left .top-symbols,
@@ -748,13 +834,39 @@
   }
 
   .zero-card-top {
-    gap: 8px;
+    width: 100%;
+    align-items: center;
+    gap: 16px;
     transform: none;
   }
 
+  .view2-info-coeff-card > *,
+  .view2-info-coeff-card__payout,
+  .view2-info-coeff-card__arrow,
+  .view2-info-coeff-card__text {
+    align-self: center;
+    margin-inline: auto !important;
+  }
 
   .view2-info-coeff-card__arrow {
     display: block;
+    width: 69px;
+    height: 8px;
+    margin-block: 16px !important;
+  }
+
+  .view2-info-symbol.--coeff-bag {
+    width: 145px;
+    flex-basis: 105px;
+    align-self: center;
+  }
+
+  .view2-info-symbol.--coeff-bag .view2-info-symbol__item {
+    position: relative;
+    inset: auto;
+    width: 145px;
+    height: 105px;
+    transform: none;
   }
 
   .view2-info-coeff-card__text {
@@ -765,6 +877,329 @@
   .left-top,
   .right-top,
   .right-bottom {
+    display: flex;
     flex-direction: column;
+    gap: 8px;
+  }
+
+  .info-bottom-left .left-top,
+  .info-bottom-left .left-bottom,
+  .info-bottom-right .right-bottom {
+    display: flex !important;
+    flex-direction: column !important;
+    row-gap: 8px !important;
+  }
+
+  .info-bottom .left_top_symbols {
+    height: auto;
+  }
+  .info-bottom-left .left-top .left_top_symbols {
+    height: 128px;
+  }
+
+
+  .info-bottom-left .left-bottom .left_top_symbols {
+    height: 105px;
+  }
+
+  .info-bottom-right .right-bottom .left_top_symbols {
+    width: 84px;
+    height: 125px;
+    transform: translateY(-30px);
+  }
+
+  .info-bottom-right .right-bottom .view2-info-symbol.symbol-2,
+  .info-bottom-right .right-bottom .view2-info-symbol.symbol-3,
+  .info-bottom-right .right-bottom .view2-info-symbol.symbol-4,
+  .info-bottom-right .right-bottom .view2-info-symbol.symbol-2 .view2-info-symbol__item,
+  .info-bottom-right .right-bottom .view2-info-symbol.symbol-3 .view2-info-symbol__item,
+  .info-bottom-right .right-bottom .view2-info-symbol.symbol-4 .view2-info-symbol__item {
+    width: 84px;
+    height: 85px;
+  }
+
+  .info-bottom-left .view2-info-symbol.symbol-1,
+  .info-bottom-left .view2-info-symbol.symbol-5,
+  .info-bottom-left .view2-info-symbol.symbol-6,
+  .info-bottom-left .view2-info-symbol.symbol-1 .view2-info-symbol__item,
+  .info-bottom-left .view2-info-symbol.symbol-5 .view2-info-symbol__item,
+  .info-bottom-left .view2-info-symbol.symbol-6 .view2-info-symbol__item {
+    width: 84px;
+    height: 85px;
+  }
+
+  .info-bottom-left {
+    margin-top: -250px !important;
+  }
+
+  .info-bottom-right {
+    margin-top: -250px !important;
+  }
+  .view2-info-payout-row {
+    margin-bottom: 8px !important;
+  }
+
+  .view2-info-card .view2-info-payout-row:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  .view2-info-coeff-card .view2-info-payout-row {
+    margin-bottom: 0 !important;
+  }
+}
+
+.view2-info-mobile {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .view2-info-inline {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    align-content: start;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .view2-info-paytable {
+    display: block;
+    width: 100%;
+    min-height: 100%;
+    height: auto !important;
+    max-height: none;
+    box-sizing: border-box;
+    padding: 60px 8px 8px !important;
+    overflow: visible;
+  }
+
+  .view2-info-paytable > .info-top,
+  .view2-info-paytable > .info-bottom {
+    display: none !important;
+  }
+
+  .view2-info-mobile {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+    height: max-content;
+    padding: 0;
+  }
+  .view2-info-mobile::after {
+    content: "";
+    display: block;
+    flex: 0 0 8px;
+    width: 100%;
+    height: 8px;
+  }
+
+  .view2-info-mobile > .view2-info-mobile__box {
+    box-sizing: border-box;
+    width: 100% !important;
+    max-width: none;
+    height: auto !important;
+    min-height: 0;
+    margin: 0 !important;
+  }
+
+  .view2-info-mobile__box,
+  .view2-info-mobile__box .main-card-top,
+  .view2-info-mobile__box .zero-card-top {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .view2-info-mobile__symbols {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 105px;
+  }
+
+  .view2-info-mobile__symbols:has(.symbol-10):has(.symbol-11),
+  .view2-info-mobile__symbols:has(.symbol-8):has(.symbol-7) {
+    gap: 8px !important;
+  }
+
+  .view2-info-mobile__symbols:has(.symbol-8):has(.symbol-7) .view2-info-symbol,
+  .view2-info-mobile__symbols:has(.symbol-10):has(.symbol-11) .view2-info-symbol {
+    position: relative !important;
+    inset: auto !important;
+    flex: 0 0 104px !important;
+    width: 104px !important;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
+  .view2-info-mobile__symbols:has(.symbol-8):has(.symbol-7) .view2-info-symbol__item,
+  .view2-info-mobile__symbols:has(.symbol-10):has(.symbol-11) .view2-info-symbol__item {
+    display: block;
+    width: 104px !important;
+    max-width: 104px;
+    height: 105px !important;
+    transform: none !important;
+  }
+
+  .view2-info-mobile__symbols:has(.symbol-10):has(.symbol-11) .view2-info-symbol.symbol-11 {
+    margin-top: -20px !important;
+  }
+
+  .view2-info-mobile__symbols:has(.symbol-8):has(.symbol-7) .view2-info-symbol.symbol-8 {
+    margin-top: -20px !important;
+  }
+
+  .view2-info-mobile__symbols .view2-info-symbol {
+    flex: 0 0 104px;
+    width: 104px;
+    height: 105px;
+    margin: 0 !important;
+    transform: none !important;
+  }
+
+  .view2-info-mobile__symbols .view2-info-symbol__item {
+    width: 104px;
+    height: 105px;
+    transform: none !important;
+  }
+
+  .view2-info-mobile__symbols .view2-info-symbol.symbol-3 .view2-info-symbol__item {
+    transform: rotate(-23.716deg) !important;
+  }
+
+  .view2-info-mobile__symbols .view2-info-symbol.symbol-5 .view2-info-symbol__item {
+    transform: rotate(-20.607deg) !important;
+  }
+
+  .view2-info-mobile .view2-info-payout-list,
+  .view2-info-mobile .view2-info-coeff-card__payout {
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .view2-info-mobile .view2-info-payout-row {
+    margin-bottom: 8px !important;
+  }
+
+  .view2-info-mobile .view2-info-payout-row:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  .view2-info-mobile .view2-info-coeff-card .view2-info-payout-row {
+    margin: 0 !important;
+  }
+
+  .view2-info-mobile .view2-info-main-card,
+  .view2-info-mobile .view2-info-coeff-card,
+  .view2-info-mobile .view2-info-card {
+    padding: 8px;
+  }
+
+  .view2-info-mobile .main-card-top .view2-info-symbol,
+  .view2-info-mobile .main-card-top .view2-info-symbol__item {
+    max-width: 100%;
+  }
+  .view2-info-mobile__box > .view2-info-symbol,
+  .view2-info-mobile__box .main-card-top > .view2-info-symbol,
+  .view2-info-mobile__box .zero-card-top > .view2-info-symbol {
+    align-self: center;
+  }
+
+  .view2-info-mobile__row {
+    display: flex;
+    flex-direction: row;
+    align-items: center !important;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .view2-info-mobile__row:has(.view2-info-symbol.symbol-9) {
+    flex-direction: row-reverse;
+    gap: 8px !important;
+  }
+
+  .view2-info-mobile__row:has(.symbol-4):has(.symbol-3):has(.symbol-2) {
+    flex-direction: row-reverse;
+  }
+
+  .view2-info-mobile__row:has(.view2-info-symbol.symbol-9) > .view2-info-mobile__symbols {
+    flex: 0 0 104px;
+    width: 104px !important;
+  }
+
+  .view2-info-mobile__row:has(.view2-info-symbol.symbol-9) > .view2-info-mobile__box {
+    flex: 0 1 calc(100% - 112px);
+    width: calc(100% - 112px) !important;
+    max-width: calc(100% - 112px);
+    min-width: 0;
+    overflow: hidden;
+  }
+
+  .view2-info-mobile__row:has(.view2-info-symbol.symbol-9) .view2-info-symbol,
+  .view2-info-mobile__row:has(.view2-info-symbol.symbol-9) .view2-info-symbol__item {
+    width: 104px !important;
+    height: 105px !important;
+  }
+
+  .view2-info-mobile__row:has(.view2-info-symbol.symbol-9) .view2-info-payout-row {
+    grid-template-columns: max-content minmax(0, 1fr);
+    column-gap: 8px;
+    width: 100%;
+  }
+
+  .view2-info-mobile__row > .view2-info-mobile__symbols {
+    flex: 0 0 auto;
+    width: auto !important;
+    min-height: 77px;
+  }
+
+  .view2-info-mobile__row > .view2-info-mobile__symbols:has(.symbol-6):has(.symbol-5),
+  .view2-info-mobile__row > .view2-info-mobile__symbols:has(.symbol-4):has(.symbol-3):has(.symbol-2) {
+    flex-direction: column;
+    gap: 0 !important;
+  }
+
+  .view2-info-mobile__row > .view2-info-mobile__symbols:has(.symbol-4):has(.symbol-3):has(.symbol-2) {
+    transform: translateY(5px);
+  }
+
+  .view2-info-mobile__row .view2-info-mobile__symbols .view2-info-symbol.symbol-6 {
+    transform: translateX(20px) !important;
+  }
+
+  .view2-info-mobile__row .view2-info-mobile__symbols .view2-info-symbol.symbol-4,
+  .view2-info-mobile__row .view2-info-mobile__symbols .view2-info-symbol.symbol-2 {
+    transform: translateX(-20px) !important;
+  }
+
+  .view2-info-mobile__row > .view2-info-mobile__symbols:has(.symbol-6):has(.symbol-5) .view2-info-symbol + .view2-info-symbol,
+  .view2-info-mobile__row > .view2-info-mobile__symbols:has(.symbol-4):has(.symbol-3):has(.symbol-2) .view2-info-symbol + .view2-info-symbol {
+    margin-top: -60px !important;
+  }
+
+  .view2-info-mobile__row > .view2-info-mobile__box {
+    flex: 1 1 0;
+    width: auto !important;
+    min-width: 0;
+    margin: 0 !important;
+  }
+
+  .view2-info-mobile__row:has(.symbol-6):has(.symbol-5) > .view2-info-mobile__box,
+  .view2-info-mobile__row:has(.symbol-4):has(.symbol-3):has(.symbol-2) > .view2-info-mobile__box {
+    flex: 0 1 calc(100% - 104px);
+    width: calc(100% - 104px) !important;
+    max-width: calc(100% - 104px);
+  }
+
+  .view2-info-mobile__row .view2-info-symbol,
+  .view2-info-mobile__row .view2-info-symbol__item {
+    width: 76px;
+    height: 77px;
   }
 }

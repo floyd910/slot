@@ -115,8 +115,7 @@ export default function View2Paytable({
           <div className="top-symbols">
             <SymbolTile symbol={10} className="--decor --top-right-a" />
             <SymbolTile
-              symbol={9}
-              imageSymbol={11}
+              symbol={11}
               className="--decor --top-right-b"
             />
           </div>
@@ -187,7 +186,7 @@ export default function View2Paytable({
               payoutMultiplier={payoutMultiplier}
             />
             <div className="left_top_symbols">
-              <SymbolTile symbol={11} imageSymbol={9} />
+              <SymbolTile symbol={9} />
             </div>
           </div>
 
@@ -205,6 +204,79 @@ export default function View2Paytable({
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="view2-info-mobile">
+        <article className="view2-info-main-card view2-info-mobile__box">
+          <div className="main-card-top">
+            <SymbolTile symbol={12} className="--wild-main" />
+            <PayoutRows symbol={12} counts={[5, 4, 3, 2]} payoutMultiplier={payoutMultiplier} />
+          </div>
+          <p className="view2-info-main-card__text">
+            {copy.freeSpins.map((line) => (
+              <span key={line}>{line}</span>
+            ))}
+          </p>
+          <SymbolTile symbol={0} className="--free-bag" />
+        </article>
+
+        <div className="view2-info-mobile__symbols">
+          <SymbolTile symbol={10} />
+          <SymbolTile symbol={11} />
+        </div>
+        <PayoutCard className="view2-info-mobile__box" symbol={10} counts={[5, 4, 3, 2]} payoutMultiplier={zeroPayoutMultiplier} />
+
+        <div className="view2-info-mobile__row">
+          <div className="view2-info-mobile__symbols">
+            <SymbolTile symbol={9} />
+          </div>
+          <PayoutCard className="view2-info-mobile__box" symbol={9} counts={[5, 4, 3]} payoutMultiplier={payoutMultiplier} />
+        </div>
+
+        <div className="view2-info-mobile__symbols">
+          <SymbolTile symbol={8} />
+          <SymbolTile symbol={7} />
+        </div>
+        <PayoutCard className="view2-info-mobile__box" symbol={8} counts={[5, 4, 3]} payoutMultiplier={payoutMultiplier} />
+
+        <div className="view2-info-mobile__row">
+          <div className="view2-info-mobile__symbols">
+            <SymbolTile symbol={6} />
+            <SymbolTile symbol={5} />
+          </div>
+          <PayoutCard className="view2-info-mobile__box" symbol={5} counts={[5, 4, 3]} payoutMultiplier={payoutMultiplier} />
+        </div>
+
+        <div className="view2-info-mobile__row">
+          <div className="view2-info-mobile__symbols">
+            <SymbolTile symbol={4} />
+            <SymbolTile symbol={3} />
+            <SymbolTile symbol={2} />
+          </div>
+          <PayoutCard className="view2-info-mobile__box" symbol={4} counts={[5, 4, 3]} payoutMultiplier={payoutMultiplier} />
+        </div>
+
+        <div className="view2-info-mobile__row">
+          <div className="view2-info-mobile__symbols">
+            <SymbolTile symbol={1} />
+          </div>
+          <PayoutCard className="view2-info-mobile__box" symbol={1} counts={[5, 4, 3, 2]} payoutMultiplier={payoutMultiplier} />
+        </div>
+
+        <article className="view2-info-coeff-card view2-info-mobile__box">
+          <div className="zero-card-top">
+            <SymbolTile symbol={0} className="--coeff-bag" />
+            <div className="view2-info-coeff-card__payout">
+              <PayoutRows symbol={0} counts={[5, 4, 3, 2]} payoutMultiplier={zeroPayoutMultiplier} compact />
+            </div>
+          </div>
+          <img className="view2-info-coeff-card__arrow" src="/assets/img/view2-coeff-arrow.png" alt="" aria-hidden="true" />
+          <p className="view2-info-coeff-card__text">
+            {copy.coefficient.map((line) => (
+              <span key={line}>{line}</span>
+            ))}
+          </p>
+        </article>
       </div>
     </div>
   );

@@ -649,7 +649,16 @@ button:disabled {
 
 @media (max-width: 720px) {
   .view2-info-inline__close-wrap {
-    margin: 8px 8px 0 0;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    margin: 0;
   }
 }
 
+@media (max-width: 1024px) {
+  .header_img {
+    width: 80%;
+    height: auto;
+  }
+}
