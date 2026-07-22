@@ -46,32 +46,14 @@ export const BOTTOM_BAR_ASSETS = Array.from({ length: 12 }, (_, index) =>
 );
 
 export const DOUBLE_SCENE_ASSETS = [
-  "sprite_001_1336x542_at_1_1.webp",
-  "sprite_002_21x194_at_1339_1.png",
-  "sprite_003_21x194_at_1419_1.png",
-  "sprite_004_159x351_at_1447_1.png",
-  "sprite_005_250x305_at_1611_1.png",
-  "sprite_006_144x160_at_1866_1.png",
-  "sprite_007_17x140_at_1343_196.png",
-  "sprite_008_18x139_at_1422_197.png",
-  "sprite_009_1336x396_at_1_545.png",
-  "sprite_010_1336x542_at_1_947.webp",
-  "sprite_011_160x59_at_211_1491.png",
-  "sprite_012_203x57_at_4_1494.png",
-  "sprite_013_144x137_at_333_1554.png",
-  "sprite_014_164x160_at_1_1558.png",
-  "sprite_015_160x56_at_169_1558.png",
-  "sprite_016_160x56_at_169_1616.png",
-  "sprite_017_160x57_at_169_1674.png",
-  "sprite_018_160x58_at_1_1767.png",
-  "sprite_019_160x57_at_163_1767.png",
-  "sprite_020_160x58_at_163_1826.png",
-  "sprite_021_160x58_at_1_1827.png",
-  "sprite_022_160x58_at_163_1886.png",
-  "sprite_023_160x57_at_1_1887.png",
-  "sprite_024_160x57_at_1_1946.png",
-  "sprite_025_160x59_at_163_1946.png",
-].map((file) => DOUBLE_SCENE_ASSET_DIR + "/" + file);
+  "/assets/img/double-scene-bg.png",
+  "/assets/img/double-scene-loss-bg.png",
+  "/assets/img/double-left-chest.png",
+  "/assets/img/double-right-chest.png",
+  "/assets/img/double-winning-chest.png",
+  "/assets/img/double-empty-chest.png",
+  DOUBLE_SCENE_ASSET_DIR + "/sprite_004_159x351_at_1447_1.png",
+];
 
 export const FIRST_PAINT_GAME_IMAGE_ASSETS = [
   ...GAME3_SHELL_ASSETS,

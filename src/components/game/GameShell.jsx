@@ -50,7 +50,16 @@ export default function GameShell({ controller, onBackToSlots }) {
           draggable={false}
         />
         <div className="bg-overlay"></div>
-        <div className="header_img"></div>
+        <img
+          className="header_img"
+          src="/assets/img/game3-logo.webp"
+          alt=""
+          aria-hidden="true"
+          decoding="async"
+          draggable={false}
+          width="3096"
+          height="732"
+        />
 
         {showInlineView2Paytable ? (
           <section className="view2-info-inline" aria-label="View 2 payouts">

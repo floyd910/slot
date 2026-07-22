@@ -14,7 +14,7 @@ export function useView2DoubleSceneViewModel({
     setShowOtherWinningChest(false);
     if (lastStatus !== "lose" || !lastPick) return undefined;
 
-    const timer = window.setTimeout(() => setShowOtherWinningChest(true), 1500);
+    const timer = window.setTimeout(() => setShowOtherWinningChest(true), 1000);
     return () => window.clearTimeout(timer);
   }, [lastPick, lastStatus]);
 

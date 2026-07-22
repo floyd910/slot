@@ -16,11 +16,20 @@ export default function BottomBar(props) {
   });
   const balance = formatMoney(props.player?.balance);
   const totalPurchase = formatMoney(props.totalPurchase);
-  const currentWin = formatMoney(
-    props.revealComplete === false
-      ? 0
-      : getTicketWinAmount(props.spinResult, props.doublingState),
+  const ticketWinAmount = getTicketWinAmount(
+    props.spinResult,
+    props.doublingState,
   );
+  const currentWin = formatMoney(
+    props.revealComplete === false ? 0 : ticketWinAmount,
+  );
+  const isFreeSpinResult =
+    props.spinResult?.isFreeSpin === true ||
+    Number(props.spinResult?.FreeSpin ?? 0) > 0;
+  const showDoubleOffer =
+    props.revealComplete !== false &&
+    (props.doubleOfferAvailable ||
+      (!props.autoPlayOn && !isFreeSpinResult && ticketWinAmount > 0));
   const chooserDisabled = props.disabled || props.paytableControlsLocked;
 
   return (
@@ -29,14 +38,24 @@ export default function BottomBar(props) {
         <BottomBarMetric title={t("balance")} value={balance} />
         <BottomBarMetric title={t("purchaseAmount")} value={totalPurchase} />
         <BottomBarMetric title={t("win")} value={currentWin} accent />
-        <BottomBarStepper
-          disabled={chooserDisabled}
-          label={t("lotteryBet")}
-          onDecrease={props.onDecreaseStake}
-          onIncrease={props.onIncreaseStake}
-          value={formatMoney(props.stake)}
-          variant="bet"
-        />
+        {showDoubleOffer ? (
+          <TabletDoubleButton
+            disabled={props.disabled || props.doublingState?.loading}
+            label={language === "tg" ? "\u0414\u0423 \u0411\u0410\u0420\u041e\u0411\u0410\u0420" : "\u0423\u0414\u0412\u041e\u0418\u0422\u042c"}
+            onClick={props.onDouble}
+            sizingLabel={t("lotteryBet")}
+            sizingValue={formatMoney(props.stake)}
+          />
+        ) : (
+          <BottomBarStepper
+            disabled={chooserDisabled}
+            label={t("lotteryBet")}
+            onDecrease={props.onDecreaseStake}
+            onIncrease={props.onIncreaseStake}
+            value={formatMoney(props.stake)}
+            variant="bet"
+          />
+        )}
         <BottomBarStepper
           disabled={chooserDisabled}
           label={t("lotteryCombination")}
@@ -71,14 +90,24 @@ export default function BottomBar(props) {
         </div>
 
         <div className="footer-flex">
-          <BottomBarStepper
-            disabled={chooserDisabled}
-            label={t("lotteryBet")}
-            onDecrease={props.onDecreaseStake}
-            onIncrease={props.onIncreaseStake}
-            value={formatMoney(props.stake)}
-            variant="bet"
-          />
+          {showDoubleOffer ? (
+            <TabletDoubleButton
+              disabled={props.disabled || props.doublingState?.loading}
+              label={language === "tg" ? "\u0414\u0423 \u0411\u0410\u0420\u041e\u0411\u0410\u0420" : "\u0423\u0414\u0412\u041e\u0418\u0422\u042c"}
+              onClick={props.onDouble}
+              sizingLabel={t("lotteryBet")}
+              sizingValue={formatMoney(props.stake)}
+            />
+          ) : (
+            <BottomBarStepper
+              disabled={chooserDisabled}
+              label={t("lotteryBet")}
+              onDecrease={props.onDecreaseStake}
+              onIncrease={props.onIncreaseStake}
+              value={formatMoney(props.stake)}
+              variant="bet"
+            />
+          )}
           <BottomBarStepper
             disabled={chooserDisabled}
             label={t("lotteryCombination")}
@@ -107,14 +136,24 @@ export default function BottomBar(props) {
         </div>
 
         <div className="footer-flex">
-          <BottomBarStepper
-            disabled={chooserDisabled}
-            label={t("lotteryBet")}
-            onDecrease={props.onDecreaseStake}
-            onIncrease={props.onIncreaseStake}
-            value={formatMoney(props.stake)}
-            variant="bet"
-          />
+          {showDoubleOffer ? (
+            <TabletDoubleButton
+              disabled={props.disabled || props.doublingState?.loading}
+              label={language === "tg" ? "\u0414\u0423 \u0411\u0410\u0420\u041e\u0411\u0410\u0420" : "\u0423\u0414\u0412\u041e\u0418\u0422\u042c"}
+              onClick={props.onDouble}
+              sizingLabel={t("lotteryBet")}
+              sizingValue={formatMoney(props.stake)}
+            />
+          ) : (
+            <BottomBarStepper
+              disabled={chooserDisabled}
+              label={t("lotteryBet")}
+              onDecrease={props.onDecreaseStake}
+              onIncrease={props.onIncreaseStake}
+              value={formatMoney(props.stake)}
+              variant="bet"
+            />
+          )}
           <BottomBarStepper
             disabled={chooserDisabled}
             label={t("lotteryCombination")}
@@ -185,6 +224,31 @@ function renderBottomBarControl(control, { language, t }) {
       suppressPressFeedback={control.suppressPressFeedback}
       type={control.type}
     />
+  );
+}
+
+function TabletDoubleButton({ disabled, label, onClick, sizingLabel, sizingValue }) {
+  return (
+    <div className="tablet-double-offer">
+      <div className="tablet-double-offer__sizer" aria-hidden="true">
+        <BottomBarStepper
+          disabled
+          label={sizingLabel}
+          onDecrease={() => {}}
+          onIncrease={() => {}}
+          value={sizingValue}
+          variant="bet"
+        />
+      </div>
+      <button
+        className="tablet-double-offer__button"
+        disabled={disabled}
+        onClick={onClick}
+        type="button"
+      >
+        {label}
+      </button>
+    </div>
   );
 }
 

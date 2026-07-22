@@ -20,6 +20,10 @@ import { normalizePayResult } from "../models/payResult.js";
 import { normalizeSpinResult } from "../models/spinResult.js";
 import { stateRecoveryService } from "./stateRecoveryService.js";
 
+// Temporary: keep Double outcomes local/random until backend-controlled
+// doubling is re-enabled.
+const USE_RANDOM_DOUBLE_RESULTS = true;
+
 const getContext = () => getRuntimeConfig();
 
 const remember = (operation) =>
@@ -85,7 +89,7 @@ export class GameApiService {
   }
 
   async double(params = {}) {
-    if (!useSoapBackend()) {
+    if (USE_RANDOM_DOUBLE_RESULTS || !useSoapBackend()) {
       const result = await mockDouble(params);
       return normalizeDoubleResult({ ...result, requestId: params.requestId });
     }

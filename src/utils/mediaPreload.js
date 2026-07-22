@@ -1,5 +1,6 @@
 import { VIEW2_ASSETS } from "../config/view2Assets.js";
 import {
+  DOUBLE_SCENE_ASSETS,
   DEFERRED_GAME_IMAGE_ASSETS,
   FIRST_PAINT_GAME_IMAGE_ASSETS,
   STARTUP_ASSETS,
@@ -340,6 +341,14 @@ export const preloadView2FirstPaintAssets = () =>
       timeoutMs: 30000,
     },
   );
+
+export const preloadDoubleSceneAssets = () =>
+  preloadImages(DOUBLE_SCENE_ASSETS, {
+    decode: true,
+    fetchPriority: "high",
+    rejectOnError: false,
+    timeoutMs: 60000,
+  });
 
 export const preloadDeferredStartupAssets = () => {
   deferredStartupAssetsPromise ??= loadDeferredStartupAssets().catch((error) => {

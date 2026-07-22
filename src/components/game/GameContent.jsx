@@ -2,7 +2,6 @@ import CombinationSelector from "../CombinationSelector.jsx";
 import GameAlert from "../GameAlert.jsx";
 import DoubleMode from "../DoubleMode.jsx";
 import View2DoubleScene from "../View2DoubleScene.jsx";
-import View2PurchasePanel from "../View2PurchasePanel.jsx";
 import Lobby from "../Lobby.jsx";
 import LotteryGrid from "../LotteryGrid.jsx";
 import WinningsDashboard from "../WinningDashboard.jsx";
@@ -39,46 +38,39 @@ export default function GameContent({ controller, runtimeState }) {
       />
     );
   }
+  if (view.showVisualDouble) {
+    return (
+      <section className="view2-double-screen" aria-busy={derived.isBusy}>
+        <View2DoubleScene
+          amount={
+            state.doublingState.currentAmount ?? state.spinResult?.WinSum ?? 0
+          }
+          ladderAmount={
+            state.doublingState.initialAmount ?? state.spinResult?.WinSum ?? 0
+          }
+          step={state.doublingState.step || 0}
+          loading={state.doublingState.loading}
+          lastPick={state.doublingState.lastPick}
+          lastStatus={state.doublingState.lastStatus}
+          onPick={actions.playFooterDouble}
+        />
+      </section>
+    );
+  }
 
   return (
     <>
       <aside className="main-container__left">
-        {view.showVisualDouble ? (
-          <View2PurchasePanel
-            amount={
-              state.doublingState.currentAmount ?? state.spinResult?.WinSum ?? 0
-            }
-            deferredBalance={state.doublingState.deferredBalance}
-            balance={state.player?.balance ?? 0}
-            totalPurchase={derived.totalPurchase}
-          />
-        ) : (
-          <CombinationSelector
-            combinations={state.combinations}
-            selectedCombinationId={state.selectedCombinationId}
-            disabled={derived.isBusy || derived.isDoublingLocked}
-            onSelect={actions.selectCombination}
-          />
-        )}
+        <CombinationSelector
+          combinations={state.combinations}
+          selectedCombinationId={state.selectedCombinationId}
+          disabled={derived.isBusy || derived.isDoublingLocked}
+          onSelect={actions.selectCombination}
+        />
       </aside>
       <section className="main-container__center" aria-busy={derived.isBusy}>
         <GameAlert message={view.alertMessage} />
-        {view.showVisualDouble ? (
-          <View2DoubleScene
-            amount={
-              state.doublingState.currentAmount ?? state.spinResult?.WinSum ?? 0
-            }
-            ladderAmount={
-              state.doublingState.initialAmount ?? state.spinResult?.WinSum ?? 0
-            }
-            step={state.doublingState.step || 0}
-            loading={state.doublingState.loading}
-            lastPick={state.doublingState.lastPick}
-            lastStatus={state.doublingState.lastStatus}
-            onPick={actions.playFooterDouble}
-          />
-        ) : (
-          view.showStandardGame && (
+        {view.showStandardGame && (
             <LotteryGrid
               grid={state.grid}
               revealKey={state.gridRevealKey}
@@ -92,8 +84,7 @@ export default function GameContent({ controller, runtimeState }) {
               scatterCells={state.spinResult?.scatterCells}
               doublingState={state.doublingState}
             />
-          )
-        )}
+          )}
       </section>
 
       {view.showRightPanel && (

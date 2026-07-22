@@ -30,6 +30,7 @@ import {
 } from "../utils/gameResult.js";
 import {
   loadAudioDurationMs,
+  preloadDoubleSceneAssets,
   preloadImage,
   preloadStartupAssets,
   preloadView2FirstPaintAssets,
@@ -202,6 +203,9 @@ export function useGameController(selectedGameId) {
     if (!startupAssetsReady) return;
     preloadView2FirstPaintAssets().catch((assetError) => {
       console.error("View 2 static asset preload failed", assetError);
+    });
+    preloadDoubleSceneAssets().catch((assetError) => {
+      console.error("Double scene asset preload failed", assetError);
     });
   }, [startupAssetsReady]);
 
@@ -567,7 +571,7 @@ export function useGameController(selectedGameId) {
     setAutoPlayOn((current) => !current);
   };
 
-  const { enterVisualDouble, pickDouble, playFooterDouble } =
+  const { enterDoubleScene, enterVisualDouble, pickDouble, playFooterDouble } =
     createDoubleActions({
       doubleState,
       doublingState,
@@ -682,6 +686,7 @@ export function useGameController(selectedGameId) {
       toggleAutoPlay,
       toggleSound,
       toggleVisualMode,
+      enterDoubleScene,
       enterVisualDouble,
     },
     state: {

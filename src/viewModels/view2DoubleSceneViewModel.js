@@ -3,9 +3,10 @@ const DOUBLE_ASSETS =
 
 export const view2DoubleAsset = (file) => `${DOUBLE_ASSETS}/${file}`;
 
-const CLOSED_CHEST = view2DoubleAsset("sprite_013_144x137_at_333_1554.png");
-const WINNING_CHEST = view2DoubleAsset("sprite_014_164x160_at_1_1558.png");
-const EMPTY_CHEST = view2DoubleAsset("sprite_006_144x160_at_1866_1.png");
+const LEFT_CLOSED_CHEST = "/assets/img/double-left-chest.png";
+const RIGHT_CLOSED_CHEST = "/assets/img/double-right-chest.png";
+const WINNING_CHEST = "/assets/img/double-winning-chest.png";
+const EMPTY_CHEST = "/assets/img/double-empty-chest.png";
 const LADDER_MULTIPLIERS = [32, 16, 8, 4, 2, 1];
 const SIDES = ["left", "right"];
 
@@ -24,13 +25,9 @@ export function buildView2DoubleSceneViewModel({
   return {
     amountLabel: numericAmount === 0 ? "0" : numericAmount.toFixed(2),
     assets: {
-      arches: view2DoubleAsset("sprite_010_1336x542_at_1_947.webp"),
-      character: view2DoubleAsset("sprite_005_250x305_at_1611_1.png"),
-      ladderLeft: view2DoubleAsset("sprite_002_21x194_at_1339_1.png"),
-      ladderRight: view2DoubleAsset("sprite_003_21x194_at_1419_1.png"),
-      landscape: view2DoubleAsset("sprite_001_1336x542_at_1_1.webp"),
+      landscape: "/assets/img/double-scene-bg.png",
+      lossLandscape: "/assets/img/double-scene-loss-bg.png",
       pickHighlight: view2DoubleAsset("sprite_004_159x351_at_1447_1.png"),
-      resultFrame: view2DoubleAsset("sprite_012_203x57_at_4_1494.png"),
     },
     choices: SIDES.map((side) => ({
       chestSource: getChestSource({
@@ -43,16 +40,12 @@ export function buildView2DoubleSceneViewModel({
       lastStatus: lastPick === side ? lastStatus : "",
       side,
     })),
+    isLoss: lastStatus === "lose",
     lastPick,
     levels: LADDER_MULTIPLIERS.map((multiplier, index) => {
       const active = index >= LADDER_MULTIPLIERS.length - 1 - step;
       return {
         active,
-        imageSrc: view2DoubleAsset(
-          active
-            ? "sprite_020_160x58_at_163_1826.png"
-            : "sprite_011_160x59_at_211_1491.png",
-        ),
         value: (ladderBaseAmount * multiplier).toFixed(2),
       };
     }),
@@ -74,5 +67,5 @@ function getChestSource({
     return WINNING_CHEST;
   }
 
-  return CLOSED_CHEST;
+  return side === "left" ? LEFT_CLOSED_CHEST : RIGHT_CLOSED_CHEST;
 }

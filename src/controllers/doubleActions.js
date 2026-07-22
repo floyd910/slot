@@ -100,13 +100,10 @@ export const createDoubleActions = ({
   };
 
   const enterVisualDouble = () => {
-    const { doublingState, spinResult, status, visualMode } =
-      liveSpinStateRef.current;
+    const { doublingState, spinResult, status } = liveSpinStateRef.current;
     const currentAmount = getTicketWinAmount(spinResult, doublingState);
 
     if (
-      !visualMode ||
-      !spinResult?.idCard ||
       currentAmount <= 0 ||
       doublingState.loading ||
       status === "processing"
@@ -130,6 +127,35 @@ export const createDoubleActions = ({
     setLastKnownState("double");
   };
 
+  const enterDoubleScene = () => {
+    const { doubleState, doublingState, spinResult, status, visualMode } =
+      liveSpinStateRef.current;
+    const currentAmount = getTicketWinAmount(spinResult, doublingState);
+
+    if (
+      !spinResult?.idCard ||
+      currentAmount <= 0 ||
+      doublingState.loading ||
+      doubleState.loading ||
+      status === "processing"
+    )
+      return;
+
+    if (visualMode) {
+      enterVisualDouble();
+      return;
+    }
+
+    const nextDoubleState = {
+      ...doubleState,
+      active: true,
+      loading: false,
+      step: doubleState.step || 1,
+      status: doubleState.status || "Choose left or right",
+    };
+    setDoubleState(nextDoubleState);
+    syncLiveState({ doubleState: nextDoubleState });
+  };
   const playFooterDouble = async (side = "x2") => {
     const { doublingState, spinResult, status } = liveSpinStateRef.current;
     if (!spinResult?.idCard || doublingState.loading || status === "processing")
@@ -332,6 +358,7 @@ export const createDoubleActions = ({
   };
 
   return {
+    enterDoubleScene,
     enterVisualDouble,
     pickDouble,
     playFooterDouble,
