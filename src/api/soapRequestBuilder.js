@@ -16,8 +16,8 @@ const FRAME_SPIN_DEFAULTS = {
   idKassi: "70",
   idValute: "1",
   idUser: "1",
-  login: "Terminal",
-  password: "Gefest",
+  login: "testslot",
+  password: "1",
   idGame: GAME_NUMERIC_ID,
 };
 
