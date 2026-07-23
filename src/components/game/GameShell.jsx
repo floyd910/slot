@@ -122,6 +122,8 @@ export default function GameShell({ controller, onBackToSlots }) {
                   onCollect={actions.collectWin}
                   onPickLeft={() => actions.playFooterDouble("left")}
                   onPickRight={() => actions.playFooterDouble("right")}
+                  freeSpinsLeft={state.freeSpinsLeft}
+                  freeSpinRoundStarted={state.freeSpinRoundStarted}
                   autoPlayOn={state.autoPlayOn}
                   infoActive={state.showPaytable}
                   onIncreaseCombination={() => actions.cycleCombination(1)}

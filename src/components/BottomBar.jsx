@@ -35,6 +35,8 @@ export default function BottomBar(props) {
         props.spinResult?.creditedToBalance !== true &&
         normalSpinWinAmount > 0));
   const chooserDisabled = props.disabled || props.paytableControlsLocked;
+  const showFreeSpinCounter =
+    props.freeSpinRoundStarted && Number(props.freeSpinsLeft ?? 0) > 0;
 
   return (
     <footer className="bottom-bar">
@@ -42,7 +44,14 @@ export default function BottomBar(props) {
         <BottomBarMetric title={t("balance")} value={balance} />
         <BottomBarMetric title={t("purchaseAmount")} value={totalPurchase} />
         <BottomBarMetric title={t("win")} value={currentWin} accent />
-        {showDoubleOffer ? (
+        {showFreeSpinCounter ? (
+          <FooterFreeSpins
+            count={props.freeSpinsLeft}
+            label={t("freeSpinsFooter")}
+            sizingLabel={t("lotteryBet")}
+            sizingValue={formatMoney(props.stake)}
+          />
+        ) : showDoubleOffer ? (
           <TabletDoubleButton
             disabled={props.disabled || props.doublingState?.loading}
             label={language === "tg" ? "\u0414\u0423 \u0411\u0410\u0420\u041e\u0411\u0410\u0420" : "\u0423\u0414\u0412\u041e\u0418\u0422\u042c"}
@@ -94,7 +103,14 @@ export default function BottomBar(props) {
         </div>
 
         <div className="footer-flex">
-          {showDoubleOffer ? (
+          {showFreeSpinCounter ? (
+          <FooterFreeSpins
+            count={props.freeSpinsLeft}
+            label={t("freeSpinsFooter")}
+            sizingLabel={t("lotteryBet")}
+            sizingValue={formatMoney(props.stake)}
+          />
+        ) : showDoubleOffer ? (
             <TabletDoubleButton
               disabled={props.disabled || props.doublingState?.loading}
               label={language === "tg" ? "\u0414\u0423 \u0411\u0410\u0420\u041e\u0411\u0410\u0420" : "\u0423\u0414\u0412\u041e\u0418\u0422\u042c"}
@@ -140,7 +156,14 @@ export default function BottomBar(props) {
         </div>
 
         <div className="footer-flex">
-          {showDoubleOffer ? (
+          {showFreeSpinCounter ? (
+          <FooterFreeSpins
+            count={props.freeSpinsLeft}
+            label={t("freeSpinsFooter")}
+            sizingLabel={t("lotteryBet")}
+            sizingValue={formatMoney(props.stake)}
+          />
+        ) : showDoubleOffer ? (
             <TabletDoubleButton
               disabled={props.disabled || props.doublingState?.loading}
               label={language === "tg" ? "\u0414\u0423 \u0411\u0410\u0420\u041e\u0411\u0410\u0420" : "\u0423\u0414\u0412\u041e\u0418\u0422\u042c"}
@@ -231,6 +254,29 @@ function renderBottomBarControl(control, { language, t }) {
   );
 }
 
+function FooterFreeSpins({ count, label, sizingLabel, sizingValue }) {
+  return (
+    <div className="tablet-double-offer footer-free-spins">
+      <div className="tablet-double-offer__sizer" aria-hidden="true">
+        <BottomBarStepper
+          disabled
+          label={sizingLabel}
+          onDecrease={() => {}}
+          onIncrease={() => {}}
+          value={sizingValue}
+          variant="bet"
+        />
+      </div>
+      <div
+        className="tablet-double-offer__button footer-free-spins__content"
+        role="status"
+        aria-live="polite"
+      >
+        {label}: {count}
+      </div>
+    </div>
+  );
+}
 function TabletDoubleButton({ disabled, label, onClick, sizingLabel, sizingValue }) {
   return (
     <div className="tablet-double-offer">

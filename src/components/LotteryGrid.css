@@ -499,24 +499,6 @@
   aspect-ratio: auto;
 }
 
-.free-spins-remaining {
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 50%;
-  z-index: 5;
-  transform: translateX(-50%);
-  color: #fff;
-  font-family: "Prosto One", sans-serif;
-  font-size: 12px;
-  line-height: 16px;
-  letter-spacing: 0.2px;
-  white-space: nowrap;
-  pointer-events: none;
-}
-
-.view-2 .free-spins-remaining {
-  top: calc(100% + 20px);
-}
 
 @keyframes lottery-grid-view1-cell-bg-reveal {
   to {
@@ -651,11 +633,6 @@
 }
 
 @media (max-width: 720px) {
-  .free-spins-remaining {
-    top: calc(100% + 12px);
-    font-size: 10px;
-    line-height: 12px;
-  }
 
   .lottery-grid-view2-cell--dice .lottery-grid-view2-cell__image {
     width: 44px;

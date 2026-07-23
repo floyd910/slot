@@ -571,3 +571,8 @@
 .footer-block-mobile .tablet-double-offer__sizer .bottom-bar-stepper {
   width: 100%;
 }
+.footer-free-spins__content {
+  font-family: "Prosto One", sans-serif;
+  cursor: default;
+  background: transparent;
+}
