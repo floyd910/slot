@@ -54,6 +54,7 @@ export const getTicketWinAmount = (spinResult, doublingState) => {
 };
 
 export const hasTicketWin = (spinResult, doublingState) =>
+  spinResult?.creditedToBalance !== true &&
   getTicketWinAmount(spinResult, doublingState) > 0;
 
 export const shouldOfferDouble = ({
@@ -64,6 +65,7 @@ export const shouldOfferDouble = ({
   showFreeSpinPrompt = false,
   spinResult,
 } = {}) => {
+  if (spinResult?.creditedToBalance === true) return false;
   if (autoPlayOn || freeSpinRunActive || showFreeSpinPrompt) return false;
   if (asNumber(freeSpinsLeft, 0) > 0) return false;
   if (spinResult?.isFreeSpin === true) return false;

@@ -172,7 +172,7 @@ export const createSpinActions = ({
         LOTTERY_REVEAL_SETTLE_MS,
       );
       const nextSpinResult = { ...result, creditedToBalance: shouldCreditWin };
-      const nextDoublingState = isDigitWin
+      const nextDoublingState = isDigitWin && !shouldCreditWin
         ? createWinningDoublingState(ticketWinAmount)
         : createEmptyDoublingState();
       setSpinResult(nextSpinResult);
@@ -379,12 +379,15 @@ export const createSpinActions = ({
       while (liveSpinStateRef.current.freeSpinsLeft > 0) {
         const result = await handleSpin({ freeSpinAuto: true });
         if (!result) break;
-        if (liveSpinStateRef.current.freeSpinsLeft > 0) {
-          await wait(
-            getNextSpinDelayMs(result, {
-              visualMode: liveSpinStateRef.current.visualMode,
-            }),
-          );
+
+        await wait(
+          getNextSpinDelayMs(result, {
+            visualMode: liveSpinStateRef.current.visualMode,
+          }),
+        );
+
+        if (getTicketWinAmount(result) > 0) {
+          await collectWin();
         }
       }
     } finally {

@@ -81,6 +81,7 @@
   min-width: 148px;
 }
 .bottom-bar-metric__value {
+  overflow: hidden;
   border-radius: 12px;
   border: 1px solid #e1bf64;
   background: #000;
@@ -111,6 +112,7 @@
 }
 
 .bottom-bar-metric.--accent .bottom-bar-metric__value {
+  overflow: hidden;
   border-radius: 12px;
   border: 1px solid #e1bf64;
   background:
@@ -133,6 +135,7 @@
   align-items: center;
   gap: 29px;
   align-self: stretch;
+  overflow: hidden;
   border-radius: 12px;
   border: 1px solid #e1bf64;
   background: #000;
@@ -446,7 +449,7 @@
   .footer-block-mobile .bottom-bar-stepper__control {
     height: 34px;
     gap: 8px;
-    border-radius: 8px;
+    border-radius: 12px;
   }
 
   .footer-block-mobile .bottom-bar-stepper__button {
@@ -506,6 +509,7 @@
 .tablet-double-offer {
   position: relative;
   flex: 0 0 auto;
+  box-sizing: border-box;
 }
 
 .tablet-double-offer__sizer {
@@ -550,4 +554,20 @@
   .footer-block-mobile .tablet-double-offer__button {
     height: 34px;
   }
+}
+.footer-block-tablet .footer-flex > .bottom-bar-stepper,
+.footer-block-tablet .footer-flex > .tablet-double-offer,
+.footer-block-mobile .footer-flex > .bottom-bar-stepper,
+.footer-block-mobile .footer-flex > .tablet-double-offer {
+  min-width: 0;
+  flex: 1 1 0;
+}
+
+.footer-block-tablet .tablet-double-offer,
+.footer-block-mobile .tablet-double-offer,
+.footer-block-tablet .tablet-double-offer__sizer,
+.footer-block-mobile .tablet-double-offer__sizer,
+.footer-block-tablet .tablet-double-offer__sizer .bottom-bar-stepper,
+.footer-block-mobile .tablet-double-offer__sizer .bottom-bar-stepper {
+  width: 100%;
 }

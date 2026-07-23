@@ -200,12 +200,15 @@ export function useGameController(selectedGameId) {
   }, []);
 
   useEffect(() => {
+    preloadDoubleSceneAssets().catch((assetError) => {
+      console.error("Double scene asset preload failed", assetError);
+    });
+  }, []);
+
+  useEffect(() => {
     if (!startupAssetsReady) return;
     preloadView2FirstPaintAssets().catch((assetError) => {
       console.error("View 2 static asset preload failed", assetError);
-    });
-    preloadDoubleSceneAssets().catch((assetError) => {
-      console.error("Double scene asset preload failed", assetError);
     });
   }, [startupAssetsReady]);
 
@@ -621,7 +624,10 @@ export function useGameController(selectedGameId) {
     status === "bootstrap-loading" ||
     status === "processing";
   const ticketWinAmount = getTicketWinAmount(spinResult, doublingState);
-  const uncollectedWin = Boolean(spinResult?.idCard) && ticketWinAmount > 0;
+  const uncollectedWin =
+    spinResult?.creditedToBalance !== true &&
+    Boolean(spinResult?.idCard) &&
+    ticketWinAmount > 0;
   const pendingTicketWin = hasTicketWin(spinResult, doublingState);
   const viewSwitchDisabled =
     status === "processing" || autoPlayOn || freeSpinsActive || uncollectedWin;

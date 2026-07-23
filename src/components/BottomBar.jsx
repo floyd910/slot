@@ -23,13 +23,17 @@ export default function BottomBar(props) {
   const currentWin = formatMoney(
     props.revealComplete === false ? 0 : ticketWinAmount,
   );
+  const normalSpinWinAmount = getTicketWinAmount(props.spinResult, null);
   const isFreeSpinResult =
     props.spinResult?.isFreeSpin === true ||
     Number(props.spinResult?.FreeSpin ?? 0) > 0;
   const showDoubleOffer =
     props.revealComplete !== false &&
     (props.doubleOfferAvailable ||
-      (!props.autoPlayOn && !isFreeSpinResult && ticketWinAmount > 0));
+      (!props.autoPlayOn &&
+        !isFreeSpinResult &&
+        props.spinResult?.creditedToBalance !== true &&
+        normalSpinWinAmount > 0));
   const chooserDisabled = props.disabled || props.paytableControlsLocked;
 
   return (

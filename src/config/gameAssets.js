@@ -45,15 +45,15 @@ export const BOTTOM_BAR_ASSETS = Array.from({ length: 12 }, (_, index) =>
   ][index]}.png`,
 );
 
-export const DOUBLE_SCENE_ASSETS = [
-  "/assets/img/double-scene-bg.png",
-  "/assets/img/double-scene-loss-bg.png",
-  "/assets/img/double-left-chest.png",
-  "/assets/img/double-right-chest.png",
-  "/assets/img/double-winning-chest.png",
-  "/assets/img/double-empty-chest.png",
-  DOUBLE_SCENE_ASSET_DIR + "/sprite_004_159x351_at_1447_1.png",
-];
+export const DOUBLE_SCENE_ASSET_SOURCES = Object.freeze({
+  background: "/assets/img/double-scene-bg.png",
+  emptyChest: "/assets/img/double-empty-chest.png",
+  leftClosedChest: "/assets/img/double-left-chest.png",
+  rightClosedChest: "/assets/img/double-right-chest.png",
+  winningChest: "/assets/img/double-winning-chest.png",
+});
+
+export const DOUBLE_SCENE_ASSETS = Object.values(DOUBLE_SCENE_ASSET_SOURCES);
 
 export const FIRST_PAINT_GAME_IMAGE_ASSETS = [
   ...GAME3_SHELL_ASSETS,
