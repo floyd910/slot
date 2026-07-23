@@ -18,8 +18,22 @@ const getWinningGroups = (result) => {
     : [];
 };
 
+const getGridCellValue = (grid, coordinate) => {
+  const match = /^([ABC])(\d+)$/.exec(String(coordinate ?? ""));
+  if (!match) return undefined;
+  return grid?.[match[1]]?.[Number(match[2]) - 1];
+};
+
+const isZeroOnlyGroup = (result, group) =>
+  group.length > 0 &&
+  group.every(
+    (coordinate) => Number(getGridCellValue(result?.grid, coordinate)) === 0,
+  );
+
 export const getNextSpinDelayMs = (result, { visualMode = false } = {}) => {
-  const winningGroupCount = getWinningGroups(result).length;
+  const winningGroupCount = getWinningGroups(result).filter(
+    (group) => !isZeroOnlyGroup(result, group),
+  ).length;
   if (winningGroupCount <= 0) return NEXT_SPIN_DELAY_MS;
   if (visualMode) return winningGroupCount * VIEW2_SYMBOL_GROUP_CYCLE_MS;
   return winningGroupCount * WIN_LINE_HIGHLIGHT_MS + NEXT_SPIN_DELAY_MS;

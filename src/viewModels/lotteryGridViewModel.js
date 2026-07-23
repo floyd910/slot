@@ -55,8 +55,11 @@ export function buildLotteryGridViewModel({
   const detectedZeroCells = topCells
     .filter((cell) => Number(cell.value) === 0)
     .map((cell) => cell.coord);
+  const confirmedScatterCells = Array.isArray(scatterCells)
+    ? scatterCells.filter((coordinate) => detectedZeroCells.includes(coordinate))
+    : [];
   const visibleScatterCells =
-    detectedZeroCells.length >= 2 ? detectedZeroCells : [];
+    confirmedScatterCells.length >= 2 ? confirmedScatterCells : [];
   const activeWinningCells =
     isSettled && groupedWins.length > 0 && activeWinGroup != null
       ? (groupedWins[activeWinGroup] ?? groupedWins[0])

@@ -32,6 +32,7 @@ const getSpinValue = (testParams, key, fallback) =>
     : fallback;
 
 export const buildSpinRequest = ({ stake, lines, isDemo, isFreeSpin } = {}) => {
+  const freeSpin = Boolean(isFreeSpin);
   const testParams = getBackendTestParams();
   const sum = getSpinValue(testParams, "sum", stake);
   const selectedLines = getSpinValue(testParams, "lines", lines);
@@ -57,8 +58,8 @@ export const buildSpinRequest = ({ stake, lines, isDemo, isFreeSpin } = {}) => {
     ["Login", spin.login],
     ["Password", spin.password],
     ["idGame", spin.idGame],
-    ["DemoSpin", isDemo ? "1" : "0"],
-    ["FreeSpin", isFreeSpin ? "1" : "0"],
+    ["DemoSpin", freeSpin ? "0" : isDemo ? "1" : "0"],
+    ["FreeSpin", freeSpin ? "1" : "0"],
   ]
     .map(([key, value]) => `${key}="${xmlEscape(value)}"`)
     .join(" ");

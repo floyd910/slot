@@ -36,6 +36,7 @@ export const createSpinActions = ({
   setDoublingState,
   setError,
   setFreeSpinsLeft,
+  setFreeSpinRoundStarted,
   setFreeSpinsTotal,
   setGrid,
   setGridAnimation,
@@ -130,7 +131,7 @@ export const createSpinActions = ({
           stake,
           totalStake,
           lines: selectedCombination.groups.length,
-          isDemo: effectiveDemo,
+          isDemo: isFreeSpin ? false : effectiveDemo,
           isFreeSpin,
           selectedCombination,
           requestId,
@@ -213,6 +214,7 @@ export const createSpinActions = ({
           freeSpinsTotal: nextFreeSpinsTotal,
         };
       } else if (awardedFreeSpins > 0) {
+        setFreeSpinRoundStarted(false);
         setFreeSpinsTotal(awardedFreeSpins);
         setFreeSpinsLeft(awardedFreeSpins);
         liveSpinStateRef.current = {
@@ -374,6 +376,7 @@ export const createSpinActions = ({
     if (freeSpinRunRef.current || liveSpinStateRef.current.freeSpinsLeft <= 0)
       return;
 
+    setFreeSpinRoundStarted(true);
     freeSpinRunRef.current = true;
     try {
       while (liveSpinStateRef.current.freeSpinsLeft > 0) {
@@ -392,6 +395,9 @@ export const createSpinActions = ({
       }
     } finally {
       freeSpinRunRef.current = false;
+      if (liveSpinStateRef.current.freeSpinsLeft <= 0) {
+        setFreeSpinRoundStarted(false);
+      }
     }
   };
 

@@ -75,6 +75,7 @@ export function useGameController(selectedGameId) {
   const [spinResult, setSpinResult] = useState(null);
   const [freeSpinsTotal, setFreeSpinsTotal] = useState(0);
   const [freeSpinsLeft, setFreeSpinsLeft] = useState(0);
+  const [freeSpinRoundStarted, setFreeSpinRoundStarted] = useState(false);
   const [showFreeSpinPrompt, setShowFreeSpinPrompt] = useState(false);
   const [showPaytable, setShowPaytable] = useState(false);
   const [paytableRows, setPaytableRows] = useState([]);
@@ -242,6 +243,7 @@ export function useGameController(selectedGameId) {
       doubleState,
       doublingState,
       freeSpinsLeft,
+      freeSpinRoundStarted,
       freeSpinsTotal,
       player,
       selectedCombination,
@@ -512,6 +514,7 @@ export function useGameController(selectedGameId) {
       setDoublingState,
       setError,
       setFreeSpinsLeft,
+      setFreeSpinRoundStarted,
       setFreeSpinsTotal,
       setGrid,
       setGridAnimation,
@@ -706,6 +709,7 @@ export function useGameController(selectedGameId) {
       doublingState,
       error,
       freeSpinsLeft,
+      freeSpinRoundStarted,
       freeSpinsTotal,
       games,
       grid,

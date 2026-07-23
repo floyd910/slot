@@ -15,7 +15,7 @@ import { isEnabled } from "../utils/featureFlags.js";
 import { buildBonusRow, initialBalance } from "./slotPayloadMappers.js";
 
 const CURRENT_ROUND_MULTIPLIER = 3;
-const MOCK_FREE_SPIN_AWARD_COUNT = 15;
+const MOCK_FREE_SPIN_AWARD_FLAG = 1;
 
 export const clone = (value) => JSON.parse(JSON.stringify(value));
 
@@ -88,7 +88,7 @@ export const spin = async ({
     requestId,
     WinSum: lotteryResult.WinSum,
     BaseWinSum: lotteryResult.BaseWinSum,
-    FreeSpin: scatterCount >= 3 ? MOCK_FREE_SPIN_AWARD_COUNT : 0,
+    FreeSpin: scatterCount >= 3 ? MOCK_FREE_SPIN_AWARD_FLAG : 0,
     Gold: scatterCount >= 2 ? scatterCount : 0,
     Line1: grid.A.join(","),
     Line2: grid.B.join(","),

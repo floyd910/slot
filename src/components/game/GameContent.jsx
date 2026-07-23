@@ -71,6 +71,7 @@ export default function GameContent({ controller, runtimeState }) {
       <section className="main-container__center" aria-busy={derived.isBusy}>
         <GameAlert message={view.alertMessage} />
         {view.showStandardGame && (
+          <>
             <LotteryGrid
               grid={state.grid}
               revealKey={state.gridRevealKey}
@@ -84,7 +85,17 @@ export default function GameContent({ controller, runtimeState }) {
               scatterCells={state.spinResult?.scatterCells}
               doublingState={state.doublingState}
             />
-          )}
+            {state.freeSpinsLeft > 0 && state.freeSpinRoundStarted && (
+              <div
+                className="free-spins-remaining"
+                role="status"
+                aria-live="polite"
+              >
+                {t("freeSpinsRemaining")}: {state.freeSpinsLeft}
+              </div>
+            )}
+          </>
+        )}
       </section>
 
       {view.showRightPanel && (
