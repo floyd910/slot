@@ -56,9 +56,10 @@ export default function GameShell({ controller, onBackToSlots }) {
           alt=""
           aria-hidden="true"
           decoding="async"
+          fetchpriority="high"
           draggable={false}
           width="3096"
-          height="732"
+          height="712"
         />
 
         {showInlineView2Paytable ? (
