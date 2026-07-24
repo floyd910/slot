@@ -66,6 +66,8 @@
   position: relative;
   z-index: 6;
   margin-top: 0;
+  transform: scale(var(--responsive-header-scale, 1));
+  transform-origin: top center;
 }
 
 .top-bar,
