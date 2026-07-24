@@ -161,7 +161,6 @@ export default function GameShell({ controller, onBackToSlots }) {
         )}
         {state.showGameMenu && (
           <GameMenu
-            history={state.spinHistory}
             onClose={() => actions.setShowGameMenu(false)}
           />
         )}

@@ -160,3 +160,72 @@ header {
     max-width: 32px;
   }
 }
+@media (orientation: landscape) and (max-height: 620px) {
+  header {
+    height: 32px;
+    padding: 4px 16px;
+    align-items: center;
+  }
+
+  .header-btns {
+    gap: 4px;
+  }
+
+  .lang-chooser {
+    transform: translateY(2px);
+  }
+
+  .header-btns > button {
+    width: 24px;
+    min-width: 24px;
+    max-width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+  }
+
+  .header-btns svg,
+  .sound-changer__icon {
+    width: 24px;
+    height: 24px;
+    flex-basis: 24px;
+  }
+
+  .lang-chooser__button {
+    height: 24px;
+    gap: 4px;
+    font-size: 11px;
+  }
+
+  .lang-chooser__flag,
+  .lang-chooser__flag-image,
+  .lang-chooser__flag-fallback {
+    width: 24px;
+    height: 24px;
+    flex-basis: 24px;
+  }
+
+  .lang-chooser__flag-fallback {
+    font-size: 8px;
+  }
+
+  .lang-chooser__chevron {
+    width: 16px;
+    height: 16px;
+    flex-basis: 16px;
+  }
+
+  .lang-chooser__menu {
+    min-width: 140px;
+    padding: 4px;
+    gap: 4px;
+    border-radius: 4px;
+  }
+
+  .lang-chooser__option {
+    min-height: 32px;
+    padding: 4px 8px;
+    gap: 6px;
+    font-size: 11px;
+    line-height: 16px;
+  }
+}

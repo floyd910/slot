@@ -12,6 +12,8 @@ export default function Game3({ slotId, onBack }) {
   return (
     <>
       <Header
+        menuOpen={controller.state.showGameMenu}
+        onMenuOpen={() => controller.actions.setShowGameMenu(true)}
         onSoundToggle={controller.actions.toggleSound}
         onViewToggle={controller.actions.toggleVisualMode}
         soundEnabled={controller.state.soundEnabled}

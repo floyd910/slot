@@ -4,6 +4,12 @@
   position: fixed;
 }
 
+@media (orientation: landscape) and (max-height: 620px) {
+  .bottom-bar {
+    display: none;
+  }
+}
+
 .footer-block {
   margin: auto;
   position: relative;

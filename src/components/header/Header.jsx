@@ -76,6 +76,8 @@ function LanguageFlag({ option }) {
   return <span className="lang-chooser__flag-fallback">{option.flagLabel}</span>;
 }
 const Header = ({
+  menuOpen = false,
+  onMenuOpen,
   onSoundToggle,
   onViewToggle,
   soundEnabled = true,
@@ -99,8 +101,11 @@ const Header = ({
   const toggleLanguageMenu = () => {
     const buttonRect = languageButtonRef.current?.getBoundingClientRect();
     if (buttonRect) {
+      const compactLandscape = window.matchMedia(
+        "(orientation: landscape) and (max-height: 620px)",
+      ).matches;
       setMenuPosition({
-        left: buttonRect.left - 20,
+        left: buttonRect.left - (compactLandscape ? 12 : 20),
         top: buttonRect.bottom + 6,
       });
     }
@@ -160,7 +165,7 @@ const Header = ({
         </button>
         {languageMenu}
       </div>
-      <div className="header-btns">
+      {!menuOpen && <div className="header-btns">
         <button
           type="button"
           className={`view-changer${visualMode ? " active" : ""}`}
@@ -208,7 +213,12 @@ const Header = ({
         >
           {soundEnabled ? <SoundOnIcon /> : <SoundOffIcon />}
         </button>
-        <button className="burger-menu">
+        <button
+          className="burger-menu"
+          type="button"
+          onClick={onMenuOpen}
+          aria-label="Open menu"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="32"
@@ -222,7 +232,7 @@ const Header = ({
             />
           </svg>
         </button>
-      </div>
+      </div>}
     </header>
   );
 };

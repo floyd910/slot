@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import "./BottomBar.css";
 import { useLanguage } from "../i18n.jsx";
 import { getTicketWinAmount } from "../utils/gameResult.js";
@@ -9,6 +10,7 @@ import {
 } from "../viewModels/bottomBarControls.js";
 
 export default function BottomBar(props) {
+  const shortLandscape = useShortLandscape();
   const { language, t, toggleLanguage } = useLanguage();
   const controls = buildBottomBarControls({
     ...props,
@@ -49,7 +51,7 @@ export default function BottomBar(props) {
             count={props.freeSpinsLeft}
             label={t("freeSpinsFooter")}
             sizingLabel={t("lotteryBet")}
-            sizingValue={formatMoney(props.stake)}
+            sizingValue={formatMoney(props.stake, shortLandscape)}
           />
         ) : showDoubleOffer ? (
           <TabletDoubleButton
@@ -57,7 +59,7 @@ export default function BottomBar(props) {
             label={language === "tg" ? "\u0414\u0423 \u0411\u0410\u0420\u041e\u0411\u0410\u0420" : "\u0423\u0414\u0412\u041e\u0418\u0422\u042c"}
             onClick={props.onDouble}
             sizingLabel={t("lotteryBet")}
-            sizingValue={formatMoney(props.stake)}
+            sizingValue={formatMoney(props.stake, shortLandscape)}
           />
         ) : (
           <BottomBarStepper
@@ -65,7 +67,7 @@ export default function BottomBar(props) {
             label={t("lotteryBet")}
             onDecrease={props.onDecreaseStake}
             onIncrease={props.onIncreaseStake}
-            value={formatMoney(props.stake)}
+            value={formatMoney(props.stake, shortLandscape)}
             variant="bet"
           />
         )}
@@ -108,7 +110,7 @@ export default function BottomBar(props) {
             count={props.freeSpinsLeft}
             label={t("freeSpinsFooter")}
             sizingLabel={t("lotteryBet")}
-            sizingValue={formatMoney(props.stake)}
+            sizingValue={formatMoney(props.stake, shortLandscape)}
           />
         ) : showDoubleOffer ? (
             <TabletDoubleButton
@@ -116,7 +118,7 @@ export default function BottomBar(props) {
               label={language === "tg" ? "\u0414\u0423 \u0411\u0410\u0420\u041e\u0411\u0410\u0420" : "\u0423\u0414\u0412\u041e\u0418\u0422\u042c"}
               onClick={props.onDouble}
               sizingLabel={t("lotteryBet")}
-              sizingValue={formatMoney(props.stake)}
+              sizingValue={formatMoney(props.stake, shortLandscape)}
             />
           ) : (
             <BottomBarStepper
@@ -124,7 +126,7 @@ export default function BottomBar(props) {
               label={t("lotteryBet")}
               onDecrease={props.onDecreaseStake}
               onIncrease={props.onIncreaseStake}
-              value={formatMoney(props.stake)}
+              value={formatMoney(props.stake, shortLandscape)}
               variant="bet"
             />
           )}
@@ -161,7 +163,7 @@ export default function BottomBar(props) {
             count={props.freeSpinsLeft}
             label={t("freeSpinsFooter")}
             sizingLabel={t("lotteryBet")}
-            sizingValue={formatMoney(props.stake)}
+            sizingValue={formatMoney(props.stake, shortLandscape)}
           />
         ) : showDoubleOffer ? (
             <TabletDoubleButton
@@ -169,7 +171,7 @@ export default function BottomBar(props) {
               label={language === "tg" ? "\u0414\u0423 \u0411\u0410\u0420\u041e\u0411\u0410\u0420" : "\u0423\u0414\u0412\u041e\u0418\u0422\u042c"}
               onClick={props.onDouble}
               sizingLabel={t("lotteryBet")}
-              sizingValue={formatMoney(props.stake)}
+              sizingValue={formatMoney(props.stake, shortLandscape)}
             />
           ) : (
             <BottomBarStepper
@@ -177,7 +179,7 @@ export default function BottomBar(props) {
               label={t("lotteryBet")}
               onDecrease={props.onDecreaseStake}
               onIncrease={props.onIncreaseStake}
-              value={formatMoney(props.stake)}
+              value={formatMoney(props.stake, shortLandscape)}
               variant="bet"
             />
           )}
@@ -376,6 +378,24 @@ function formatCombinationValue(selectedCombination) {
   );
 }
 
-function formatMoney(value) {
-  return Number(value ?? 0).toFixed(2);
+function formatMoney(value, compact = false) {
+  const amount = Number(value ?? 0);
+  return compact ? String(amount) : amount.toFixed(2);
+}
+
+function useShortLandscape() {
+  const query = "(orientation: landscape) and (max-height: 620px)";
+  const [matches, setMatches] = useState(
+    () => typeof window !== "undefined" && window.matchMedia(query).matches,
+  );
+
+  useEffect(() => {
+    const media = window.matchMedia(query);
+    const update = () => setMatches(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
+
+  return matches;
 }
