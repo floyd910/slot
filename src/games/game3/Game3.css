@@ -709,9 +709,22 @@ button:disabled {
 .doubling-active .bottom-bar {
   z-index: 20;
 }
+
+@media (min-width: 761px) and (min-height: 621px) {
+  .frame-app:not(.doubling-active)
+    .game-main-layout
+    > .frame-content {
+    transform: translateY(var(--large-surface-frame-shift, 0px));
+  }
+
+  .frame-app:not(.doubling-active) .main-container__center {
+    transform: scale(var(--large-surface-grid-scale, 1));
+    transform-origin: top center;
+  }
+}
 @media (orientation: landscape) and (max-height: 620px) {
   .game_area {
-    height: calc(100vh - 32px);
+    height: calc(var(--app-viewport-height) - 32px);
     margin-top: 32px;
   }
 
@@ -721,7 +734,7 @@ button:disabled {
   .bottom-bar {
     display: block;
     left: 0;
-    bottom: 0;
+    bottom: env(safe-area-inset-bottom, 0px);
     z-index: 50;
   }
 
@@ -846,7 +859,7 @@ button:disabled {
   }
   .free-spins-modal {
     width: min(428px, calc(100vw - 24px));
-    height: min(300px, calc(100vh - 16px));
+    height: min(300px, calc(var(--app-viewport-height) - 16px));
     border-radius: 14px;
   }
 
@@ -877,19 +890,46 @@ button:disabled {
   }
 
   .game-main-layout > .frame-content {
-    transform: translateY(-115px);
+    transform: translateY(var(--compact-view2-frame-shift, -95px));
+  }
+
+  .view-1 .game-main-layout > .frame-content {
+    transform: translateY(var(--compact-view1-frame-shift, -70px));
   }
 
   .view-1 .main-container__center {
-    transform: scale(0.5);
+    transform: scale(var(--compact-view1-grid-scale, 0.44));
     transform-origin: top center;
   }
 
   .view-2 .main-container__center {
-    transform: scale(0.72);
+    transform: scale(var(--compact-view2-grid-scale, 0.62));
     transform-origin: top center;
   }
+
+  .view-2
+    .lottery-grid-view2-cell:is(
+      .lottery-grid-view2-cell--symbol-1,
+      .lottery-grid-view2-cell--symbol-2,
+      .lottery-grid-view2-cell--symbol-3,
+      .lottery-grid-view2-cell--symbol-4,
+      .lottery-grid-view2-cell--symbol-5,
+      .lottery-grid-view2-cell--symbol-6
+    )
+    .lottery-grid-view2-cell__image {
+    inset: auto !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 82% !important;
+    height: 82% !important;
+    object-fit: contain !important;
+    transform: translate(-50%, -50%) !important;
+  }
 }
+
+
+
+
 @media (orientation: landscape) and (max-height: 620px) {
   .doubling-active .game-main-layout > .frame-content {
     inset: 0 0 70px;
@@ -909,6 +949,6 @@ button:disabled {
 }
 @media (orientation: landscape) and (max-height: 620px) {
   .doubling-active .game_area {
-    height: calc(100vh - 32px);
+    height: calc(var(--app-viewport-height) - 32px);
   }
 }

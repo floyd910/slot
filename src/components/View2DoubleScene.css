@@ -268,8 +268,8 @@
     --spotlight-width: calc(var(--chest-frame-size) * 1.278);
     --spotlight-height: min(82vh, 360px);
 
-    width: min(100vw, calc((100vh - 102px) * 1.875));
-    height: min(calc(100vh - 102px), calc(100vw / 1.875));
+    width: min(100vw, calc((var(--app-viewport-height) - 102px) * 1.875));
+    height: min(calc(var(--app-viewport-height) - 102px), calc(100vw / 1.875));
     aspect-ratio: 15 / 8;
     flex: 0 0 auto;
     overflow: visible;
@@ -280,7 +280,7 @@
     left: 50%;
     width: 100vw;
     max-width: none;
-    height: calc(100vh - 102px);
+    height: calc(var(--app-viewport-height) - 102px);
     transform: translate(-50%, -50%);
     object-fit: cover;
   }

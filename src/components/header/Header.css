@@ -163,7 +163,10 @@ header {
 @media (orientation: landscape) and (max-height: 620px) {
   header {
     height: 32px;
-    padding: 4px 16px;
+    padding-top: 4px;
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-bottom: 4px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
     align-items: center;
   }
 

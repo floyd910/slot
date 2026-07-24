@@ -20,6 +20,13 @@
   --clone-red: #b21f18;
   --clone-brown: #2a1007;
   --clone-blue: #078bd0;
+  --app-viewport-height: 100vh;
+}
+
+@supports (height: 100dvh) {
+  :root {
+    --app-viewport-height: 100dvh;
+  }
 }
 
 *,
