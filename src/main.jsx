@@ -10,10 +10,11 @@ const fitCompactLandscape = () => {
   window.cancelAnimationFrame(compactLayoutFrame);
   compactLayoutFrame = window.requestAnimationFrame(() => {
     const shell = document.querySelector(".frame-app");
+    const isLandscape = window.innerWidth > window.innerHeight;
     if (
       !shell ||
       shell.classList.contains("doubling-active") ||
-      (window.innerHeight > 620 && window.innerWidth < 761)
+      (!isLandscape && window.innerWidth < 761)
     ) {
       return;
     }
@@ -66,6 +67,48 @@ const fitCompactLandscape = () => {
         shiftProperty,
         `${baseShift + Math.max(0, requiredTop - fittedCenterTop)}px`,
       );
+
+      const useCompactSidePanels =
+        !isView2 && isLandscape && window.innerWidth <= 1280;
+
+      if (useCompactSidePanels) {
+        const renderedGridWidth = center.getBoundingClientRect().width;
+        const renderedGridHeight = center.getBoundingClientRect().height;
+        const sidePanelScale = Math.max(
+          0.2,
+          Math.min(1, (window.innerWidth - renderedGridWidth) / 696),
+        );
+
+        document.documentElement.style.setProperty(
+          "--large-side-panel-scale",
+          sidePanelScale,
+        );        document.documentElement.style.setProperty(
+          "--miniature-row-gap",
+          `${Math.round(32 * sidePanelScale)}px`,
+        );
+        document.documentElement.style.setProperty(
+          "--side-panel-max-height",
+          `${renderedGridHeight / sidePanelScale}px`,
+        );
+      } else if (!isCompactLandscape) {
+        const sidePanels = [
+          shell.querySelector(".main-container__left"),
+          shell.querySelector(".main-container__right"),
+        ].filter(Boolean);
+        const sidePanelScale = sidePanels.reduce((scale, panel) => {
+          const panelHeight = panel.offsetHeight;
+          if (!panelHeight) return scale;
+
+          const availablePanelHeight =
+            footerTop - panel.getBoundingClientRect().top - 12;
+          return Math.min(scale, availablePanelHeight / panelHeight);
+        }, 1);
+
+        document.documentElement.style.setProperty(
+          "--large-side-panel-scale",
+          Math.max(0.1, sidePanelScale),
+        );
+      }
     });
   });
 };
@@ -78,6 +121,10 @@ const syncAppViewportHeight = () => {
   );
 
   if (usableViewportHeight > 0) {
+    const compactSidePanelScale =
+      window.innerWidth > window.innerHeight && window.innerWidth <= 1280
+        ? 0.5
+        : 1;
     const headerScale =
       usableViewportHeight >= 580
         ? 1
@@ -130,6 +177,12 @@ const syncAppViewportHeight = () => {
     document.documentElement.style.setProperty(
       "--large-surface-frame-shift",
       "0px",
+    );    document.documentElement.style.setProperty(
+      "--large-side-panel-scale",
+      compactSidePanelScale,
+    );    document.documentElement.style.setProperty(
+      "--miniature-row-gap",
+      `${Math.round(32 * compactSidePanelScale)}px`,
     );
     document.documentElement.style.setProperty(
       "--responsive-header-scale",

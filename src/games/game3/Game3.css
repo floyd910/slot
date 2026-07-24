@@ -723,6 +723,67 @@ button:disabled {
     transform: scale(var(--large-surface-grid-scale, 1));
     transform-origin: top center;
   }
+  .frame-app:not(.doubling-active) .main-container__left,
+  .frame-app:not(.doubling-active) .main-container__right {
+    transform: scale(var(--large-side-panel-scale, 1));
+    transform-origin: top center;
+  }
+}
+@media (orientation: landscape) and (max-width: 1280px) {
+  .view-1 .main-container__left .combination-group > label {
+    font-size: 10px;
+    line-height: 14px;
+    letter-spacing: 0.4px;
+  }
+  .view-1 .main-container__left .combination-item__title {
+    font-size: 13px;
+    line-height: 18px;
+    letter-spacing: 0.3px;
+  }
+
+  .view-1 .main-container__left .combination-item__subTitle {
+    font-size: 9px;
+    line-height: 11px;
+  }
+  .view-1 .main-container__left .combination-item {
+    padding: 8px 16px;
+  }
+  .view-1 .game-main-layout > .frame-content {
+    align-items: flex-end;
+    gap: var(--miniature-row-gap, 8px);
+    justify-content: center;
+  }
+
+  .view-1 .main-container__center {
+    transform: none !important;
+    zoom: var(--large-surface-grid-scale, 1);
+  }
+
+  .view-1 .main-container__left,
+  .view-1 .main-container__right {
+    position: relative;
+    top: auto;
+    right: auto;
+    left: auto;
+    display: flex;
+    height: var(--side-panel-max-height, 540px);
+    max-height: var(--side-panel-max-height, 540px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    transform: none;
+    zoom: var(--large-side-panel-scale, 0.42);
+    scrollbar-width: thin;
+  }
+
+  .view-1 .main-container__right {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .view-1 .main-container__right > div {
+    width: 100%;
+    min-width: 0;
+  }
 }
 @media (orientation: landscape) and (max-height: 620px) {
   .game_area {
@@ -902,6 +963,7 @@ button:disabled {
   .view-1 .main-container__center {
     transform: scale(var(--compact-view1-grid-scale, 0.44));
     transform-origin: top center;
+    zoom: var(--compact-view1-grid-scale, 0.44);
   }
 
   .view-2 .main-container__center {
