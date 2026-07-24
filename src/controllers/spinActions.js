@@ -325,6 +325,11 @@ export const createSpinActions = ({
         frameApi.pay({ idCard: spinResult.idCard, requestId }),
         "Pay",
       ).catch(() => null);
+      postEvent("SPIN_RESULT", {
+        idCard: spinResult.idCard,
+        WinSum: payout,
+        Double: doublingState?.step ?? 0,
+      });
       if (!alreadyCredited) {
         setPlayer((current) => {
           if (!current) return current;

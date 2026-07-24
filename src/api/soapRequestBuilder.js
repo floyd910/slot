@@ -1,8 +1,6 @@
 import { asNumber } from "../utils/number.js";
 import {
   getBackendTestParams,
-  getFrontendEnvConfig,
-  getRuntimeConfig,
   useBackendTestParams,
 } from "./runtimeConfig.js";
 import {
@@ -24,7 +22,6 @@ const FRAME_SPIN_DEFAULTS = {
 const readConfigValue = (...values) =>
   values.find((value) => value != null && value !== "");
 
-const getGlobalConfig = () => window.HIRANMANDI_FRAME_CONFIG ?? {};
 
 const getSpinValue = (testParams, key, fallback) =>
   useBackendTestParams()
@@ -73,17 +70,7 @@ export const buildSpinRequest = ({ stake, lines, isDemo, isFreeSpin } = {}) => {
 };
 
 export const buildDoubleRequest = ({ idCard, wasDouble, sum } = {}) => {
-  const runtimeConfig = getRuntimeConfig();
-  const globalConfig = getGlobalConfig();
-  const envConfig = getFrontendEnvConfig();
-  const idPartner = readConfigValue(
-    runtimeConfig.idPartner,
-    runtimeConfig.partnerId,
-    globalConfig.idPartner,
-    globalConfig.partnerId,
-    envConfig.idPartner,
-    "1",
-  );
+  const idPartner = "1";
 
   return {
     methodName: "GetSlotDubleHiranmandi",

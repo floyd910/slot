@@ -75,19 +75,23 @@ const waitForControllerReady = () =>
     });
   });
 
-const waitForMountedGamePaint = async () => {
+const waitForMountedGamePaint = async (onProgress) => {
   // Wait until React has committed and the game controller has completed bootstrap.
   await waitForAnimationFrame();
+  onProgress?.(85);
   await waitForControllerReady();
+  onProgress?.(92);
   const mountedImages = Array.from(
     document.querySelectorAll(".app-selected-game img"),
   );
   await Promise.all(mountedImages.map(waitForMountedImage));
   await (document.fonts?.ready ?? Promise.resolve());
+  onProgress?.(98);
 
   // Give decoded images and completed component layout two stable paint frames.
   await waitForAnimationFrame();
   await waitForAnimationFrame();
+  onProgress?.(100);
 };
 
 const notifyAfterPaint = () => {
@@ -99,6 +103,8 @@ const notifyAfterPaint = () => {
 
 export function useSlotApp({ loadSelectedSlotGame }) {
   const [chooserAssetsReady, setChooserAssetsReady] = useState(false);
+  const [chooserLoadProgress, setChooserLoadProgress] = useState(0);
+  const [gameLoadProgress, setGameLoadProgress] = useState(0);
   const [selectedSlotId, setSelectedSlotId] = useState(null);
   const [pendingSlotId, setPendingSlotId] = useState(null);
   const chooserReadyNotifiedRef = useRef(false);
@@ -107,7 +113,7 @@ export function useSlotApp({ loadSelectedSlotGame }) {
   useEffect(() => {
     let active = true;
 
-    preloadRequiredImages(SLOT_CHOOSER_REQUIRED_ASSETS)
+    preloadRequiredImages(SLOT_CHOOSER_REQUIRED_ASSETS, setChooserLoadProgress)
       .then(() => {
         if (active) setChooserAssetsReady(true);
       })
@@ -129,12 +135,16 @@ export function useSlotApp({ loadSelectedSlotGame }) {
 
     const requestId = openRequestRef.current + 1;
     openRequestRef.current = requestId;
+    setGameLoadProgress(0);
     setPendingSlotId(slot.id);
 
     try {
       // Block only on code and assets required by the first game paint.
       await loadSelectedSlotGame();
-      await preloadStartupAssets();
+      setGameLoadProgress(10);
+      await preloadStartupAssets((progress) =>
+        setGameLoadProgress(10 + Math.floor(progress * 0.7)),
+      );
     } catch (assetError) {
       console.error(assetError);
       if (openRequestRef.current === requestId) setPendingSlotId(null);
@@ -145,7 +155,7 @@ export function useSlotApp({ loadSelectedSlotGame }) {
 
     // Mount the fully imported game behind the fixed loader first.
     setSelectedSlotId(slot.id);
-    await waitForMountedGamePaint();
+    await waitForMountedGamePaint(setGameLoadProgress);
 
     if (openRequestRef.current !== requestId) return;
     setPendingSlotId(null);
@@ -160,7 +170,9 @@ export function useSlotApp({ loadSelectedSlotGame }) {
 
   return {
     chooserAssetsReady,
+    chooserLoadProgress,
     closeSlot,
+    gameLoadProgress,
     isPlaying: Boolean(selectedSlotId),
     openSlot,
     pendingSlotId,

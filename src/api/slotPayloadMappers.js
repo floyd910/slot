@@ -185,6 +185,7 @@ const freeSpin = asNumber(attrs.FreeSpin);
 
   return {
     idCard: attrs.idCard ?? attrs.IdCard ?? attrs.IDCard,
+    Number: attrs.Number ?? attrs.number ?? null,
     requestId: params.requestId,
     WinSum: backendWinSum,
     BaseWinSum: backendWinSum,

@@ -30,6 +30,63 @@ const uniqueUrls = (sources) => [
   ...new Set(sources.map(toPreloadUrl).filter(Boolean)),
 ];
 
+const preloadResponseBytes = async (sources, onProgress) => {
+  const urls = uniqueUrls(sources);
+  if (urls.length === 0) {
+    onProgress?.(100);
+    return;
+  }
+
+  onProgress?.(0);
+  const responses = await Promise.all(
+    urls.map(async (url) => {
+      try {
+        const response = await fetch(url, { cache: "force-cache" });
+        return response.ok ? response : null;
+      } catch {
+        return null;
+      }
+    }),
+  );
+  const lengths = responses.map((response) =>
+    Number(response?.headers.get("content-length") ?? 0),
+  );
+  const knownLengths = lengths.filter((length) => length > 0);
+  const fallbackLength = knownLengths.length
+    ? knownLengths.reduce((sum, length) => sum + length, 0) / knownLengths.length
+    : 1;
+  const weights = responses.map((response, index) =>
+    response ? lengths[index] || fallbackLength : fallbackLength,
+  );
+  const totalBytes = weights.reduce((sum, length) => sum + length, 0);
+  let loadedBytes = 0;
+  const report = () =>
+    onProgress?.(Math.min(99, Math.floor((loadedBytes / totalBytes) * 100)));
+
+  await Promise.all(
+    responses.map(async (response, index) => {
+      if (!response?.body) {
+        loadedBytes += weights[index];
+        report();
+        return;
+      }
+      const reader = response.body.getReader();
+      let responseBytes = 0;
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        const chunkBytes = value?.byteLength ?? 0;
+        responseBytes += chunkBytes;
+        loadedBytes += chunkBytes;
+        report();
+      }
+      if (responseBytes < weights[index]) {
+        loadedBytes += weights[index] - responseBytes;
+        report();
+      }
+    }),
+  );
+};
 const collectCssImageUrlsFromText = (text, urls) => {
   CSS_URL_PATTERN.lastIndex = 0;
   let match = CSS_URL_PATTERN.exec(text);
@@ -153,13 +210,20 @@ export const preloadImage = (
 export const preloadImages = (sources, options = {}) =>
   Promise.all(uniqueUrls(sources).map((src) => preloadImage(src, options)));
 
-export const preloadRequiredImages = (sources) =>
-  preloadImages(sources, {
+export const preloadRequiredImages = async (sources, onProgress) => {
+  if (onProgress) {
+    await preloadResponseBytes(sources, (progress) =>
+      onProgress(Math.floor(progress * 0.9)),
+    );
+  }
+  await preloadImages(sources, {
     decode: true,
     fetchPriority: "high",
     rejectOnError: false,
     timeoutMs: 12000,
   });
+  onProgress?.(100);
+};
 
 const runWithConcurrency = async (items, limit, task) => {
   let nextIndex = 0;
@@ -291,11 +355,11 @@ const fontReady = () =>
     new Promise((resolve) => window.setTimeout(resolve, 5000)),
   ]);
 
-const loadStartupAssets = async () => {
+const loadStartupAssets = async (onProgress) => {
   const decodedImages = uniqueUrls(FIRST_PAINT_GAME_IMAGE_ASSETS);
 
   await Promise.all([
-    preloadRequiredImages(decodedImages),
+    preloadRequiredImages(decodedImages, onProgress),
     fontReady(),
     ...STARTUP_ASSETS.videos.map(preloadVideo),
   ]);
@@ -321,8 +385,9 @@ let deferredStartupAssetsPromise = null;
 
 // The shell and controller enter the same gate during startup. Share one load
 // so mobile devices do not repeat decode work or attach duplicate media waits.
-export const preloadStartupAssets = () => {
-  startupAssetsPromise ??= loadStartupAssets().catch((error) => {
+export const preloadStartupAssets = (onProgress) => {
+  if (startupAssetsPromise) onProgress?.(100);
+  startupAssetsPromise ??= loadStartupAssets(onProgress).catch((error) => {
     startupAssetsPromise = null;
     throw error;
   });

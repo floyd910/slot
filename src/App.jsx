@@ -6,7 +6,7 @@ import { useSlotApp } from "./hooks/useSlotApp.js";
 const loadSelectedSlotGame = () => import("./components/game/SelectedSlotGame.jsx");
 const SelectedSlotGame = lazy(loadSelectedSlotGame);
 
-const STARTUP_FILL_DURATION_MS = 360;
+const STARTUP_FILL_DURATION_MS = 0;
 const STARTUP_FADE_DURATION_MS = 460;
 
 export default function App() {
@@ -66,7 +66,7 @@ export default function App() {
   }, [showGameLoader, slotApp.pendingSlotId, slotApp.selectedSlotId]);
 
   if (!slotApp.chooserAssetsReady) {
-    return <StartupLoader ready={false} leaving={false} variant="brand" />;
+    return <StartupLoader ready={false} leaving={false} variant="brand" progress={slotApp.chooserLoadProgress} />;
   }
 
   return (
@@ -90,6 +90,7 @@ export default function App() {
         <StartupLoader
           ready={gameLoaderReady}
           leaving={gameLoaderLeaving}
+          progress={gameLoaderReady ? 100 : slotApp.gameLoadProgress}
         />
       )}
 

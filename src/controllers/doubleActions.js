@@ -15,6 +15,14 @@ const getChestPick = (side) => (CHEST_SIDES.has(side) ? side : "");
 
 const withMoney = (value) => Number(Number(value ?? 0).toFixed(2));
 
+const getOriginalCardWin = (spinResult, doublingState) =>
+  withMoney(
+    spinResult?.BaseWinSum ||
+      doublingState?.initialAmount ||
+      spinResult?.WinSum ||
+      0,
+  );
+
 export const createDoubleActions = ({
   emitSound,
   liveSpinStateRef,
@@ -69,7 +77,16 @@ export const createDoubleActions = ({
     });
   };
 
-  const finishLostDouble = (idCard, revealKey) => {
+  const reportFinalResult = ({ idCard, winSum, doubleSteps }) => {
+    postEvent?.("SPIN_RESULT", {
+      idCard,
+      WinSum: withMoney(winSum),
+      Double: doubleSteps,
+    });
+  };
+
+  const finishLostDouble = (idCard, revealKey, doubleSteps) => {
+    reportFinalResult({ idCard, winSum: 0, doubleSteps });
     frameApi
       .pay({ idCard, requestId: buildRequestId("pay") })
       .catch(() => {});
@@ -83,7 +100,7 @@ export const createDoubleActions = ({
     }, DOUBLE_LOSS_RESET_MS);
   };
 
-  const finishMaxDoubleWin = ({ idCard, payout, revealKey }) => {
+  const finishMaxDoubleWin = ({ idCard, payout, revealKey, doubleSteps }) => {
     window.setTimeout(() => {
       if (liveSpinStateRef.current?.doublingState?.revealKey !== revealKey)
         return;
@@ -91,6 +108,7 @@ export const createDoubleActions = ({
       frameApi
         .pay({ idCard, requestId: buildRequestId("pay") })
         .catch(() => {});
+      reportFinalResult({ idCard, winSum: payout, doubleSteps });
       creditPayout(payout);
       clearCompletedTicket();
       setReadyStatus();
@@ -163,6 +181,7 @@ export const createDoubleActions = ({
 
     const step = doublingState.step || 0;
     const currentAmount = getTicketWinAmount(spinResult, doublingState);
+    const originalCardWin = getOriginalCardWin(spinResult, doublingState);
     if (step >= DOUBLE_MAX_STEPS || currentAmount <= 0) return;
 
     try {
@@ -208,7 +227,7 @@ export const createDoubleActions = ({
         frameApi.double({
           idCard: spinResult.idCard,
           wasDouble: step + 1,
-          sum: currentAmount,
+          sum: originalCardWin,
           side,
           requestId: buildRequestId("double"),
         }),
@@ -248,7 +267,7 @@ export const createDoubleActions = ({
       emitSound(won ? "win" : "lose", { WinSum: nextAmount });
 
       if (!won) {
-        finishLostDouble(spinResult.idCard, nextRevealKey);
+        finishLostDouble(spinResult.idCard, nextRevealKey, step + 1);
         return;
       }
 
@@ -257,6 +276,7 @@ export const createDoubleActions = ({
           idCard: nextSpinResult.idCard,
           payout: nextAmount,
           revealKey: nextRevealKey,
+          doubleSteps: nextStep,
         });
         return;
       }
@@ -309,8 +329,8 @@ export const createDoubleActions = ({
       const result = await withTimeout(
         frameApi.double({
           idCard: spinResult.idCard,
-          wasDouble: doubleState.step + 1,
-          sum: getTicketWinAmount(spinResult, doublingState),
+          wasDouble: doubleState.step,
+          sum: getOriginalCardWin(spinResult, doublingState),
           side,
           requestId: buildRequestId("double"),
         }),

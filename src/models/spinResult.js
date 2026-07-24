@@ -7,6 +7,7 @@ export const normalizeSpinResult = (result = {}) => {
   return {
     ...result,
     idCard: result.idCard ?? result.IdCard ?? result.IDCard ?? null,
+    Number: result.Number ?? result.number ?? null,
     requestId: result.requestId ?? null,
     roundId: result.roundId ?? result.idCard ?? null,
     WinSum: winSum,
