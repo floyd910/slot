@@ -44,27 +44,7 @@ const fitCompactLandscape = () => {
     const intrinsicHeight = center.offsetHeight;
     if (!intrinsicHeight || !Number.isFinite(baseScale)) return;
 
-    const headerRect = headerImage.getBoundingClientRect();
     const footerTop = footer.getBoundingClientRect().top;
-    const centerTop = center.getBoundingClientRect().top;
-    const preferredMinimumScale = isCompactLandscape
-      ? Math.min(baseScale, isView2 ? 0.54 : 0.38)
-      : 0.78;
-    const preferredTop = Math.max(centerTop, headerRect.bottom + 12);
-    const preferredSpace = footerTop - preferredTop - 12;
-
-    if (preferredSpace < intrinsicHeight * preferredMinimumScale) {
-      const targetHeaderBottom =
-        footerTop - 24 - intrinsicHeight * preferredMinimumScale;
-      const targetHeaderHeight = Math.max(
-        headerRect.height * 0.45,
-        targetHeaderBottom - headerRect.top,
-      );
-      document.documentElement.style.setProperty(
-        "--responsive-header-scale",
-        Math.min(1, targetHeaderHeight / headerRect.height),
-      );
-    }
 
     window.requestAnimationFrame(() => {
       const fittedHeaderBottom =
@@ -98,6 +78,18 @@ const syncAppViewportHeight = () => {
   );
 
   if (usableViewportHeight > 0) {
+    const headerScale =
+      usableViewportHeight >= 580
+        ? 1
+        : usableViewportHeight >= 500
+          ? 0.95
+          : usableViewportHeight >= 430
+            ? 0.9
+            : usableViewportHeight >= 400
+              ? 0.84
+              : usableViewportHeight >= 375
+                ? 0.78
+                : 0.72;
     const [view1Scale, view2Scale] =
       usableViewportHeight >= 580
         ? [0.6, 0.72]
@@ -141,7 +133,7 @@ const syncAppViewportHeight = () => {
     );
     document.documentElement.style.setProperty(
       "--responsive-header-scale",
-      "1",
+      headerScale,
     );
     fitCompactLandscape();
   }
