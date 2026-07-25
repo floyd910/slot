@@ -43,7 +43,8 @@ const fitCompactLandscape = () => {
       getComputedStyle(document.documentElement).getPropertyValue(scaleProperty),
     );
     const intrinsicHeight = center.offsetHeight;
-    if (!intrinsicHeight || !Number.isFinite(baseScale)) return;
+    const intrinsicWidth = center.offsetWidth;
+    if (!intrinsicHeight || !intrinsicWidth || !Number.isFinite(baseScale)) return;
 
     const footerTop = footer.getBoundingClientRect().top;
 
@@ -54,9 +55,12 @@ const fitCompactLandscape = () => {
       const requiredTop = fittedHeaderBottom + 12;
       const fittedTop = Math.max(fittedCenterTop, requiredTop);
       const availableHeight = Math.max(0, footerTop - fittedTop - 12);
+      const availableWidth = Math.max(0, window.innerWidth - 24);
+      const maximumScale = isCompactLandscape ? 1 : baseScale;
       const fittedScale = Math.min(
-        baseScale,
+        maximumScale,
         availableHeight / intrinsicHeight,
+        availableWidth / intrinsicWidth,
       );
 
       document.documentElement.style.setProperty(
