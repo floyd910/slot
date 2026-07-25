@@ -69,7 +69,10 @@ const fitCompactLandscape = () => {
       );
 
       const useCompactSidePanels =
-        !isView2 && isLandscape && window.innerWidth <= 1280;
+        !isView2 &&
+        isLandscape &&
+        window.innerWidth >= 1024 &&
+        window.innerWidth <= 1280;
 
       if (useCompactSidePanels) {
         const renderedGridWidth = center.getBoundingClientRect().width;
@@ -122,7 +125,9 @@ const syncAppViewportHeight = () => {
 
   if (usableViewportHeight > 0) {
     const compactSidePanelScale =
-      window.innerWidth > window.innerHeight && window.innerWidth <= 1280
+      window.innerWidth > window.innerHeight &&
+      window.innerWidth >= 1024 &&
+      window.innerWidth <= 1280
         ? 0.5
         : 1;
     const headerScale =
