@@ -6,17 +6,17 @@ const RULES_COPY = {
     title: "ПРАВИЛА ИГРЫ",
     description: "В игре используется 9 выигрышных линий. Выигрыш выплачивается только по тем линиям, которые активны в текущей ставке. Каждая схема показывает, какие позиции участвуют в соответствующей линии.",
     lineNames: ["Средняя горизонталь", "Верхняя горизонталь", "Нижняя горизонталь", "V-образная линия", "Перевёрнутая V-образная", "Верхняя дуга", "Нижняя дуга", "Нисходящая диагональ", "Восходящая диагональ"],
-    rulesLabel: "Правила",
-    closeRulesLabel: "Закрыть правила",
-    lineLabel: "Линия",
+    rulesLabel: "Правила", closeRulesLabel: "Закрыть правила", lineLabel: "Линия",
+    menuLabel: "Игровое меню", closeMenuLabel: "Закрыть меню",
+    historyButton: "ИСТОРИЯ ТИРАЖЕЙ", rulesButton: "ПРАВИЛА",
   },
   tg: {
     title: "ҚОИДАҲОИ БОЗӢ",
     description: "Дар бозӣ 9 хатти бурднок истифода мешавад. Бурд танҳо аз рӯи он хатҳое пардохт карда мешавад, ки дар шарти ҷорӣ фаъол мебошанд. Ҳар як схема нишон медиҳад, ки кадом мавқеъҳо ба хатти мувофиқ дохил мешаванд.",
     lineNames: ["Хати уфуқии миёна", "Хати уфуқии боло", "Хати уфуқии поён", "Хати V-шакл", "Хати V-шакли баръакс", "Камони боло", "Камони поён", "Диагонали поёнрав", "Диагонали болорав"],
-    rulesLabel: "Қоидаҳо",
-    closeRulesLabel: "Пӯшидани қоидаҳо",
-    lineLabel: "Хат",
+    rulesLabel: "Қоидаҳо", closeRulesLabel: "Пӯшидани қоидаҳо", lineLabel: "Хат",
+    menuLabel: "Менюи бозӣ", closeMenuLabel: "Пӯшидани меню",
+    historyButton: "ТАЪРИХИ ТИРОЖҲО", rulesButton: "ҚОИДАҲО",
   },
 };
 const RULE_LINES = [
@@ -165,20 +165,20 @@ export default function GameMenu({ onClose }) {
     >
       <nav
         className="game-menu-panel"
-        aria-label={"\u0418\u0433\u0440\u043e\u0432\u043e\u0435 \u043c\u0435\u043d\u044e"}
+        aria-label={rulesCopy.menuLabel}
         onClick={(event) => event.stopPropagation()}
       >
         <button
           className="game-menu-panel__close"
           type="button"
-          aria-label={"\u0417\u0430\u043a\u0440\u044b\u0442\u044c \u043c\u0435\u043d\u044e"}
+          aria-label={rulesCopy.closeMenuLabel}
           onClick={onClose}
         >
           <img src="/img/ui/game-menu-close.png" alt="" />
         </button>
-        <button type="button">{'\u0418\u0421\u0422\u041e\u0420\u0418\u042f \u0422\u0418\u0420\u0410\u0416\u0415\u0419'}</button>
+        <button type="button">{rulesCopy.historyButton}</button>
         <button type="button" onClick={() => setShowRules(true)}>
-          {'\u041f\u0420\u0410\u0412\u0418\u041b\u0410'}
+          {rulesCopy.rulesButton}
         </button>
       </nav>
     </div>
