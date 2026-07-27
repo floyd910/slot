@@ -6,21 +6,47 @@ import { LanguageProvider } from "./i18n.jsx";
 
 let compactLayoutFrame;
 
+const getViewportSize = () => {
+  const root = document.documentElement;
+  const layoutWidth = root.clientWidth || window.innerWidth;
+  const layoutHeight = root.clientHeight || window.innerHeight;
+  const visualViewport = window.visualViewport;
+
+  return {
+    width: Math.floor(
+      visualViewport?.width
+        ? Math.min(layoutWidth, visualViewport.width)
+        : layoutWidth,
+    ),
+    height: Math.floor(
+      visualViewport?.height
+        ? Math.min(layoutHeight, visualViewport.height)
+        : layoutHeight,
+    ),
+  };
+};
+let layoutDefaults = {
+  headerScale: 1,
+  view1Scale: 1,
+  view2Scale: 1,
+};
+
 const fitCompactLandscape = () => {
   window.cancelAnimationFrame(compactLayoutFrame);
   compactLayoutFrame = window.requestAnimationFrame(() => {
+    const viewport = getViewportSize();
     const shell = document.querySelector(".frame-app");
-    const isLandscape = window.innerWidth > window.innerHeight;
+    const isLandscape = viewport.width > viewport.height;
     if (
       !shell ||
       shell.classList.contains("doubling-active") ||
-      (!isLandscape && window.innerWidth < 761)
+      (!isLandscape && viewport.width < 761)
     ) {
       return;
     }
 
     const isCompactLandscape =
-      window.innerWidth > window.innerHeight && window.innerHeight <= 620;
+      viewport.width > viewport.height && viewport.height <= 620;
 
     const headerImage = shell.querySelector(".header_img");
     const footer = shell.querySelector(".bottom-bar");
@@ -28,6 +54,7 @@ const fitCompactLandscape = () => {
     if (!headerImage || !footer || !center) return;
 
     const isView2 = shell.classList.contains("view-2");
+
     const scaleProperty = isCompactLandscape
       ? isView2
         ? "--compact-view2-grid-scale"
@@ -39,29 +66,65 @@ const fitCompactLandscape = () => {
         : "--compact-view1-frame-shift"
       : "--large-surface-frame-shift";
     const baseShift = isCompactLandscape ? (isView2 ? -95 : -70) : 0;
-    const baseScale = Number.parseFloat(
-      getComputedStyle(document.documentElement).getPropertyValue(scaleProperty),
+    const baseScale = isCompactLandscape
+      ? isView2
+        ? layoutDefaults.view2Scale
+        : layoutDefaults.view1Scale
+      : 1;
+    const baseHeaderScale = isCompactLandscape
+      ? 1
+      : layoutDefaults.headerScale;
+    document.documentElement.style.setProperty(scaleProperty, baseScale);
+    document.documentElement.style.setProperty(
+      "--responsive-header-scale",
+      baseHeaderScale,
     );
-    const intrinsicHeight = center.offsetHeight;
-    const intrinsicWidth = center.offsetWidth;
+    document.documentElement.style.setProperty(
+      shiftProperty,
+      `${baseShift}px`,
+    );
+    const grid = center.querySelector(".lottery-grid");
+    const intrinsicHeight =
+      isCompactLandscape && !isView2 && grid
+        ? grid.offsetTop + grid.offsetHeight
+        : center.offsetHeight;
+    const intrinsicWidth =
+      isCompactLandscape && !isView2 && grid ? grid.offsetWidth : center.offsetWidth;
     if (!intrinsicHeight || !intrinsicWidth || !Number.isFinite(baseScale)) return;
 
+    const headerRect = headerImage.getBoundingClientRect();
     const footerTop = footer.getBoundingClientRect().top;
+    const centerTop = center.getBoundingClientRect().top;
+    const preferredMinimumScale = isCompactLandscape
+      ? Math.min(baseScale, isView2 ? 0.54 : 0.38)
+      : 0.78;
+    const preferredTop = Math.max(centerTop, headerRect.bottom + 12);
+    const preferredSpace = footerTop - preferredTop - 12;
 
-    window.requestAnimationFrame(() => {
-      const fittedHeaderBottom =
-        headerImage.getBoundingClientRect().bottom;
+    if (preferredSpace < intrinsicHeight * preferredMinimumScale) {
+      const targetHeaderBottom =
+        footerTop - 24 - intrinsicHeight * preferredMinimumScale;
+      const targetHeaderHeight = Math.max(
+        headerRect.height * 0.45,
+        targetHeaderBottom - headerRect.top,
+      );
+      document.documentElement.style.setProperty(
+        "--responsive-header-scale",
+        Math.min(1, targetHeaderHeight / headerRect.height),
+      );
+    }
+
+    const fittedHeaderBottom = headerImage.getBoundingClientRect().bottom;
       const fittedCenterTop = center.getBoundingClientRect().top;
       const requiredTop = fittedHeaderBottom + 12;
       const fittedTop = Math.max(fittedCenterTop, requiredTop);
       const availableHeight = Math.max(0, footerTop - fittedTop - 12);
-      const availableWidth = Math.max(0, window.innerWidth - 24);
-      const maximumScale = isCompactLandscape ? 1 : baseScale;
-      const fittedScale = Math.min(
-        maximumScale,
-        availableHeight / intrinsicHeight,
-        availableWidth / intrinsicWidth,
-      );
+      const fittedScale = isCompactLandscape
+        ? Math.min(
+            availableHeight / intrinsicHeight,
+            (viewport.width - 24) / intrinsicWidth,
+          )
+        : Math.min(baseScale, availableHeight / intrinsicHeight);
 
       document.documentElement.style.setProperty(
         scaleProperty,
@@ -75,15 +138,15 @@ const fitCompactLandscape = () => {
       const useCompactSidePanels =
         !isView2 &&
         isLandscape &&
-        window.innerWidth >= 1024 &&
-        window.innerWidth <= 1280;
+        viewport.width >= 1024 &&
+        viewport.width <= 1280;
 
       if (useCompactSidePanels) {
         const renderedGridWidth = center.getBoundingClientRect().width;
         const renderedGridHeight = center.getBoundingClientRect().height;
         const sidePanelScale = Math.max(
           0.2,
-          Math.min(1, (window.innerWidth - renderedGridWidth) / 696),
+          Math.min(1, (viewport.width - renderedGridWidth) / 696),
         );
 
         document.documentElement.style.setProperty(
@@ -116,22 +179,17 @@ const fitCompactLandscape = () => {
           Math.max(0.1, sidePanelScale),
         );
       }
-    });
   });
 };
 const syncAppViewportHeight = () => {
-  const iframeViewportHeight = document.documentElement.clientHeight;
-  const visualViewportHeight =
-    window.visualViewport?.height ?? iframeViewportHeight;
-  const usableViewportHeight = Math.floor(
-    Math.min(iframeViewportHeight, visualViewportHeight),
-  );
+  const viewport = getViewportSize();
+  const usableViewportHeight = viewport.height;
 
   if (usableViewportHeight > 0) {
     const compactSidePanelScale =
-      window.innerWidth > window.innerHeight &&
-      window.innerWidth >= 1024 &&
-      window.innerWidth <= 1280
+      viewport.width > viewport.height &&
+      viewport.width >= 1024 &&
+      viewport.width <= 1280
         ? 0.5
         : 1;
     const headerScale =
@@ -158,6 +216,11 @@ const syncAppViewportHeight = () => {
               : usableViewportHeight >= 375
                 ? [0.42, 0.58]
                 : [0.4, 0.56];
+    layoutDefaults = {
+      headerScale,
+      view1Scale,
+      view2Scale,
+    };
 
     document.documentElement.style.setProperty(
       "--app-viewport-height",
@@ -195,7 +258,9 @@ const syncAppViewportHeight = () => {
     );
     document.documentElement.style.setProperty(
       "--responsive-header-scale",
-      headerScale,
+      viewport.width > viewport.height && usableViewportHeight <= 620
+        ? 1
+        : headerScale,
     );
     fitCompactLandscape();
   }
@@ -223,7 +288,7 @@ const fitWhenLayoutModeChanges = () => {
   if (layoutMode === lastLayoutMode) return;
 
   lastLayoutMode = layoutMode;
-  syncAppViewportHeight();
+  fitCompactLandscape();
 };
 
 new MutationObserver(fitWhenLayoutModeChanges).observe(

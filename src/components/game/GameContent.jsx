@@ -87,19 +87,48 @@ export default function GameContent({ controller, runtimeState }) {
         <GameAlert message={view.alertMessage} />
         {view.showStandardGame && (
           <>
-            <LotteryGrid
-              grid={state.grid}
-              revealKey={state.gridRevealKey}
-              animationState={state.gridAnimation}
-              visualMode={state.visualMode}
-              autoSequence={state.autoPlayOn}
-              carpetCloseMs={state.carpetCloseMs}
-              carpetOpenMs={state.carpetOpenMs}
-              winningCells={state.spinResult?.winningCells}
-              winningGroups={state.spinResult?.lineWins}
-              scatterCells={state.spinResult?.scatterCells}
-              doublingState={state.doublingState}
-            />
+            <div
+              className={`preloaded-grid-view preloaded-grid-view--view1${
+                state.visualMode ? "" : " preloaded-grid-view--active"
+              }`}
+              aria-hidden={state.visualMode}
+              inert={state.visualMode ? "" : undefined}
+            >
+              <LotteryGrid
+                grid={state.grid}
+                revealKey={state.gridRevealKey}
+                animationState={state.visualMode ? "idle" : state.gridAnimation}
+                visualMode={false}
+                autoSequence={false}
+                carpetCloseMs={state.carpetCloseMs}
+                carpetOpenMs={state.carpetOpenMs}
+                winningCells={state.visualMode ? [] : state.spinResult?.winningCells}
+                winningGroups={state.visualMode ? [] : state.spinResult?.lineWins}
+                scatterCells={state.visualMode ? [] : state.spinResult?.scatterCells}
+                doublingState={state.doublingState}
+              />
+            </div>
+            <div
+              className={`preloaded-grid-view preloaded-grid-view--view2${
+                state.visualMode ? " preloaded-grid-view--active" : ""
+              }`}
+              aria-hidden={!state.visualMode}
+              inert={state.visualMode ? undefined : ""}
+            >
+              <LotteryGrid
+                grid={state.grid}
+                revealKey={state.gridRevealKey}
+                animationState={state.visualMode ? state.gridAnimation : "idle"}
+                visualMode={true}
+                autoSequence={state.visualMode && state.autoPlayOn}
+                carpetCloseMs={state.carpetCloseMs}
+                carpetOpenMs={state.carpetOpenMs}
+                winningCells={state.visualMode ? state.spinResult?.winningCells : []}
+                winningGroups={state.visualMode ? state.spinResult?.lineWins : []}
+                scatterCells={state.visualMode ? state.spinResult?.scatterCells : []}
+                doublingState={state.doublingState}
+              />
+            </div>
             {SHOW_TICKET_PANEL && lastTicket && (
             <div
               className={`grid-bottom-panel${drawDetailsExpanded ? " grid-bottom-panel--expanded" : ""}`}

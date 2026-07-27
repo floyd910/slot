@@ -755,8 +755,8 @@ button:disabled {
   }
 
   .view-1 .main-container__center {
-    transform: none !important;
-    zoom: var(--large-surface-grid-scale, 1);
+    transform: scale(var(--large-surface-grid-scale, 1)) !important;
+    transform-origin: top center;
   }
 
   .view-1 .main-container__left,
@@ -770,8 +770,8 @@ button:disabled {
     max-height: var(--side-panel-max-height, 540px);
     overflow-x: hidden;
     overflow-y: auto;
-    transform: none;
-    zoom: var(--large-side-panel-scale, 0.42);
+    transform: scale(var(--large-side-panel-scale, 0.42));
+    transform-origin: top center;
     scrollbar-width: thin;
   }
 
@@ -963,7 +963,6 @@ button:disabled {
   .view-1 .main-container__center {
     transform: scale(var(--compact-view1-grid-scale, 0.44));
     transform-origin: top center;
-    zoom: var(--compact-view1-grid-scale, 0.44);
   }
 
   .view-2 .main-container__center {
@@ -1014,5 +1013,11 @@ button:disabled {
 @media (orientation: landscape) and (max-height: 620px) {
   .doubling-active .game_area {
     height: calc(var(--app-viewport-height) - 32px);
+  }
+}
+@media (orientation: landscape) and (max-width: 1279px) {
+  .view-1 .main-container__left,
+  .view-1 .main-container__right {
+    display: none;
   }
 }

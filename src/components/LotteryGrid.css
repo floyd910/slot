@@ -761,3 +761,12 @@
 .grid-bottom-panel--expanded .grid-bottom-panel__receipt {
   padding-right: 32px;
 }
+.preloaded-grid-view {
+  display: none;
+  pointer-events: none;
+}
+
+.preloaded-grid-view--active {
+  display: contents;
+  pointer-events: auto;
+}
