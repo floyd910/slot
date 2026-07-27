@@ -254,6 +254,10 @@
 }
 
 @media (max-width: 1280px) {
+  .game-rules-screen__content {
+    gap: 32px;
+  }
+
   .game-rules-screen__box-label {
     font-size: 18px;
   }
