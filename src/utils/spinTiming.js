@@ -1,7 +1,7 @@
-import { VIEW2_SYMBOL_GROUP_CYCLE_MS } from "../components/view2Symbols/index.jsx";
 import {
   NEXT_SPIN_DELAY_MS,
   WIN_LINE_HIGHLIGHT_MS,
+  WIN_LINE_START_DELAY_MS,
 } from "../config/gameSettings.js";
 
 const getWinningGroups = (result) => {
@@ -35,6 +35,5 @@ export const getNextSpinDelayMs = (result, { visualMode = false } = {}) => {
     (group) => !isZeroOnlyGroup(result, group),
   ).length;
   if (winningGroupCount <= 0) return NEXT_SPIN_DELAY_MS;
-  if (visualMode) return winningGroupCount * VIEW2_SYMBOL_GROUP_CYCLE_MS;
-  return winningGroupCount * WIN_LINE_HIGHLIGHT_MS + NEXT_SPIN_DELAY_MS;
+  return WIN_LINE_START_DELAY_MS + winningGroupCount * WIN_LINE_HIGHLIGHT_MS;
 };

@@ -1021,3 +1021,9 @@ button:disabled {
     display: none;
   }
 }
+@media (max-height: 655px) {
+  .view-1 .frame-content > .main-container__left,
+  .view-1 .frame-content > .main-container__right {
+    display: none;
+  }
+}

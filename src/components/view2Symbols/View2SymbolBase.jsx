@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import WinLineOverlay from "../WinLineOverlay.jsx";
 import { WIN_LINE_HIGHLIGHT_MS } from "../../config/gameSettings.js";
 
 export const VIEW2_SYMBOL_WIN_FRAME_MS = 85;
@@ -59,6 +60,8 @@ export function View2SymbolBase({
   scatterHighlighted = false,
   comboBorder = null,
   animationKey = "",
+  winLineDimmed = false,
+  winLineOverlay = null,
 }) {
   const [animationFrameTick, setAnimationFrameTick] = useState(0);
   const [animatedImageDone, setAnimatedImageDone] = useState(false);
@@ -114,10 +117,11 @@ export function View2SymbolBase({
         : getPingPongFrameIndex(animationFrameTick, activeWinFrames.length)
       : 0;
 
-  const rootClass = `lottery-grid-view2-cell lottery-grid-view2-cell--symbol-${symbol}${isDice ? " lottery-grid-view2-cell--dice" : ""}${highlighted ? " lottery-grid-view2-cell--highlighted" : ""}${scatterHighlighted ? " lottery-grid-view2-cell--scatter-highlighted" : ""}`;
+  const rootClass = `lottery-grid-view2-cell lottery-grid-view2-cell--symbol-${symbol}${isDice ? " lottery-grid-view2-cell--dice" : ""}${highlighted ? " lottery-grid-view2-cell--highlighted" : ""}${scatterHighlighted ? " lottery-grid-view2-cell--scatter-highlighted" : ""}${winLineDimmed ? " lottery-grid-view2-cell--win-dimmed" : ""}`;
 
   return (
     <div className={rootClass}>
+      <WinLineOverlay overlay={winLineOverlay} variant="view2" />
       <div className="lottery-grid-view2-cell__container">
         {background && (
           <img

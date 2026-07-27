@@ -262,6 +262,9 @@
     0 0 12px 4px #fff1a6,
     0 0 28px 10px rgba(250, 204, 21, 0.9),
     inset 0 0 18px 4px rgba(255, 225, 106, 0.8);
+}
+
+.lottery-grid-view2-cell--scatter-highlighted .lottery-grid-view2-cell__container {
   animation: lottery-grid-scatter-pulse 600ms ease-in-out infinite alternate;
 }
 
@@ -769,4 +772,110 @@
 .preloaded-grid-view--active {
   display: contents;
   pointer-events: auto;
+}
+/* Backend-provided winning-line overlay. Each segment runs edge-to-edge. */
+.lottery-grid-view1-cell,
+.lottery-grid-view2-cell {
+  position: relative;
+}
+
+.win-line-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+  opacity: 0;
+  animation: win-line-overlay-in 220ms ease-out forwards;
+}
+
+.win-line-overlay--view1 {
+  --win-line-gap: 8px;
+}
+
+.win-line-overlay--view2 {
+  --win-line-gap: 24px;
+}
+
+.win-line-overlay__bridge {
+  position: absolute;
+  left: 100%;
+  display: block;
+  width: var(--win-line-gap);
+  height: var(--win-line-gap);
+  overflow: visible;
+}
+
+.win-line-overlay__bridge--right {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.win-line-overlay__bridge--right-up {
+  bottom: 100%;
+}
+
+.win-line-overlay__bridge--right-down {
+  top: 100%;
+}
+
+.win-line-overlay__glow,
+.win-line-overlay__path {
+  fill: none;
+  stroke-linecap: butt;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.win-line-overlay__glow {
+  stroke: #facc15;
+  stroke-width: 3px;
+  opacity: 0.48;
+  filter: blur(4px);
+}
+
+.win-line-overlay__path {
+  stroke-width: 1px;
+  filter: drop-shadow(0 0 10px #facc15);
+}
+
+.win-line-overlay__number {
+  position: absolute;
+  top: 50%;
+  left: auto;
+  min-width: 24px;
+  padding: 3px 6px;
+  border: 2px solid #facc15;
+  border-radius: 999px;
+  background: #101010;
+  color: #facc15;
+  font: 700 15px/1 Roboto, sans-serif;
+  text-align: center;
+  transform: translateY(-50%);
+  box-shadow: 0 0 8px rgba(250, 204, 21, 0.8);
+}
+
+.lottery-grid-view1-cell--win-dimmed .lottery-grid-view1-cell__wrapper,
+.lottery-grid-view2-cell--win-dimmed .lottery-grid-view2-cell__container {
+  opacity: 0.28;
+  filter: brightness(0.45) saturate(0.55);
+  transition: opacity 220ms ease, filter 220ms ease;
+}
+
+.lottery-grid-view1-cell__wrapper,
+.lottery-grid-view2-cell__container {
+  transition: opacity 220ms ease, filter 220ms ease;
+}
+
+@keyframes win-line-overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.win-line-overlay__number--start {
+  right: calc(100% + 10px);
+}
+
+.win-line-overlay__number--end {
+  left: calc(100% + 10px);
 }

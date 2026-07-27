@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { VIEW2_SYMBOL_GROUP_CYCLE_MS } from "../components/view2Symbols/index.jsx";
-import { VIEW1_WIN_LINE_HIGHLIGHT_MS } from "../config/gameSettings.js";
+import {
+  VIEW1_WIN_LINE_HIGHLIGHT_MS,
+  WIN_LINE_START_DELAY_MS,
+} from "../config/gameSettings.js";
 import {
   buildLotteryGridViewModel,
   getGroupedWins,
@@ -24,53 +26,87 @@ export function useLotteryGridViewModel({
     [winningGroups, winningCells],
   );
   const [activeWinGroup, setActiveWinGroup] = useState(null);
+  const winningLineIds = useMemo(
+    () =>
+      winningGroups
+        .filter((group) =>
+          Array.isArray(group?.winningCells)
+            ? group.winningCells.length > 0
+            : Array.isArray(group) && group.length > 0,
+        )
+        .map((group, index) => group?.lineId ?? index + 1),
+    [winningGroups],
+  );
+  const activeWinLineId =
+    activeWinGroup == null ? null : (winningLineIds[activeWinGroup] ?? activeWinGroup + 1);
+  const winningLinePaths = useMemo(
+    () =>
+      winningGroups
+        .filter((group) =>
+          Array.isArray(group?.winningCells)
+            ? group.winningCells.length > 0
+            : Array.isArray(group) && group.length > 0,
+        )
+        .map((group) =>
+          Array.isArray(group?.group) && group.group.length > 0
+            ? group.group
+            : (group?.winningCells ?? group),
+        ),
+    [winningGroups],
+  );
+  const activeWinLinePath =
+    activeWinGroup == null ? [] : (winningLinePaths[activeWinGroup] ?? []);
 
   useEffect(() => {
-    setActiveWinGroup(visualMode ? 0 : null);
-    if (groupedWins.length === 0 || animationState !== "settled") return;
+    setActiveWinGroup(null);
+    if (groupedWins.length === 0 || animationState !== "settled") return undefined;
 
-    setActiveWinGroup(0);
-    const cycleMs = visualMode
-      ? VIEW2_SYMBOL_GROUP_CYCLE_MS
-      : VIEW1_WIN_LINE_HIGHLIGHT_MS;
-    let timeoutId;
+    const cycleMs = VIEW1_WIN_LINE_HIGHLIGHT_MS;
+    let cycleTimeoutId;
+    const startTimeoutId = window.setTimeout(() => {
+      setActiveWinGroup(0);
 
-    if (visualMode && autoSequence) {
-      let nextIndex = 1;
+      if (autoSequence) {
+        let nextIndex = 1;
+        const scheduleNext = () => {
+          cycleTimeoutId = window.setTimeout(() => {
+            if (nextIndex >= groupedWins.length) {
+              setActiveWinGroup(null);
+              return;
+            }
+
+            setActiveWinGroup(nextIndex);
+            nextIndex += 1;
+            scheduleNext();
+          }, cycleMs);
+        };
+
+        scheduleNext();
+        return;
+      }
+
+      if (groupedWins.length === 1) return;
       const scheduleNext = () => {
-        timeoutId = window.setTimeout(() => {
-          if (nextIndex >= groupedWins.length) {
-            setActiveWinGroup(null);
-            return;
-          }
-
-          setActiveWinGroup(nextIndex);
-          nextIndex += 1;
+        cycleTimeoutId = window.setTimeout(() => {
+          setActiveWinGroup((index) => ((index ?? 0) + 1) % groupedWins.length);
           scheduleNext();
         }, cycleMs);
       };
-
       scheduleNext();
-      return () => window.clearTimeout(timeoutId);
-    }
+    }, WIN_LINE_START_DELAY_MS);
 
-    if (groupedWins.length === 1) return;
-
-    const scheduleNext = () => {
-      timeoutId = window.setTimeout(() => {
-        setActiveWinGroup((index) => ((index ?? 0) + 1) % groupedWins.length);
-        scheduleNext();
-      }, cycleMs);
+    return () => {
+      window.clearTimeout(startTimeoutId);
+      window.clearTimeout(cycleTimeoutId);
     };
-
-    scheduleNext();
-    return () => window.clearTimeout(timeoutId);
   }, [animationState, autoSequence, groupedWins.length, revealKey, visualMode]);
 
   return useMemo(
     () =>
       buildLotteryGridViewModel({
         activeWinGroup,
+        activeWinLineId,
+        activeWinLinePath,
         animationState,
         carpetCloseMs,
         carpetOpenMs,
@@ -85,6 +121,8 @@ export function useLotteryGridViewModel({
       }),
     [
       activeWinGroup,
+      activeWinLineId,
+      activeWinLinePath,
       animationState,
       carpetCloseMs,
       carpetOpenMs,

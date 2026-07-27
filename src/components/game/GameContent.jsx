@@ -99,7 +99,7 @@ export default function GameContent({ controller, runtimeState }) {
                 revealKey={state.gridRevealKey}
                 animationState={state.visualMode ? "idle" : state.gridAnimation}
                 visualMode={false}
-                autoSequence={false}
+                autoSequence={state.autoPlayOn || state.freeSpinRoundStarted}
                 carpetCloseMs={state.carpetCloseMs}
                 carpetOpenMs={state.carpetOpenMs}
                 winningCells={state.visualMode ? [] : state.spinResult?.winningCells}
@@ -120,7 +120,7 @@ export default function GameContent({ controller, runtimeState }) {
                 revealKey={state.gridRevealKey}
                 animationState={state.visualMode ? state.gridAnimation : "idle"}
                 visualMode={true}
-                autoSequence={state.visualMode && state.autoPlayOn}
+                autoSequence={state.autoPlayOn || state.freeSpinRoundStarted}
                 carpetCloseMs={state.carpetCloseMs}
                 carpetOpenMs={state.carpetOpenMs}
                 winningCells={state.visualMode ? state.spinResult?.winningCells : []}

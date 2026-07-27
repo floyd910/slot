@@ -1,4 +1,5 @@
 import "./LotteryGrid.css";
+import WinLineOverlay from "./WinLineOverlay.jsx";
 import { VIEW2_SYMBOL_COMPONENTS } from "./view2Symbols/index.jsx";
 import { useLotteryGridViewModel } from "../hooks/useLotteryGridViewModel.js";
 import {
@@ -104,6 +105,8 @@ function View2Cell({
   scatterHighlighted = false,
   comboBorder = null,
   animationKey = "",
+  winLineDimmed = false,
+  winLineOverlay = null,
 }) {
   const symbol = normalizeView2Digit(digit);
   const SymbolComponent =
@@ -117,6 +120,8 @@ function View2Cell({
       scatterHighlighted={scatterHighlighted}
       comboBorder={comboBorder}
       animationKey={animationKey}
+      winLineDimmed={winLineDimmed}
+      winLineOverlay={winLineOverlay}
     />
   );
 }
@@ -160,6 +165,8 @@ function View1Cell({
   lineWinHighlighted = false,
   eraser = false,
   concealed = false,
+  winLineDimmed = false,
+  winLineOverlay = null,
 }) {
   const isScatter = digit === "SCATTER";
   const isDoublingMark = typeof digit === "string" && /^x[02]$/i.test(digit);
@@ -167,7 +174,7 @@ function View1Cell({
 
   return (
     <div
-      className={`lottery-grid-view1-cell${size === "small" ? " lottery-grid-view1-cell--small" : ""}${isDoublingMark ? " lottery-grid-view1-cell--doubling-revealed" : ""}${!concealed && !eraser ? " lottery-grid-view1-cell--value-visible" : ""}${lineWinHighlighted ? " lottery-grid-view1-cell--win-highlight" : ""}${eraser ? " lottery-grid-view1-cell--revealing" : ""}`}
+      className={`lottery-grid-view1-cell${size === "small" ? " lottery-grid-view1-cell--small" : ""}${isDoublingMark ? " lottery-grid-view1-cell--doubling-revealed" : ""}${!concealed && !eraser ? " lottery-grid-view1-cell--value-visible" : ""}${lineWinHighlighted ? " lottery-grid-view1-cell--win-highlight" : ""}${eraser ? " lottery-grid-view1-cell--revealing" : ""}${winLineDimmed ? " lottery-grid-view1-cell--win-dimmed" : ""}`}
       style={
         eraser
           ? {
@@ -176,6 +183,7 @@ function View1Cell({
           : undefined
       }
     >
+      <WinLineOverlay overlay={winLineOverlay} variant="view1" />
       <div
         className={`lottery-grid-view1-cell__wrapper${highlighted ? " lottery-grid-view1-cell__wrapper--glow" : ""}`}
       >

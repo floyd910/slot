@@ -2,6 +2,32 @@ import { LOTTERY_REVEAL_STEP_MS } from "../config/gameSettings.js";
 import { COMBO_BORDERS } from "../config/view2Assets.js";
 
 const ROWS = ["A", "B", "C"];
+const getCoordinatePosition = (coordinate) => {
+  const match = /^([ABC])(\d+)$/.exec(String(coordinate ?? ""));
+  if (!match) return null;
+  return { row: ROWS.indexOf(match[1]), column: Number(match[2]) - 1 };
+};
+
+const getArmDirection = (from, to) => {
+  const start = getCoordinatePosition(from);
+  const end = getCoordinatePosition(to);
+  if (!start || !end) return null;
+  const horizontal = end.column > start.column ? "right" : "left";
+  if (end.row === start.row) return horizontal;
+  return `${horizontal}-${end.row < start.row ? "up" : "down"}`;
+};
+
+const getWinLineOverlay = (coordinate, linePath, lineId) => {
+  const index = linePath.indexOf(coordinate);
+  if (index < 0) return null;
+  const neighbours = [linePath[index + 1]].filter(Boolean);
+  return {
+    arms: neighbours.map((cell) => getArmDirection(coordinate, cell)).filter(Boolean),
+    lineId,
+    numberSide:
+      index === 0 ? "start" : index === linePath.length - 1 ? "end" : null,
+  };
+};
 
 export function getGroupedWins(winningGroups = [], winningCells = []) {
   const groups = winningGroups
@@ -34,6 +60,8 @@ export function buildTopCells(grid) {
 
 export function buildLotteryGridViewModel({
   activeWinGroup,
+  activeWinLineId,
+  activeWinLinePath = [],
   animationState,
   carpetCloseMs,
   carpetOpenMs,
@@ -64,6 +92,7 @@ export function buildLotteryGridViewModel({
     isSettled && groupedWins.length > 0 && activeWinGroup != null
       ? (groupedWins[activeWinGroup] ?? groupedWins[0])
       : [];
+  const hasActiveWinningLine = activeWinningCells.length > 0;
 
   if (!visualMode) {
     const showScatterOnly = isSettled && visibleScatterCells.length >= 2;
@@ -90,6 +119,11 @@ export function buildLotteryGridViewModel({
         idxString: getIndexLabel(index),
         highlighted: marked.has(cell.coord),
         lineWinHighlighted: marked.has(cell.coord),
+        winLineDimmed:
+          hasActiveWinningLine &&
+          !activeWinLinePath.includes(cell.coord) &&
+          !visibleScatterCells.includes(cell.coord),
+        winLineOverlay: getWinLineOverlay(cell.coord, activeWinLinePath, activeWinLineId),
         eraser: isRevealing,
         concealed: hideDigitsBeforeReveal,
       })),
@@ -142,6 +176,11 @@ export function buildLotteryGridViewModel({
           (hasActiveLineWin && activeComboBorderCells.has(cell.coord))),
       scatterHighlighted:
         isSettled && showScatterOnly && visibleScatterCells.includes(cell.coord),
+      winLineDimmed:
+        hasActiveWinningLine &&
+        !activeWinLinePath.includes(cell.coord) &&
+        !visibleScatterCells.includes(cell.coord),
+      winLineOverlay: getWinLineOverlay(cell.coord, activeWinLinePath, activeWinLineId),
       comboBorder:
         isSettled && visibleComboBorderCells.has(cell.coord)
           ? activeComboBorder
