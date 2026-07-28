@@ -32,7 +32,8 @@ header {
   line-height: 0;
 }
 
-.sound-changer__icon {
+.sound-changer__icon,
+.fullscreen-changer__icon {
   display: block;
   width: 32px;
   height: 32px;
@@ -187,7 +188,8 @@ header {
   }
 
   .header-btns svg,
-  .sound-changer__icon {
+  .sound-changer__icon,
+.fullscreen-changer__icon {
     width: 24px;
     height: 24px;
     flex-basis: 24px;

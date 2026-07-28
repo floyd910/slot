@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useLanguage } from "../../i18n.jsx";
 import "./Header.css";
@@ -43,6 +43,21 @@ function SoundOffIcon() {
   );
 }
 
+function ExpandIcon() {
+  return (
+    <svg className="fullscreen-changer__icon" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <path d="M8.22222 23.7778H11.5556V26H6V20.4444H8.22222V23.7778ZM26 26H20.4444V23.7778H23.7778V20.4444H26V26ZM11.5556 8.22222H8.22222V11.5556H6V6H11.5556V8.22222ZM26 11.5556H23.7778V8.22222H20.4444V6H26V11.5556Z" fill="white" />
+    </svg>
+  );
+}
+
+function CollapseIcon() {
+  return (
+    <svg className="fullscreen-changer__icon" width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <path d="M11.5556 20.4444V26H9.33333V22.6667H6V20.4444H11.5556ZM26 20.4444V22.6667H22.6667V26H20.4444V20.4444H26ZM11.5556 6V11.5556H6V9.33333H9.33333V6H11.5556ZM22.6667 6V9.33333H26V11.5556H20.4444V6H22.6667Z" fill="white" />
+    </svg>
+  );
+}
 const MENU_FLAG_OFFSET = 20;
 
 const LANGUAGE_OPTIONS = [
@@ -86,6 +101,7 @@ const Header = ({
 }) => {
   const { language, selectLanguage } = useLanguage();
   const [languageOpen, setLanguageOpen] = useState(false);
+  const [fullscreenActive, setFullscreenActive] = useState(() => Boolean(document.fullscreenElement));
   const [menuPosition, setMenuPosition] = useState({ left: 32, top: 46 });
   const languageButtonRef = useRef(null);
   const languageFlagRef = useRef(null);
@@ -93,6 +109,20 @@ const Header = ({
     LANGUAGE_OPTIONS.find((option) => option.code === language) ??
     LANGUAGE_OPTIONS[0];
 
+  useEffect(() => {
+    const updateFullscreenState = () => setFullscreenActive(Boolean(document.fullscreenElement));
+    document.addEventListener("fullscreenchange", updateFullscreenState);
+    return () => document.removeEventListener("fullscreenchange", updateFullscreenState);
+  }, []);
+
+  const toggleFullscreen = async () => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await document.documentElement.requestFullscreen();
+    } catch {
+      // Fullscreen can be rejected when the browser blocks the request.
+    }
+  };
   const chooseLanguage = (code) => {
     selectLanguage(code);
     setLanguageOpen(false);
@@ -189,19 +219,14 @@ const Header = ({
             />
           </svg>
         </button>
-        <button className="fullscreen-changer">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="32"
-            height="32"
-            viewBox="0 0 32 32"
-            fill="none"
-          >
-            <path
-              d="M8.22222 23.7778H11.5556V26H6V20.4444H8.22222V23.7778ZM26 26H20.4444V23.7778H23.7778V20.4444H26V26ZM11.5556 8.22222H8.22222V11.5556H6V6H11.5556V8.22222ZM26 11.5556H23.7778V8.22222H20.4444V6H26V11.5556Z"
-              fill="white"
-            />
-          </svg>
+        <button
+          type="button"
+          className={`fullscreen-changer${fullscreenActive ? " active" : ""}`}
+          onClick={toggleFullscreen}
+          aria-pressed={fullscreenActive}
+          aria-label={fullscreenActive ? "Exit fullscreen" : "Enter fullscreen"}
+        >
+          {fullscreenActive ? <CollapseIcon /> : <ExpandIcon />}
         </button>
 
         <button
