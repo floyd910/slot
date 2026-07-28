@@ -51,6 +51,11 @@ export default function WinLineOverlay({ overlay, variant = "view1" }) {
         );
       })}
       {overlay.numberSide && (
+        <span
+          className={`win-line-overlay__end-bridge win-line-overlay__end-bridge--${overlay.numberSide}`}
+        />
+      )}
+      {overlay.numberSide && (
         <span className={`win-line-overlay__number win-line-overlay__number--${overlay.numberSide}`}>
           {overlay.lineId}
         </span>

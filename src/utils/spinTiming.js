@@ -34,6 +34,9 @@ export const getNextSpinDelayMs = (result, { visualMode = false } = {}) => {
   const winningGroupCount = getWinningGroups(result).filter(
     (group) => !isZeroOnlyGroup(result, group),
   ).length;
-  if (winningGroupCount <= 0) return NEXT_SPIN_DELAY_MS;
-  return WIN_LINE_START_DELAY_MS + winningGroupCount * WIN_LINE_HIGHLIGHT_MS;
+  const scatterWinCount =
+    Array.isArray(result?.scatterCells) && result.scatterCells.length >= 2 ? 1 : 0;
+  const queuedWinCount = winningGroupCount + scatterWinCount;
+  if (queuedWinCount <= 0) return NEXT_SPIN_DELAY_MS;
+  return WIN_LINE_START_DELAY_MS + queuedWinCount * WIN_LINE_HIGHLIGHT_MS;
 };

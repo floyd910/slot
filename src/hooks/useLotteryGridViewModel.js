@@ -21,9 +21,17 @@ export function useLotteryGridViewModel({
   winningCells,
   winningGroups,
 }) {
-  const groupedWins = useMemo(
+  const lineWinningGroups = useMemo(
     () => getGroupedWins(winningGroups, winningCells),
     [winningGroups, winningCells],
+  );
+  const hasQueuedScatterWin = Array.isArray(scatterCells) && scatterCells.length >= 2;
+  const groupedWins = useMemo(
+    () =>
+      hasQueuedScatterWin
+        ? [...lineWinningGroups, scatterCells]
+        : lineWinningGroups,
+    [hasQueuedScatterWin, lineWinningGroups, scatterCells],
   );
   const [activeWinGroup, setActiveWinGroup] = useState(null);
   const winningLineIds = useMemo(
@@ -37,8 +45,12 @@ export function useLotteryGridViewModel({
         .map((group, index) => group?.lineId ?? index + 1),
     [winningGroups],
   );
+  const activeWinIsScatter =
+    hasQueuedScatterWin && activeWinGroup === lineWinningGroups.length;
   const activeWinLineId =
-    activeWinGroup == null ? null : (winningLineIds[activeWinGroup] ?? activeWinGroup + 1);
+    activeWinGroup == null || activeWinIsScatter
+      ? null
+      : (winningLineIds[activeWinGroup] ?? activeWinGroup + 1);
   const winningLinePaths = useMemo(
     () =>
       winningGroups
@@ -55,7 +67,9 @@ export function useLotteryGridViewModel({
     [winningGroups],
   );
   const activeWinLinePath =
-    activeWinGroup == null ? [] : (winningLinePaths[activeWinGroup] ?? []);
+    activeWinGroup == null || activeWinIsScatter
+      ? []
+      : (winningLinePaths[activeWinGroup] ?? []);
 
   useEffect(() => {
     setActiveWinGroup(null);
@@ -107,6 +121,7 @@ export function useLotteryGridViewModel({
         activeWinGroup,
         activeWinLineId,
         activeWinLinePath,
+        activeWinIsScatter,
         animationState,
         carpetCloseMs,
         carpetOpenMs,
@@ -123,6 +138,7 @@ export function useLotteryGridViewModel({
       activeWinGroup,
       activeWinLineId,
       activeWinLinePath,
+      activeWinIsScatter,
       animationState,
       carpetCloseMs,
       carpetOpenMs,

@@ -62,6 +62,7 @@ export function buildLotteryGridViewModel({
   activeWinGroup,
   activeWinLineId,
   activeWinLinePath = [],
+  activeWinIsScatter = false,
   animationState,
   carpetCloseMs,
   carpetOpenMs,
@@ -93,9 +94,13 @@ export function buildLotteryGridViewModel({
       ? (groupedWins[activeWinGroup] ?? groupedWins[0])
       : [];
   const hasActiveWinningLine = activeWinningCells.length > 0;
+  const activeVisibleCells = activeWinIsScatter
+    ? visibleScatterCells
+    : activeWinLinePath;
 
   if (!visualMode) {
-    const showScatterOnly = isSettled && visibleScatterCells.length >= 2;
+    const showScatterOnly =
+      isSettled && activeWinIsScatter && visibleScatterCells.length >= 2;
     const lineWinMarked = new Set(activeWinningCells);
     const marked = new Set([
       ...lineWinMarked,
@@ -121,8 +126,7 @@ export function buildLotteryGridViewModel({
         lineWinHighlighted: marked.has(cell.coord),
         winLineDimmed:
           hasActiveWinningLine &&
-          !activeWinLinePath.includes(cell.coord) &&
-          !visibleScatterCells.includes(cell.coord),
+          !activeVisibleCells.includes(cell.coord),
         winLineOverlay: getWinLineOverlay(cell.coord, activeWinLinePath, activeWinLineId),
         eraser: isRevealing,
         concealed: hideDigitsBeforeReveal,
@@ -145,11 +149,15 @@ export function buildLotteryGridViewModel({
   }
 
   const hasActiveLineWin =
-    isSettled && groupedWins.length > 0 && activeWinGroup != null;
+    isSettled &&
+    !activeWinIsScatter &&
+    groupedWins.length > 0 &&
+    activeWinGroup != null;
   const activeComboBorderCells = new Set(
     hasActiveLineWin ? (groupedWins[activeWinGroup] ?? []) : [],
   );
-  const showScatterOnly = visibleScatterCells.length >= 2;
+  const showScatterOnly =
+    isSettled && activeWinIsScatter && visibleScatterCells.length >= 2;
   const activeComboBorder =
     isSettled && (hasActiveLineWin || showScatterOnly)
       ? COMBO_BORDERS[(activeWinGroup ?? 0) % COMBO_BORDERS.length]
@@ -174,12 +182,10 @@ export function buildLotteryGridViewModel({
         isSettled &&
         ((showScatterOnly && visibleScatterCells.includes(cell.coord)) ||
           (hasActiveLineWin && activeComboBorderCells.has(cell.coord))),
-      scatterHighlighted:
-        isSettled && showScatterOnly && visibleScatterCells.includes(cell.coord),
+      scatterHighlighted: false,
       winLineDimmed:
         hasActiveWinningLine &&
-        !activeWinLinePath.includes(cell.coord) &&
-        !visibleScatterCells.includes(cell.coord),
+        !activeVisibleCells.includes(cell.coord),
       winLineOverlay: getWinLineOverlay(cell.coord, activeWinLinePath, activeWinLineId),
       comboBorder:
         isSettled && visibleComboBorderCells.has(cell.coord)
