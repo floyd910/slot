@@ -234,3 +234,80 @@ header {
     line-height: 16px;
   }
 }
+
+@media (max-width: 720px) {
+  header {
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+
+  .header-btns {
+    gap: 4px;
+    flex-wrap: nowrap;
+  }
+
+  .header-btns > button {
+    width: 24px;
+    min-width: 24px;
+    max-width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+  }
+
+  .header-btns svg,
+  .sound-changer__icon,
+  .fullscreen-changer__icon {
+    width: 24px;
+    height: 24px;
+    flex-basis: 24px;
+  }
+
+  .lang-chooser__button {
+    height: 24px;
+    gap: 4px;
+    flex-wrap: nowrap;
+    font-size: 11px;
+  }
+
+  .lang-chooser__flag,
+  .lang-chooser__flag-image,
+  .lang-chooser__flag-fallback {
+    width: 24px;
+    height: 24px;
+    flex: 0 0 24px;
+  }
+
+  .lang-chooser__flag-fallback {
+    font-size: 8px;
+  }
+
+  .lang-chooser__label {
+    overflow: hidden;
+    font-size: 11px;
+    line-height: 16px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .lang-chooser__chevron {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 16px;
+  }
+
+  .lang-chooser__menu {
+    min-width: 140px;
+    padding: 4px;
+    gap: 4px;
+  }
+
+  .lang-chooser__option {
+    min-height: 32px;
+    padding: 4px 8px;
+    gap: 6px;
+    flex-flow: row nowrap;
+    font-size: 11px;
+    line-height: 16px;
+    white-space: nowrap;
+  }
+}

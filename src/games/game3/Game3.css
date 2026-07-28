@@ -1027,3 +1027,98 @@ button:disabled {
     display: none;
   }
 }
+/* Continuous iframe fit: header -> shared logo -> center content -> footer. */
+.frame-app[data-fluid-fit="true"] .game_area {
+  overflow: visible;
+}
+
+.frame-app[data-fluid-fit="true"] .header_img {
+  position: relative !important;
+  top: -32px !important;
+  width: var(--fluid-logo-width) !important;
+  min-width: 0;
+  height: var(--fluid-logo-height) !important;
+  max-height: none !important;
+  margin: 0 auto !important;
+  transform: none !important;
+}
+
+.frame-app[data-fluid-fit="true"] .game-main-layout {
+  inset: 0;
+  height: 100%;
+  margin: 0;
+}
+
+.frame-app[data-fluid-fit="true"] .game-main-layout > .frame-content,
+.frame-app[data-fluid-fit="true"].view-1 .game-main-layout > .frame-content,
+.frame-app[data-fluid-fit="true"].view-2 .game-main-layout > .frame-content {
+  position: absolute !important;
+  inset: calc(var(--fluid-logo-height) - 20px) 0 var(--fluid-footer-reserve) !important;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  margin: 0 !important;
+  gap: 32px;
+  align-items: flex-start;
+  justify-content: center;
+  transform: none !important;
+}
+
+.frame-app[data-fluid-fit="true"]:not(.doubling-active) .main-container__center,
+.frame-app[data-fluid-fit="true"]:not(.doubling-active) .main-container__left,
+.frame-app[data-fluid-fit="true"]:not(.doubling-active) .main-container__right {
+  transform: scale(var(--fluid-content-scale)) !important;
+  transform-origin: top center !important;
+}
+
+.frame-app[data-fluid-fit="true"].view-2:not(.doubling-active) .main-container__center {
+  transform: scale(var(--fluid-content-scale)) !important;
+}
+.frame-app[data-fluid-logo-fit="true"] .header_img {
+  width: var(--fluid-logo-width) !important;
+  height: var(--fluid-logo-height) !important;
+  max-height: none !important;
+}
+
+.frame-app .header_img {
+  z-index: 60 !important;
+}
+
+@media (min-width: 721px) {
+  .frame-app .header_img {
+    min-width: 440px;
+    height: auto !important;
+  }
+}
+.frame-app.view-1 {
+  --view1-component-gap: 8px;
+}
+
+.frame-app.view-1 .game-main-layout > .frame-content,
+.frame-app[data-fluid-fit="true"].view-1 .game-main-layout > .frame-content {
+  column-gap: var(--view1-component-gap) !important;
+  row-gap: 0 !important;
+}
+@media (min-width: 721px) {
+  .frame-app .header_img,
+  .frame-app[data-fluid-fit="true"] .header_img,
+  .frame-app[data-fluid-logo-fit="true"] .header_img {
+    min-width: 440px;
+    height: auto !important;
+  }
+}
+/* View 1 scales as one group so fitted space stays outside, not between panels. */
+.frame-app[data-fluid-fit="true"].view-1:not(.doubling-active)
+  .game-main-layout > .frame-content {
+  transform: scale(var(--fluid-content-scale)) !important;
+  transform-origin: top center !important;
+}
+
+.frame-app[data-fluid-fit="true"].view-1:not(.doubling-active)
+  .main-container__left,
+.frame-app[data-fluid-fit="true"].view-1:not(.doubling-active)
+  .main-container__center,
+.frame-app[data-fluid-fit="true"].view-1:not(.doubling-active)
+  .main-container__right {
+  transform: none !important;
+}

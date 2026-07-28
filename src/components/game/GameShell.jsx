@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import BottomBar from "../BottomBar.jsx";
 import GameBottomArea from "../GameBottomArea.jsx";
 import GameMenu from "../GameMenu.jsx";
@@ -10,8 +11,11 @@ import { useLanguage } from "../../i18n.jsx";
 import { buildStandardPaytableViewModel } from "../../viewModels/paytableViewModel.js";
 import FreeSpinsPrompt from "./FreeSpinsPrompt.jsx";
 import GameContent from "./GameContent.jsx";
+import { useResponsiveGameLayout } from "../../hooks/useResponsiveGameLayout.js";
 
 export default function GameShell({ controller, onBackToSlots }) {
+  const shellRef = useRef(null);
+  useResponsiveGameLayout(shellRef);
   const { isLanguageChanging, language, t } = useLanguage();
   const { actions, derived, state } = controller;
   const showStartupLoader = state.startupLoaderVisible && !isLanguageChanging;
@@ -32,6 +36,7 @@ export default function GameShell({ controller, onBackToSlots }) {
 
   return (
     <div
+      ref={shellRef}
       className={derived.shellClass}
       data-module-mode={state.context.mode}
       data-startup-loading={showStartupLoader ? "true" : "false"}
