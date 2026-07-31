@@ -31,7 +31,6 @@ export const createSpinActions = ({
   playSpinFeedback,
   postEvent,
   reportOperationError,
-  setAutoPlayOn,
   setDoubleState,
   setDoublingState,
   setError,
@@ -50,7 +49,10 @@ export const createSpinActions = ({
   showFreeSpinPrompt,
   t,
 }) => {
-  const handleSpin = async ({ freeSpinAuto = false } = {}) => {
+  const handleSpin = async ({
+    autoExpressSpin = false,
+    freeSpinAuto = false,
+  } = {}) => {
     const {
       carpetCloseMs,
       context,
@@ -75,7 +77,7 @@ export const createSpinActions = ({
     }
     const isFreeSpin = freeSpinsLeft > 0;
     const creditWinOnReveal =
-      isFreeSpin || freeSpinAuto || autoPlayOnRef.current;
+      isFreeSpin || freeSpinAuto || autoExpressSpin || autoPlayOnRef.current;
     const effectiveDemo = FORCE_DEMO_SPINS;
     const lineCount = selectedCombination.groups.length;
     const totalStake = Number((stake * lineCount).toFixed(2));
@@ -222,9 +224,11 @@ export const createSpinActions = ({
           freeSpinsLeft: awardedFreeSpins,
           freeSpinsTotal: awardedFreeSpins,
         };
-        autoPlayOnRef.current = false;
-        setAutoPlayOn(false);
-        shouldShowFreeSpinPrompt = true;
+        // Auto Express owns the whole sequence while Free Spins drain.
+        // Manual spins keep the existing confirmation prompt.
+        shouldShowFreeSpinPrompt =
+          !autoExpressSpin && !autoPlayOnRef.current;
+
         if (visualMode) emitSound("freeTickets");
       }
 
@@ -408,8 +412,16 @@ export const createSpinActions = ({
 
   const onAutoPlay = async () => {
     if (freeSpinRunRef.current || showFreeSpinPrompt) return;
-    const result = await handleSpin();
+    const result = await handleSpin({ autoExpressSpin: true });
     if (!result) return;
+
+    // Drain every awarded Free Spin before another paid request. The loop
+    // reads the live counter, so new awards extend the same free-spin run.
+    if (liveSpinStateRef.current.freeSpinsLeft > 0) {
+      await startFreeSpinRun();
+      return;
+    }
+
     await wait(
       getNextSpinDelayMs(result, {
         visualMode: liveSpinStateRef.current.visualMode,

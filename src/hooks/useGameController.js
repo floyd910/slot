@@ -509,7 +509,6 @@ export function useGameController(selectedGameId) {
       playSpinFeedback,
       postEvent,
       reportOperationError,
-      setAutoPlayOn,
       setDoubleState,
       setDoublingState,
       setError,
@@ -553,6 +552,20 @@ export function useGameController(selectedGameId) {
     emitSound("buttonPress");
     setSelectedCombinationId(comboId);
   };
+
+  useEffect(() => {
+    if (
+      !autoPlayOn ||
+      status !== "ready" ||
+      freeSpinsLeft <= 0 ||
+      freeSpinRunRef.current
+    ) {
+      return;
+    }
+
+    void startFreeSpinRun();
+  }, [autoPlayOn, freeSpinsLeft, status]);
+
 
   useEffect(() => {
     autoPlayOnRef.current = autoPlayOn;

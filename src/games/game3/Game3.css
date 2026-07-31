@@ -1091,7 +1091,8 @@ button:disabled {
   }
 }
 .frame-app.view-1 {
-  --view1-component-gap: 8px;
+  /* Reserve room for the line-number badge and its glow on both sides. */
+  --view1-component-gap: 64px;
 }
 
 .frame-app.view-1 .game-main-layout > .frame-content,
@@ -1099,6 +1100,14 @@ button:disabled {
   column-gap: var(--view1-component-gap) !important;
   row-gap: 0 !important;
 }
+
+@media (max-width: 1024px) {
+  .frame-app.view-1 {
+    /* Reserve room for the 15px line offset, number badge, and its glow. */
+    --view1-component-gap: 64px;
+  }
+}
+
 @media (min-width: 721px) {
   .frame-app .header_img,
   .frame-app[data-fluid-fit="true"] .header_img,
