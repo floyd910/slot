@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import CombinationSelector from "../CombinationSelector.jsx";
 import GameAlert from "../GameAlert.jsx";
 import DoubleMode from "../DoubleMode.jsx";
@@ -9,21 +9,117 @@ import WinningsDashboard from "../WinningDashboard.jsx";
 import { useLanguage } from "../../i18n.jsx";
 import { buildGameContentViewModel } from "../../viewModels/gameContentViewModel.js";
 
-const SHOW_TICKET_PANEL = false;
+
+const TICKET_COPY = {
+  ru: {
+    closeDetails: "\u0417\u0430\u043a\u0440\u044b\u0442\u044c \u043f\u043e\u0434\u0440\u043e\u0431\u043d\u043e\u0441\u0442\u0438",
+    receiptLabel: "\u041b\u043e\u0442\u0435\u0440\u0435\u0439\u043d\u0430\u044f \u043a\u0432\u0438\u0442\u0430\u043d\u0446\u0438\u044f \u2116",
+    drawLabel: "\u0422\u0438\u0440\u0430\u0436 \u2116",
+    description: "\u041d\u0430\u0446\u0438\u043e\u043d\u0430\u043b\u044c\u043d\u0430\u044f \u044d\u043b\u0435\u043a\u0442\u0440\u043e\u043d\u043d\u0430\u044f \u0442\u0438\u0440\u0430\u0436\u043d\u0430\u044f \u043b\u043e\u0442\u0435\u0440\u0435\u044f \u00ab\u041b\u043e\u0442\u043e\u00bb",
+    details: "\u041f\u043e\u0434\u0440\u043e\u0431\u043d\u043e",
+  },
+  tg: {
+    closeDetails: "\u041f\u04ef\u0448\u0438\u0434\u0430\u043d\u0438 \u0442\u0430\u0444\u0441\u0438\u043b\u043e\u0442",
+    receiptLabel: "\u0427\u0438\u043f\u0442\u0430\u0438 \u043b\u043e\u0442\u0435\u0440\u0435\u044f \u2116",
+    drawLabel: "\u0422\u0438\u0440\u0430\u0436 \u2116",
+    description: "\u041b\u043e\u0442\u0435\u0440\u0435\u044f\u0438 \u044d\u043b\u0435\u043a\u0442\u0440\u043e\u043d\u0438\u0438 \u043c\u0438\u043b\u043b\u0438\u0438 \u0442\u0438\u0440\u0430\u0436\u0438\u0438 \u00ab\u041b\u043e\u0442\u043e\u00bb",
+    details: "\u041c\u0443\u0444\u0430\u0441\u0441\u0430\u043b",
+  },
+};
+const SHOW_TICKET_PANEL = true;
 
 export default function GameContent({ controller, runtimeState }) {
-  const { t } = useLanguage();
+  const { language, t } = useLanguage();
+  const ticketCopy = TICKET_COPY[language] ?? TICKET_COPY.ru;
   const [drawDetailsExpanded, setDrawDetailsExpanded] = useState(false);
   const [lastTicket, setLastTicket] = useState(null);
+  const [ticketPosition, setTicketPosition] = useState("below");
+  const [ticketExpansion, setTicketExpansion] = useState("down");
+  const ticketRef = useRef(null);
   const { actions, derived, state } = controller;
   const view = buildGameContentViewModel({ derived, state });
   useEffect(() => {
     if (!state.spinResult?.idCard) return;
     setLastTicket({
       drawNumber: state.spinResult.idCard,
-      receiptNumber: state.spinResult.Number ?? "РІР‚вЂќ",
+      receiptNumber: state.spinResult.Number ?? "\u2014",
     });
   }, [state.spinResult?.Number, state.spinResult?.idCard]);
+
+  useLayoutEffect(() => {
+    if (!lastTicket) return undefined;
+
+    const ticket = ticketRef.current;
+    const center = ticket?.parentElement;
+    const root = ticket?.closest(".frame-app");
+    if (!ticket || !center || !root) return undefined;
+
+    let animationFrame = 0;
+    const isVisible = (element) =>
+      element &&
+      element.getClientRects().length > 0 &&
+      getComputedStyle(element).display !== "none";
+    const getVisibleFooter = () =>
+      Array.from(root.querySelectorAll(".bottom-bar")).find(isVisible) ??
+      Array.from(root.querySelectorAll(".footer-block")).find(isVisible);
+
+
+    const updatePosition = () => {
+      cancelAnimationFrame(animationFrame);
+      animationFrame = requestAnimationFrame(() => {
+        const centerRect = center.getBoundingClientRect();
+        const rootRect = root.getBoundingClientRect();
+        const footer = getVisibleFooter();
+        const footerTop = footer?.getBoundingClientRect().top ?? rootRect.bottom;
+        const scale = center.offsetWidth
+          ? centerRect.width / center.offsetWidth
+          : 1;
+        const gap = 16 * scale;
+        const ticketFooterHeight =
+          ticket.querySelector(".grid-bottom-panel__footer")
+            ?.getBoundingClientRect().height ?? 0;
+        const collapsedTicketHeight = Math.max(
+          56 * scale,
+          ticketFooterHeight + 32 * scale,
+        );
+        const fitsBelow =
+          centerRect.bottom + gap + collapsedTicketHeight <= footerTop;
+        const nextPosition = fitsBelow ? "below" : "above";
+
+        setTicketPosition((current) =>
+          current === nextPosition ? current : nextPosition,
+        );
+        const expandedFitsBelow =
+          centerRect.bottom + gap + ticket.offsetHeight * scale <= footerTop;
+        const nextExpansion = expandedFitsBelow ? "down" : "up";
+        setTicketExpansion((current) =>
+          current === nextExpansion ? current : nextExpansion,
+        );
+      });
+    };
+
+    const observer = new ResizeObserver(updatePosition);
+    observer.observe(root);
+    observer.observe(center);
+    const footer = getVisibleFooter();
+    observer.observe(ticket);
+    if (footer) observer.observe(footer);
+    const mutationObserver = new MutationObserver(updatePosition);
+    mutationObserver.observe(root, {
+      attributes: true,
+      attributeFilter: ["class", "style", "data-fluid-fit"],
+    });
+    window.addEventListener("resize", updatePosition);
+    updatePosition();
+
+    return () => {
+      cancelAnimationFrame(animationFrame);
+      observer.disconnect();
+      mutationObserver.disconnect();
+      window.removeEventListener("resize", updatePosition);
+    };
+  }, [drawDetailsExpanded, lastTicket, state.visualMode]);
+
 
   const drawNumber = lastTicket?.drawNumber;
   const receiptNumber = lastTicket?.receiptNumber;
@@ -131,11 +227,14 @@ export default function GameContent({ controller, runtimeState }) {
             </div>
             {SHOW_TICKET_PANEL && lastTicket && (
             <div
+              ref={ticketRef}
+              data-ticket-position={ticketPosition}
+              data-ticket-expansion={ticketExpansion}
               className={`grid-bottom-panel${drawDetailsExpanded ? " grid-bottom-panel--expanded" : ""}`}
             >
               {drawDetailsExpanded && (
                 <button
-                  aria-label="Р вЂ”Р В°Р С”РЎР‚РЎвЂ№РЎвЂљРЎРЉ Р С—Р С•Р Т‘РЎР‚Р С•Р В±Р Р…Р С•РЎРѓРЎвЂљР С‘"
+                  aria-label={ticketCopy.closeDetails}
                   className="grid-bottom-panel__close"
                   onClick={() => setDrawDetailsExpanded(false)}
                   type="button"
@@ -145,8 +244,8 @@ export default function GameContent({ controller, runtimeState }) {
               )}
               {drawDetailsExpanded && (
                 <div className="grid-bottom-panel__receipt">
-                  Р вЂєР С•РЎвЂљР ВµРЎР‚Р ВµР в„–Р Р…Р В°РЎРЏ Р С”Р Р†Р С‘РЎвЂљР В°Р Р…РЎвЂ Р С‘РЎРЏ РІвЂћвЂ“ {receiptNumber} Р СћР С‘РЎР‚Р В°Р В¶ РІвЂћвЂ“ {drawNumber}{" "}
-                  Р СњР В°РЎвЂ Р С‘Р С•Р Р…Р В°Р В»РЎРЉР Р…Р В°РЎРЏ РЎРЊР В»Р ВµР С”РЎвЂљРЎР‚Р С•Р Р…Р Р…Р В°РЎРЏ РЎвЂљР С‘РЎР‚Р В°Р В¶Р Р…Р В°РЎРЏ Р В»Р С•РЎвЂљР ВµРЎР‚Р ВµРЎРЏ Р вЂєР С•РЎвЂљР С•
+                  {ticketCopy.receiptLabel} {receiptNumber} {ticketCopy.drawLabel} {drawNumber}{" "}
+                  {ticketCopy.description}
                 </div>
               )}
               <div className="grid-bottom-panel__footer">
@@ -156,7 +255,7 @@ export default function GameContent({ controller, runtimeState }) {
                     src="/img/ui/draw-info-icon.png"
                     alt=""
                   />
-                  <span>Р СћР С‘РЎР‚Р В°Р В¶ РІвЂћвЂ“{drawNumber}</span>
+                  <span>{ticketCopy.drawLabel}{drawNumber}</span>
                 </div>
                 {!drawDetailsExpanded && (
                   <button
@@ -165,7 +264,7 @@ export default function GameContent({ controller, runtimeState }) {
                     onClick={() => setDrawDetailsExpanded(true)}
                     type="button"
                   >
-                    Р СџР С•Р Т‘РЎР‚Р С•Р В±Р Р…Р С•
+                    {ticketCopy.details}
                   </button>
                 )}
               </div>

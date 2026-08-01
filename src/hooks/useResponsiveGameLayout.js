@@ -25,6 +25,7 @@ const getVisibleFooter = (root) =>
 
 const getMeasuredContent = (root, center) => {
   const activeGrid = center.querySelector(".preloaded-grid-view--active .lottery-grid");
+  const ticket = center.querySelector(".grid-bottom-panel");
   const elements = [
     root.querySelector(".main-container__left"),
     center,
@@ -32,6 +33,32 @@ const getMeasuredContent = (root, center) => {
     root.querySelector(".main-container__right"),
   ].filter(isVisible);
   const rects = elements.map((element) => element.getBoundingClientRect());
+
+  if (isVisible(ticket)) {
+    const ticketRect = ticket.getBoundingClientRect();
+    if (ticket.classList.contains("grid-bottom-panel--expanded")) {
+      const centerRect = center.getBoundingClientRect();
+      const scale = center.offsetWidth
+        ? centerRect.width / center.offsetWidth
+        : 1;
+      const collapsedHeight = 56 * scale;
+      const opensUp = ticket.dataset.ticketExpansion === "up";
+      const sitsAbove = ticket.dataset.ticketPosition === "above";
+      const top = sitsAbove || !opensUp
+        ? ticketRect.top
+        : ticketRect.bottom - collapsedHeight;
+      rects.push({
+        top,
+        bottom: top + collapsedHeight,
+        left: ticketRect.left,
+        right: ticketRect.right,
+      });
+    } else {
+      rects.push(ticketRect);
+    }
+    elements.push(ticket);
+  }
+
   return {
     activeGrid,
     elements,
@@ -189,8 +216,25 @@ export function useResponsiveGameLayout(rootRef) {
     const observer = new ResizeObserver(scheduleFit);
     observer.observe(root);
     root.querySelectorAll(".game_area, .footer-block").forEach((node) => observer.observe(node));
-    const mutationObserver = new MutationObserver(scheduleFit);
-    mutationObserver.observe(root, { attributes: true, attributeFilter: ["class"] });
+    const mutationObserver = new MutationObserver((mutations) => {
+      const requiresFit = mutations.some((mutation) => {
+        const insideTicket = mutation.target.closest?.(".grid-bottom-panel");
+        if (mutation.type === "attributes") {
+          return (
+            mutation.attributeName === "data-ticket-position" || !insideTicket
+          );
+        }
+        return !insideTicket;
+      });
+
+      if (requiresFit) scheduleFit();
+    });
+    mutationObserver.observe(root, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+      attributeFilter: ["class", "data-ticket-position"],
+    });
     window.addEventListener("resize", scheduleFit);
     document.fonts?.ready.then(scheduleFit);
     scheduleFit();

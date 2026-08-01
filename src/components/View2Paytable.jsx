@@ -1,5 +1,4 @@
 import "./View2Paytable.css";
-import { VIEW2_SYMBOL_CONFIGS } from "./view2Symbols/index.jsx";
 import { getView2MatchPayout } from "../viewModels/view2PaytableViewModel.js";
 
 
@@ -18,7 +17,7 @@ const VIEW2_COPY = {
 };
 
 const getSymbolImage = (symbol) =>
-  VIEW2_SYMBOL_CONFIGS[symbol]?.staticImage ?? `/img/view2-symbols/symbol${symbol}/1.png`;
+  `/assets/img/info-symbols/view2-symbol-${symbol}.webp`;
 
 function SymbolTile({ symbol, imageSymbol = symbol, className = "" }) {
   return (
