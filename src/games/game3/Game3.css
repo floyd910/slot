@@ -464,7 +464,8 @@ button:disabled {
 
 @media (max-width: 750px) {
   .view-2 .main-container__center {
-    width: calc(100% - 22px);
+    width: calc(100% - 96px);
+    max-width: calc(100% - 96px);
   }
 
   .view-2 .game-main-layout .lottery-grid--view2 {

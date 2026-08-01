@@ -12,6 +12,8 @@ import {
 export default function BottomBar(props) {
   const shortLandscape = useShortLandscape();
   const { language, t, toggleLanguage } = useLanguage();
+  const doubleLeftLabel = language === "tg" ? t("left") : "\u041b\u0435\u0432\u044b\u0439";
+  const doubleRightLabel = language === "tg" ? t("right") : "\u041f\u0440\u0430\u0432\u044b\u0439";
   const controls = buildBottomBarControls({
     ...props,
     toggleLanguage,
@@ -46,6 +48,16 @@ export default function BottomBar(props) {
         <BottomBarMetric title={t("balance")} value={balance} />
         <BottomBarMetric title={t("purchaseAmount")} value={totalPurchase} />
         <BottomBarMetric title={t("win")} value={currentWin} accent />
+        {props.isVisualDoubling ? (
+          <DoubleScenePickButtons
+            disabled={props.disabled || props.doublingState?.loading}
+            leftLabel={doubleLeftLabel}
+            onPickLeft={props.onPickLeft}
+            onPickRight={props.onPickRight}
+            rightLabel={doubleRightLabel}
+          />
+        ) : (
+          <>
         {showFreeSpinCounter ? (
           <FooterFreeSpins
             count={props.freeSpinsLeft}
@@ -79,6 +91,8 @@ export default function BottomBar(props) {
           value={formatCombinationValue(props.selectedCombination)}
           variant="combination"
         />
+          </>
+        )}
         <InfoButton
           active={props.infoActive}
           disabled={props.disabled}
@@ -105,6 +119,16 @@ export default function BottomBar(props) {
         </div>
 
         <div className="footer-flex">
+          {props.isVisualDoubling ? (
+            <DoubleScenePickButtons
+              disabled={props.disabled || props.doublingState?.loading}
+              leftLabel={doubleLeftLabel}
+              onPickLeft={props.onPickLeft}
+              onPickRight={props.onPickRight}
+              rightLabel={doubleRightLabel}
+            />
+          ) : (
+            <>
           {showFreeSpinCounter ? (
           <FooterFreeSpins
             count={props.freeSpinsLeft}
@@ -138,6 +162,8 @@ export default function BottomBar(props) {
             value={formatCombinationValue(props.selectedCombination)}
             variant="combination"
           />
+            </>
+          )}
           {controls.map((control) =>
             renderBottomBarControl(control, { language, t }),
           )}
@@ -158,6 +184,16 @@ export default function BottomBar(props) {
         </div>
 
         <div className="footer-flex">
+          {props.isVisualDoubling ? (
+            <DoubleScenePickButtons
+              disabled={props.disabled || props.doublingState?.loading}
+              leftLabel={doubleLeftLabel}
+              onPickLeft={props.onPickLeft}
+              onPickRight={props.onPickRight}
+              rightLabel={doubleRightLabel}
+            />
+          ) : (
+            <>
           {showFreeSpinCounter ? (
           <FooterFreeSpins
             count={props.freeSpinsLeft}
@@ -191,6 +227,8 @@ export default function BottomBar(props) {
             value={formatCombinationValue(props.selectedCombination)}
             variant="combination"
           />
+            </>
+          )}
         </div>
         <div className="footer-flex">
           {controls.map((control) =>
@@ -199,6 +237,29 @@ export default function BottomBar(props) {
         </div>
       </div>
     </footer>
+  );
+}
+
+function DoubleScenePickButtons({ disabled, leftLabel, onPickLeft, onPickRight, rightLabel }) {
+  return (
+    <>
+      <button
+        className="double-scene-pick-button"
+        disabled={disabled}
+        onClick={onPickLeft}
+        type="button"
+      >
+        {leftLabel}
+      </button>
+      <button
+        className="double-scene-pick-button"
+        disabled={disabled}
+        onClick={onPickRight}
+        type="button"
+      >
+        {rightLabel}
+      </button>
+    </>
   );
 }
 

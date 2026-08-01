@@ -53,6 +53,7 @@ export function useResponsiveGameLayout(rootRef) {
     let measuring = false;
     let constrainedLogoWidth = null;
     let constrainedViewportKey = "";
+    let doublingActive = root.classList.contains("doubling-active");
 
     const verifyFit = (attempt = 0) => {
       const gameArea = root.querySelector(".game_area");
@@ -99,6 +100,8 @@ export function useResponsiveGameLayout(rootRef) {
       const logo = root.querySelector(".header_img");
       const center = root.querySelector(".main-container__center");
       if (!gameArea || !logo || !center || root.classList.contains("doubling-active")) {
+        constrainedLogoWidth = null;
+        constrainedViewportKey = "";
         measuring = false;
         return;
       }
@@ -167,7 +170,20 @@ export function useResponsiveGameLayout(rootRef) {
 
     const scheduleFit = () => {
       if (measuring) return;
+      const nextDoublingActive = root.classList.contains("doubling-active");
+      const exitedDoubling = doublingActive && !nextDoublingActive;
+      doublingActive = nextDoublingActive;
+
       cancelAnimationFrame(animationFrame);
+      if (exitedDoubling) {
+        constrainedLogoWidth = null;
+        constrainedViewportKey = "";
+        clearFluidFit(root);
+        animationFrame = requestAnimationFrame(() => {
+          animationFrame = requestAnimationFrame(fit);
+        });
+        return;
+      }
       animationFrame = requestAnimationFrame(fit);
     };
     const observer = new ResizeObserver(scheduleFit);

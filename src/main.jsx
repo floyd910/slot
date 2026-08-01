@@ -280,6 +280,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
   </React.StrictMode>,
 );
 let lastLayoutMode = "";
+let doubleEntryViewportKey = "";
 const fitWhenLayoutModeChanges = () => {
   const shell = document.querySelector(".frame-app");
   if (!shell) return;
@@ -287,7 +288,25 @@ const fitWhenLayoutModeChanges = () => {
   const layoutMode = `${shell.classList.contains("view-2") ? "view-2" : "view-1"}:${shell.classList.contains("doubling-active") ? "double" : "normal"}`;
   if (layoutMode === lastLayoutMode) return;
 
+  const previousLayoutMode = lastLayoutMode;
   lastLayoutMode = layoutMode;
+
+  const viewport = getViewportSize();
+  const viewportKey = `${viewport.width}x${viewport.height}`;
+  const enteredDoubling = !previousLayoutMode.endsWith(":double") && layoutMode.endsWith(":double");
+  const exitedDoubling = previousLayoutMode.endsWith(":double") && layoutMode.endsWith(":normal");
+
+  if (enteredDoubling) {
+    doubleEntryViewportKey = viewportKey;
+    return;
+  }
+
+  // The authored scale is already correct when the viewport did not change.
+  // Re-fitting while View 2 is remounting measures transitional, smaller geometry.
+  if (exitedDoubling && viewportKey === doubleEntryViewportKey) {
+    return;
+  }
+
   fitCompactLandscape();
 };
 
