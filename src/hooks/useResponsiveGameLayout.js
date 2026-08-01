@@ -57,6 +57,20 @@ const getMeasuredContent = (root, center) => {
       rects.push(ticketRect);
     }
     elements.push(ticket);
+  } else {
+    const centerRect = center.getBoundingClientRect();
+    const scale = center.offsetWidth
+      ? centerRect.width / center.offsetWidth
+      : 1;
+    const gap = 16 * scale;
+    const collapsedHeight = 56 * scale;
+    const top = centerRect.bottom + gap;
+    rects.push({
+      top,
+      bottom: top + collapsedHeight,
+      left: centerRect.left,
+      right: centerRect.right,
+    });
   }
 
   return {
@@ -215,23 +229,18 @@ export function useResponsiveGameLayout(rootRef) {
     };
     const observer = new ResizeObserver(scheduleFit);
     observer.observe(root);
-    root.querySelectorAll(".game_area, .footer-block").forEach((node) => observer.observe(node));
     const mutationObserver = new MutationObserver((mutations) => {
-      const requiresFit = mutations.some((mutation) => {
-        const insideTicket = mutation.target.closest?.(".grid-bottom-panel");
-        if (mutation.type === "attributes") {
-          return (
-            mutation.attributeName === "data-ticket-position" || !insideTicket
-          );
-        }
-        return !insideTicket;
-      });
-
+      const requiresFit = mutations.some(
+        (mutation) =>
+          mutation.attributeName === "data-ticket-position" ||
+          (mutation.attributeName === "class" &&
+            mutation.target === root &&
+            root.classList.contains("doubling-active") !== doublingActive),
+      );
       if (requiresFit) scheduleFit();
     });
     mutationObserver.observe(root, {
       attributes: true,
-      childList: true,
       subtree: true,
       attributeFilter: ["class", "data-ticket-position"],
     });

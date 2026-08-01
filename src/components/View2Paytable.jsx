@@ -17,7 +17,7 @@ const VIEW2_COPY = {
 };
 
 const getSymbolImage = (symbol) =>
-  `/assets/img/info-symbols/view2-symbol-${symbol}.webp`;
+  `/assets/img/info-symbols/view2-symbol-${symbol}.webp?v=20260801-assets-lossless`;
 
 function SymbolTile({ symbol, imageSymbol = symbol, className = "" }) {
   return (
