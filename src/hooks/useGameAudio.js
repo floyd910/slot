@@ -46,12 +46,17 @@ export function useGameAudio() {
   const contextRef = useRef(null);
   const bufferRef = useRef(new Map());
   const bufferPromiseRef = useRef(new Map());
+  const masterGainRef = useRef(null);
+  const mutedRef = useRef(false);
 
   const getAudioContext = useCallback(() => {
     if (contextRef.current) return contextRef.current;
     const AudioContextClass = window.AudioContext ?? window.webkitAudioContext;
     if (!AudioContextClass) return null;
     contextRef.current = new AudioContextClass();
+    masterGainRef.current = contextRef.current.createGain();
+    masterGainRef.current.gain.value = mutedRef.current ? 0 : 1;
+    masterGainRef.current.connect(contextRef.current.destination);
     return contextRef.current;
   }, []);
 
@@ -90,6 +95,7 @@ export function useGameAudio() {
     if (!cacheRef.current.has(src)) {
       const audio = new Audio(src);
       audio.preload = "auto";
+      audio.muted = mutedRef.current;
       cacheRef.current.set(src, audio);
     }
     return cacheRef.current.get(src);
@@ -110,7 +116,7 @@ export function useGameAudio() {
       source.buffer = buffer;
       source.loop = loop;
       gain.gain.value = volume * 0.5;
-      source.connect(gain).connect(context.destination);
+      source.connect(gain).connect(masterGainRef.current ?? context.destination);
       source.start(0);
 
       const playback = {
@@ -141,6 +147,7 @@ export function useGameAudio() {
       warmBuffer(src);
       const base = getAudio(src);
       const audio = restart ? base.cloneNode(true) : base;
+      audio.muted = mutedRef.current;
       audio.volume = volume * 0.5;
       audio.loop = loop;
       if (restart) audio.currentTime = 0;
@@ -203,6 +210,28 @@ export function useGameAudio() {
     if (backgroundRef.current?.stop) backgroundRef.current.stop();
     backgroundRef.current = null;
   }, []);
+  const setMuted = useCallback((muted) => {
+    const nextMuted = Boolean(muted);
+    mutedRef.current = nextMuted;
+    const context = contextRef.current;
+    if (context && masterGainRef.current) {
+      const gain = masterGainRef.current.gain;
+      gain.cancelScheduledValues(context.currentTime);
+      gain.value = nextMuted ? 0 : 1;
+      gain.setValueAtTime(nextMuted ? 0 : 1, context.currentTime);
+
+      if (!nextMuted && context.state === "suspended") {
+        context.resume().catch(() => {});
+      }
+    }
+    cacheRef.current.forEach((audio) => {
+      audio.muted = nextMuted;
+    });
+    activePlaybackRef.current.forEach((playback) => {
+      if ("muted" in playback) playback.muted = nextMuted;
+    });
+  }, []);
+
 
   useEffect(() => {
     effectSources.forEach((src) => {
@@ -224,6 +253,10 @@ export function useGameAudio() {
 
   return useCallback(
     (event, payload) => {
+      if (event === "setMuted") {
+        setMuted(payload);
+        return;
+      }
       if (event === "stopAll") {
         stopAllAudio();
         return;
@@ -247,6 +280,7 @@ export function useGameAudio() {
         receipt.pause();
         receipt.currentTime = 0;
         receipt.volume = 0.4;
+        receipt.muted = mutedRef.current;
         const playback = receipt.play();
         if (playback?.catch) playback.catch(() => {});
         activePlaybackRef.current.add(receipt);
@@ -262,6 +296,6 @@ export function useGameAudio() {
         });
       }
     },
-    [getAudio, playBackground, playSrc, stopAllAudio, stopBackground],
+    [getAudio, playBackground, playSrc, setMuted, stopAllAudio, stopBackground],
   );
 }

@@ -114,17 +114,17 @@ export function useGameController(selectedGameId) {
     (event, payload) => {
       if (visualMode && event !== "carpet") return;
       if (visualMode && event === "carpet") {
-        if (soundEnabledRef.current) playSound(event, payload);
+        playSound(event, payload);
         return;
       }
       if (!["reveal", "stopReveal", "win"].includes(event)) return;
-      if (soundEnabledRef.current) playSound(event, payload);
+      playSound(event, payload);
     },
     [playSound, visualMode],
   );
 
   useEffect(() => {
-    if (!soundEnabled) playSound("stopAll");
+    playSound("setMuted", !soundEnabled);
   }, [playSound, soundEnabled]);
 
   const emitLotteryRevealSounds = useCallback(() => {
@@ -614,9 +614,9 @@ export function useGameController(selectedGameId) {
   const toggleSound = () => {
     const nextSoundEnabled = !soundEnabledRef.current;
     soundEnabledRef.current = nextSoundEnabled;
-    if (!nextSoundEnabled) {
-      playSound("stopAll");
-    } else {
+
+    playSound("setMuted", !nextSoundEnabled);
+    if (nextSoundEnabled) {
       playSound("click");
     }
     setSoundEnabled(nextSoundEnabled);
