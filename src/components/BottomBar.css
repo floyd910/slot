@@ -452,6 +452,7 @@
 }
 
 .footer-block-mobile .spin-draw-button,
+.footer-block-mobile .double-scene-pick-button,
 .footer-block-mobile .take-money,
 .footer-block-mobile .auto-express-button {
   box-sizing: border-box;
@@ -543,6 +544,7 @@
   }
 
   .footer-block-mobile .spin-draw-button,
+  .footer-block-mobile .double-scene-pick-button,
   .footer-block-mobile .take-money,
   .footer-block-mobile .auto-express-button {
     height: 34px;
