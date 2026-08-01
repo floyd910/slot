@@ -4,6 +4,12 @@
   position: fixed;
 }
 
+@media (max-width: 1280px) {
+  .bottom-bar {
+    bottom: 0;
+  }
+}
+
 @media (orientation: landscape) and (max-height: 620px) {
   .bottom-bar {
     display: none;
@@ -37,10 +43,45 @@
 
 .footer-block-tablet {
   display: none;
-  padding: 14px 10px;
+  padding: 8px 10px;
   flex-direction: column;
 }
 
+
+.footer-block-tablet .bottom-bar-metric__value {
+  box-sizing: border-box;
+  height: 52px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.footer-block-tablet .bottom-bar-stepper__control,
+.footer-block-tablet .bottom-bar-stepper__button,
+.footer-block-tablet .double-scene-pick-button,
+.footer-block-tablet .tablet-double-offer__button {
+  box-sizing: border-box;
+  height: 52px;
+}
+
+.footer-block-tablet .bottom-bar-stepper__button {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.footer-block-tablet .spin-draw-button,
+.footer-block-tablet .take-money,
+.footer-block-tablet .auto-express-button {
+  box-sizing: border-box;
+  height: 52px;
+  min-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.footer-block-tablet .double-scene-pick-button {
+  padding-top: 0;
+  padding-bottom: 0;
+}
 .footer-block-tablet .bottom-bar-metric {
   width: 100%;
 }
@@ -539,7 +580,7 @@
 
 .footer-block-tablet .spin-draw-button,
 .footer-block-tablet .auto-express-button {
-  height: 106px;
+  height: 52px;
 }
 
 .tablet-double-offer {
