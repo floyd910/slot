@@ -5,15 +5,15 @@
   line-height: 1.4;
   text-rendering: optimizeLegibility;
   --bg: #11120f;
-  --panel: #24221a;
+  --panel: var(--game-panel-raised, #24221a);
   --panel-strong: #332b1b;
   --line: rgba(255, 255, 255, 0.15);
   --text: #fff9e8;
-  --muted: #cbbf9f;
+  --muted: var(--game-text-muted, #cbbf9f);
   --gold: #f0bc45;
   --green: #58d68d;
   --red: #ff6b6b;
-  --blue: #61d6ff;
+  --blue: var(--game-info, #61d6ff);
   --clone-rail-width: 206px;
   --clone-stage-bottom: 174px;
   --clone-gold: #ffd62a;
@@ -130,3 +130,4 @@ button {
   align-items: center;
   gap: 5px;
 }
+

@@ -42,7 +42,7 @@
 }
 
 .game-menu-panel > button:not(.game-menu-panel__close):hover {
-  color: #aa7c11;
+  color: var(--game-accent-dark, #aa7c11);
 }
 
 .game-menu-panel__close {
@@ -86,7 +86,7 @@
     linear-gradient(145deg, rgba(100, 106, 225, 0.1) 0%, rgba(22, 17, 170, 0.1) 46.63%, rgba(106, 162, 230, 0.1) 100%),
     linear-gradient(145deg, rgba(29, 29, 29, 0.64) 0%, rgba(25, 25, 25, 0.64) 46.63%, rgba(60, 60, 60, 0.64) 100%),
     linear-gradient(0deg, #000 0%, #000 100%),
-    rgba(255, 255, 255, 0.1);
+    var(--game-highlight, rgba(255, 255, 255, 0.1));
 }
 
 .game-rules-screen__content {
@@ -321,3 +321,4 @@
     right: 16px;
   }
 }
+

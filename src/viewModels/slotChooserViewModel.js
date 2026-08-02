@@ -1,4 +1,3 @@
-const READY_SLOT_IMAGE = "/assets/img/xiramandi-makor.webp";
 const PENDING_SLOT_IMAGE = "/assets/img/logo-frame.webp";
 
 export function buildSlotChooserItems({ interactive, slots }) {
@@ -7,12 +6,13 @@ export function buildSlotChooserItems({ interactive, slots }) {
     const enabled = interactive && ready;
 
     return {
-      alt: ready ? "Hirramandi Makor - Betproduct.com" : "Coming soon",
+      alt: ready ? `${slot.title} - Betproduct.com` : "Coming soon",
       enabled,
       fetchPriority: ready ? "high" : "low",
       id: slot.id,
-      imageSrc: ready ? READY_SLOT_IMAGE : PENDING_SLOT_IMAGE,
+      imageSrc: ready ? slot.assets.chooserTile : PENDING_SLOT_IMAGE,
       slot,
     };
   });
 }
+

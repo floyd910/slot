@@ -32,6 +32,7 @@ import {
   loadAudioDurationMs,
   preloadDoubleSceneAssets,
   preloadImage,
+  preloadGameAssets,
   preloadStartupAssets,
   preloadView2FirstPaintAssets,
 } from "../utils/mediaPreload.js";
@@ -47,7 +48,7 @@ import {
 
 const initialContext = readFrameParams();
 
-export function useGameController(selectedGameId) {
+export function useGameController(selectedGameId, gameDefinition = null) {
   const { t } = useLanguage();
   const tRef = useRef(t);
   const bootGameId = selectedGameId ?? initialContext.gameId ?? null;
@@ -187,7 +188,7 @@ export function useGameController(selectedGameId) {
 
   useEffect(() => {
     let active = true;
-    preloadStartupAssets()
+    (gameDefinition ? preloadGameAssets(gameDefinition) : preloadStartupAssets())
       .then(() => {
         if (active) setStartupAssetsReady(true);
       })
@@ -766,3 +767,5 @@ export function useGameController(selectedGameId) {
     },
   };
 }
+
+

@@ -44,7 +44,7 @@
   position: absolute;
   inset: 0 auto 0 0;
   width: 4px;
-  background: linear-gradient(180deg, #ff4d2f, #ffd35b, #ff4d2f);
+  background: linear-gradient(180deg, var(--game-error, #ff4d2f), #ffd35b, var(--game-error, #ff4d2f));
   box-shadow: 0 0 14px rgba(255, 92, 46, 0.75);
 }
 

@@ -59,7 +59,7 @@
 }
 
 .payouts tbody tr:nth-child(even) .payout-cell {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--game-highlight, rgba(255, 255, 255, 0.1));
 }
 .payouts td {
   vertical-align: middle;
@@ -72,3 +72,4 @@
   width: 100%;
   padding: 0 4px;
 }
+

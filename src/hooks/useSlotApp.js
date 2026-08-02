@@ -4,16 +4,18 @@ import {
   SLOT_CHOOSER_TILE_ASSETS,
 } from "../config/gameAssets.js";
 import { VIEW2_CARPET_ASSETS } from "../config/view2Assets.js";
+import { GAME_DEFINITIONS } from "../config/gameDefinitions.js";
 import { notifySlotChooserReady } from "../services/frameReadyNotifier.js";
 import {
+  preloadGameAssets,
   preloadRequiredImages,
-  preloadStartupAssets,
   scheduleDeferredStartupAssets,
 } from "../utils/mediaPreload.js";
 
 const SLOT_CHOOSER_REQUIRED_ASSETS = [
   SLOT_CHOOSER_BACKGROUND_SRC,
   ...SLOT_CHOOSER_TILE_ASSETS,
+  ...GAME_DEFINITIONS.map((game) => game.assets.chooserTile),
   VIEW2_CARPET_ASSETS[0],
 ];
 
@@ -142,7 +144,7 @@ export function useSlotApp({ loadSelectedSlotGame }) {
       // Block only on code and assets required by the first game paint.
       await loadSelectedSlotGame();
       setGameLoadProgress(10);
-      await preloadStartupAssets((progress) =>
+      await preloadGameAssets(slot, (progress) =>
         setGameLoadProgress(10 + Math.floor(progress * 0.7)),
       );
     } catch (assetError) {
@@ -180,3 +182,5 @@ export function useSlotApp({ loadSelectedSlotGame }) {
     slotChooserInteractive: !selectedSlotId && !pendingSlotId,
   };
 }
+
+

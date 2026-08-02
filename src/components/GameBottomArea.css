@@ -85,7 +85,7 @@
     rgba(24, 7, 0, 0.88);
   box-shadow:
     inset 0 0 1rem rgba(0, 0, 0, 0.88),
-    0 0 0.26rem rgba(255, 255, 255, 0.32);
+    0 0 0.26rem var(--game-line-strong, rgba(255, 255, 255, 0.32));
   color: #ffc400;
   font-size: 2rem;
   font-weight: 700;
@@ -127,3 +127,4 @@
     font-size: 1.65rem;
   }
 }
+

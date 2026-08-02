@@ -120,7 +120,7 @@
 
 .information-button[aria-pressed="true"] {
   box-shadow:
-    0 0 4px 1px rgba(255, 215, 0, 0.5) inset,
+    0 0 4px 1px var(--game-accent-glow, rgba(255, 215, 0, 0.5)) inset,
     0 0 8px 0 rgba(255, 215, 0, 0.75);
 }
 
@@ -130,7 +130,7 @@
 .bottom-bar-metric__value {
   overflow: hidden;
   border-radius: 12px;
-  border: 1px solid #e1bf64;
+  border: 1px solid var(--game-accent-border, #e1bf64);
   background: #000;
   display: flex;
   padding: 19px 0;
@@ -161,17 +161,17 @@
 .bottom-bar-metric.--accent .bottom-bar-metric__value {
   overflow: hidden;
   border-radius: 12px;
-  border: 1px solid #e1bf64;
+  border: 1px solid var(--game-accent-border, #e1bf64);
   background:
     linear-gradient(
       0deg,
       rgba(255, 215, 0, 0.3) 0%,
       rgba(255, 215, 0, 0.3) 100%
     ),
-    rgba(255, 255, 255, 0.1);
+    var(--game-highlight, rgba(255, 255, 255, 0.1));
   box-shadow:
-    0 0 4px 1px rgba(255, 215, 0, 0.5) inset,
-    0 0 4px 0 #ffd700;
+    0 0 4px 1px var(--game-accent-glow, rgba(255, 215, 0, 0.5)) inset,
+    0 0 4px 0 var(--game-accent-bright, #ffd700);
 }
 
 .bottom-bar-stepper__control {
@@ -184,7 +184,7 @@
   align-self: stretch;
   overflow: hidden;
   border-radius: 12px;
-  border: 1px solid #e1bf64;
+  border: 1px solid var(--game-accent-border, #e1bf64);
   background: #000;
 }
 
@@ -238,7 +238,7 @@
   font-weight: 400;
   line-height: 28px; /* 127.273% */
   letter-spacing: 0.45px;
-  background: linear-gradient(145deg, #e1bf64 0%, #aa7c11 46.63%, #e6c36a 100%);
+  background: linear-gradient(145deg, var(--game-accent-border, #e1bf64) 0%, var(--game-accent-dark, #aa7c11) 46.63%, var(--game-accent-light, #e6c36a) 100%);
 }
 
 .bottom-bar-stepper__button:hover:not(:disabled),
@@ -606,9 +606,9 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  border: 1px solid #e1bf64;
+  border: 1px solid var(--game-accent-border, #e1bf64);
   border-radius: 12px;
-  background: linear-gradient(145deg, #e1bf64 0%, #aa7c11 46.63%, #e6c36a 100%);
+  background: linear-gradient(145deg, var(--game-accent-border, #e1bf64) 0%, var(--game-accent-dark, #aa7c11) 46.63%, var(--game-accent-light, #e6c36a) 100%);
   color: #fff;
   font-family: Roboto, sans-serif;
   font-size: 14px;
@@ -655,3 +655,4 @@
   cursor: default;
   background: transparent;
 }
+

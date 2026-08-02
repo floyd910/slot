@@ -33,10 +33,10 @@
   align-self: stretch;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--game-highlight, rgba(255, 255, 255, 0.1));
   box-shadow:
-    0 4px 6px 0 rgba(0, 0, 0, 0.1),
-    0 0 10px 1px rgba(255, 255, 255, 0.1) inset;
+    0 4px 6px 0 var(--game-shadow-soft, rgba(0, 0, 0, 0.1)),
+    0 0 10px 1px var(--game-highlight, rgba(255, 255, 255, 0.1)) inset;
 }
 
 .combination-item.--glow {
@@ -48,18 +48,18 @@
       rgba(255, 215, 0, 0.3) 0%,
       rgba(255, 215, 0, 0.3) 100%
     ),
-    rgba(255, 255, 255, 0.1);
+    var(--game-highlight, rgba(255, 255, 255, 0.1));
   box-shadow:
-    0 0 4px 1px rgba(255, 215, 0, 0.5) inset,
-    0 0 4px 0 #ffd700;
+    0 0 4px 1px var(--game-accent-glow, rgba(255, 215, 0, 0.5)) inset,
+    0 0 4px 0 var(--game-accent-bright, #ffd700);
 }
 
 .combination-item.--glow .combination-item__count {
   background: linear-gradient(
     145deg,
-    #e1bf64 0.96%,
-    #f1d074 65.38%,
-    #e6c36a 100%
+    var(--game-accent-border, #e1bf64) 0.96%,
+    var(--game-accent-soft, #f1d074) 65.38%,
+    var(--game-accent-light, #e6c36a) 100%
   );
   background-clip: text;
   -webkit-background-clip: text;
@@ -96,3 +96,4 @@
   line-height: 40px; /* 111.111% */
   margin-top: 10px;
 }
+

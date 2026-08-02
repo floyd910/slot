@@ -1,8 +1,7 @@
-import Game3 from "./game3/Game3.jsx";
+import { getGameDefinition } from "../config/gameDefinitions.js";
+import SharedGame from "./SharedGame.jsx";
 
-const GAME_COMPONENTS = {
-  game3: Game3,
-  hiranmandi: Game3,
+export const getGameRegistration = (slotId) => {
+  const game = getGameDefinition(slotId);
+  return game ? { Component: SharedGame, game } : null;
 };
-
-export const getGameComponent = (slotId) => GAME_COMPONENTS[slotId] ?? null;

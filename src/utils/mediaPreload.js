@@ -16,6 +16,7 @@ const CSS_URL_PATTERN = /url\(\s*(['"]?)(.*?)\1\s*\)/g;
 const retainedPreloadedImages = new Map();
 const retainedPreloadedAudio = new Map();
 let startupAssetsPromise = null;
+const gameAssetsPromises = new Map();
 const IMAGE_DECODE_TIMEOUT_MS = 8000;
 export const toPreloadUrl = (src) => {
   if (!src || src.startsWith("data:") || src.startsWith("blob:")) return "";
@@ -394,6 +395,32 @@ export const preloadStartupAssets = (onProgress) => {
   return startupAssetsPromise;
 };
 
+export const preloadGameAssets = (game, onProgress) => {
+  if (!game) return preloadStartupAssets(onProgress);
+  const cacheKey = game.id;
+  const cached = gameAssetsPromises.get(cacheKey);
+  if (cached) {
+    onProgress?.(100);
+    return cached;
+  }
+
+  const promise = Promise.all([
+    preloadRequiredImages(
+      [game.assets.cover, game.assets.logo, ...FIRST_PAINT_GAME_IMAGE_ASSETS],
+      onProgress,
+    ),
+    fontReady(),
+    ...STARTUP_ASSETS.videos.map(preloadVideo),
+  ]).then(() => {
+    warmStartupAudio();
+  }).catch((error) => {
+    gameAssetsPromises.delete(cacheKey);
+    throw error;
+  });
+
+  gameAssetsPromises.set(cacheKey, promise);
+  return promise;
+};
 export const preloadView2FirstPaintAssets = () =>
   preloadImages(
     VIEW2_ASSETS.filter(
@@ -445,3 +472,5 @@ export const preloadWinAnimations = () =>
       timeoutMs: IMAGE_PRELOAD_TIMEOUT_MS,
     },
   );
+
+

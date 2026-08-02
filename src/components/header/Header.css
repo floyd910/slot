@@ -1,5 +1,5 @@
 header {
-  background: #0d0d0d;
+  background: var(--game-panel-solid, #0d0d0d);
   display: inline-flex;
   height: 48px;
   padding: 8px 32px;
@@ -73,7 +73,7 @@ header {
 
 .lang-chooser__option:hover,
 .lang-chooser__option.active {
-  background: rgba(255, 255, 255, 0.16);
+  background: var(--game-line, rgba(255, 255, 255, 0.16));
 }
 
 .lang-chooser__flag {
@@ -128,9 +128,9 @@ header {
   gap: 8px;
   min-width: 180px;
   padding: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid var(--game-line, rgba(255, 255, 255, 0.16));
   border-radius: 4px;
-  background: #0d0d0d;
+  background: var(--game-panel-solid, #0d0d0d);
   z-index: 2147483647;
   box-shadow: 0 8px 18px rgba(0, 0, 0, 0.34);
 }

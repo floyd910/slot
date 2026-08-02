@@ -6,14 +6,13 @@ import Paytable from "../Paytable.jsx";
 import RuntimeState from "../RuntimeState.jsx";
 import StartupLoader from "../StartupLoader.jsx";
 import View2Paytable from "../View2Paytable.jsx";
-import { GAME3_COVER_SRC } from "../../config/gameAssets.js";
 import { useLanguage } from "../../i18n.jsx";
 import { buildStandardPaytableViewModel } from "../../viewModels/paytableViewModel.js";
 import FreeSpinsPrompt from "./FreeSpinsPrompt.jsx";
 import GameContent from "./GameContent.jsx";
 import { useResponsiveGameLayout } from "../../hooks/useResponsiveGameLayout.js";
 
-export default function GameShell({ controller, onBackToSlots }) {
+export default function GameShell({ controller, game, onBackToSlots }) {
   const shellRef = useRef(null);
   const { actions, derived, state } = controller;
   useResponsiveGameLayout(shellRef, state.visualMode ? "view2" : "view1");
@@ -47,7 +46,7 @@ export default function GameShell({ controller, onBackToSlots }) {
       >
         <img
           className="game_area__background"
-          src={GAME3_COVER_SRC}
+          src={game.assets.cover}
           alt=""
           aria-hidden="true"
           decoding="async"
@@ -57,7 +56,7 @@ export default function GameShell({ controller, onBackToSlots }) {
         <div className="bg-overlay"></div>
         <img
           className="header_img"
-          src="/assets/img/game3-logo.webp"
+          src={game.assets.logo}
           alt=""
           aria-hidden="true"
           decoding="async"
@@ -184,3 +183,5 @@ export default function GameShell({ controller, onBackToSlots }) {
     </div>
   );
 }
+
+

@@ -1,9 +1,9 @@
-import { getGameComponent } from "../../games/gameRegistry.js";
+import { getGameRegistration } from "../../games/gameRegistry.js";
 
 export default function SelectedSlotGame({ slotId, onBack }) {
-  const GameComponent = getGameComponent(slotId);
+  const registration = getGameRegistration(slotId);
+  if (!registration) return null;
 
-  if (!GameComponent) return null;
-
-  return <GameComponent slotId={slotId} onBack={onBack} />;
+  const { Component, game } = registration;
+  return <Component game={game} onBack={onBack} />;
 }
