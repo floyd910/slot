@@ -171,12 +171,22 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
         root.style.setProperty("--fluid-content-scale", "1");
         root.dataset.fluidFit = "true";
 
-        const content = getMeasuredContent(root, center);
+        const activeGrid = center.querySelector(
+          ".preloaded-grid-view--active .lottery-grid",
+        );
         const availableWidth = Math.max(1, areaRect.width - GAP * 2);
         const availableTop = areaRect.top + logoHeight + GAP;
         const availableHeight = Math.max(1, footerTop - GAP - availableTop);
-        const nativeContentWidth = Math.max(1, content.right - content.left);
-        const nativeContentHeight = Math.max(1, content.bottom - content.top);
+        const nativeContentWidth = Math.max(
+          1,
+          center.offsetWidth,
+          activeGrid?.scrollWidth ?? 0,
+        );
+        const nativeContentHeight = Math.max(
+          1,
+          center.offsetHeight,
+          activeGrid?.scrollHeight ?? 0,
+        ) + 72;
         const scale = Math.max(
           0.01,
           Math.min(
@@ -190,7 +200,6 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
         constrainedLogoWidth = logoWidth;
         constrainedViewportKey = `${Math.round(areaRect.width)}x${Math.round(areaRect.height)}`;
         measuring = false;
-        verifyFrame = requestAnimationFrame(() => verifyFit());
         return;
       }
 
