@@ -479,7 +479,7 @@
 .footer-block-tablet .footer-flex:first-child {
   flex-direction: row-reverse;
 }
-@media (max-width: 440px) {
+@media (max-width: 639px) {
   .bottom-bar {
     bottom: 0;
   }
@@ -629,7 +629,7 @@
   height: 52px;
 }
 
-@media (max-width: 440px) {
+@media (max-width: 639px) {
   .footer-block-mobile .tablet-double-offer__button {
     height: 34px;
   }

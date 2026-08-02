@@ -84,7 +84,7 @@ const getMeasuredContent = (root, center) => {
   };
 };
 
-export function useResponsiveGameLayout(rootRef) {
+export function useResponsiveGameLayout(rootRef, layoutMode) {
   useLayoutEffect(() => {
     const root = rootRef.current;
     if (!root) return undefined;
@@ -151,8 +151,50 @@ export function useResponsiveGameLayout(rootRef) {
       const areaRect = gameArea.getBoundingClientRect();
       const logoRect = logo.getBoundingClientRect();
       const footerRect = footer?.getBoundingClientRect();
-      const content = getMeasuredContent(root, center);
       const footerTop = footerRect?.top ?? areaRect.bottom;
+      const usesUnifiedResponsiveFit = areaRect.width >= 320 && areaRect.width <= 1024;
+
+      if (usesUnifiedResponsiveFit) {
+        const logoWidth = Math.min(
+          440,
+          areaRect.width * 0.9,
+          (areaRect.height * 0.18) / LOGO_RATIO,
+        );
+        const logoHeight = logoWidth * LOGO_RATIO;
+        const footerReserve = footerRect
+          ? Math.max(0, areaRect.bottom - footerRect.top) + GAP
+          : GAP;
+
+        root.style.setProperty("--fluid-logo-width", `${logoWidth}px`);
+        root.style.setProperty("--fluid-logo-height", `${logoHeight}px`);
+        root.style.setProperty("--fluid-footer-reserve", `${footerReserve}px`);
+        root.style.setProperty("--fluid-content-scale", "1");
+        root.dataset.fluidFit = "true";
+
+        const content = getMeasuredContent(root, center);
+        const availableWidth = Math.max(1, areaRect.width - GAP * 2);
+        const availableTop = areaRect.top + logoHeight + GAP;
+        const availableHeight = Math.max(1, footerTop - GAP - availableTop);
+        const nativeContentWidth = Math.max(1, content.right - content.left);
+        const nativeContentHeight = Math.max(1, content.bottom - content.top);
+        const scale = Math.max(
+          0.01,
+          Math.min(
+            1,
+            availableWidth / nativeContentWidth,
+            availableHeight / nativeContentHeight,
+          ) * 0.995,
+        );
+
+        root.style.setProperty("--fluid-content-scale", String(scale));
+        constrainedLogoWidth = logoWidth;
+        constrainedViewportKey = `${Math.round(areaRect.width)}x${Math.round(areaRect.height)}`;
+        measuring = false;
+        verifyFrame = requestAnimationFrame(() => verifyFit());
+        return;
+      }
+
+      const content = getMeasuredContent(root, center);
       const viewportKey = `${Math.round(areaRect.width)}x${Math.round(areaRect.height)}`;
       if (viewportKey !== constrainedViewportKey) {
         constrainedViewportKey = viewportKey;
@@ -256,5 +298,5 @@ export function useResponsiveGameLayout(rootRef) {
       window.removeEventListener("resize", scheduleFit);
       clearFluidFit(root);
     };
-  }, [rootRef]);
+  }, [rootRef, layoutMode]);
 }

@@ -437,32 +437,27 @@ button:disabled {
     max-width: calc(100% - 22px);
   }
 
-  .main-container__center {
-    width: 418px;
-    height: 347px;
-  }
-
-  .lottery-grid-view1__column-labels,
-  .lottery-grid-view1__row-cells {
-    grid-template-columns: repeat(5, 62.4px);
-  }
-
-  .lottery-grid-view1-cell {
-    height: 50px;
-  }
-
   header {
     padding-left: 16px;
     padding-right: 16px;
   }
 }
 
+@media (min-width: 640px) and (max-width: 720px) {
+  .footer-block-tablet {
+    display: flex;
+  }
+
+  .footer-block-mobile {
+    display: none;
+  }
+}
 .view-2 .main-container__center {
   width: max-content;
   height: max-content;
 }
 
-@media (max-width: 750px) {
+@media (max-width: 440px) {
   .view-2 .main-container__center {
     width: calc(100% - 96px);
     max-width: calc(100% - 96px);
@@ -491,7 +486,7 @@ button:disabled {
   }
 }
 
-@media (max-width: 750px) and (max-height: 620px) {
+@media (max-width: 440px) and (max-height: 620px) {
   .view-2 .lottery-grid-view2-cell {
     height: 48px;
   }
@@ -1063,7 +1058,7 @@ button:disabled {
 
 .frame-app[data-fluid-fit="true"] .header_img {
   position: relative !important;
-  top: -32px !important;
+  top: 0 !important;
   width: var(--fluid-logo-width) !important;
   min-width: 0;
   height: var(--fluid-logo-height) !important;
@@ -1082,7 +1077,7 @@ button:disabled {
 .frame-app[data-fluid-fit="true"].view-1 .game-main-layout > .frame-content,
 .frame-app[data-fluid-fit="true"].view-2 .game-main-layout > .frame-content {
   position: absolute !important;
-  inset: calc(var(--fluid-logo-height) - 20px) 0 var(--fluid-footer-reserve) !important;
+  inset: calc(var(--fluid-logo-height) + 10px) 0 var(--fluid-footer-reserve) !important;
   width: 100%;
   height: auto;
   min-height: 0;
@@ -1159,4 +1154,91 @@ button:disabled {
 .frame-app[data-fluid-fit="true"].view-1:not(.doubling-active)
   .main-container__right {
   transform: none !important;
+}
+@media (min-width: 320px) and (max-width: 1024px) {
+  .frame-app[data-fluid-fit="true"].view-1 .main-container__center {
+    width: 525px !important;
+    flex: 0 0 525px;
+    max-width: none !important;
+    height: 403px !important;
+  }
+
+  .frame-app[data-fluid-fit="true"].view-1 .lottery-grid-view1 {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .frame-app[data-fluid-fit="true"].view-1 .lottery-grid-view1__top,
+  .frame-app[data-fluid-fit="true"].view-1 .lottery-grid-view1__bottom {
+    width: max-content;
+    justify-items: start;
+  }
+
+
+  .frame-app[data-fluid-fit="true"].view-1 .lottery-grid-view1__row {
+    width: max-content;
+    grid-template-columns: 32px auto;
+    column-gap: 8px;
+  }
+
+  .frame-app[data-fluid-fit="true"].view-1 .lottery-grid-view1__row-label {
+    width: 32px;
+    font-size: 24px;
+  }
+
+  .frame-app[data-fluid-fit="true"].view-1 .lottery-grid-view1__column-labels,
+  .frame-app[data-fluid-fit="true"].view-1 .lottery-grid-view1__row-cells {
+    width: auto;
+    grid-template-columns: repeat(5, 82.4px);
+    gap: 8px;
+  }
+
+  .frame-app[data-fluid-fit="true"].view-1 .lottery-grid-view1__column-label {
+    font-size: 24px;
+  }
+
+  .frame-app[data-fluid-fit="true"].view-1
+    .lottery-grid-view1__bottom
+    .lottery-grid-view1__column-label {
+    font-size: 18px;
+  }
+
+  .frame-app[data-fluid-fit="true"].view-1 .lottery-grid-view1-cell {
+    width: auto;
+    height: 64px !important;
+  }
+
+  .frame-app[data-fluid-fit="true"].view-1 .lottery-grid-view1-cell__value {
+    font-size: 48px;
+    line-height: 40px;
+  }
+
+  .frame-app[data-fluid-fit="true"].view-2 .main-container__center,
+  .frame-app[data-fluid-fit="true"].view-2
+    .game-main-layout
+    .lottery-grid--view2,
+  .frame-app[data-fluid-fit="true"].view-2 .lottery-grid-view2 {
+    width: max-content !important;
+    max-width: none !important;
+    height: max-content !important;
+  }
+
+  .frame-app[data-fluid-fit="true"].view-2 .lottery-grid-view2 {
+    grid-template-columns: repeat(5, max-content);
+    column-gap: 24px;
+    row-gap: 24px;
+    padding: 16px 24px;
+  }
+
+  .frame-app[data-fluid-fit="true"].view-2 .lottery-grid-view2-cell {
+    width: 200px !important;
+    height: 130px !important;
+  }
+
+  .frame-app[data-fluid-fit="true"].view-2
+    .lottery-grid-view2-cell--dice
+    .lottery-grid-view2-cell__image {
+    width: 100px !important;
+    height: 108px !important;
+  }
 }

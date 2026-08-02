@@ -15,9 +15,9 @@ import { useResponsiveGameLayout } from "../../hooks/useResponsiveGameLayout.js"
 
 export default function GameShell({ controller, onBackToSlots }) {
   const shellRef = useRef(null);
-  useResponsiveGameLayout(shellRef);
-  const { isLanguageChanging, language, t } = useLanguage();
   const { actions, derived, state } = controller;
+  useResponsiveGameLayout(shellRef, state.visualMode ? "view2" : "view1");
+  const { isLanguageChanging, language, t } = useLanguage();
   const showStartupLoader = state.startupLoaderVisible && !isLanguageChanging;
   const showInlineView2Paytable = state.showPaytable && state.visualMode;
   const paytableView = buildStandardPaytableViewModel({

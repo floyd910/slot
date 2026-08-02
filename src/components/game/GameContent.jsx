@@ -54,7 +54,6 @@ export default function GameContent({ controller, runtimeState }) {
     const root = ticket?.closest(".frame-app");
     if (!ticket || !center || !root) return undefined;
 
-    let animationFrame = 0;
     const isVisible = (element) =>
       element &&
       element.getClientRects().length > 0 &&
@@ -65,8 +64,6 @@ export default function GameContent({ controller, runtimeState }) {
 
 
     const updatePosition = () => {
-      cancelAnimationFrame(animationFrame);
-      animationFrame = requestAnimationFrame(() => {
         const centerRect = center.getBoundingClientRect();
         const rootRect = root.getBoundingClientRect();
         const footer = getVisibleFooter();
@@ -95,7 +92,6 @@ export default function GameContent({ controller, runtimeState }) {
         setTicketExpansion((current) =>
           current === nextExpansion ? current : nextExpansion,
         );
-      });
     };
 
     const observer = new ResizeObserver(updatePosition);
@@ -113,7 +109,6 @@ export default function GameContent({ controller, runtimeState }) {
     updatePosition();
 
     return () => {
-      cancelAnimationFrame(animationFrame);
       observer.disconnect();
       mutationObserver.disconnect();
       window.removeEventListener("resize", updatePosition);
