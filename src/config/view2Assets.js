@@ -46,22 +46,57 @@ const collectImageSources = (...values) =>
     return [];
   });
 
-export const VIEW2_ASSETS = [
+const SHARED_DICE_SYMBOL_ASSETS = [
+  "/assets/img/view2-symbol-1-static.webp?v=20260711-1",
+  "/assets/img/view2-symbol-2-static.webp?v=20260711-2",
+  "/assets/img/view2-symbol-3-static.webp?v=20260711-1",
+  "/assets/img/view2-symbol-4-static.webp?v=20260711-1",
+  "/assets/img/view2-symbol-5-static.webp?v=20260711-1",
+  "/assets/img/view2-symbol-6-static.webp?v=20260711-1",
+];
+
+export const SHARED_VIEW2_ASSETS = [
   ...new Set(
     collectImageSources(
-      VIEW2_SYMBOL_ASSET_SOURCES,
       COMBO_BORDERS,
-      VIEW2_INFO_ASSETS,
       VIEW2_CARPET_ASSETS,
-      GAME6_VIEW2_CELL_BACKGROUND_ASSETS,
-      GAME6_VIEW2_SYMBOL_0_STATIC_SRC,
-      GAME6_VIEW2_SYMBOL_7_STATIC_SRC,
-      GAME6_VIEW2_SYMBOL_8_STATIC_SRC,
-      GAME6_VIEW2_SYMBOL_10_STATIC_SRC,
-      GAME6_VIEW2_SYMBOL_11_STATIC_SRC,
-      GAME6_VIEW2_SYMBOL_12_STATIC_SRC,
+      SHARED_DICE_SYMBOL_ASSETS,
       "/img/extracted/\u0421\u043b\u043e\u0442_\u0418\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441-\u043a\u043e\u0432\u0435\u0440-\u0434\u043b\u044f-\u0440\u043e\u0437\u044b\u0433\u0440\u044b\u0448\u0430-\u0432\u0438\u0437\u0443\u0430\u043b\u0438\u0437\u0430\u0446\u0438\u0438/sprite_001_1145x666_at_3_3.webp",
-      "/img/extracted/\u0438\u0433\u0440\u0430-\u0425\u0443\u0448\u043a\u043e\u043b-\u044d\u043b\u0435\u043c\u0435\u043d\u0442\u044b-\u0438\u0433\u0440\u044b-1_0/sprite_002_201x653_at_1289_1.png",
     ),
   ),
+];
+
+export const GAME3_VIEW2_ASSETS = [
+  ...new Set(
+    collectImageSources(
+      SHARED_VIEW2_ASSETS,
+      VIEW2_SYMBOL_ASSET_SOURCES,
+      VIEW2_INFO_ASSETS,
+    ),
+  ),
+];
+
+export const GAME6_WIN_ANIMATION_ASSETS = [0, 7, 8, 9, 10, 11, 12].flatMap(
+  (symbol) =>
+    Array.from(
+      { length: 144 },
+      (_, index) =>
+        "/assets/img/animations/game6/" +
+        symbol +
+        "/frame_" +
+        String(index).padStart(3, "0") +
+        "_delay-0.04s.png",
+    ),
+);
+
+export const GAME6_VIEW2_ASSETS = [
+  ...SHARED_VIEW2_ASSETS,
+  ...GAME6_VIEW2_CELL_BACKGROUND_ASSETS,
+  ...GAME6_WIN_ANIMATION_ASSETS,
+  GAME6_VIEW2_SYMBOL_0_STATIC_SRC,
+  GAME6_VIEW2_SYMBOL_7_STATIC_SRC,
+  GAME6_VIEW2_SYMBOL_8_STATIC_SRC,
+  GAME6_VIEW2_SYMBOL_10_STATIC_SRC,
+  GAME6_VIEW2_SYMBOL_11_STATIC_SRC,
+  GAME6_VIEW2_SYMBOL_12_STATIC_SRC,
 ];

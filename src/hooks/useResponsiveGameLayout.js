@@ -8,6 +8,7 @@ const FIT_PROPERTIES = [
   "--fluid-logo-height",
   "--fluid-footer-reserve",
   "--fluid-content-scale",
+  "--header-content-start",
 ];
 
 const isVisible = (element) =>
@@ -29,6 +30,7 @@ const getMeasuredContent = (root, center) => {
     root.querySelector(".main-container__left"),
     center,
     activeGrid,
+    center.querySelector(".grid-bottom-panel"),
     root.querySelector(".main-container__right"),
   ].filter(isVisible);
   const rects = elements.map((element) => element.getBoundingClientRect());
@@ -113,7 +115,13 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       const logoRect = logo.getBoundingClientRect();
       const footerRect = footer?.getBoundingClientRect();
       const footerTop = footerRect?.top ?? areaRect.bottom;
-      const usesUnifiedResponsiveFit = areaRect.width >= 320 && areaRect.width <= 1024;
+      root.style.setProperty(
+        "--header-content-start",
+        Math.max(0, logoRect.bottom - areaRect.top + GAP) + "px",
+      );
+      const usesUnifiedResponsiveFit =
+        areaRect.width >= 320 &&
+        (areaRect.width <= 1024 || areaRect.height <= 760);
 
       if (usesUnifiedResponsiveFit) {
         const logoWidth = Math.min(
@@ -138,16 +146,9 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
         const availableWidth = Math.max(1, areaRect.width - GAP * 2);
         const availableTop = areaRect.top + logoHeight + GAP;
         const availableHeight = Math.max(1, footerTop - GAP - availableTop);
-        const nativeContentWidth = Math.max(
-          1,
-          center.offsetWidth,
-          activeGrid?.offsetWidth ?? 0,
-        );
-        const nativeContentHeight = Math.max(
-          1,
-          center.offsetHeight,
-          activeGrid?.offsetHeight ?? 0,
-        ) + 72;
+        const content = getMeasuredContent(root, center);
+        const nativeContentWidth = Math.max(1, content.right - content.left);
+        const nativeContentHeight = Math.max(1, content.bottom - content.top);
         const scale = Math.max(
           0.01,
           Math.min(
@@ -242,16 +243,25 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
     const observer = new ResizeObserver(scheduleFit);
     observer.observe(root);
     const mutationObserver = new MutationObserver((mutations) => {
-      const requiresFit = mutations.some(
-        (mutation) =>
-          (mutation.attributeName === "class" &&
-            mutation.target === root &&
-            root.classList.contains("doubling-active") !== doublingActive),
-      );
+      const requiresFit = mutations.some((mutation) => {
+        if (mutation.type === "childList") {
+          return Array.from(mutation.addedNodes).some(
+            (node) =>
+              node.nodeType === Node.ELEMENT_NODE &&
+              (node.classList?.contains("grid-bottom-panel") ||
+                node.querySelector?.(".grid-bottom-panel")),
+          );
+        }
+        return mutation.attributeName === "class" &&
+          ((mutation.target === root &&
+            root.classList.contains("doubling-active") !== doublingActive) ||
+            mutation.target.classList?.contains("grid-bottom-panel"));
+      });
       if (requiresFit) scheduleFit();
     });
     mutationObserver.observe(root, {
       attributes: true,
+      childList: true,
       subtree: true,
       attributeFilter: ["class"],
     });

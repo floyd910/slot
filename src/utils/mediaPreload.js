@@ -1,4 +1,4 @@
-import { VIEW2_ASSETS } from "../config/view2Assets.js";
+import { GAME3_VIEW2_ASSETS, GAME6_VIEW2_ASSETS } from "../config/view2Assets.js";
 import {
   DOUBLE_SCENE_ASSETS,
   DEFERRED_GAME_IMAGE_ASSETS,
@@ -368,21 +368,33 @@ const loadStartupAssets = async (onProgress) => {
   warmStartupAudio();
 };
 
-const loadDeferredStartupAssets = async () => {
+const isAssetAllowedForGame = (src, game) => {
+  if (!game || typeof src !== "string") return true;
+  if (game.id === "khocha-afandi") {
+    return !src.includes("/game3-") &&
+      !src.includes("/animations/view2-symbol-");
+  }
+  return !src.includes("/game6-") && !src.includes("/animations/game6/");
+};
+
+const getGameView2Assets = (game) =>
+  game?.id === "khocha-afandi" ? GAME6_VIEW2_ASSETS : GAME3_VIEW2_ASSETS;
+
+const loadDeferredStartupAssets = async (game) => {
   const criticalUrls = new Set(uniqueUrls(FIRST_PAINT_GAME_IMAGE_ASSETS));
   const deferredImages = uniqueUrls([
     ...STARTUP_ASSETS.images,
     ...DEFERRED_GAME_IMAGE_ASSETS,
-    ...VIEW2_ASSETS,
+    ...getGameView2Assets(game),
     ...collectStylesheetImageUrls(),
-  ]).filter((src) => !criticalUrls.has(src));
+  ]).filter((src) => !criticalUrls.has(src) && isAssetAllowedForGame(src, game));
 
   await preloadDeferredImages(deferredImages);
   await runWithConcurrency(STARTUP_ASSETS.audio, 2, preloadAudioData);
   await Promise.all(STARTUP_ASSETS.videos.map(preloadVideo));
 };
 
-let deferredStartupAssetsPromise = null;
+const deferredStartupAssetsPromises = new Map();
 
 // The shell and controller enter the same gate during startup. Share one load
 // so mobile devices do not repeat decode work or attach duplicate media waits.
@@ -406,7 +418,7 @@ export const preloadGameAssets = (game, onProgress) => {
 
   const promise = Promise.all([
     preloadRequiredImages(
-      [game.assets.cover, game.assets.logo, ...FIRST_PAINT_GAME_IMAGE_ASSETS],
+      [game.assets.cover, game.assets.logo, ...FIRST_PAINT_GAME_IMAGE_ASSETS].filter((src) => isAssetAllowedForGame(src, game)),
       onProgress,
     ),
     fontReady(),
@@ -421,9 +433,9 @@ export const preloadGameAssets = (game, onProgress) => {
   gameAssetsPromises.set(cacheKey, promise);
   return promise;
 };
-export const preloadView2FirstPaintAssets = () =>
+export const preloadView2FirstPaintAssets = (game) =>
   preloadImages(
-    VIEW2_ASSETS.filter(
+    getGameView2Assets(game).filter(
       (src) => !src.includes("/assets/img/animations/"),
     ),
     {
@@ -442,17 +454,21 @@ export const preloadDoubleSceneAssets = () =>
     timeoutMs: 60000,
   });
 
-export const preloadDeferredStartupAssets = () => {
-  deferredStartupAssetsPromise ??= loadDeferredStartupAssets().catch((error) => {
-    deferredStartupAssetsPromise = null;
-    throw error;
-  });
-  return deferredStartupAssetsPromise;
+export const preloadDeferredStartupAssets = (game) => {
+  const cacheKey = game?.id ?? "shared";
+  if (!deferredStartupAssetsPromises.has(cacheKey)) {
+    const promise = loadDeferredStartupAssets(game).catch((error) => {
+      deferredStartupAssetsPromises.delete(cacheKey);
+      throw error;
+    });
+    deferredStartupAssetsPromises.set(cacheKey, promise);
+  }
+  return deferredStartupAssetsPromises.get(cacheKey);
 };
 
-export const scheduleDeferredStartupAssets = () => {
+export const scheduleDeferredStartupAssets = (game) => {
   const start = () => {
-    preloadDeferredStartupAssets().catch((error) => console.error(error));
+    preloadDeferredStartupAssets(game).catch((error) => console.error(error));
   };
 
   if ("requestIdleCallback" in window) {
@@ -462,9 +478,9 @@ export const scheduleDeferredStartupAssets = () => {
 
   window.setTimeout(start, 0);
 };
-export const preloadWinAnimations = () =>
+export const preloadWinAnimations = (game) =>
   preloadImages(
-    VIEW2_ASSETS.filter((src) => src.includes("/assets/img/animations/")),
+    getGameView2Assets(game).filter((src) => src.includes("/assets/img/animations/")),
     {
       decode: false,
       fetchPriority: "low",

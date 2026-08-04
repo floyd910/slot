@@ -1112,7 +1112,7 @@ button:disabled {
 }
 
 .frame-app .header_img {
-  z-index: 60 !important;
+  z-index: 2147483200 !important;
 }
 
 @media (min-width: 721px) {
@@ -1140,9 +1140,7 @@ button:disabled {
 }
 
 @media (min-width: 721px) {
-  .frame-app .header_img,
-  .frame-app[data-fluid-fit="true"] .header_img,
-  .frame-app[data-fluid-logo-fit="true"] .header_img {
+  .frame-app:not([data-fluid-fit="true"]):not([data-fluid-logo-fit="true"]) .header_img {
     min-width: 440px;
     height: auto !important;
   }
@@ -1253,3 +1251,24 @@ button:disabled {
 
 
 
+
+/* Large View 2 surfaces: grid follows the logo; the ticket follows the grid. */
+@media (min-width: 1025px) and (min-height: 761px) {
+  .frame-app.view-2:not(.doubling-active)
+    .game-main-layout
+    > .frame-content {
+    position: absolute !important;
+    top: var(--header-content-start, 161px) !important;
+    margin-top: 0 !important;
+    align-items: flex-start;
+  }
+
+  .frame-app.view-2:not(.doubling-active)
+    .grid-bottom-panel[data-ticket-position="above"] {
+    top: calc(100% + 16px);
+    bottom: auto;
+    right: 0;
+    width: 525px;
+    max-width: none;
+  }
+}

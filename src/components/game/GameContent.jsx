@@ -47,8 +47,6 @@ export default function GameContent({ controller, game, runtimeState }) {
   }, [state.spinResult?.Number, state.spinResult?.idCard]);
 
   useLayoutEffect(() => {
-    if (!lastTicket) return undefined;
-
     const ticket = ticketRef.current;
     const center = ticket?.parentElement;
     const root = ticket?.closest(".frame-app");
@@ -79,9 +77,7 @@ export default function GameContent({ controller, game, runtimeState }) {
           56 * scale,
           ticketFooterHeight + 32 * scale,
         );
-        const fitsBelow =
-          centerRect.bottom + gap + collapsedTicketHeight <= footerTop;
-        const nextPosition = fitsBelow ? "below" : "above";
+        const nextPosition = "below";
 
         setTicketPosition((current) =>
           current === nextPosition ? current : nextPosition,
@@ -116,8 +112,8 @@ export default function GameContent({ controller, game, runtimeState }) {
   }, [drawDetailsExpanded, lastTicket, state.visualMode]);
 
 
-  const drawNumber = lastTicket?.drawNumber;
-  const receiptNumber = lastTicket?.receiptNumber;
+  const drawNumber = lastTicket?.drawNumber ?? "—";
+  const receiptNumber = lastTicket?.receiptNumber ?? "—";
 
   if (runtimeState) return runtimeState;
 
@@ -222,7 +218,7 @@ export default function GameContent({ controller, game, runtimeState }) {
                 doublingState={state.doublingState}
               />
             </div>
-            {SHOW_TICKET_PANEL && lastTicket && (
+            {SHOW_TICKET_PANEL && (
             <div
               ref={ticketRef}
               data-ticket-position={ticketPosition}

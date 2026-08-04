@@ -161,7 +161,7 @@ export function useSlotApp({ loadSelectedSlotGame }) {
 
     if (openRequestRef.current !== requestId) return;
     setPendingSlotId(null);
-    scheduleDeferredStartupAssets();
+    scheduleDeferredStartupAssets(slot);
   };
 
   const closeSlot = () => {

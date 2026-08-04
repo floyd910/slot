@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { frameApi } from "../api/frameApi.js";
-import { VIEW2_ASSETS } from "../config/view2Assets.js";
+import { GAME3_VIEW2_ASSETS, GAME6_VIEW2_ASSETS } from "../config/view2Assets.js";
 import {
   CARPET_ANIMATION_HALF_MS,
   CARPET_SOUND_SRC,
@@ -209,17 +209,18 @@ export function useGameController(selectedGameId, gameDefinition = null) {
 
   useEffect(() => {
     if (!startupAssetsReady) return;
-    preloadView2FirstPaintAssets().catch((assetError) => {
+    preloadView2FirstPaintAssets(gameDefinition).catch((assetError) => {
       console.error("View 2 static asset preload failed", assetError);
     });
-  }, [startupAssetsReady]);
+  }, [gameDefinition, startupAssetsReady]);
 
   useEffect(() => {
     if (!visualMode) return;
-    VIEW2_ASSETS.forEach((src) => {
+    const assets = gameDefinition?.id === "khocha-afandi" ? GAME6_VIEW2_ASSETS : GAME3_VIEW2_ASSETS;
+    assets.forEach((src) => {
       preloadImage(src);
     });
-  }, [visualMode]);
+  }, [gameDefinition, visualMode]);
 
   const diagnostics = useMemo(
     () => ({
