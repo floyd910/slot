@@ -1,7 +1,9 @@
 .game-menu-layer {
   position: fixed;
   inset: 0;
-  z-index: 60;
+  z-index: 2147483647;
+  isolation: isolate;
+  pointer-events: auto;
   display: flex;
   align-items: flex-start;
   justify-content: flex-end;
@@ -72,7 +74,9 @@
 .game-rules-screen {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: 2147483647;
+  isolation: isolate;
+  pointer-events: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -322,3 +326,34 @@
   }
 }
 
+
+/* Keep the portaled menu interactive above every game layer. */
+.game-menu-panel,
+.game-menu-panel button,
+.game-rules-screen,
+.game-rules-screen button {
+  pointer-events: auto;
+}
+
+.game-menu-panel {
+  z-index: 1;
+}
+
+.game-menu-panel > button:not(.game-menu-panel__close) {
+  transition: color 160ms ease;
+}
+
+.game-menu-panel > button:not(.game-menu-panel__close):hover,
+.game-menu-panel > button:not(.game-menu-panel__close):focus-visible {
+  color: var(--game-accent-dark, #d6aa38);
+  outline: none;
+}
+.game-rules-screen[data-game-id="khocha-afandi"] {
+  background: linear-gradient(145deg, rgb(176, 144, 83) 0%, rgb(132, 74, 32) 46.63%, rgb(176, 144, 83) 100%);
+}
+/* Never let a stale game portal block the slot chooser. */
+.app-root[data-playing="false"] ~ .game-menu-layer,
+.app-root[data-playing="false"] ~ .game-rules-screen {
+  display: none !important;
+  pointer-events: none !important;
+}

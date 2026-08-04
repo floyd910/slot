@@ -315,3 +315,24 @@
     line-height: normal;
   }
 }
+
+/* Keep every chest spotlight attached to the header edge. */
+.view2-double {
+  --double-header-height: 48px;
+  --double-scene-height: calc(
+    var(--app-viewport-height, 100dvh) - var(--double-header-height)
+  );
+}
+
+.view2-double .view2-double__spotlight {
+  height: calc(
+    var(--double-scene-height) - var(--choices-bottom) +
+      var(--choices-shift-y) + 1px
+  );
+}
+
+@media (orientation: landscape) and (max-height: 620px) {
+  .view2-double {
+    --double-header-height: 32px;
+  }
+}

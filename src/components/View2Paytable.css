@@ -8,26 +8,7 @@
   overflow: visible;
   padding: 20px 0 30px;
   border-radius: 18px;
-  background:
-    linear-gradient(
-      145deg,
-      rgba(100, 106, 225, 0.1) 0%,
-      rgba(22, 17, 170, 0.1) 46.63%,
-      rgba(106, 162, 230, 0.1) 100%
-    ),
-    linear-gradient(
-      145deg,
-      rgba(29, 29, 29, 0.64) 0%,
-      rgba(25, 25, 25, 0.64) 46.63%,
-      rgba(60, 60, 60, 0.64) 100%
-    ),
-    linear-gradient(0deg, #000 0%, #000 100%),
-    linear-gradient(
-      0deg,
-      var(--game-highlight, rgba(255, 255, 255, 0.1)) 0%,
-      var(--game-highlight, rgba(255, 255, 255, 0.1)) 100%
-    ),
-    rgba(13, 13, 13, 0.6);
+  background: rgba(0, 0, 0, 0.5);
   color: var(--game-accent-light, #e6c36a);
   font-family: "Prosto One", Arial, Helvetica, sans-serif;
   letter-spacing: 0;
@@ -59,18 +40,9 @@
 .view2-info-card {
   display: flex;
   align-items: center;
-  border: 1.031px solid rgba(255, 255, 255, 0.2);
-  background:
-    linear-gradient(
-      320deg,
-      rgba(20, 0, 5, 0.64) 2.87%,
-      rgba(33, 0, 42, 0.64) 46.83%,
-      rgba(20, 0, 5, 0.64) 97.13%
-    ),
-    var(--game-highlight, rgba(255, 255, 255, 0.1));
-  box-shadow:
-    0 4.126px 6.188px 0 var(--game-shadow-soft, rgba(0, 0, 0, 0.1)),
-    0 0 10.314px 1.031px var(--game-highlight, rgba(255, 255, 255, 0.1)) inset;
+  border: 1.031px solid #fff;
+  background: linear-gradient(320deg, rgba(44, 28, 0, 0.64) 2.87%, rgba(0, 0, 0, 0.64) 46.83%, rgba(44, 28, 0, 0.64) 97.13%), rgba(255, 255, 255, 0.10);
+  box-shadow: 0 0 10.314px 1.031px rgba(255, 255, 255, 0.10) inset, 0 4.126px 6.188px 0 rgba(0, 0, 0, 0.10);
 }
 
 .view2-info-card.--left-top,
@@ -191,17 +163,8 @@
   align-items: center;
   width: 569.32px;
   border: 0;
-  background:
-    linear-gradient(
-      320deg,
-      rgba(20, 0, 5, 0.64) 2.87%,
-      rgba(87, 2, 112, 0.64) 46.83%,
-      rgba(20, 0, 5, 0.64) 97.13%
-    ),
-    var(--game-highlight, rgba(255, 255, 255, 0.1));
-  box-shadow:
-    0 0 10.314px 1.031px var(--game-highlight, rgba(255, 255, 255, 0.1)) inset,
-    0 4.126px 6.188px 0 var(--game-shadow-soft, rgba(0, 0, 0, 0.1));
+  background: linear-gradient(320deg, rgba(44, 28, 0, 0.64) 2.87%, rgba(0, 0, 0, 0.64) 46.83%, rgba(44, 28, 0, 0.64) 97.13%), rgba(255, 255, 255, 0.10);
+  box-shadow: 0 0 10.314px 1.031px rgba(255, 255, 255, 0.10) inset, 0 4.126px 6.188px 0 rgba(0, 0, 0, 0.10);
 }
 
 .main-card-top {
@@ -256,17 +219,8 @@
 
 .view2-info-coeff-card {
   width: 407.394px;
-  background:
-    linear-gradient(
-      320deg,
-      rgba(20, 0, 5, 0.64) 2.87%,
-      rgba(87, 2, 112, 0.64) 46.83%,
-      rgba(20, 0, 5, 0.64) 97.13%
-    ),
-    var(--game-highlight, rgba(255, 255, 255, 0.1));
-  box-shadow:
-    0 0 10.314px 1.031px var(--game-highlight, rgba(255, 255, 255, 0.1)) inset,
-    0 4.126px 6.188px 0 var(--game-shadow-soft, rgba(0, 0, 0, 0.1));
+  background: linear-gradient(320deg, rgba(44, 28, 0, 0.64) 2.87%, rgba(0, 0, 0, 0.64) 46.83%, rgba(44, 28, 0, 0.64) 97.13%), rgba(255, 255, 255, 0.10);
+  box-shadow: 0 0 10.314px 1.031px rgba(255, 255, 255, 0.10) inset, 0 4.126px 6.188px 0 rgba(0, 0, 0, 0.10);
 }
 
 .zero-card-top {
@@ -277,7 +231,7 @@
 .view2-info-coeff-card__payout {
   width: 80%;
   padding: 0;
-  border: 2.063px solid var(--game-accent-border, #e1bf64);
+  border: 2.063px solid #fff;
   border-radius: 12.377px;
 }
 
@@ -301,7 +255,7 @@
 }
 
 .view2-info-coeff-card__payout .view2-info-payout-row:last-child {
-  border-top: 2.063px solid var(--game-accent-border, #e1bf64);
+  border-top: 2.063px solid #fff;
   background: transparent;
 }
 
@@ -427,7 +381,7 @@
   width: 100%;
   height: 100%;
   padding: 0;
-  border: 4px solid var(--game-accent-border, #e1bf64);
+  border: 4px solid #fff;
   pointer-events: none;
   user-select: none;
 }

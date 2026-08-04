@@ -91,13 +91,14 @@ export default function GameShell({ controller, game, onBackToSlots }) {
                 language={language}
                 payoutMultiplier={paytableView.payoutMultiplier}
                 zeroPayoutMultiplier={paytableView.zeroPayoutMultiplier}
+                symbolAssets={game.assets.view2Symbols}
               />
             )}
           </section>
         ) : (
           <div className="game-main-layout">
             <div className="frame-content">
-              <GameContent controller={controller} runtimeState={runtimeState} />
+              <GameContent controller={controller} game={game} runtimeState={runtimeState} />
             </div>
             {!runtimeState && (
               <>
@@ -152,6 +153,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
 
         {state.showPaytable && !state.visualMode && (
           <Paytable
+            gameId={game.id}
             rows={state.paytableRows}
             loading={state.paytableStatus === "loading"}
             error={
@@ -165,7 +167,9 @@ export default function GameShell({ controller, game, onBackToSlots }) {
         )}
         {state.showGameMenu && (
           <GameMenu
+            gameId={game.id}
             onClose={() => actions.setShowGameMenu(false)}
+            onBackToSlots={onBackToSlots}
           />
         )}
         {state.showFreeSpinPrompt && (

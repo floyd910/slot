@@ -44,7 +44,7 @@ export const GAME_COLORS = Object.freeze({
   hiranmandi: GAME3_COLORS,
   "golden-dice": placeholderPalette("#8bd36f"),
   "caravan-spins": placeholderPalette("#58d5c9"),
-  "royal-keno": placeholderPalette("#8fb3ff"),
+  "khocha-afandi": placeholderPalette("#8fb3ff"),
   "star-bazaar": placeholderPalette("#b58cff"),
   "double-bonus": placeholderPalette("#ff7a59"),
 });

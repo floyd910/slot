@@ -374,6 +374,7 @@ button:disabled {
   }
 
   .view-2 .lottery-grid-view2 {
+    --win-line-gap: 16px;
     column-gap: 16px;
     row-gap: 16px;
     padding-inline: 16px;
@@ -476,6 +477,7 @@ button:disabled {
     box-sizing: border-box;
     width: 100%;
     grid-template-columns: repeat(5, minmax(0, 1fr));
+    --win-line-gap: 8px;
     column-gap: 8px;
     row-gap: 8px;
     padding: 8px;
@@ -1230,6 +1232,7 @@ button:disabled {
 
   .frame-app[data-fluid-fit="true"].view-2 .lottery-grid-view2 {
     grid-template-columns: repeat(5, max-content);
+    --win-line-gap: 24px;
     column-gap: 24px;
     row-gap: 24px;
     padding: 16px 24px;

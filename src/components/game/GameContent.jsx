@@ -28,7 +28,7 @@ const TICKET_COPY = {
 };
 const SHOW_TICKET_PANEL = true;
 
-export default function GameContent({ controller, runtimeState }) {
+export default function GameContent({ controller, game, runtimeState }) {
   const { language, t } = useLanguage();
   const ticketCopy = TICKET_COPY[language] ?? TICKET_COPY.ru;
   const [drawDetailsExpanded, setDrawDetailsExpanded] = useState(false);
@@ -186,6 +186,7 @@ export default function GameContent({ controller, runtimeState }) {
               inert={state.visualMode ? "" : undefined}
             >
               <LotteryGrid
+                symbolAssets={game.assets.view2Symbols}
                 grid={state.grid}
                 revealKey={state.gridRevealKey}
                 animationState={state.visualMode ? "idle" : state.gridAnimation}
@@ -207,6 +208,7 @@ export default function GameContent({ controller, runtimeState }) {
               inert={state.visualMode ? undefined : ""}
             >
               <LotteryGrid
+                symbolAssets={game.assets.view2Symbols}
                 grid={state.grid}
                 revealKey={state.gridRevealKey}
                 animationState={state.visualMode ? state.gridAnimation : "idle"}

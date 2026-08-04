@@ -25,7 +25,6 @@ const getVisibleFooter = (root) =>
 
 const getMeasuredContent = (root, center) => {
   const activeGrid = center.querySelector(".preloaded-grid-view--active .lottery-grid");
-  const ticket = center.querySelector(".grid-bottom-panel");
   const elements = [
     root.querySelector(".main-container__left"),
     center,
@@ -34,44 +33,6 @@ const getMeasuredContent = (root, center) => {
   ].filter(isVisible);
   const rects = elements.map((element) => element.getBoundingClientRect());
 
-  if (isVisible(ticket)) {
-    const ticketRect = ticket.getBoundingClientRect();
-    if (ticket.classList.contains("grid-bottom-panel--expanded")) {
-      const centerRect = center.getBoundingClientRect();
-      const scale = center.offsetWidth
-        ? centerRect.width / center.offsetWidth
-        : 1;
-      const collapsedHeight = 56 * scale;
-      const opensUp = ticket.dataset.ticketExpansion === "up";
-      const sitsAbove = ticket.dataset.ticketPosition === "above";
-      const top = sitsAbove || !opensUp
-        ? ticketRect.top
-        : ticketRect.bottom - collapsedHeight;
-      rects.push({
-        top,
-        bottom: top + collapsedHeight,
-        left: ticketRect.left,
-        right: ticketRect.right,
-      });
-    } else {
-      rects.push(ticketRect);
-    }
-    elements.push(ticket);
-  } else {
-    const centerRect = center.getBoundingClientRect();
-    const scale = center.offsetWidth
-      ? centerRect.width / center.offsetWidth
-      : 1;
-    const gap = 16 * scale;
-    const collapsedHeight = 56 * scale;
-    const top = centerRect.bottom + gap;
-    rects.push({
-      top,
-      bottom: top + collapsedHeight,
-      left: centerRect.left,
-      right: centerRect.right,
-    });
-  }
 
   return {
     activeGrid,
@@ -180,12 +141,12 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
         const nativeContentWidth = Math.max(
           1,
           center.offsetWidth,
-          activeGrid?.scrollWidth ?? 0,
+          activeGrid?.offsetWidth ?? 0,
         );
         const nativeContentHeight = Math.max(
           1,
           center.offsetHeight,
-          activeGrid?.scrollHeight ?? 0,
+          activeGrid?.offsetHeight ?? 0,
         ) + 72;
         const scale = Math.max(
           0.01,
@@ -283,7 +244,6 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
     const mutationObserver = new MutationObserver((mutations) => {
       const requiresFit = mutations.some(
         (mutation) =>
-          mutation.attributeName === "data-ticket-position" ||
           (mutation.attributeName === "class" &&
             mutation.target === root &&
             root.classList.contains("doubling-active") !== doublingActive),
@@ -293,7 +253,7 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
     mutationObserver.observe(root, {
       attributes: true,
       subtree: true,
-      attributeFilter: ["class", "data-ticket-position"],
+      attributeFilter: ["class"],
     });
     window.addEventListener("resize", scheduleFit);
     document.fonts?.ready.then(scheduleFit);

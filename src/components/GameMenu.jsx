@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useLanguage } from "../i18n";
 import "./GameMenu.css";
 const RULES_COPY = {
@@ -31,10 +32,14 @@ const RULE_LINES = [
   [10, 11, 7, 3, 4],
 ];
 
-export default function GameMenu({ onClose }) {
-  const { language } = useLanguage();
+export default function GameMenu({ gameId, onClose, onBackToSlots }) {
+  const { language, t } = useLanguage();
   const rulesCopy = RULES_COPY[language] ?? RULES_COPY.ru;
   const [showRules, setShowRules] = useState(false);
+  const handleBackToSlots = () => {
+    onClose?.();
+    onBackToSlots?.();
+  };
   const ruleBoxRefs = useRef([]);
   const ruleGridRefs = useRef([]);
   const ruleLabelRefs = useRef([]);
@@ -96,8 +101,12 @@ export default function GameMenu({ onClose }) {
   }, [language, showRules]);
 
   if (showRules) {
-    return (
-      <section className="game-rules-screen" aria-label={rulesCopy.rulesLabel}>
+    return createPortal(
+      <section
+        className="game-rules-screen"
+        data-game-id={gameId}
+        aria-label={rulesCopy.rulesLabel}
+      >
         <button
           className="game-rules-screen__close"
           type="button"
@@ -153,11 +162,12 @@ export default function GameMenu({ onClose }) {
             ))}
           </div>
         </div>
-      </section>
+      </section>,
+      document.body,
     );
   }
 
-  return (
+  return createPortal(
     <div
       className="game-menu-layer"
       role="presentation"
@@ -176,11 +186,15 @@ export default function GameMenu({ onClose }) {
         >
           <img src="/img/ui/game-menu-close.png" alt="" />
         </button>
+        <button type="button" onClick={handleBackToSlots}>
+          {t("menu")}
+        </button>
         <button type="button">{rulesCopy.historyButton}</button>
         <button type="button" onClick={() => setShowRules(true)}>
           {rulesCopy.rulesButton}
         </button>
       </nav>
-    </div>
+    </div>,
+    document.body,
   );
 }

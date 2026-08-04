@@ -57,6 +57,7 @@
 
 .lottery-grid-view1__column-labels,
 .lottery-grid-view1__row-cells {
+  --win-line-gap: 8px;
   display: grid;
   grid-template-columns: repeat(5, 83.8px);
   gap: 8px;
@@ -91,6 +92,10 @@
   place-items: center; /* Shorthand for justify-items and align-items: center */
   border-radius: 8px;
   background: linear-gradient(145deg, var(--game-accent-border, #e1bf64) 0%, var(--game-accent-dark, #aa7c11) 46.63%, var(--game-accent-light, #e6c36a) 100%);
+}
+
+.configured-game[data-game-id="khocha-afandi"] .lottery-grid-view1-cell {
+  background: url("/assets/img/game6-view1-cell-background.webp") center / 100% 100%;
 }
 
 .lottery-grid-view1__top .lottery-grid-view1-cell--win-highlight {
@@ -225,6 +230,7 @@
 }
 
 .lottery-grid-view2 {
+  --win-line-gap: 24px;
   display: grid;
   grid-template-columns: repeat(5, max-content);
   grid-template-rows: repeat(3, max-content);
@@ -271,9 +277,21 @@
     linear-gradient(145deg, #648ee1 0%, #1116aa 46.63%, #648ee1 100%), #fff;
 }
 
+.configured-game[data-game-id="khocha-afandi"]
+  .lottery-grid-view2-cell--symbol-1
+  .lottery-grid-view2-cell__container {
+  background: url("/assets/img/game6-view2-symbol1-background.webp") center / cover;
+}
+
 .lottery-grid-view2-cell--symbol-2 .lottery-grid-view2-cell__container {
   background:
     linear-gradient(145deg, var(--game-accent-border, #e1bf64) 0%, var(--game-accent-dark, #aa7c11) 46.63%, var(--game-accent-light, #e6c36a) 100%), #fff;
+}
+
+.configured-game[data-game-id="khocha-afandi"]
+  .lottery-grid-view2-cell--symbol-2
+  .lottery-grid-view2-cell__container {
+  background: url("/assets/img/game6-view2-symbol2-background.webp") center / cover;
 }
 
 .lottery-grid-view2-cell--symbol-3 .lottery-grid-view2-cell__container {
@@ -281,9 +299,21 @@
     linear-gradient(145deg, #e16464 0%, var(--game-error-dark, #aa1111) 46.63%, #e16464 100%), #fff;
 }
 
+.configured-game[data-game-id="khocha-afandi"]
+  .lottery-grid-view2-cell--symbol-3
+  .lottery-grid-view2-cell__container {
+  background: url("/assets/img/game6-view2-symbol3-background.webp") center / cover;
+}
+
 .lottery-grid-view2-cell--symbol-4 .lottery-grid-view2-cell__container {
   background:
     linear-gradient(145deg, #e1a264 0%, #aa4c11 46.63%, #e1a264 100%), #fff;
+}
+
+.configured-game[data-game-id="khocha-afandi"]
+  .lottery-grid-view2-cell--symbol-4
+  .lottery-grid-view2-cell__container {
+  background: url("/assets/img/game6-view2-symbol4-background.webp") center / cover;
 }
 
 .lottery-grid-view2-cell--symbol-5 .lottery-grid-view2-cell__container {
@@ -291,10 +321,23 @@
     linear-gradient(145deg, #6ee164 0%, #00880e 46.63%, #6ee164 100%), #fff;
 }
 
+.configured-game[data-game-id="khocha-afandi"]
+  .lottery-grid-view2-cell--symbol-5
+  .lottery-grid-view2-cell__container {
+  background: url("/assets/img/game6-view2-symbol5-background.webp") center / cover;
+}
+
 .lottery-grid-view2-cell--symbol-6 .lottery-grid-view2-cell__container {
   background:
     linear-gradient(145deg, #cc64e1 0%, #790091 46.63%, #cc64e1 100%), #fff;
 }
+
+.configured-game[data-game-id="khocha-afandi"]
+  .lottery-grid-view2-cell--symbol-6
+  .lottery-grid-view2-cell__container {
+  background: url("/assets/img/game6-view2-symbol6-background.webp") center / cover;
+}
+
 
 .lottery-grid-view2-cell__container {
   position: relative;
@@ -330,6 +373,8 @@
   object-fit: fill;
   transform: none;
 }
+
+
 
 .lottery-grid-view2-cell--dice .lottery-grid-view2-cell__image {
   width: 100px;
@@ -780,6 +825,12 @@
   }
 }
 
+.grid-bottom-panel,
+.grid-bottom-panel * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .grid-bottom-panel__receipt {
   color: #fff;
   font-family: Roboto, sans-serif;
@@ -846,25 +897,21 @@
 }
 
 .win-line-overlay--view1 {
-  --win-line-gap: 8px;
   --win-line-end-gap: 15px;
 }
 
 .win-line-overlay--view2 {
-  --win-line-gap: 24px;
   --win-line-end-gap: 24px;
 }
 
 @media (max-width: 1280px) {
   .win-line-overlay--view2 {
-    --win-line-gap: 16px;
     --win-line-end-gap: 16px;
   }
 }
 
 @media (max-width: 750px) {
   .win-line-overlay--view2 {
-    --win-line-gap: 8px;
     --win-line-end-gap: 8px;
   }
 }

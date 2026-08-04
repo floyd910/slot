@@ -51,6 +51,7 @@ export default function Paytable({
   loading,
   error,
   visualMode = false,
+  gameId,
   stake = BASE_PAYOUT_STAKE,
   selectedCombination,
   onClose,
@@ -63,6 +64,7 @@ export default function Paytable({
   const modal = (
     <section
       className={`info-modal${visualMode ? " --view2" : ""}`}
+      data-game-id={gameId}
       aria-label={copy.title}
     >
       <button

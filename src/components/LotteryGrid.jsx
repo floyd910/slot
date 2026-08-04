@@ -12,6 +12,7 @@ export default function LotteryGrid({
   revealKey = 0,
   animationState = "idle",
   visualMode,
+  symbolAssets = {},
   autoSequence = false,
   winningCells = [],
   winningGroups = [],
@@ -67,7 +68,7 @@ export default function LotteryGrid({
     <div className="lottery-grid lottery-grid--view2">
       <div className="lottery-grid-view2">
         {model.cells.map(({ key, ...cell }) => (
-          <View2Cell key={key} {...cell} />
+          <View2Cell key={key} symbolAssets={symbolAssets} {...cell} />
         ))}
         <View2Cover {...model.cover} />
       </div>
@@ -99,6 +100,7 @@ function View2Cover({ animationState, closeMs, openMs }) {
 
 function View2Cell({
   digit,
+  symbolAssets = {},
   autoSequence = false,
   animated = false,
   highlighted = false,
@@ -122,6 +124,7 @@ function View2Cell({
       animationKey={animationKey}
       winLineDimmed={winLineDimmed}
       winLineOverlay={winLineOverlay}
+      {...(symbolAssets[symbol] ?? {})}
     />
   );
 }

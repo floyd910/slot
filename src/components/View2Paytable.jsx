@@ -1,3 +1,4 @@
+import { createContext, useContext } from "react";
 import "./View2Paytable.css";
 import { getView2MatchPayout } from "../viewModels/view2PaytableViewModel.js";
 
@@ -16,10 +17,21 @@ const VIEW2_COPY = {
   },
 };
 
-const getSymbolImage = (symbol) =>
-  `/assets/img/info-symbols/view2-symbol-${symbol}.webp?v=20260801-assets-lossless`;
+const View2SymbolAssetsContext = createContext({});
+
+const getSymbolImage = (symbol, symbolAssets) => {
+  const gameAsset = symbolAssets?.[symbol];
+  const gameStaticImage = typeof gameAsset === "string"
+    ? gameAsset
+    : gameAsset?.staticImage;
+
+  return gameStaticImage
+    ?? `/assets/img/info-symbols/view2-symbol-${symbol}.webp?v=20260801-assets-lossless`;
+};
 
 function SymbolTile({ symbol, imageSymbol = symbol, className = "" }) {
+  const symbolAssets = useContext(View2SymbolAssetsContext);
+
   return (
     <span
       className={`view2-info-symbol ${className} symbol-${symbol} info-symbol`}
@@ -27,7 +39,7 @@ function SymbolTile({ symbol, imageSymbol = symbol, className = "" }) {
     >
       <img
         className="view2-info-symbol__item"
-        src={getSymbolImage(imageSymbol)}
+        src={getSymbolImage(imageSymbol, symbolAssets)}
         alt=""
       />
     </span>
@@ -67,14 +79,16 @@ export default function View2Paytable({
   language,
   payoutMultiplier,
   zeroPayoutMultiplier = payoutMultiplier,
+  symbolAssets = {},
 }) {
   const copy = VIEW2_COPY[language] ?? VIEW2_COPY.ru;
 
   return (
-    <div
-      className="view2-info-paytable"
-      aria-label={copy.ariaLabel}
-    >
+    <View2SymbolAssetsContext.Provider value={symbolAssets}>
+      <div
+        className="view2-info-paytable"
+        aria-label={copy.ariaLabel}
+      >
       {/* 
       <SymbolTile symbol={11} className="--decor --camel" />
       <SymbolTile symbol={1} className="--decor --dice-left-a" />
@@ -277,7 +291,7 @@ export default function View2Paytable({
           </p>
         </article>
       </div>
-    </div>
+      </div>
+    </View2SymbolAssetsContext.Provider>
   );
 }
-
