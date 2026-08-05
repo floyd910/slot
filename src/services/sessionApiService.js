@@ -3,7 +3,7 @@ import {
   getGames as getMockGames,
   getPaytable as getMockPaytable,
 } from "../api/mockSlotBackend.js";
-import { mergeRuntimeConfig } from "../api/runtimeConfig.js";
+import { getSoapEndpoint, mergeRuntimeConfig, useSoapBackend } from "../api/runtimeConfig.js";
 
 const validateSessionContext = (params = {}) => {
   if (params.maintenance) {
@@ -20,6 +20,37 @@ const validateSessionContext = (params = {}) => {
     const error = new Error("Missing sessionId parameter");
     error.code = "INVALID_SESSION";
     throw error;
+  }
+  if (import.meta.env.PROD && params.backendMode === "mock") {
+    const error = new Error("Mock backend is disabled in production");
+    error.code = "CONFIGURATION_ERROR";
+    throw error;
+  }
+  if (useSoapBackend()) {
+    const requiredSoapFields = [
+      ["idPartner", params.idPartner ?? params.partnerId],
+      ["idKassi", params.idKassi],
+      ["idValute", params.idValute],
+      ["idUser", params.idUser ?? params.userId],
+      ["login", params.login],
+      ["password", params.password],
+    ];
+    const missingSoapFields = requiredSoapFields
+      .filter(([, value]) => value == null || value === "")
+      .map(([field]) => field);
+    if (missingSoapFields.length) {
+      const error = new Error(
+        `Missing required SOAP context: ${missingSoapFields.join(", ")}`,
+      );
+      error.code = "CONFIGURATION_ERROR";
+      throw error;
+    }
+    const endpoint = new URL(getSoapEndpoint(), window.location.origin);
+    if (import.meta.env.PROD && endpoint.protocol !== "https:") {
+      const error = new Error("Production backend must use HTTPS");
+      error.code = "CONFIGURATION_ERROR";
+      throw error;
+    }
   }
   if (!params.gameId) {
     const error = new Error("Missing gameId parameter");

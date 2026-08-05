@@ -88,7 +88,7 @@ export class StateRecoveryService {
     return {
       requestId: operation.requestId ?? null,
       roundId: operation.roundId ?? operation.idCard ?? null,
-      sessionId: context.sessionId ?? operation.sessionId ?? null,
+
       gameId: context.gameId ?? operation.gameId ?? null,
       idCard: operation.idCard ?? null,
       methodName: operation.methodName ?? null,

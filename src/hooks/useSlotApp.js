@@ -24,6 +24,17 @@ const waitForAnimationFrame = () =>
   new Promise((resolve) => window.requestAnimationFrame(resolve));
 
 const MOUNTED_IMAGE_WAIT_MS = 8000;
+const SLOT_CHOOSER_ROUTE = "/slots";
+
+const readHashGameId = () => {
+  const match = window.location.hash.match(/^#\/games\/([^/?#]+)$/);
+  return match ? decodeURIComponent(match[1]) : null;
+};
+
+const setHashRoute = (route) => {
+  const nextHash = `#${route}`;
+  if (window.location.hash !== nextHash) window.location.hash = nextHash;
+};
 
 const waitForMountedImage = async (image) => {
   if (!image.complete || image.naturalWidth === 0) {
@@ -135,6 +146,8 @@ export function useSlotApp({ loadSelectedSlotGame }) {
   const openSlot = async (slot) => {
     if (slot.status !== "ready" || selectedSlotId || pendingSlotId) return;
 
+    setHashRoute(`/games/${encodeURIComponent(slot.id)}`);
+
     const requestId = openRequestRef.current + 1;
     openRequestRef.current = requestId;
     setGameLoadProgress(0);
@@ -165,11 +178,46 @@ export function useSlotApp({ loadSelectedSlotGame }) {
   };
 
   const closeSlot = () => {
+    setHashRoute(SLOT_CHOOSER_ROUTE);
     openRequestRef.current += 1;
     setPendingSlotId(null);
     setSelectedSlotId(null);
   };
 
+  useEffect(() => {
+    const applyHashRoute = () => {
+      const gameId = readHashGameId();
+      if (!gameId) {
+        if (window.location.hash !== `#${SLOT_CHOOSER_ROUTE}`) {
+          window.history.replaceState(
+            window.history.state,
+            "",
+            `${window.location.pathname}${window.location.search}#${SLOT_CHOOSER_ROUTE}`,
+          );
+        }
+        if (selectedSlotId || pendingSlotId) closeSlot();
+        return;
+      }
+
+      const slot = GAME_DEFINITIONS.find((game) => game.id === gameId);
+      if (!slot) {
+        setHashRoute(SLOT_CHOOSER_ROUTE);
+        return;
+      }
+      if (selectedSlotId === gameId || pendingSlotId === gameId) return;
+      if (selectedSlotId || pendingSlotId) {
+        openRequestRef.current += 1;
+        setPendingSlotId(null);
+        setSelectedSlotId(null);
+        return;
+      }
+      if (chooserAssetsReady) openSlot(slot);
+    };
+
+    applyHashRoute();
+    window.addEventListener("hashchange", applyHashRoute);
+    return () => window.removeEventListener("hashchange", applyHashRoute);
+  }, [chooserAssetsReady, pendingSlotId, selectedSlotId]);
   return {
     chooserAssetsReady,
     chooserLoadProgress,

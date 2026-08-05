@@ -18,6 +18,7 @@ export default function SharedGame({ game, onBack }) {
       <Header
         menuOpen={controller.state.showGameMenu}
         onMenuOpen={() => controller.actions.setShowGameMenu(true)}
+        onBackToSlots={onBack}
         onSoundToggle={controller.actions.toggleSound}
         onViewToggle={controller.actions.toggleVisualMode}
         soundEnabled={controller.state.soundEnabled}

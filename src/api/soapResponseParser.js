@@ -5,13 +5,17 @@ import { normalizeSpinResult } from "../models/spinResult.js";
 import { mapSpinPayload } from "./slotPayloadMappers.js";
 import { readAttributes } from "./soapClient.js";
 import { parseSoapError } from "./soapFaultParser.js";
+import { validateSoapContract } from "./soapContract.js";
 
 export { parseSoapError };
 
-export const parseSpinResponse = (document, params = {}) =>
-  normalizeSpinResult(mapSpinPayload(document, params));
+export const parseSpinResponse = (document, params = {}) => {
+  validateSoapContract(document, params);
+  return normalizeSpinResult(mapSpinPayload(document, params));
+};
 
 export const parseDoubleResponse = (document, params = {}) => {
+  validateSoapContract(document, params);
   const attrs = readAttributes(document, "GameResult");
   const winSum = asNumber(attrs.WinSum, 0);
 
@@ -27,6 +31,7 @@ export const parseDoubleResponse = (document, params = {}) => {
 };
 
 export const parsePayResponse = (document, params = {}) => {
+  validateSoapContract(document, params);
   const attrs = readAttributes(document, "GameResult");
   return normalizePayResult({
     ...attrs,

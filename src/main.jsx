@@ -4,17 +4,6 @@ import "./styles.css";
 import App from "./App.jsx";
 import { LanguageProvider } from "./i18n.jsx";
 
-const HOSTED_LAUNCH_HOST = "raxshloto.online";
-const DEFAULT_HOSTED_LAUNCH_URL =
-  "https://raxshloto.online/?mode=standalone&token=partner-token&sessionId=partner-session&userId=partner-user&gameId=hiranmandi&currency=GEL&locale=en&backendMode=soap&testMode=false&demoMode=false&backendTestParams=false";
-
-if (
-  window.location.hostname === HOSTED_LAUNCH_HOST &&
-  window.location.pathname === "/" &&
-  window.location.search === ""
-) {
-  window.location.replace(DEFAULT_HOSTED_LAUNCH_URL);
-}
 let compactLayoutFrame;
 
 const getViewportSize = () => {

@@ -1,48 +1,61 @@
 import { asNumber } from "../utils/number.js";
 import {
   getBackendTestParams,
+  getRuntimeConfig,
   useBackendTestParams,
 } from "./runtimeConfig.js";
+import { SOAP_CONTRACT_VERSION } from "./soapContract.js";
 import {
   GAME_NUMERIC_ID,
   formatSoapDateTime,
   xmlEscape,
 } from "./soapClient.js";
 
-const FRAME_SPIN_DEFAULTS = {
-  idPartner: "1",
-  idKassi: "70",
-  idValute: "1",
-  idUser: "1",
-  login: "testslot",
-  password: "1",
-  idGame: GAME_NUMERIC_ID,
-};
-
 const readConfigValue = (...values) =>
   values.find((value) => value != null && value !== "");
 
+const configurationError = (field) => {
+  const error = new Error(`Missing required SOAP configuration: ${field}`);
+  error.code = "CONFIGURATION_ERROR";
+  return error;
+};
 
-const getSpinValue = (testParams, key, fallback) =>
-  useBackendTestParams()
-    ? readConfigValue(testParams[key], fallback, FRAME_SPIN_DEFAULTS[key])
-    : fallback;
+const requireConfigValue = (config, field, ...aliases) => {
+  const value = readConfigValue(
+    config[field],
+    ...aliases.map((alias) => config[alias]),
+  );
+  if (value == null || value === "") throw configurationError(field);
+  return value;
+};
+
+const getSoapRequestConfig = () => {
+  const runtime = getRuntimeConfig();
+  const test = useBackendTestParams() ? getBackendTestParams() : {};
+  return { ...runtime, ...test };
+};
+
+const messageAttributes = (messageType) =>
+  `MessageType="${messageType}" MessageDateTime="${formatSoapDateTime()}" MessageFormatVersion="${SOAP_CONTRACT_VERSION}"`;
 
 export const buildSpinRequest = ({ stake, lines, isDemo, isFreeSpin } = {}) => {
+  const config = getSoapRequestConfig();
   const freeSpin = Boolean(isFreeSpin);
-  const testParams = getBackendTestParams();
-  const sum = getSpinValue(testParams, "sum", stake);
-  const selectedLines = getSpinValue(testParams, "lines", lines);
+  const sum = asNumber(stake, 0);
+  const selectedLines = asNumber(lines, 0);
+  if (!(sum >= 0)) throw configurationError("stake");
+  if (!(selectedLines > 0)) throw configurationError("lines");
+
   const spin = {
-    idPartner: getSpinValue(testParams, "idPartner", FRAME_SPIN_DEFAULTS.idPartner),
-    idKassi: getSpinValue(testParams, "idKassi", FRAME_SPIN_DEFAULTS.idKassi),
-    idValute: getSpinValue(testParams, "idValute", FRAME_SPIN_DEFAULTS.idValute),
+    idPartner: requireConfigValue(config, "idPartner", "partnerId"),
+    idKassi: requireConfigValue(config, "idKassi"),
+    idValute: requireConfigValue(config, "idValute"),
     sum,
     selectedLines,
-    idUser: getSpinValue(testParams, "idUser", FRAME_SPIN_DEFAULTS.idUser),
-    login: getSpinValue(testParams, "login", FRAME_SPIN_DEFAULTS.login),
-    password: getSpinValue(testParams, "password", FRAME_SPIN_DEFAULTS.password),
-    idGame: getSpinValue(testParams, "idGame", FRAME_SPIN_DEFAULTS.idGame),
+    idUser: requireConfigValue(config, "idUser", "userId"),
+    login: requireConfigValue(config, "login"),
+    password: requireConfigValue(config, "password"),
+    idGame: readConfigValue(config.backendGameId, config.idGame, GAME_NUMERIC_ID),
   };
 
   const spinAttributes = [
@@ -61,30 +74,39 @@ export const buildSpinRequest = ({ stake, lines, isDemo, isFreeSpin } = {}) => {
     .map(([key, value]) => `${key}="${xmlEscape(value)}"`)
     .join(" ");
 
+  const methodName = "SetSlotSpinHiranmandiFrame";
   return {
-    methodName: "SetSlotSpinHiranmandiFrame",
-    stake: asNumber(sum, stake),
+    methodName,
+    stake: sum,
     lines: selectedLines,
-    xml: `<message MessageType="SetSlotSpinHiranmandiFrame" MessageDateTime="${formatSoapDateTime()}" MessageFormatVersion="1.0"><Spin ${spinAttributes} /></message>`,
+    contractVersion: SOAP_CONTRACT_VERSION,
+    xml: `<message ${messageAttributes(methodName)}><Spin ${spinAttributes} /></message>`,
   };
 };
 
 export const buildDoubleRequest = ({ idCard, wasDouble, sum } = {}) => {
-  const idPartner = "1";
+  const config = getSoapRequestConfig();
+  const methodName = "GetSlotDubleHiranmandi";
+  const idPartner = requireConfigValue(config, "idPartner", "partnerId");
+  if (idCard == null || idCard === "") throw configurationError("idCard");
+  if (wasDouble == null || wasDouble === "") throw configurationError("wasDouble");
 
   return {
-    methodName: "GetSlotDubleHiranmandi",
+    methodName,
     idCard,
     wasDouble,
-    xml: `<message MessageType="GetSlotDubleHiranmandi" MessageDateTime="${formatSoapDateTime()}" MessageFormatVersion="1.0"><Spin idPartner="${xmlEscape(idPartner)}" idCard="${xmlEscape(idCard)}" WasDouble="${xmlEscape(wasDouble)}" Sum="${xmlEscape(sum)}" /></message>`,
+    contractVersion: SOAP_CONTRACT_VERSION,
+    xml: `<message ${messageAttributes(methodName)}><Spin idPartner="${xmlEscape(idPartner)}" idCard="${xmlEscape(idCard)}" WasDouble="${xmlEscape(wasDouble)}" Sum="${xmlEscape(sum)}" /></message>`,
   };
 };
 
-export const buildPayRequest = ({ idCard } = {}) => ({
-  methodName: "PaySlotHiranmandiFrame",
-  idCard,
-  xml: `<message MessageType="PaySlotHiranmandiFrame"><Pay idCard="${xmlEscape(idCard)}" /></message>`,
-});
-
-
-
+export const buildPayRequest = ({ idCard } = {}) => {
+  const methodName = "PaySlotHiranmandiFrame";
+  if (idCard == null || idCard === "") throw configurationError("idCard");
+  return {
+    methodName,
+    idCard,
+    contractVersion: SOAP_CONTRACT_VERSION,
+    xml: `<message ${messageAttributes(methodName)}><Pay idCard="${xmlEscape(idCard)}" /></message>`,
+  };
+};

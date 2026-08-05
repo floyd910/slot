@@ -423,6 +423,19 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         "Session bootstrap",
       );
       const paymentRows = await withTimeout(frameApi.getPaytable(), "Paytable");
+      const pendingRecovery = frameApi.getPendingRequest();
+      const recoveredState = frameApi.recoverState();
+      if (pendingRecovery) {
+        setError(tRef.current("recoveryFailed"));
+        postEvent("RECOVERY_REQUIRED", {
+          requestId: pendingRecovery.requestId ?? null,
+          message: tRef.current("recoveryFailed"),
+        });
+      } else if (recoveredState?.spinResult) {
+        setSpinResult(recoveredState.spinResult);
+        setFreeSpinsLeft(Number(recoveredState.freeSpinsLeft ?? 0));
+        setFreeSpinsTotal(Number(recoveredState.freeSpinsLeft ?? 0));
+      }
       setPlayer(session.player);
       setGames(session.games);
       setCombinations(session.combinations);

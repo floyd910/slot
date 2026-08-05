@@ -60,24 +60,16 @@ const buildSoapEnvelope = (innerXml) => `<?xml version="1.0" encoding="utf-8"?>
 </soap:Envelope>`;
 
 const logSoap = (event, meta, payload = {}) => {
-  const entry = {
+  if (!import.meta.env?.DEV) return;
+  console.info("[soap]", {
     event,
     requestId: meta.requestId ?? null,
-    sessionId: meta.sessionId ?? null,
     gameId: meta.gameId ?? null,
     methodName: meta.methodName ?? null,
-    idCard: meta.idCard ?? null,
-    roundId: meta.roundId ?? null,
     timestamp: new Date().toISOString(),
     ...payload,
-  };
-  window.__HIRANMANDI_SOAP_LOG__ = [
-    ...(window.__HIRANMANDI_SOAP_LOG__ ?? []),
-    entry,
-  ].slice(-80);
-  if (import.meta.env?.DEV) console.info("[soap]", entry);
+  });
 };
-
 const shouldRetry = (error) => RETRYABLE_CODES.has(error?.code);
 
 export class SoapClient {
@@ -130,7 +122,6 @@ export class SoapClient {
     const envelope = buildSoapEnvelope(xmlBody);
 
     logSoap("request", meta, { endpoint, attempt: options.attempt, attempts: options.attempts });
-    window.__HIRANMANDI_LAST_SOAP_REQUEST__ = xmlBody;
 
     let response;
     try {
@@ -176,8 +167,6 @@ export class SoapClient {
     const payloadDocument = parseXml(payload, "game payload", meta);
     const businessError = parseSoapError(payloadDocument, meta);
     if (businessError) throw businessError;
-
-    window.__HIRANMANDI_LAST_SOAP_RESPONSE__ = payload;
     logSoap("response", meta, { attempt: options.attempt });
 
     return {

@@ -93,13 +93,14 @@ function LanguageFlag({ option }) {
 const Header = ({
   menuOpen = false,
   onMenuOpen,
+  onBackToSlots,
   onSoundToggle,
   onViewToggle,
   soundEnabled = true,
   viewSwitchDisabled = false,
   visualMode = false,
 }) => {
-  const { language, selectLanguage } = useLanguage();
+  const { language, selectLanguage, t } = useLanguage();
   const [languageOpen, setLanguageOpen] = useState(false);
   const [fullscreenActive, setFullscreenActive] = useState(() => Boolean(document.fullscreenElement));
   const [menuPosition, setMenuPosition] = useState({ left: 32, top: 46 });
@@ -173,7 +174,21 @@ const Header = ({
 
   return (
     <header>
-      <div className="lang-chooser">
+      <div className="header-left">
+        <button
+          type="button"
+          className="header-games-button"
+          onClick={onBackToSlots}
+        >
+          <img
+            className="header-games-button__icon"
+            src="/img/header/games-home.png"
+            alt=""
+            aria-hidden="true"
+          />
+          <span className="header-games-button__label">{t("games")}</span>
+        </button>
+              <div className="lang-chooser">
         <button
           ref={languageButtonRef}
           type="button"
@@ -194,6 +209,7 @@ const Header = ({
           />
         </button>
         {languageMenu}
+      </div>
       </div>
       {!menuOpen && <div className="header-btns">
         <button

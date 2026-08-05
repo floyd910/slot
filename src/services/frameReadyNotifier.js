@@ -1,12 +1,13 @@
 export const notifySlotChooserReady = () => {
   if (window.parent === window) return;
 
-  let targetOrigin = "*";
+  let targetOrigin;
   try {
-    targetOrigin = document.referrer ? new URL(document.referrer).origin : "*";
+    targetOrigin = document.referrer ? new URL(document.referrer).origin : "";
   } catch {
-    targetOrigin = "*";
+    targetOrigin = "";
   }
+  if (!targetOrigin) return;
 
   window.parent.postMessage(
     {

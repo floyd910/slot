@@ -3,8 +3,28 @@ import { getFrontendEnvConfig } from "../api/runtimeConfig.js";
 
 export const CONTRACT_VERSION = "1.0";
 export const MODULE_VERSION = "0.1.0";
-const RECOVERY_KEY = "hiranmandi-frame:init-context:v1";
+const RECOVERY_KEY = "hiranmandi-frame:init-context:v2";
+const LEGACY_RECOVERY_KEY = "hiranmandi-frame:init-context:v1";
+const SENSITIVE_CONTEXT_KEYS = new Set([
+  "token", "password", "login", "userId", "idUser", "sessionId",
+]);
+const SENSITIVE_QUERY_KEYS = [
+  "token", "password", "Password", "login", "Login", "slotLogin",
+  "sessionId", "session", "userId", "playerId", "idUser",
+];
 
+const DEV_SOAP_CONTEXT = {
+  token: "partner-token",
+  sessionId: "partner-session",
+  gameId: "hiranmandi",
+  idPartner: "1",
+  idKassi: "70",
+  idValute: "1",
+  idUser: "1",
+  userId: "1",
+  login: "testslot",
+  password: "1",
+};
 export const HOST_COMMANDS = new Set([
   "INIT_CONTEXT",
   "UPDATE_THEME",
@@ -44,6 +64,22 @@ const safeJson = (value) => {
   }
 };
 
+const withoutSensitiveValues = (values = {}) =>
+  Object.fromEntries(
+    Object.entries(values).filter(([key]) => !SENSITIVE_CONTEXT_KEYS.has(key)),
+  );
+
+const removeSensitiveQueryParams = (search) => {
+  if (!SENSITIVE_QUERY_KEYS.some((key) => search.has(key))) return;
+  const clean = new URLSearchParams(search);
+  SENSITIVE_QUERY_KEYS.forEach((key) => clean.delete(key));
+  const query = clean.toString();
+  window.history.replaceState(
+    window.history.state,
+    "",
+    `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`,
+  );
+};
 const withoutEmptyValues = (values) =>
   Object.fromEntries(
     Object.entries(values ?? {}).filter(
@@ -53,7 +89,8 @@ const withoutEmptyValues = (values) =>
 
 const readStoredContext = () => {
   try {
-    return safeJson(window.sessionStorage.getItem(RECOVERY_KEY)) ?? {};
+    window.sessionStorage.removeItem(LEGACY_RECOVERY_KEY);
+    return withoutSensitiveValues(safeJson(window.sessionStorage.getItem(RECOVERY_KEY)) ?? {});
   } catch {
     return {};
   }
@@ -63,11 +100,11 @@ export const persistInitContext = (context) => {
   try {
     window.sessionStorage.setItem(
       RECOVERY_KEY,
-      JSON.stringify({
+      JSON.stringify(withoutSensitiveValues({
         ...context,
         initSource: context.initSource ?? "recovered",
         recoveredAt: new Date().toISOString(),
-      }),
+      })),
     );
   } catch {
     // sessionStorage may be blocked in third-party iframe contexts.
@@ -110,7 +147,7 @@ export function readFrameParams() {
     testMode: queryTestMode ?? queryDemoMode,
     demoMode: queryDemoMode,
     testBalance: search.get("testBalance"),
-    soapEndpoint: search.get("soapEndpoint"),
+    soapEndpoint: undefined,
     backendMode: search.get("backendMode"),
     backendTestParams: search.get("backendTestParams"),
     partnerSettleUrl: search.get("partnerSettleUrl"),
@@ -119,6 +156,8 @@ export function readFrameParams() {
     allowedOrigins: parseAllowedOrigins(search.get("allowedOrigins")),
     featureFlags: parseFeatureFlags(search.get("featureFlags")),
   };
+
+  removeSensitiveQueryParams(search);
 
   const isFramed = window.parent !== window;
   const mode = queryContext.mode ?? globalConfig.mode ?? envConfig.mode ?? stored.mode ?? (isFramed ? "embedded" : "standalone");
@@ -132,6 +171,7 @@ export function readFrameParams() {
   return {
     ...withoutEmptyValues(stored),
     ...withoutEmptyValues(envConfig),
+    ...(import.meta.env.DEV ? DEV_SOAP_CONTEXT : {}),
     ...withoutEmptyValues(globalConfig),
     ...withoutEmptyValues(queryContext),
     mode: mode === "embedded" ? "embedded" : "standalone",
@@ -196,7 +236,8 @@ export function useFrameBridge({ context, diagnostics, onCommand, onInitContext 
   const postEvent = useCallback(
     (type, payload = {}) => {
       const activeContext = contextRef.current;
-      const targetOrigin = allowedOrigins[0] ?? "*";
+      const targetOrigin = allowedOrigins[0] ?? (activeContext.mode === "standalone" ? window.location.origin : "");
+      if (!targetOrigin) return false;
       const message = {
         source: "hiranmandi-iframe",
         contractVersion: CONTRACT_VERSION,
@@ -204,7 +245,7 @@ export function useFrameBridge({ context, diagnostics, onCommand, onInitContext 
         payload,
         meta: {
           requestId: buildRequestId("evt"),
-          sessionId: activeContext.sessionId ?? null,
+
           moduleVersion: MODULE_VERSION,
           mode: activeContext.mode,
           gameId: activeContext.gameId ?? null,
@@ -215,12 +256,14 @@ export function useFrameBridge({ context, diagnostics, onCommand, onInitContext 
       };
 
       window.parent?.postMessage(message, targetOrigin);
+      return true;
     },
     [allowedOrigins],
   );
 
   useEffect(() => {
     const handleMessage = (message) => {
+      if (message.source !== window.parent) return;
       if (!isAllowedOrigin(message.origin)) return;
       const payload = message.data;
       if (!payload || typeof payload !== "object") return;

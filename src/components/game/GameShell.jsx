@@ -169,7 +169,6 @@ export default function GameShell({ controller, game, onBackToSlots }) {
           <GameMenu
             gameId={game.id}
             onClose={() => actions.setShowGameMenu(false)}
-            onBackToSlots={onBackToSlots}
           />
         )}
         {state.showFreeSpinPrompt && (

@@ -32,14 +32,10 @@ const RULE_LINES = [
   [10, 11, 7, 3, 4],
 ];
 
-export default function GameMenu({ gameId, onClose, onBackToSlots }) {
-  const { language, t } = useLanguage();
+export default function GameMenu({ gameId, onClose }) {
+  const { language } = useLanguage();
   const rulesCopy = RULES_COPY[language] ?? RULES_COPY.ru;
   const [showRules, setShowRules] = useState(false);
-  const handleBackToSlots = () => {
-    onClose?.();
-    onBackToSlots?.();
-  };
   const ruleBoxRefs = useRef([]);
   const ruleGridRefs = useRef([]);
   const ruleLabelRefs = useRef([]);
@@ -185,9 +181,6 @@ export default function GameMenu({ gameId, onClose, onBackToSlots }) {
           onClick={onClose}
         >
           <img src="/img/ui/game-menu-close.png" alt="" />
-        </button>
-        <button type="button" onClick={handleBackToSlots}>
-          {t("menu")}
         </button>
         <button type="button">{rulesCopy.historyButton}</button>
         <button type="button" onClick={() => setShowRules(true)}>

@@ -7,4 +7,11 @@
   to = "http://5.187.2.138/soap/SlotHiranmandiSOAPFrame.dll/soap/IInBet"
   status = 200
   force = true
-
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob:; media-src 'self' blob:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'"
+    Referrer-Policy = "no-referrer"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+    X-Content-Type-Options = "nosniff"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"

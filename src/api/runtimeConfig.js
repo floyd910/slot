@@ -45,7 +45,7 @@ export const useSoapBackend = () => {
 };
 
 export const useBackendTestParams = () =>
-  isEnabled(
+  !import.meta.env.PROD && isEnabled(
     runtimeConfig.backendTestParams ??
       window.HIRANMANDI_FRAME_CONFIG?.backendTestParams,
   );
