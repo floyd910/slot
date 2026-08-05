@@ -16,6 +16,7 @@ export default function LotteryGrid({
   autoSequence = false,
   winningCells = [],
   winningGroups = [],
+  onActiveWinGroupChange,
   scatterCells = [],
   doublingState,
   carpetCloseMs = 1455,
@@ -33,6 +34,7 @@ export default function LotteryGrid({
     autoSequence,
     winningCells,
     winningGroups,
+    onActiveWinGroupChange,
   });
 
   if (model.isGridMissing) return null;

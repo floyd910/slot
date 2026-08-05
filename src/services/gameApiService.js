@@ -22,17 +22,23 @@ import { stateRecoveryService } from "./stateRecoveryService.js";
 
 const getContext = () => getRuntimeConfig();
 
-const remember = (operation) =>
-  stateRecoveryService.rememberPendingRequest({
-    ...stateRecoveryService.buildCorrelation(getContext(), operation),
-    ...operation,
-  });
+const remember = (operation) => {
+  const context = getContext();
+  return stateRecoveryService.rememberPendingRequest(
+    {
+      ...stateRecoveryService.buildCorrelation(context, operation),
+      ...operation,
+    },
+    context,
+  );
+};
 
-const complete = (requestId) => stateRecoveryService.completePendingRequest(requestId);
+const complete = (requestId) =>
+  stateRecoveryService.completePendingRequest(requestId, getContext());
 
 const trackTimeout = (error, operation) => {
   if (error?.code === "TIMEOUT") {
-    stateRecoveryService.markRecoveryRequired(error, operation);
+    stateRecoveryService.markRecoveryRequired(error, operation, getContext());
   }
 };
 
@@ -75,7 +81,7 @@ export class GameApiService {
         WasDouble: 0,
         currentWinSum: result.WinSum,
         spinResult: result,
-      });
+      }, getContext());
       complete(params.requestId);
       return result;
     } catch (error) {
@@ -122,7 +128,7 @@ export class GameApiService {
         currentMode: "double",
         WasDouble: params.wasDouble,
         currentWinSum: result.WinSum,
-      });
+      }, getContext());
       complete(params.requestId);
       return result;
     } catch (error) {
@@ -145,7 +151,7 @@ export class GameApiService {
 
     try {
       const result = normalizePayResult({ ...(await mockPay(params)), requestId: params.requestId });
-      stateRecoveryService.clearLocalState();
+      stateRecoveryService.clearLocalState(getContext());
       complete(params.requestId);
       return result;
     } catch (error) {
@@ -154,12 +160,15 @@ export class GameApiService {
     }
   }
 
-  recoverState() {
-    return stateRecoveryService.getLocalState();
+  recoverState(context = getContext()) {
+    return stateRecoveryService.getLocalState(context);
   }
 
-  recoverAfterTimeout(options) {
-    return stateRecoveryService.recoverAfterTimeout(options);
+  recoverAfterTimeout(options = {}) {
+    return stateRecoveryService.recoverAfterTimeout({
+      ...options,
+      context: options.context ?? getContext(),
+    });
   }
 }
 

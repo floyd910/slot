@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef } from "react";
 
-const media = {
+const originalMedia = {
   click: "/media/pressing-bet-amount-button.8819b8f6.mp3",
   buttonPress: "/media/button-press-sound.mp3",
+  controlClick: "/media/pressing-bet-amount-button.8819b8f6.mp3",
   amount: "/media/pressing-bet-amount-button.8819b8f6.mp3",
   spin: "/media/eldorado-carpet-sound.a486c07e.mp3",
   carpet: "/media/carpet.ogg",
@@ -24,7 +25,29 @@ const media = {
   win8: "/media/eldorado-win-sound-8.131fcfc1.mp3",
 };
 
-const winSoundBySymbol = {
+const game3Media = {
+  ...originalMedia,
+  click: "/media/arabic-ui-click.mp3",
+  controlClick: "/media/arabic-ui-click.mp3",
+  amount: "/media/arabic-ui-click.mp3",
+  receiptWin: "/media/game3-total-win-v1.wav",
+  cashout: "/media/arabic-cashout.mp3",
+  double: "/media/arabic-double.mp3",
+  lose: "/media/arabic-lose.mp3",
+  freeTickets: "/media/arabic-free-tickets.mp3",
+  afterBonus: "/media/arabic-after-bonus.mp3",
+  win0: "/media/game3-total-win-v1.wav",
+  win12: "/media/game3-total-win-v1.wav",
+  win3: "/media/game3-total-win-v1.wav",
+  win4: "/media/game3-total-win-v1.wav",
+  win5: "/media/game3-total-win-v1.wav",
+  win6: "/media/game3-total-win-v1.wav",
+  win7: "/media/game3-total-win-v1.wav",
+  win8: "/media/game3-total-win-v1.wav",
+};
+
+
+const createWinSoundMap = (media) => ({
   0: media.win0,
   1: media.win12,
   2: media.win12,
@@ -35,11 +58,20 @@ const winSoundBySymbol = {
   7: media.win7,
   8: media.win8,
   12: media.win12,
-};
+});
 
-const effectSources = [...new Set(Object.values(media))];
-
-export function useGameAudio() {
+const originalWinSoundBySymbol = createWinSoundMap(originalMedia);
+const game3WinSoundBySymbol = createWinSoundMap(game3Media);
+const originalEffectSources = [...new Set(Object.values(originalMedia))];
+const game3EffectSources = [
+  ...new Set(Object.values(game3Media)),
+];
+export function useGameAudio(useGame3Sounds = false) {
+  const media = useGame3Sounds ? game3Media : originalMedia;
+  const winSoundBySymbol = useGame3Sounds
+    ? game3WinSoundBySymbol
+    : originalWinSoundBySymbol;
+  const effectSources = useGame3Sounds ? game3EffectSources : originalEffectSources;
   const cacheRef = useRef(new Map());
   const backgroundRef = useRef(null);
   const activePlaybackRef = useRef(new Set());
@@ -267,6 +299,7 @@ export function useGameAudio() {
       if (event === "stopBackground") stopBackground();
       if (event === "click") playSrc(media.click, { volume: 0.65 });
       if (event === "buttonPress") playSrc(media.buttonPress, { volume: 1 });
+      if (event === "controlClick") playSrc(media.controlClick, { volume: 0.8 });
       if (event === "amount") playSrc(media.amount, { volume: 0.75 });
       if (event === "spin") playSrc(media.spin, { volume: 0.9 });
       if (event === "carpet") playSrc(media.carpet, { volume: 1 });
@@ -296,6 +329,6 @@ export function useGameAudio() {
         });
       }
     },
-    [getAudio, playBackground, playSrc, setMuted, stopAllAudio, stopBackground],
+    [getAudio, playBackground, playSrc, setMuted, stopAllAudio, stopBackground, useGame3Sounds, winSoundBySymbol],
   );
 }

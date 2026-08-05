@@ -380,6 +380,11 @@ const isAssetAllowedForGame = (src, game) => {
 const getGameView2Assets = (game) =>
   game?.id === "khocha-afandi" ? GAME6_VIEW2_ASSETS : GAME3_VIEW2_ASSETS;
 
+const getGameAudioAssets = (game) =>
+  game?.id === "hiranmandi"
+    ? STARTUP_ASSETS.audio
+    : STARTUP_ASSETS.audio.filter((src) => !src.includes("/arabic-"));
+
 const loadDeferredStartupAssets = async (game) => {
   const criticalUrls = new Set(uniqueUrls(FIRST_PAINT_GAME_IMAGE_ASSETS));
   const deferredImages = uniqueUrls([
@@ -390,7 +395,7 @@ const loadDeferredStartupAssets = async (game) => {
   ]).filter((src) => !criticalUrls.has(src) && isAssetAllowedForGame(src, game));
 
   await preloadDeferredImages(deferredImages);
-  await runWithConcurrency(STARTUP_ASSETS.audio, 2, preloadAudioData);
+  await runWithConcurrency(getGameAudioAssets(game), 2, preloadAudioData);
   await Promise.all(STARTUP_ASSETS.videos.map(preloadVideo));
 };
 
@@ -409,7 +414,7 @@ export const preloadStartupAssets = (onProgress) => {
 
 export const preloadGameAssets = (game, onProgress) => {
   if (!game) return preloadStartupAssets(onProgress);
-  const cacheKey = game.id;
+  const cacheKey = game.id === "khocha-afandi" ? "game6" : "shared";
   const cached = gameAssetsPromises.get(cacheKey);
   if (cached) {
     onProgress?.(100);
@@ -455,7 +460,11 @@ export const preloadDoubleSceneAssets = () =>
   });
 
 export const preloadDeferredStartupAssets = (game) => {
-  const cacheKey = game?.id ?? "shared";
+  const cacheKey = game?.id === "hiranmandi"
+    ? "game3"
+    : game?.id === "khocha-afandi"
+      ? "game6"
+      : "shared";
   if (!deferredStartupAssetsPromises.has(cacheKey)) {
     const promise = loadDeferredStartupAssets(game).catch((error) => {
       deferredStartupAssetsPromises.delete(cacheKey);

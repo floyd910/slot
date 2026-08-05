@@ -29,6 +29,7 @@
 
 .game_area {
   position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -69,7 +70,7 @@
   object-fit: contain;
   margin: auto;
   position: relative;
-  z-index: 6;
+  z-index: 20;
   margin-top: 0;
   transform: scale(var(--responsive-header-scale, 1));
   transform-origin: top center;
@@ -1112,7 +1113,10 @@ button:disabled {
 }
 
 .frame-app .header_img {
-  z-index: 2147483200 !important;
+  /* Keep the logo in a stable layer above animated win-line filters. */
+  z-index: 20 !important;
+  flex: 0 0 auto;
+  backface-visibility: hidden;
 }
 
 @media (min-width: 721px) {

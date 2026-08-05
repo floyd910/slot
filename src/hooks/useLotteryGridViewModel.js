@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   VIEW1_WIN_LINE_HIGHLIGHT_MS,
   WIN_LINE_START_DELAY_MS,
@@ -20,6 +20,7 @@ export function useLotteryGridViewModel({
   autoSequence = false,
   winningCells,
   winningGroups,
+  onActiveWinGroupChange,
 }) {
   const lineWinningGroups = useMemo(
     () => getGroupedWins(winningGroups, winningCells),
@@ -34,6 +35,19 @@ export function useLotteryGridViewModel({
     [hasQueuedScatterWin, lineWinningGroups, scatterCells],
   );
   const [activeWinGroup, setActiveWinGroup] = useState(null);
+  const soundedWinGroupsRef = useRef(new Set());
+
+  useEffect(() => {
+    soundedWinGroupsRef.current.clear();
+  }, [revealKey]);
+
+  useEffect(() => {
+    if (activeWinGroup == null) return;
+    const soundKey = `${revealKey}:${activeWinGroup}`;
+    if (soundedWinGroupsRef.current.has(soundKey)) return;
+    soundedWinGroupsRef.current.add(soundKey);
+    onActiveWinGroupChange?.(activeWinGroup);
+  }, [activeWinGroup, onActiveWinGroupChange, revealKey, visualMode]);
   const winningLineIds = useMemo(
     () =>
       winningGroups

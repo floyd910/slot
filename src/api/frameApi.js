@@ -51,15 +51,15 @@ export const frameApi = {
     return runExclusive("pay", () => gameApiService.pay(params));
   },
 
-  recoverState() {
-    return gameApiService.recoverState();
+  recoverState(context) {
+    return gameApiService.recoverState(context);
   },
 
   recoverAfterTimeout(options) {
     return runExclusive("recoverState", () => gameApiService.recoverAfterTimeout(options));
   },
 
-  getPendingRequest() {
-    return stateRecoveryService.getPendingRequest();
+  getPendingRequest(context) {
+    return stateRecoveryService.getPendingRequest(context);
   },
 };

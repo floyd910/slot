@@ -25,7 +25,7 @@
   background: rgba(13, 13, 13, 0.60);
 }
 .info-modal[data-game-id="hiranmandi"]:not(.--view2) {
-  background: rgba(0, 0, 0, 0.54);
+  background: linear-gradient(145deg, rgba(100, 106, 225, 0.10) 0%, rgba(22, 17, 170, 0.10) 46.63%, rgba(106, 162, 230, 0.10) 100%), linear-gradient(145deg, rgba(29, 29, 29, 0.64) 0%, rgba(25, 25, 25, 0.64) 46.63%, rgba(60, 60, 60, 0.64) 100%), linear-gradient(0deg, #000 0%, #000 100%), rgba(255, 255, 255, 0.10);
   -webkit-backdrop-filter: blur(5.400000095367432px);
   backdrop-filter: blur(5.400000095367432px);
 }

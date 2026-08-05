@@ -421,3 +421,23 @@ header {
     height: 30px;
   }
 }
+/* Compact header icon sizing and balanced vertical spacing. */
+@media (orientation: landscape) and (max-height: 620px) {
+  .header-games-button,
+  .header-games-button__icon,
+  .lang-chooser__flag,
+  .lang-chooser__flag-image,
+  .lang-chooser__flag-fallback {
+    width: 24px;
+    height: 24px;
+    flex-basis: 24px;
+  }
+
+  .header-games-button {
+    transform: none;
+  }
+
+  .lang-chooser {
+    transform: translateY(3.5px);
+  }
+}

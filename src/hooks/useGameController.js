@@ -52,11 +52,11 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const { t } = useLanguage();
   const tRef = useRef(t);
   const bootGameId = selectedGameId ?? initialContext.gameId ?? null;
-  const [context, setContext] = useState(() =>
-    bootGameId && initialContext.gameId !== bootGameId
-      ? { ...initialContext, gameId: bootGameId }
-      : initialContext,
-  );
+  const [context, setContext] = useState(() => ({
+    ...initialContext,
+    ...(bootGameId ? { gameId: bootGameId } : {}),
+    recoveryGameId: gameDefinition?.id ?? bootGameId ?? initialContext.gameId,
+  }));
   const [status, setStatus] = useState("initial-loading");
   const [error, setError] = useState("");
   const [lastKnownState, setLastKnownState] = useState(null);
@@ -110,7 +110,8 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     visualMode,
   });
 
-  const playSound = useGameAudio();
+  const useGame3Sounds = gameDefinition?.id === "hiranmandi";
+  const playSound = useGameAudio(useGame3Sounds);
   const emitSound = useCallback(
     (event, payload) => {
       if (visualMode && event !== "carpet") return;
@@ -127,6 +128,34 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   useEffect(() => {
     playSound("setMuted", !soundEnabled);
   }, [playSound, soundEnabled]);
+
+  useEffect(() => {
+    const getEnabledControl = (event) => {
+      const control = event.target instanceof Element
+        ? event.target.closest('button, [role="button"]')
+        : null;
+      if (!control) return null;
+      if (control.matches(':disabled, [aria-disabled="true"], .--disabled')) return null;
+      return control;
+    };
+
+    const playControlClick = (event) => {
+      if (getEnabledControl(event)) playSound("controlClick");
+    };
+
+    const playKeyboardControlClick = (event) => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      const control = getEnabledControl(event);
+      if (control?.tagName !== "BUTTON") playSound("controlClick");
+    };
+
+    document.addEventListener("click", playControlClick, true);
+    document.addEventListener("keydown", playKeyboardControlClick, true);
+    return () => {
+      document.removeEventListener("click", playControlClick, true);
+      document.removeEventListener("keydown", playKeyboardControlClick, true);
+    };
+  }, [playSound]);
 
   const emitLotteryRevealSounds = useCallback(() => {
     window.requestAnimationFrame(() => {
@@ -423,8 +452,8 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         "Session bootstrap",
       );
       const paymentRows = await withTimeout(frameApi.getPaytable(), "Paytable");
-      const pendingRecovery = frameApi.getPendingRequest();
-      const recoveredState = frameApi.recoverState();
+      const pendingRecovery = frameApi.getPendingRequest(context);
+      const recoveredState = frameApi.recoverState(context);
       if (pendingRecovery) {
         setError(tRef.current("recoveryFailed"));
         postEvent("RECOVERY_REQUIRED", {
@@ -625,21 +654,17 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       t,
       visualMode,
     });
-
   const toggleSound = () => {
     const nextSoundEnabled = !soundEnabledRef.current;
     soundEnabledRef.current = nextSoundEnabled;
 
     playSound("setMuted", !nextSoundEnabled);
-    if (nextSoundEnabled) {
-      playSound("click");
-    }
+    if (nextSoundEnabled) playSound("controlClick");
     setSoundEnabled(nextSoundEnabled);
   };
 
   const toggleVisualMode = () => {
     if (viewSwitchDisabled) return;
-    emitSound("click");
     setVisualMode((value) => {
       const nextValue = !value;
       setExpandedBoard(nextValue);

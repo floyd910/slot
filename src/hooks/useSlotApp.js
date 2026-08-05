@@ -3,7 +3,6 @@ import {
   SLOT_CHOOSER_BACKGROUND_SRC,
   SLOT_CHOOSER_TILE_ASSETS,
 } from "../config/gameAssets.js";
-import { VIEW2_CARPET_ASSETS } from "../config/view2Assets.js";
 import { GAME_DEFINITIONS } from "../config/gameDefinitions.js";
 import { notifySlotChooserReady } from "../services/frameReadyNotifier.js";
 import {
@@ -16,7 +15,6 @@ const SLOT_CHOOSER_REQUIRED_ASSETS = [
   SLOT_CHOOSER_BACKGROUND_SRC,
   ...SLOT_CHOOSER_TILE_ASSETS,
   ...GAME_DEFINITIONS.map((game) => game.assets.chooserTile),
-  VIEW2_CARPET_ASSETS[0],
 ];
 
 
@@ -141,6 +139,34 @@ export function useSlotApp({ loadSelectedSlotGame }) {
     if (!chooserAssetsReady || chooserReadyNotifiedRef.current) return undefined;
     chooserReadyNotifiedRef.current = true;
     return notifyAfterPaint();
+  }, [chooserAssetsReady]);
+  useEffect(() => {
+    if (!chooserAssetsReady) return undefined;
+
+    let cancelled = false;
+    const warmUniqueGameAssets = async () => {
+      const sharedGame = GAME_DEFINITIONS.find((game) => game.id !== "khocha-afandi");
+      const game6 = GAME_DEFINITIONS.find((game) => game.id === "khocha-afandi");
+      for (const game of [sharedGame, game6].filter(Boolean)) {
+        if (cancelled) return;
+        try {
+          await preloadGameAssets(game);
+        } catch (assetError) {
+          console.error(assetError);
+        }
+      }
+    };
+
+    const start = () => void warmUniqueGameAssets();
+    const idleId = "requestIdleCallback" in window
+      ? window.requestIdleCallback(start, { timeout: 1200 })
+      : window.setTimeout(start, 0);
+
+    return () => {
+      cancelled = true;
+      if ("cancelIdleCallback" in window) window.cancelIdleCallback(idleId);
+      else window.clearTimeout(idleId);
+    };
   }, [chooserAssetsReady]);
 
   const openSlot = async (slot) => {
