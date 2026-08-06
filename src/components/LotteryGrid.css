@@ -102,6 +102,12 @@
   background: linear-gradient(145deg, var(--game-success, #3ad437) 0%, var(--game-success-dark, #146500) 46.63%, #43bf24 100%);
 }
 
+.configured-game[data-game-id="khocha-afandi"]
+  .lottery-grid-view1__top
+  .lottery-grid-view1-cell--win-highlight {
+  background: url("/assets/img/game6-view1-highlight-background.png") center / 100% 100% no-repeat;
+}
+
 .lottery-grid-view1-cell__wrapper {
   position: relative;
   z-index: 1;

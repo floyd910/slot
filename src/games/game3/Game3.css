@@ -305,6 +305,10 @@ button:disabled {
     width: 300px;
   }
 
+  .free-spins-modal__card {
+    justify-content: space-around;
+  }
+
   .free-spins-modal__text {
     font-size: 22px;
   }
@@ -961,6 +965,7 @@ button:disabled {
   .free-spins-modal__card {
     gap: 12px;
     padding: 12px 20px;
+    justify-content: space-around;
   }
 
   .free-spins-modal__text {

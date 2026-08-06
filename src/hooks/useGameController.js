@@ -686,7 +686,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     ticketWinAmount > 0;
   const pendingTicketWin = hasTicketWin(spinResult, doublingState);
   const viewSwitchDisabled =
-    status === "processing" || autoPlayOn || freeSpinsActive || uncollectedWin;
+    status === "processing" || autoPlayOn || freeSpinRunRef.current;
   const doubleOfferAvailable = shouldOfferDouble({
     autoPlayOn,
     doublingState,
