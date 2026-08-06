@@ -23,7 +23,7 @@ const getSymbolImage = (symbol, symbolAssets) => {
   const gameAsset = symbolAssets?.[symbol];
   const gameStaticImage = typeof gameAsset === "string"
     ? gameAsset
-    : gameAsset?.staticImage;
+    : gameAsset?.staticImage ?? gameAsset?.background;
 
   return gameStaticImage
     ?? `/assets/img/info-symbols/view2-symbol-${symbol}.webp?v=20260801-assets-lossless`;

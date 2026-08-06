@@ -388,7 +388,10 @@ export const createSpinActions = ({
     setFreeSpinRoundStarted(true);
     freeSpinRunRef.current = true;
     try {
-      while (liveSpinStateRef.current.freeSpinsLeft > 0) {
+      while (
+        freeSpinRunRef.current &&
+        liveSpinStateRef.current.freeSpinsLeft > 0
+      ) {
         const result = await handleSpin({ freeSpinAuto: true });
         if (!result) break;
 

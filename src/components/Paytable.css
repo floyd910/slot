@@ -17,6 +17,16 @@
 .info-modal[data-game-id="khocha-afandi"]:not(.--view2) .info-paytable {
   background: linear-gradient(145deg, rgb(176, 144, 83) 0%, rgb(132, 74, 32) 46.63%, rgb(176, 144, 83) 100%);
 }
+.info-modal[data-game-id="caravan-spins"]:not(.--view2),
+.info-modal[data-game-id="caravan-spins"]:not(.--view2) .info-paytable {
+  background: linear-gradient(
+    145deg,
+    rgb(176, 144, 83) 0%,
+    rgb(132, 74, 32) 46.63%,
+    rgb(176, 144, 83) 100%
+  );
+}
+
 .info-modal[data-game-id="royal-keno"]:not(.--view2) {
   background: linear-gradient(145deg, rgba(230, 195, 106, 0.41) 0%, rgba(204, 98, 16, 0.41) 46.63%, rgba(230, 195, 106, 0.41) 100%), rgba(255, 255, 255, 0.10);
 }

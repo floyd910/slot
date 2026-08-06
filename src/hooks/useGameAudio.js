@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useRef } from "react";
 
+const EFFECT_VOLUME = 0.8;
+const TARGET_EFFECT_RMS = 0.18;
+const MIN_NORMALIZATION_GAIN = 0.4;
+const MAX_NORMALIZATION_GAIN = 3;
+
 const originalMedia = {
   click: "/media/pressing-bet-amount-button.8819b8f6.mp3",
   buttonPress: "/media/button-press-sound.mp3",
@@ -46,6 +51,14 @@ const game3Media = {
   win8: "/media/game3-total-win-v1.wav",
 };
 
+const GAME5_AXE_CLICK_SRC = "/media/game5-axe-click.mp3";
+const game5Media = {
+  ...originalMedia,
+  click: GAME5_AXE_CLICK_SRC,
+  buttonPress: GAME5_AXE_CLICK_SRC,
+  controlClick: GAME5_AXE_CLICK_SRC,
+  amount: GAME5_AXE_CLICK_SRC,
+};
 
 const createWinSoundMap = (media) => ({
   0: media.win0,
@@ -62,24 +75,41 @@ const createWinSoundMap = (media) => ({
 
 const originalWinSoundBySymbol = createWinSoundMap(originalMedia);
 const game3WinSoundBySymbol = createWinSoundMap(game3Media);
+const game5WinSoundBySymbol = createWinSoundMap(game5Media);
 const originalEffectSources = [...new Set(Object.values(originalMedia))];
 const game3EffectSources = [
   ...new Set(Object.values(game3Media)),
 ];
-export function useGameAudio(useGame3Sounds = false) {
-  const media = useGame3Sounds ? game3Media : originalMedia;
+const game5EffectSources = [...new Set(Object.values(game5Media))];
+export function useGameAudio(gameId) {
+  const useGame3Sounds = gameId === "hiranmandi";
+  const useGame5Sounds = gameId === "caravan-spins";
+  const media = useGame3Sounds
+    ? game3Media
+    : useGame5Sounds
+      ? game5Media
+      : originalMedia;
   const winSoundBySymbol = useGame3Sounds
     ? game3WinSoundBySymbol
-    : originalWinSoundBySymbol;
-  const effectSources = useGame3Sounds ? game3EffectSources : originalEffectSources;
+    : useGame5Sounds
+      ? game5WinSoundBySymbol
+      : originalWinSoundBySymbol;
+  const effectSources = useGame3Sounds
+    ? game3EffectSources
+    : useGame5Sounds
+      ? game5EffectSources
+      : originalEffectSources;
   const cacheRef = useRef(new Map());
   const backgroundRef = useRef(null);
   const activePlaybackRef = useRef(new Set());
   const contextRef = useRef(null);
   const bufferRef = useRef(new Map());
   const bufferPromiseRef = useRef(new Map());
+  const normalizationGainRef = useRef(new Map());
+  const revealPlaybackRef = useRef(null);
   const masterGainRef = useRef(null);
   const mutedRef = useRef(false);
+  const mountedRef = useRef(true);
 
   const getAudioContext = useCallback(() => {
     if (contextRef.current) return contextRef.current;
@@ -104,6 +134,35 @@ export function useGameAudio(useGame3Sounds = false) {
         .then((response) => response.arrayBuffer())
         .then((buffer) => context.decodeAudioData(buffer))
         .then((decoded) => {
+          let sumSquares = 0;
+          let sampleCount = 0;
+          let peak = 0;
+          const sampleStride = Math.max(
+            1,
+            Math.floor((decoded.length * decoded.numberOfChannels) / 200000),
+          );
+
+          for (let channel = 0; channel < decoded.numberOfChannels; channel += 1) {
+            const samples = decoded.getChannelData(channel);
+            for (let index = 0; index < samples.length; index += sampleStride) {
+              const absoluteSample = Math.abs(samples[index]);
+              peak = Math.max(peak, absoluteSample);
+              if (absoluteSample < 0.01) continue;
+              sumSquares += absoluteSample * absoluteSample;
+              sampleCount += 1;
+            }
+          }
+
+          const rms = sampleCount > 0 ? Math.sqrt(sumSquares / sampleCount) : 0;
+          const rmsGain = rms > 0 ? TARGET_EFFECT_RMS / rms : 1;
+          const peakSafeGain = peak > 0 ? 0.92 / peak : MAX_NORMALIZATION_GAIN;
+          normalizationGainRef.current.set(
+            src,
+            Math.max(
+              MIN_NORMALIZATION_GAIN,
+              Math.min(MAX_NORMALIZATION_GAIN, rmsGain, peakSafeGain),
+            ),
+          );
           bufferRef.current.set(src, decoded);
           return decoded;
         })
@@ -147,7 +206,8 @@ export function useGameAudio(useGame3Sounds = false) {
       const gain = context.createGain();
       source.buffer = buffer;
       source.loop = loop;
-      gain.gain.value = volume * 0.5;
+      const normalizationGain = normalizationGainRef.current.get(src) ?? 1;
+      gain.gain.value = volume * 0.5 * normalizationGain;
       source.connect(gain).connect(masterGainRef.current ?? context.destination);
       source.start(0);
 
@@ -174,6 +234,22 @@ export function useGameAudio(useGame3Sounds = false) {
       if (preferBuffer) {
         const buffered = playBuffer(src, { volume, loop });
         if (buffered) return buffered;
+
+        let cancelled = false;
+        let resolvedPlayback = null;
+        const pendingPlayback = {
+          stop: () => {
+            cancelled = true;
+            resolvedPlayback?.stop?.();
+          },
+        };
+        activePlaybackRef.current.add(pendingPlayback);
+        warmBuffer(src).then((decoded) => {
+          activePlaybackRef.current.delete(pendingPlayback);
+          if (cancelled || !mountedRef.current || !decoded) return;
+          resolvedPlayback = playBuffer(src, { volume, loop });
+        });
+        return pendingPlayback;
       }
 
       warmBuffer(src);
@@ -242,6 +318,15 @@ export function useGameAudio(useGame3Sounds = false) {
     if (backgroundRef.current?.stop) backgroundRef.current.stop();
     backgroundRef.current = null;
   }, []);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+      stopAllAudio();
+    };
+  }, [stopAllAudio]);
+
   const setMuted = useCallback((muted) => {
     const nextMuted = Boolean(muted);
     mutedRef.current = nextMuted;
@@ -285,6 +370,7 @@ export function useGameAudio(useGame3Sounds = false) {
 
   return useCallback(
     (event, payload) => {
+      if (!mountedRef.current) return;
       if (event === "setMuted") {
         setMuted(payload);
         return;
@@ -297,38 +383,35 @@ export function useGameAudio(useGame3Sounds = false) {
       if (event === "background")
         playBackground("/media/eldorado-main-theme.39d363ed.mp3");
       if (event === "stopBackground") stopBackground();
-      if (event === "click") playSrc(media.click, { volume: 0.65 });
-      if (event === "buttonPress") playSrc(media.buttonPress, { volume: 1 });
-      if (event === "controlClick") playSrc(media.controlClick, { volume: 0.8 });
-      if (event === "amount") playSrc(media.amount, { volume: 0.75 });
-      if (event === "spin") playSrc(media.spin, { volume: 0.9 });
-      if (event === "carpet") playSrc(media.carpet, { volume: 1 });
+      if (event === "click") playSrc(media.click, { volume: EFFECT_VOLUME });
+      if (event === "buttonPress") playSrc(media.buttonPress, { volume: EFFECT_VOLUME });
+      if (event === "controlClick") playSrc(media.controlClick, { volume: EFFECT_VOLUME });
+      if (event === "amount") playSrc(media.amount, { volume: EFFECT_VOLUME });
+      if (event === "spin") playSrc(media.spin, { volume: EFFECT_VOLUME });
+      if (event === "carpet") playSrc(media.carpet, { volume: EFFECT_VOLUME });
       if (event === "stopReveal") {
-        const receipt = getAudio(media.reveal);
-        receipt.pause();
-        receipt.currentTime = 0;
+        revealPlaybackRef.current?.pause?.();
+        revealPlaybackRef.current?.stop?.();
+        revealPlaybackRef.current = null;
       }
       if (event === "reveal") {
-        const receipt = getAudio(media.reveal);
-        receipt.pause();
-        receipt.currentTime = 0;
-        receipt.volume = 0.4;
-        receipt.muted = mutedRef.current;
-        const playback = receipt.play();
-        if (playback?.catch) playback.catch(() => {});
-        activePlaybackRef.current.add(receipt);
+        revealPlaybackRef.current?.pause?.();
+        revealPlaybackRef.current?.stop?.();
+        revealPlaybackRef.current = playSrc(media.reveal, {
+          volume: EFFECT_VOLUME,
+        });
       }
-      if (event === "cashout") playSrc(media.cashout, { volume: 0.85 });
-      if (event === "double") playSrc(media.double, { volume: 0.8 });
-      if (event === "lose") playSrc(media.lose, { volume: 0.65 });
-      if (event === "freeTickets") playSrc(media.freeTickets, { volume: 0.9 });
+      if (event === "cashout") playSrc(media.cashout, { volume: EFFECT_VOLUME });
+      if (event === "double") playSrc(media.double, { volume: EFFECT_VOLUME });
+      if (event === "lose") playSrc(media.lose, { volume: EFFECT_VOLUME });
+      if (event === "freeTickets") playSrc(media.freeTickets, { volume: EFFECT_VOLUME });
       if (event === "win") {
         const firstSymbol = payload?.lineWins?.[0]?.symbol;
         playSrc(winSoundBySymbol[firstSymbol] ?? media.receiptWin, {
-          volume: 0.85,
+          volume: EFFECT_VOLUME,
         });
       }
     },
-    [getAudio, playBackground, playSrc, setMuted, stopAllAudio, stopBackground, useGame3Sounds, winSoundBySymbol],
+    [getAudio, playBackground, playSrc, setMuted, stopAllAudio, stopBackground, winSoundBySymbol],
   );
 }

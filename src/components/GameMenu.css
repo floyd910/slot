@@ -348,6 +348,7 @@
   color: var(--game-accent-dark, #d6aa38);
   outline: none;
 }
+.game-rules-screen[data-game-id="caravan-spins"],
 .game-rules-screen[data-game-id="khocha-afandi"] {
   background: linear-gradient(145deg, rgb(176, 144, 83) 0%, rgb(132, 74, 32) 46.63%, rgb(176, 144, 83) 100%);
 }

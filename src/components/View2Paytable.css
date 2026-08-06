@@ -8,7 +8,7 @@
   overflow: visible;
   padding: 20px 0 30px;
   border-radius: 18px;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.56);
   color: var(--game-accent-light, #e6c36a);
   font-family: "Prosto One", Arial, Helvetica, sans-serif;
   letter-spacing: 0;
@@ -35,12 +35,12 @@
 .view2-info-main-card,
 .view2-info-coeff-card {
   padding: 16px;
+  border: 1.031px solid #fff;
 }
 
 .view2-info-card {
   display: flex;
   align-items: center;
-  border: 1.031px solid #fff;
   background: linear-gradient(320deg, rgba(44, 28, 0, 0.64) 2.87%, rgba(0, 0, 0, 0.64) 46.83%, rgba(44, 28, 0, 0.64) 97.13%), rgba(255, 255, 255, 0.10);
   box-shadow: 0 0 10.314px 1.031px rgba(255, 255, 255, 0.10) inset, 0 4.126px 6.188px 0 rgba(0, 0, 0, 0.10);
 }
@@ -162,7 +162,6 @@
   flex-direction: column;
   align-items: center;
   width: 569.32px;
-  border: 0;
   background: linear-gradient(320deg, rgba(44, 28, 0, 0.64) 2.87%, rgba(0, 0, 0, 0.64) 46.83%, rgba(44, 28, 0, 0.64) 97.13%), rgba(255, 255, 255, 0.10);
   box-shadow: 0 0 10.314px 1.031px rgba(255, 255, 255, 0.10) inset, 0 4.126px 6.188px 0 rgba(0, 0, 0, 0.10);
 }

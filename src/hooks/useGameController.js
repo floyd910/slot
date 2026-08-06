@@ -110,8 +110,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     visualMode,
   });
 
-  const useGame3Sounds = gameDefinition?.id === "hiranmandi";
-  const playSound = useGameAudio(useGame3Sounds);
+  const playSound = useGameAudio(gameDefinition?.id);
   const emitSound = useCallback(
     (event, payload) => {
       if (visualMode && event !== "carpet") return;
@@ -128,6 +127,19 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   useEffect(() => {
     playSound("setMuted", !soundEnabled);
   }, [playSound, soundEnabled]);
+
+  useEffect(
+    () => () => {
+      autoPlayOnRef.current = false;
+      freeSpinRunRef.current = false;
+      if (spinFeedbackTimerRef.current) {
+        window.clearTimeout(spinFeedbackTimerRef.current);
+        spinFeedbackTimerRef.current = null;
+      }
+      playSound("stopAll");
+    },
+    [playSound],
+  );
 
   useEffect(() => {
     const getEnabledControl = (event) => {

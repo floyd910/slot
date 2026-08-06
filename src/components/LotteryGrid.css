@@ -94,6 +94,9 @@
   background: linear-gradient(145deg, var(--game-accent-border, #e1bf64) 0%, var(--game-accent-dark, #aa7c11) 46.63%, var(--game-accent-light, #e6c36a) 100%);
 }
 
+.configured-game[data-game-id="caravan-spins"] .lottery-grid-view1-cell {
+  background: url("/assets/img/game5-view1-cell-background.webp") center / 100% 100%;
+}
 .configured-game[data-game-id="khocha-afandi"] .lottery-grid-view1-cell {
   background: url("/assets/img/game6-view1-cell-background.webp") center / 100% 100%;
 }
@@ -102,6 +105,11 @@
   background: linear-gradient(145deg, var(--game-success, #3ad437) 0%, var(--game-success-dark, #146500) 46.63%, #43bf24 100%);
 }
 
+.configured-game[data-game-id="caravan-spins"]
+  .lottery-grid-view1__top
+  .lottery-grid-view1-cell--win-highlight {
+  background: url("/assets/img/game5-view1-highlight-background.png") center / 100% 100% no-repeat;
+}
 .configured-game[data-game-id="khocha-afandi"]
   .lottery-grid-view1__top
   .lottery-grid-view1-cell--win-highlight {
@@ -496,7 +504,7 @@
   position: absolute;
   inset: 0;
   z-index: 4;
-  background-image: url("/assets/img/view2-carpet-open.webp");
+  background-image: url("/assets/img/view2-carpet-open.webp?v=20260806-no-right-seam");
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100% 100%;
