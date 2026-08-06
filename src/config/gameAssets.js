@@ -3,6 +3,7 @@ export const GAME6_COVER_SRC = "/assets/img/game6-background.webp";
 export const GAME6_LOGO_SRC = "/assets/img/game6-header.webp";
 export const GAME6_CHOOSER_TILE_SRC = "/assets/img/game6-chooser-logo.webp";
 export const GAME6_VIEW1_CELL_BACKGROUND_SRC = "/assets/img/game6-view1-cell-background.webp";
+export const GAME6_VIEW1_HIGHLIGHT_BACKGROUND_SRC = "/assets/img/game6-view1-highlight-background.png";
 export const GAME6_VIEW2_SYMBOL_0_STATIC_SRC = "/assets/img/game6-view2-symbol0-static.webp";
 export const GAME6_VIEW2_SYMBOL_7_STATIC_SRC = "/assets/img/game6-view2-symbol7-static.webp";
 export const GAME6_VIEW2_SYMBOL_8_STATIC_SRC = "/assets/img/game6-view2-symbol8-static.webp?v=20260804-full-no-crop";
@@ -79,6 +80,7 @@ export const DOUBLE_SCENE_ASSETS = Object.values(DOUBLE_SCENE_ASSET_SOURCES);
 export const FIRST_PAINT_GAME_IMAGE_ASSETS = [
   ...GAME3_SHELL_ASSETS,
   GAME6_VIEW1_CELL_BACKGROUND_SRC,
+  GAME6_VIEW1_HIGHLIGHT_BACKGROUND_SRC,
   LOTTERY_PAINTBRUSH_SRC,
   ...LANGUAGE_CHOOSER_ASSETS,
   ...VIEW1_GRID_ASSETS,
