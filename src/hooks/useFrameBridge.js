@@ -25,6 +25,36 @@ const DEV_SOAP_CONTEXT = {
   login: "testslot",
   password: "1",
 };
+const HOSTED_STANDALONE_HOSTS = new Set([
+  "raxshloto.online",
+  "www.raxshloto.online",
+  "localhost",
+  "127.0.0.1",
+  "::1",
+]);
+const HOSTED_STANDALONE_QUERY = {
+  mode: "standalone",
+  token: "partner-token",
+  sessionId: "partner-session",
+  userId: "partner-user",
+  gameId: "hiranmandi",
+  currency: "GEL",
+  locale: "en",
+  backendMode: "soap",
+  testMode: "false",
+  demoMode: "false",
+  backendTestParams: "false",
+};
+const HOSTED_SOAP_CONTEXT = {
+  idPartner: "1",
+  idKassi: "70",
+  idValute: "1",
+  idUser: "1",
+  userId: "1",
+  login: "testslot",
+  password: "1",
+  backendMode: "soap",
+};
 export const HOST_COMMANDS = new Set([
   "INIT_CONTEXT",
   "UPDATE_THEME",
@@ -119,7 +149,31 @@ const referrerOrigin = () => {
   }
 };
 
+const redirectHostedStandalone = () => {
+  if (
+    window.parent !== window ||
+    !HOSTED_STANDALONE_HOSTS.has(window.location.hostname)
+  ) {
+    return false;
+  }
+
+  const search = new URLSearchParams(window.location.search);
+  if (Object.keys(HOSTED_STANDALONE_QUERY).every((key) => search.has(key))) {
+    return false;
+  }
+
+  Object.entries(HOSTED_STANDALONE_QUERY).forEach(([key, value]) => {
+    if (!search.has(key)) search.set(key, value);
+  });
+
+  window.location.replace(
+    `${window.location.pathname}?${search.toString()}${window.location.hash}`,
+  );
+  return true;
+};
+
 export function readFrameParams() {
+  redirectHostedStandalone();
   const search = new URLSearchParams(window.location.search);
   const globalConfig = window.HIRANMANDI_FRAME_CONFIG ?? {};
   const envConfig = getFrontendEnvConfig();
@@ -160,6 +214,10 @@ export function readFrameParams() {
   removeSensitiveQueryParams(search);
 
   const isFramed = window.parent !== window;
+  const hostedStandaloneDefaults =
+    !isFramed && HOSTED_STANDALONE_HOSTS.has(window.location.hostname)
+      ? HOSTED_SOAP_CONTEXT
+      : {};
   const mode = queryContext.mode ?? globalConfig.mode ?? envConfig.mode ?? stored.mode ?? (isFramed ? "embedded" : "standalone");
   const allowedOrigins = [
     ...(queryContext.allowedOrigins ?? []),
@@ -172,6 +230,7 @@ export function readFrameParams() {
     ...withoutEmptyValues(stored),
     ...withoutEmptyValues(envConfig),
     ...(import.meta.env.DEV ? DEV_SOAP_CONTEXT : {}),
+    ...hostedStandaloneDefaults,
     ...withoutEmptyValues(globalConfig),
     ...withoutEmptyValues(queryContext),
     mode: mode === "embedded" ? "embedded" : "standalone",
