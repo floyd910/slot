@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import CombinationSelector from "../CombinationSelector.jsx";
 import GameAlert from "../GameAlert.jsx";
 import DoubleMode from "../DoubleMode.jsx";
@@ -33,9 +33,6 @@ export default function GameContent({ controller, game, runtimeState }) {
   const ticketCopy = TICKET_COPY[language] ?? TICKET_COPY.ru;
   const [drawDetailsExpanded, setDrawDetailsExpanded] = useState(false);
   const [lastTicket, setLastTicket] = useState(null);
-  const [ticketPosition, setTicketPosition] = useState("below");
-  const [ticketExpansion, setTicketExpansion] = useState("down");
-  const ticketRef = useRef(null);
   const { actions, derived, state } = controller;
   const view = buildGameContentViewModel({ derived, state });
   useEffect(() => {
@@ -45,71 +42,6 @@ export default function GameContent({ controller, game, runtimeState }) {
       receiptNumber: state.spinResult.Number ?? "\u2014",
     });
   }, [state.spinResult?.Number, state.spinResult?.idCard]);
-
-  useLayoutEffect(() => {
-    const ticket = ticketRef.current;
-    const center = ticket?.parentElement;
-    const root = ticket?.closest(".frame-app");
-    if (!ticket || !center || !root) return undefined;
-
-    const isVisible = (element) =>
-      element &&
-      element.getClientRects().length > 0 &&
-      getComputedStyle(element).display !== "none";
-    const getVisibleFooter = () =>
-      Array.from(root.querySelectorAll(".bottom-bar")).find(isVisible) ??
-      Array.from(root.querySelectorAll(".footer-block")).find(isVisible);
-
-
-    const updatePosition = () => {
-        const centerRect = center.getBoundingClientRect();
-        const rootRect = root.getBoundingClientRect();
-        const footer = getVisibleFooter();
-        const footerTop = footer?.getBoundingClientRect().top ?? rootRect.bottom;
-        const scale = center.offsetWidth
-          ? centerRect.width / center.offsetWidth
-          : 1;
-        const gap = 16 * scale;
-        const ticketFooterHeight =
-          ticket.querySelector(".grid-bottom-panel__footer")
-            ?.getBoundingClientRect().height ?? 0;
-        const collapsedTicketHeight = Math.max(
-          56 * scale,
-          ticketFooterHeight + 32 * scale,
-        );
-        const nextPosition = "below";
-
-        setTicketPosition((current) =>
-          current === nextPosition ? current : nextPosition,
-        );
-        const expandedFitsBelow =
-          centerRect.bottom + gap + ticket.offsetHeight * scale <= footerTop;
-        const nextExpansion = expandedFitsBelow ? "down" : "up";
-        setTicketExpansion((current) =>
-          current === nextExpansion ? current : nextExpansion,
-        );
-    };
-
-    const observer = new ResizeObserver(updatePosition);
-    observer.observe(root);
-    observer.observe(center);
-    const footer = getVisibleFooter();
-    observer.observe(ticket);
-    if (footer) observer.observe(footer);
-    const mutationObserver = new MutationObserver(updatePosition);
-    mutationObserver.observe(root, {
-      attributes: true,
-      attributeFilter: ["class", "style", "data-fluid-fit"],
-    });
-    window.addEventListener("resize", updatePosition);
-    updatePosition();
-
-    return () => {
-      observer.disconnect();
-      mutationObserver.disconnect();
-      window.removeEventListener("resize", updatePosition);
-    };
-  }, [drawDetailsExpanded, lastTicket, state.visualMode]);
 
 
   const drawNumber = lastTicket?.drawNumber ?? "—";
@@ -220,9 +152,8 @@ export default function GameContent({ controller, game, runtimeState }) {
             </div>
             {SHOW_TICKET_PANEL && (
             <div
-              ref={ticketRef}
-              data-ticket-position={ticketPosition}
-              data-ticket-expansion={ticketExpansion}
+              data-ticket-position="below"
+              data-ticket-expansion="up"
               className={`grid-bottom-panel${drawDetailsExpanded ? " grid-bottom-panel--expanded" : ""}`}
             >
               {drawDetailsExpanded && (

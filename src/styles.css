@@ -21,6 +21,13 @@
   --clone-brown: #2a1007;
   --clone-blue: #078bd0;
   --app-viewport-height: 100vh;
+  --responsive-header-scale: 1;
+  --compact-view1-grid-scale: 1;
+  --compact-view2-grid-scale: 1;
+  --large-surface-grid-scale: 1;
+  --compact-view1-frame-shift: 0px;
+  --compact-view2-frame-shift: 0px;
+  --large-surface-frame-shift: 0px;
 }
 
 @supports (height: 100dvh) {

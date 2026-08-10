@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import BottomBar from "../BottomBar.jsx";
 import GameBottomArea from "../GameBottomArea.jsx";
 import GameMenu from "../GameMenu.jsx";
@@ -14,10 +14,17 @@ import { useResponsiveGameLayout } from "../../hooks/useResponsiveGameLayout.js"
 
 export default function GameShell({ controller, game, onBackToSlots }) {
   const shellRef = useRef(null);
+  const [loaderExitComplete, setLoaderExitComplete] = useState(false);
   const { actions, derived, state } = controller;
-  useResponsiveGameLayout(shellRef, state.visualMode ? "view2" : "view1");
+  const layoutReady = useResponsiveGameLayout(
+    shellRef,
+    `${state.visualMode ? "view2" : "view1"}:${state.startupLoaderVisible}:${state.startupAssetsReady}`,
+  );
   const { isLanguageChanging, language, t } = useLanguage();
-  const showStartupLoader = state.startupLoaderVisible && !isLanguageChanging;
+  const showStartupLoader =
+    !loaderExitComplete &&
+    (state.startupLoaderVisible || state.startupLoaderLeaving || !layoutReady) &&
+    !isLanguageChanging;
   const showInlineView2Paytable = state.showPaytable && state.visualMode;
   const paytableView = buildStandardPaytableViewModel({
     stake: state.stake,
@@ -37,6 +44,8 @@ export default function GameShell({ controller, game, onBackToSlots }) {
     <div
       ref={shellRef}
       className={derived.shellClass}
+      data-fluid-fit="true"
+      data-layout-ready={layoutReady ? "true" : "false"}
       data-module-mode={state.context.mode}
       data-startup-loading={showStartupLoader ? "true" : "false"}
     >
@@ -169,9 +178,10 @@ export default function GameShell({ controller, game, onBackToSlots }) {
         )}
         {showStartupLoader && (
           <StartupLoader
-            ready={state.startupAssetsReady}
-            leaving={state.startupLoaderLeaving}
+            ready={state.startupAssetsReady && layoutReady}
+            leaving={state.startupLoaderLeaving && layoutReady}
             backgroundSrc={game.assets.cover}
+            onExited={() => setLoaderExitComplete(true)}
           />
         )}
       </div>

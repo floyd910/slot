@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./StartupLoader.css";
 
-export default function StartupLoader({ ready, leaving, variant = "default", progress: measuredProgress, backgroundSrc }) {
+export default function StartupLoader({ ready, leaving, variant = "default", progress: measuredProgress, backgroundSrc, onExited }) {
   const [progress, setProgress] = useState(0);
   const isBrandLoader = variant === "brand";
   const hasMeasuredProgress = Number.isFinite(measuredProgress);
@@ -48,6 +48,9 @@ export default function StartupLoader({ ready, leaving, variant = "default", pro
       role="status"
       aria-live="polite"
       aria-label="Loading game"
+      onTransitionEnd={(event) => {
+        if (event.target === event.currentTarget && event.propertyName === "opacity" && leaving) onExited?.();
+      }}
     >
       <div className="startup-loader__shade" />
       {isBrandLoader ? (

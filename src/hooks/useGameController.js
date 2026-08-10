@@ -540,10 +540,8 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     }
 
     setStartupLoaderLeaving(true);
-    const timeout = window.setTimeout(() => {
-      setStartupLoaderVisible(false);
-    }, 520);
-    return () => window.clearTimeout(timeout);
+    setStartupLoaderVisible(false);
+    return undefined;
   }, [startupAssetsReady, startupLoaderVisible, status]);
 
   const loadPaytable = async () => {

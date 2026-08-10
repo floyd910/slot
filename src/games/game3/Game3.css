@@ -13,9 +13,6 @@
   background: var(--game-background, #111);
 }
 
-.frame-app[data-startup-loading="true"] {
-  cursor: wait;
-}
 
 .frame-app.theme-light {
   color-scheme: light;
@@ -29,12 +26,11 @@
 
 .game_area {
   position: relative;
-  isolation: isolate;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  height: 100vh;
+  height: calc(var(--app-viewport-height) - 48px);
   padding: 0;
   overflow: visible;
   margin-top: 48px;
@@ -1346,4 +1342,45 @@ button:disabled {
   .game_area[data-view2-info="true"] .view2-info-inline {
     grid-template-rows: minmax(0, calc(100% - 20px));
   }
+}
+
+/* Shared minimum logo width. */
+.configured-game .frame-app .header_img {
+  min-width: 440px !important;
+}
+@media (max-width: 440px) {
+  .configured-game .frame-app .header_img {
+    min-width: 95% !important;
+  }
+}
+/* View-independent logo dimensions: identical for View 1 and View 2. */
+.configured-game .frame-app .header_img {
+  width: min(46vw, 440px) !important;
+  height: auto !important;
+  transform: none !important;
+}
+:fullscreen .frame-app.view-2:not(.doubling-active) .header_img {
+  top: 0 !important;
+  margin-top: 0 !important;
+}
+/* Final shared fit contract: these rules must win over per-view breakpoints. */
+.frame-app[data-fluid-fit="true"].view-2:not(.doubling-active)
+  .game-main-layout > .frame-content {
+  position: absolute !important;
+  inset: calc(var(--fluid-logo-height) + 10px) 0 var(--fluid-footer-reserve) !important;
+  margin: 0 !important;
+  transform: none !important;
+}
+
+.frame-app[data-fluid-fit="true"].view-2:not(.doubling-active)
+  .main-container__center {
+  transform: scale(var(--fluid-content-scale)) !important;
+  transform-origin: top center !important;
+}
+
+
+
+
+.frame-app[data-layout-ready="false"] .game-main-layout {
+  visibility: hidden;
 }

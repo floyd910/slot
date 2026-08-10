@@ -5,5 +5,5 @@ export default function SelectedSlotGame({ slotId, onBack }) {
   if (!registration) return null;
 
   const { Component, game } = registration;
-  return <Component game={game} onBack={onBack} />;
+  return <Component key={game.id} game={game} onBack={onBack} />;
 }
