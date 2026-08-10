@@ -489,7 +489,7 @@
     height: 220px;
     max-height: 210px;
     padding: 12px 8px;
-    gap: 4px;
+    gap: 5px;
     border-radius: 12px 12px 0 0;
     overflow: hidden;
   }
@@ -656,3 +656,10 @@
   background: transparent;
 }
 
+
+@media (max-width: 639px) {
+  .footer-block-mobile {
+    justify-content: flex-start;
+    row-gap: 5px;
+  }
+}

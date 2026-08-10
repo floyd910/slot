@@ -1122,7 +1122,7 @@ button:disabled {
 
 @media (min-width: 721px) {
   .frame-app .header_img {
-    min-width: 440px;
+    min-width: 320px;
     height: auto !important;
   }
 }
@@ -1146,7 +1146,7 @@ button:disabled {
 
 @media (min-width: 721px) {
   .frame-app:not([data-fluid-fit="true"]):not([data-fluid-logo-fit="true"]) .header_img {
-    min-width: 440px;
+    min-width: 320px;
     height: auto !important;
   }
 }
@@ -1346,11 +1346,11 @@ button:disabled {
 
 /* Shared minimum logo width. */
 .configured-game .frame-app .header_img {
-  min-width: 440px !important;
+  min-width: 320px !important;
 }
 @media (max-width: 440px) {
   .configured-game .frame-app .header_img {
-    min-width: 95% !important;
+    min-width: 80% !important;
   }
 }
 /* View-independent logo dimensions: identical for View 1 and View 2. */
@@ -1383,4 +1383,14 @@ button:disabled {
 
 .frame-app[data-layout-ready="false"] .game-main-layout {
   visibility: hidden;
+}
+
+
+/* Compact landscape logo must win over the global minimum-logo rule. */
+@media (orientation: landscape) and (max-width: 1024px) {
+  .configured-game .frame-app[data-fluid-fit="true"] .header_img {
+    width: var(--fluid-logo-width) !important;
+    min-width: 0 !important;
+    height: var(--fluid-logo-height) !important;
+  }
 }

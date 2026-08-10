@@ -43,11 +43,36 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       const logo = root.querySelector(".header_img");
       const center = root.querySelector(".main-container__center");
       const footer = getFooter(root);
+      const header = root.parentElement?.querySelector("header");
+      const headerHeight = header?.getBoundingClientRect().height || 48;
+      root.style.setProperty("--game-header-height", `${headerHeight}px`);
+      const shortFrame = root.getBoundingClientRect().height <= 620;
+      const doubleChestBottom = footer?.classList.contains("footer-block-mobile")
+        ? 200
+        : footer?.classList.contains("footer-block-tablet")
+          ? 150
+          : shortFrame
+            ? 50
+            : 150;
+      root.style.setProperty("--double-chest-bottom", `${doubleChestBottom}px`);
+      if (area) {
+        const areaBounds = area.getBoundingClientRect();
+        const footerTop = footer?.getBoundingClientRect().top ?? areaBounds.bottom;
+        root.style.setProperty(
+          "--game-footer-reserve",
+          `${Math.max(0, areaBounds.bottom - footerTop)}px`,
+        );
+      }
       if (!area || !logo || !center || root.classList.contains("doubling-active")) return;
 
       const areaRect = area.getBoundingClientRect();
       const footerTop = footer?.getBoundingClientRect().top ?? areaRect.bottom;
-      const logoWidth = areaRect.width <= 440 ? areaRect.width * 0.95 : Math.min(440, areaRect.width - GAP * 2);
+      const compactLandscape = areaRect.width > areaRect.height && areaRect.width <= 1024;
+      const logoWidth = compactLandscape
+        ? Math.min(260, areaRect.width * 0.4)
+        : areaRect.width <= 440
+          ? areaRect.width * 0.8
+          : Math.min(440, areaRect.width - GAP * 2);
       const logoHeight = logoWidth * LOGO_RATIO;
       root.dataset.fluidFit = "true";
       root.style.setProperty("--fluid-logo-width", `${logoWidth}px`);
@@ -64,6 +89,25 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
         (footerTop - GAP - (areaRect.top + logoHeight + GAP)) / Math.max(1, bounds.bottom - bounds.top),
       ) * 0.995);
       root.style.setProperty("--fluid-content-scale", String(scale));
+
+      // Verify the committed grid against the exact logo/footer boundaries in this same pass.
+      const fittedBounds = getBounds(root, center);
+      if (fittedBounds) {
+        const fittedWidth = Math.max(1, fittedBounds.right - fittedBounds.left);
+        const fittedHeight = Math.max(1, fittedBounds.bottom - fittedBounds.top);
+        const availableHeight = footerTop - GAP - (areaRect.top + logoHeight + GAP);
+        const overlapCorrection = Math.min(
+          1,
+          (areaRect.width - GAP * 2) / fittedWidth,
+          availableHeight / fittedHeight,
+        );
+        if (overlapCorrection < 0.999) {
+          root.style.setProperty(
+            "--fluid-content-scale",
+            String(scale * overlapCorrection * 0.995),
+          );
+        }
+      }
 
       if (!initialFitStarted) {
         initialFitStarted = true;
@@ -88,7 +132,7 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
     });
     mountObserver.observe(root, { childList: true, subtree: true });
     const observer = new ResizeObserver(fit);
-    [root, root.querySelector(".game_area"), root.querySelector(".bottom-bar")]
+    [root, root.parentElement?.querySelector("header"), root.querySelector(".game_area"), root.querySelector(".bottom-bar")]
       .filter(Boolean).forEach((element) => observer.observe(element));
     window.addEventListener("resize", fit, { passive: true });
     document.addEventListener("fullscreenchange", fit);

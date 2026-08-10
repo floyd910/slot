@@ -695,8 +695,20 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     Boolean(spinResult?.idCard) &&
     ticketWinAmount > 0;
   const pendingTicketWin = hasTicketWin(spinResult, doublingState);
+  const visualDoubleSceneActive =
+    visualMode &&
+    Boolean(
+      doublingState.entered &&
+        (doublingState.active ||
+          doublingState.loading ||
+          doublingState.lastStatus ||
+          (pendingTicketWin && doublingState.step > 0)),
+    );
   const viewSwitchDisabled =
-    status === "processing" || autoPlayOn || freeSpinRunRef.current;
+    status === "processing" ||
+    autoPlayOn ||
+    freeSpinRunRef.current ||
+    visualDoubleSceneActive;
   const doubleOfferAvailable = shouldOfferDouble({
     autoPlayOn,
     doublingState,
