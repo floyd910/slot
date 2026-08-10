@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./StartupLoader.css";
 
-export default function StartupLoader({ ready, leaving, variant = "default", progress: measuredProgress }) {
+export default function StartupLoader({ ready, leaving, variant = "default", progress: measuredProgress, backgroundSrc }) {
   const [progress, setProgress] = useState(0);
   const isBrandLoader = variant === "brand";
   const hasMeasuredProgress = Number.isFinite(measuredProgress);

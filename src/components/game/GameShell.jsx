@@ -171,6 +171,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
           <StartupLoader
             ready={state.startupAssetsReady}
             leaving={state.startupLoaderLeaving}
+            backgroundSrc={game.assets.cover}
           />
         )}
       </div>

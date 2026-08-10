@@ -23,10 +23,28 @@ const waitForAnimationFrame = () =>
 
 const MOUNTED_IMAGE_WAIT_MS = 8000;
 const SLOT_CHOOSER_ROUTE = "/slots";
-
 const readHashGameId = () => {
   const match = window.location.hash.match(/^#\/games\/([^/?#]+)$/);
   return match ? decodeURIComponent(match[1]) : null;
+};
+
+const readInitialGameId = () => {
+  const query = new URLSearchParams(window.location.search);
+  return (
+    readHashGameId() ??
+    query.get("gameId") ??
+    query.get("game") ??
+    query.get("gameName") ??
+    query.get("selectedGame") ??
+    query.get("slotId") ??
+    query.get("slot") ??
+    null
+  );
+};
+
+const getInitialSlotId = () => {
+  const gameId = readInitialGameId();
+  return GAME_DEFINITIONS.some((game) => game.id === gameId) ? gameId : null;
 };
 
 const setHashRoute = (route) => {
@@ -116,17 +134,32 @@ export function useSlotApp({ loadSelectedSlotGame }) {
   const [chooserAssetsReady, setChooserAssetsReady] = useState(false);
   const [chooserLoadProgress, setChooserLoadProgress] = useState(0);
   const [gameLoadProgress, setGameLoadProgress] = useState(0);
-  const [selectedSlotId, setSelectedSlotId] = useState(null);
+  const [selectedSlotId, setSelectedSlotId] = useState(getInitialSlotId);
   const [pendingSlotId, setPendingSlotId] = useState(null);
   const chooserReadyNotifiedRef = useRef(false);
+  const initialRouteSlotIdRef = useRef(getInitialSlotId());
   const openRequestRef = useRef(0);
 
   useEffect(() => {
     let active = true;
 
-    preloadRequiredImages(SLOT_CHOOSER_REQUIRED_ASSETS, setChooserLoadProgress)
-      .then(() => {
-        if (active) setChooserAssetsReady(true);
+    Promise.all([
+      // Decode every chooser card/background image while the initial loader is up.
+      preloadRequiredImages(SLOT_CHOOSER_REQUIRED_ASSETS, setChooserLoadProgress),
+      // Cache the lazy game screen module before any card can be selected.
+      loadSelectedSlotGame(),
+    ])
+      .then(async () => {
+        // The CSS background and mounted <img> nodes must paint once before
+        // the overlay disappears; detached Image decoding alone is not enough.
+        await waitForAnimationFrame();
+        const chooserImages = Array.from(
+          document.querySelectorAll(".app-slot-chooser img"),
+        );
+        await Promise.all(chooserImages.map(waitForMountedImage));
+        await waitForAnimationFrame();
+        if (!active) return;
+        setChooserAssetsReady(true);
       })
       .catch((assetError) => console.error(assetError));
 
@@ -185,6 +218,16 @@ export function useSlotApp({ loadSelectedSlotGame }) {
     try {
       // Block only on code and assets required by the first game paint.
       await loadSelectedSlotGame();
+      if (openRequestRef.current !== requestId) return;
+
+      // Decode the loader background before replacing the chooser. This prevents
+      // the browser from flashing the app root while the cover image arrives.
+      await preloadRequiredImages([slot.assets.cover]);
+      if (openRequestRef.current !== requestId) return;
+
+      // Replace the chooser with the game shell; it owns the only visible loader
+      // while the rest of the assets and session bootstrap.
+      setSelectedSlotId(slot.id);
       setGameLoadProgress(10);
       await preloadGameAssets(slot, (progress) =>
         setGameLoadProgress(10 + Math.floor(progress * 0.7)),
@@ -197,8 +240,6 @@ export function useSlotApp({ loadSelectedSlotGame }) {
 
     if (openRequestRef.current !== requestId) return;
 
-    // Mount the fully imported game behind the fixed loader first.
-    setSelectedSlotId(slot.id);
     await waitForMountedGamePaint(setGameLoadProgress);
 
     if (openRequestRef.current !== requestId) return;

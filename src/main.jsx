@@ -273,11 +273,9 @@ window.visualViewport?.addEventListener("resize", syncAppViewportHeight, {
 });
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <LanguageProvider>
+  <LanguageProvider>
       <App />
-    </LanguageProvider>
-  </React.StrictMode>,
+  </LanguageProvider>,
 );
 let lastLayoutMode = "";
 let doubleEntryViewportKey = "";

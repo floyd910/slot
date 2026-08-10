@@ -4,7 +4,7 @@
   z-index: 9999;
   overflow: hidden;
   background-color: #11120f;
-  background-image: var(--slot-chooser-bg);
+  background-image: var(--startup-loader-background, var(--slot-chooser-bg));
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;

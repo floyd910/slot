@@ -1,13 +1,11 @@
 import GameShell from "../components/game/GameShell.jsx";
 import Header from "../components/header/Header.jsx";
-import StartupLoader from "../components/StartupLoader.jsx";
 import { toGameColorVariables } from "../config/gameColors.js";
 import { useSharedGame } from "../hooks/useSharedGame.js";
 import "./game3/Game3.css";
 
 export default function SharedGame({ game, onBack }) {
-  const { assetsReady, controller } = useSharedGame(game);
-  if (!assetsReady) return <StartupLoader ready={false} leaving={false} />;
+  const { controller } = useSharedGame(game);
 
   return (
     <div
@@ -15,7 +13,8 @@ export default function SharedGame({ game, onBack }) {
       data-game-id={game.id}
       style={toGameColorVariables(game.colors)}
     >
-      <Header
+      <div hidden={controller.state.startupLoaderVisible}>
+        <Header
         menuOpen={controller.state.showGameMenu}
         onMenuOpen={() => controller.actions.setShowGameMenu(true)}
         onBackToSlots={onBack}
@@ -25,6 +24,7 @@ export default function SharedGame({ game, onBack }) {
         viewSwitchDisabled={controller.derived.viewSwitchDisabled}
         visualMode={controller.state.visualMode}
       />
+      </div>
       <GameShell controller={controller} game={game} onBackToSlots={onBack} />
     </div>
   );

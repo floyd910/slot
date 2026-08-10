@@ -452,7 +452,14 @@ export const preloadGameAssets = (game, onProgress) => {
 
   const promise = Promise.all([
     preloadRequiredImages(
-      [game.assets.cover, game.assets.logo, ...FIRST_PAINT_GAME_IMAGE_ASSETS].filter((src) => isAssetAllowedForGame(src, game)),
+      [
+        game.assets.cover,
+        game.assets.logo,
+        ...FIRST_PAINT_GAME_IMAGE_ASSETS,
+        ...getGameView2Assets(game).filter(
+          (src) => !src.includes("/assets/img/animations/"),
+        ),
+      ].filter((src) => isAssetAllowedForGame(src, game)),
       onProgress,
     ),
     fontReady(),

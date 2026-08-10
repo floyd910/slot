@@ -149,28 +149,7 @@ const referrerOrigin = () => {
   }
 };
 
-const redirectHostedStandalone = () => {
-  if (
-    window.parent !== window ||
-    !HOSTED_STANDALONE_HOSTS.has(window.location.hostname)
-  ) {
-    return false;
-  }
-
-  const search = new URLSearchParams(window.location.search);
-  if (Object.keys(HOSTED_STANDALONE_QUERY).every((key) => search.has(key))) {
-    return false;
-  }
-
-  Object.entries(HOSTED_STANDALONE_QUERY).forEach(([key, value]) => {
-    if (!search.has(key)) search.set(key, value);
-  });
-
-  window.location.replace(
-    `${window.location.pathname}?${search.toString()}${window.location.hash}`,
-  );
-  return true;
-};
+const redirectHostedStandalone = () => false;
 
 export function readFrameParams() {
   redirectHostedStandalone();
@@ -216,7 +195,7 @@ export function readFrameParams() {
   const isFramed = window.parent !== window;
   const hostedStandaloneDefaults =
     !isFramed && HOSTED_STANDALONE_HOSTS.has(window.location.hostname)
-      ? HOSTED_SOAP_CONTEXT
+      ? { ...HOSTED_STANDALONE_QUERY, ...HOSTED_SOAP_CONTEXT }
       : {};
   const mode = queryContext.mode ?? globalConfig.mode ?? envConfig.mode ?? stored.mode ?? (isFramed ? "embedded" : "standalone");
   const allowedOrigins = [
