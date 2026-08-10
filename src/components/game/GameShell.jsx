@@ -68,16 +68,6 @@ export default function GameShell({ controller, game, onBackToSlots }) {
 
         {showInlineView2Paytable ? (
           <section className="view2-info-inline" aria-label="View 2 payouts">
-            <div className="view2-info-inline__close-wrap">
-              <button
-                className="info-modal__close view2-info-inline__close"
-                onClick={() => actions.setShowPaytable(false)}
-                type="button"
-                aria-label="Close info"
-              >
-                X
-              </button>
-            </div>
             {state.paytableStatus === "loading" && !isLanguageChanging && (
               <div className="info-paytable-state">{t("loading")}</div>
             )}
@@ -92,6 +82,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
                 payoutMultiplier={paytableView.payoutMultiplier}
                 zeroPayoutMultiplier={paytableView.zeroPayoutMultiplier}
                 symbolAssets={game.assets.view2Symbols}
+                onClose={() => actions.setShowPaytable(false)}
               />
             )}
           </section>

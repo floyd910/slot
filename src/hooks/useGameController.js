@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { frameApi } from "../api/frameApi.js";
-import { GAME3_VIEW2_ASSETS, GAME6_VIEW2_ASSETS } from "../config/view2Assets.js";
+import { GAME3_VIEW2_ASSETS, GAME4_VIEW2_ASSETS, GAME6_VIEW2_ASSETS } from "../config/view2Assets.js";
 import {
   CARPET_ANIMATION_HALF_MS,
   CARPET_SOUND_SRC,
@@ -257,7 +257,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
 
   useEffect(() => {
     if (!visualMode) return;
-    const assets = gameDefinition?.id === "khocha-afandi" ? GAME6_VIEW2_ASSETS : GAME3_VIEW2_ASSETS;
+    const assets = gameDefinition?.id === "khocha-afandi" ? GAME6_VIEW2_ASSETS : gameDefinition?.id === "golden-dice" ? GAME4_VIEW2_ASSETS : GAME3_VIEW2_ASSETS;
     assets.forEach((src) => {
       preloadImage(src);
     });

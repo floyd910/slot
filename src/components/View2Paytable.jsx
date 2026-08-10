@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import { VIEW2_SYMBOL_CONFIGS } from "./view2Symbols/index.jsx";
 import "./View2Paytable.css";
 import { getView2MatchPayout } from "../viewModels/view2PaytableViewModel.js";
 
@@ -23,9 +24,13 @@ const getSymbolImage = (symbol, symbolAssets) => {
   const gameAsset = symbolAssets?.[symbol];
   const gameStaticImage = typeof gameAsset === "string"
     ? gameAsset
-    : gameAsset?.staticImage ?? gameAsset?.background;
+    : gameAsset?.staticImage;
 
+  // Dice skins supply a cell background but use the shared View 2 dice face.
+  // The info screen should show that face, not the empty cell background.
   return gameStaticImage
+    ?? VIEW2_SYMBOL_CONFIGS[symbol]?.staticImage
+    ?? (typeof gameAsset === "object" ? gameAsset?.background : null)
     ?? `/assets/img/info-symbols/view2-symbol-${symbol}.webp?v=20260801-assets-lossless`;
 };
 
@@ -80,6 +85,7 @@ export default function View2Paytable({
   payoutMultiplier,
   zeroPayoutMultiplier = payoutMultiplier,
   symbolAssets = {},
+  onClose,
 }) {
   const copy = VIEW2_COPY[language] ?? VIEW2_COPY.ru;
 
@@ -89,6 +95,18 @@ export default function View2Paytable({
         className="view2-info-paytable"
         aria-label={copy.ariaLabel}
       >
+        {onClose && (
+          <div className="view2-info-inline__close-wrap">
+            <button
+              className="info-modal__close view2-info-inline__close"
+              onClick={onClose}
+              type="button"
+              aria-label="Close info"
+            >
+              X
+            </button>
+          </div>
+        )}
       {/* 
       <SymbolTile symbol={11} className="--decor --camel" />
       <SymbolTile symbol={1} className="--decor --dice-left-a" />

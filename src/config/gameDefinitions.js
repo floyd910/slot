@@ -2,6 +2,17 @@ import {
   GAME3_COVER_SRC,
   GAME3_LOGO_ORNAMENT_SRC,
   GAME3_LOGO_SRC,
+  GAME4_CHOOSER_TILE_SRC,
+  GAME4_COVER_SRC,
+  GAME4_LOGO_SRC,
+  GAME4_VIEW2_CELL_BACKGROUND_ASSETS,
+  GAME4_VIEW2_SYMBOL_0_STATIC_SRC,
+  GAME4_VIEW2_SYMBOL_7_STATIC_SRC,
+  GAME4_VIEW2_SYMBOL_8_STATIC_SRC,
+  GAME4_VIEW2_SYMBOL_9_STATIC_SRC,
+  GAME4_VIEW2_SYMBOL_10_STATIC_SRC,
+  GAME4_VIEW2_SYMBOL_11_STATIC_SRC,
+  GAME4_VIEW2_SYMBOL_12_STATIC_SRC,
   GAME5_CHOOSER_TILE_SRC,
   GAME5_COVER_SRC,
   GAME5_LOGO_SRC,
@@ -74,6 +85,45 @@ const GAME6_ASSETS = Object.freeze({
   }),
 });
 
+const game4WinFrames = (symbol) =>
+  Array.from(
+    { length: 144 },
+    (_, index) =>
+      `/assets/img/animations/game4/${symbol}/frame_${String(index).padStart(3, "0")}_delay-0.04s.png`,
+  );
+
+const game4View2Symbol = (symbol, staticImage) =>
+  Object.freeze({
+    staticImage,
+    animatedImage: null,
+    winFrames: Object.freeze(game4WinFrames(symbol)),
+    frameMs: 40,
+    cycleMs: 5760,
+    forwardLoop: true,
+  });
+
+const GAME4_ASSETS = Object.freeze({
+  ...sharedPlaceholderAssets,
+  cover: GAME4_COVER_SRC,
+  logo: GAME4_LOGO_SRC,
+  chooserTile: GAME4_CHOOSER_TILE_SRC,
+  view2Symbols: Object.freeze({
+    1: Object.freeze({ background: GAME4_VIEW2_CELL_BACKGROUND_ASSETS[0] }),
+    2: Object.freeze({ background: GAME4_VIEW2_CELL_BACKGROUND_ASSETS[1] }),
+    3: Object.freeze({ background: GAME4_VIEW2_CELL_BACKGROUND_ASSETS[2] }),
+    4: Object.freeze({ background: GAME4_VIEW2_CELL_BACKGROUND_ASSETS[3] }),
+    5: Object.freeze({ background: GAME4_VIEW2_CELL_BACKGROUND_ASSETS[4] }),
+    6: Object.freeze({ background: GAME4_VIEW2_CELL_BACKGROUND_ASSETS[5] }),
+    0: game4View2Symbol(0, GAME4_VIEW2_SYMBOL_0_STATIC_SRC),
+    7: game4View2Symbol(7, GAME4_VIEW2_SYMBOL_7_STATIC_SRC),
+    8: game4View2Symbol(8, GAME4_VIEW2_SYMBOL_8_STATIC_SRC),
+    9: game4View2Symbol(9, GAME4_VIEW2_SYMBOL_9_STATIC_SRC),
+    10: game4View2Symbol(10, GAME4_VIEW2_SYMBOL_10_STATIC_SRC),
+    11: game4View2Symbol(11, GAME4_VIEW2_SYMBOL_11_STATIC_SRC),
+    12: game4View2Symbol(12, GAME4_VIEW2_SYMBOL_12_STATIC_SRC),
+  }),
+});
+
 const game5View2Symbol = (symbol, staticImage) =>
   Object.freeze({
     staticImage,
@@ -119,7 +169,7 @@ export const GAME_DEFINITIONS = Object.freeze([
   createGameDefinition({ id: "silk-fruits", title: "Silk Fruits", subtitle: "Classic 5-reel slot" }),
   createGameDefinition({ id: "desert-treasures", title: "Desert Treasures", subtitle: "Bonus hunt adventure" }),
   createGameDefinition({ id: "hiranmandi", title: "Hiranmandi Hushhol", subtitle: "Coordinate lottery slot" }),
-  createGameDefinition({ id: "golden-dice", title: "Golden Dice", subtitle: "Table-style slot" }),
+  createGameDefinition({ id: "golden-dice", title: "Golden Dice", subtitle: "Table-style slot", assets: GAME4_ASSETS }),
   createGameDefinition({ id: "caravan-spins", title: "Kadima Drevnii", subtitle: "Ancient adventure", assets: GAME5_ASSETS }),
   createGameDefinition({ id: "khocha-afandi", title: "Khocha Afandi", subtitle: "Number draw game", assets: GAME6_ASSETS }),
   createGameDefinition({ id: "star-bazaar", title: "Star Bazaar", subtitle: "Wild multiplier slot" }),

@@ -7,8 +7,8 @@
   max-height: 100%;
   overflow: visible;
   padding: 20px 0 30px;
-  border-radius: 18px;
-  background: rgba(0, 0, 0, 0.56);
+  border-radius: 0;
+  background: rgba(44, 28, 0, 0.88);
   color: var(--game-accent-light, #e6c36a);
   font-family: "Prosto One", Arial, Helvetica, sans-serif;
   letter-spacing: 0;
@@ -35,14 +35,51 @@
 .view2-info-main-card,
 .view2-info-coeff-card {
   padding: 16px;
-  border: 1.031px solid #fff;
+  border: 1.031px solid #000;
 }
 
 .view2-info-card {
   display: flex;
   align-items: center;
-  background: linear-gradient(320deg, rgba(44, 28, 0, 0.64) 2.87%, rgba(0, 0, 0, 0.64) 46.83%, rgba(44, 28, 0, 0.64) 97.13%), rgba(255, 255, 255, 0.10);
+  background: rgba(0, 0, 0, 0.14);
   box-shadow: 0 0 10.314px 1.031px rgba(255, 255, 255, 0.10) inset, 0 4.126px 6.188px 0 rgba(0, 0, 0, 0.10);
+}
+
+.configured-game[data-game-id="golden-dice"] .view2-info-card,
+.configured-game[data-game-id="golden-dice"] .view2-info-main-card,
+.configured-game[data-game-id="golden-dice"] .view2-info-coeff-card {
+  border: 0;
+  isolation: isolate;
+  overflow: hidden;
+  background: url("/assets/img/game4-view2-info-small-box-background.png") lightgray 0 0 / 100% 100% no-repeat;
+}
+
+.configured-game[data-game-id="golden-dice"] .view2-info-card::before,
+.configured-game[data-game-id="golden-dice"] .view2-info-main-card::before,
+.configured-game[data-game-id="golden-dice"] .view2-info-coeff-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: rgba(0, 0, 0, 0.46);
+  pointer-events: none;
+}
+
+.configured-game[data-game-id="golden-dice"] .view2-info-card > .view2-info-payout-list {
+  position: relative;
+  z-index: 1;
+}
+
+.configured-game[data-game-id="golden-dice"] .view2-info-card .view2-info-payout-row,
+.configured-game[data-game-id="golden-dice"] .view2-info-main-card .view2-info-payout-row {
+  background: rgba(255, 255, 255, 0.10);
+}
+
+.configured-game[data-game-id="golden-dice"] .view2-info-paytable {
+  border-radius: 0;
+  background:
+    radial-gradient(ellipse 58% 72% at 42% 40%, rgba(111, 101, 53, 0.8) 0%, rgba(98, 83, 39, 0.66) 48%, transparent 100%),
+    linear-gradient(135deg, rgba(96, 67, 61, 0.88) 0%, rgba(118, 90, 45, 0.88) 52%, rgba(57, 34, 21, 0.88) 100%);
 }
 
 .view2-info-card.--left-top,
@@ -162,7 +199,7 @@
   flex-direction: column;
   align-items: center;
   width: 569.32px;
-  background: linear-gradient(320deg, rgba(44, 28, 0, 0.64) 2.87%, rgba(0, 0, 0, 0.64) 46.83%, rgba(44, 28, 0, 0.64) 97.13%), rgba(255, 255, 255, 0.10);
+  background: rgba(0, 0, 0, 0.14);
   box-shadow: 0 0 10.314px 1.031px rgba(255, 255, 255, 0.10) inset, 0 4.126px 6.188px 0 rgba(0, 0, 0, 0.10);
 }
 
@@ -218,7 +255,7 @@
 
 .view2-info-coeff-card {
   width: 407.394px;
-  background: linear-gradient(320deg, rgba(44, 28, 0, 0.64) 2.87%, rgba(0, 0, 0, 0.64) 46.83%, rgba(44, 28, 0, 0.64) 97.13%), rgba(255, 255, 255, 0.10);
+  background: rgba(0, 0, 0, 0.14);
   box-shadow: 0 0 10.314px 1.031px rgba(255, 255, 255, 0.10) inset, 0 4.126px 6.188px 0 rgba(0, 0, 0, 0.10);
 }
 
@@ -230,7 +267,7 @@
 .view2-info-coeff-card__payout {
   width: 80%;
   padding: 0;
-  border: 2.063px solid #fff;
+  border: 2.063px solid #000;
   border-radius: 12.377px;
 }
 
@@ -254,7 +291,7 @@
 }
 
 .view2-info-coeff-card__payout .view2-info-payout-row:last-child {
-  border-top: 2.063px solid #fff;
+  border-top: 2.063px solid #000;
   background: transparent;
 }
 
@@ -375,12 +412,18 @@
   filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.56));
 }
 
+.view2-info-paytable .view2-info-symbol,
+.view2-info-paytable .view2-info-symbol__item {
+  border: none !important;
+  outline: none;
+}
+
 .view2-info-symbol__item {
   box-sizing: border-box;
   width: 100%;
   height: 100%;
   padding: 0;
-  border: 4px solid #fff;
+  border: 4px solid #000;
   pointer-events: none;
   user-select: none;
 }
@@ -611,7 +654,6 @@
     width: 100vw;
     max-width: none;
     border-radius: 0;
-    background: transparent;
   }
 
   .info-top,
@@ -1169,11 +1211,17 @@
   }
 
   .view2-info-inline__close-wrap {
-    position: sticky !important;
+    position: absolute !important;
     top: 8px;
     right: 8px;
     z-index: 20;
     float: right;
+  }
+}
+
+@media (min-width: 721px) and (min-height: 621px) {
+  .view2-info-inline .view2-info-paytable {
+    transform: translateY(-32px);
   }
 }
 
@@ -1183,6 +1231,10 @@
     padding: 0 8px 16px;
   }
 
+  .view2-info-inline__close-wrap {
+    top: 24px !important;
+  }
+
   .view2-info-inline .view2-info-paytable {
     width: min(1264px, 100%);
     height: 777px;
@@ -1190,6 +1242,84 @@
     max-height: none;
     margin: 0 auto;
     overflow: visible;
+    position: relative;
+    top: 32px !important;
   }
 }
 
+@media (min-width: 721px) and (min-height: 621px) {
+  .view2-info-inline__close-wrap {
+    position: relative;
+    top: -50px;
+    right: -80px;
+    grid-area: 1 / 1;
+    align-self: start;
+    justify-self: end;
+    z-index: 8;
+    padding: 6px;
+  }
+
+  .info-modal__close.view2-info-inline__close {
+    position: static;
+    transform: none;
+  }
+}
+
+@media (max-width: 720px), (orientation: landscape) and (max-height: 620px) {
+  .view2-info-inline__close-wrap {
+    position: fixed !important;
+    z-index: 30;
+  }
+}
+
+.view2-info-coeff-card__payout .view2-info-payout-row:last-child {
+  background: transparent !important;
+}
+
+@media (max-width: 1024px), (orientation: landscape) and (max-height: 620px) {
+  .view2-info-inline__close-wrap {
+    right: 24px !important;
+  }
+
+  .info-modal__close.view2-info-inline__close {
+    transform: none;
+  }
+}
+
+@media (max-width: 1280px) {
+  .view2-info-inline__close-wrap {
+    right: 20px !important;
+  }
+}
+
+@media (min-width: 721px) and (min-height: 621px) {
+  .info-modal__close.view2-info-inline__close {
+    transform: translateX(-16px);
+  }
+}
+
+
+
+/* The close control is anchored to the paytable wrapper. */
+.view2-info-paytable {
+  position: relative;
+}
+
+.view2-info-paytable .view2-info-inline__close-wrap {
+  position: absolute !important;
+  top: -35px !important;
+  right: 0 !important;
+  z-index: 50;
+  margin: 0;
+  padding: 0;
+}
+
+.view2-info-paytable .info-modal__close.view2-info-inline__close {
+  position: static !important;
+  transform: none !important;
+}
+
+.configured-game[data-game-id="golden-dice"] .view2-info-main-card,
+.configured-game[data-game-id="golden-dice"] .view2-info-coeff-card {
+  background: url("/assets/img/game4-view2-info-background.png") lightgray 0 0 / 100% 100% no-repeat;
+}

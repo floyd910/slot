@@ -1281,3 +1281,69 @@ button:disabled {
     max-width: none;
   }
 }
+@media (max-width: 720px), (orientation: landscape) and (max-height: 620px) {
+  .game_area[data-view2-info="true"] .view2-info-inline {
+    align-content: start;
+    padding: 5px 0 0;
+    grid-template-rows: minmax(0, calc(100% - 5px));
+  }
+}
+
+/* Make the header-to-paytable spacing visible even when the grid item fills its track. */
+.game_area[data-view2-info="true"] .view2-info-inline .view2-info-paytable {
+  position: relative;
+  top: 32px !important;
+  margin-top: 0 !important;
+  transform: none !important;
+}
+
+/* Shared vertical breathing room and scrolling for the View 2 information screen. */
+.game_area[data-view2-info="true"] .view2-info-inline {
+  padding-block: 32px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 1024px) {
+  .game_area[data-view2-info="true"] .view2-info-inline {
+    grid-template-rows: minmax(0, calc(100% - 64px));
+  }
+}
+
+/* Let the shared paytable wrapper size to its content and retain bottom clearance. */
+.game_area[data-view2-info="true"] .view2-info-inline .view2-info-paytable {
+  align-self: start;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none;
+  padding-bottom: 10px !important;
+}
+
+/* Reserve bottom clearance for the complete View 2 info screen. */
+.game_area[data-view2-info="true"] .view2-info-inline {
+  padding-bottom: 32px !important;
+}
+
+/* Keep consistent side clearance inside every View 2 information screen. */
+.game_area[data-view2-info="true"] .view2-info-inline {
+  padding-inline: 10px !important;
+}
+
+@media (max-width: 1024px) {
+  .game_area[data-view2-info="true"] .view2-info-inline {
+    grid-template-columns: minmax(0, 100%);
+  }
+}
+
+/* Use the same outer spacing at every View 2 info viewport. */
+.game_area[data-view2-info="true"] .view2-info-inline {
+  padding: 10px !important;
+}
+
+@media (max-width: 1024px) {
+  .game_area[data-view2-info="true"] .view2-info-inline {
+    grid-template-rows: minmax(0, calc(100% - 20px));
+  }
+}

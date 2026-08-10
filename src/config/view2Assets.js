@@ -1,5 +1,15 @@
 import { VIEW2_SYMBOL_ASSET_SOURCES } from "../components/view2Symbols/index.jsx";
 import {
+
+  GAME4_VIEW2_CELL_BACKGROUND_ASSETS,
+  GAME4_VIEW2_INFO_BACKGROUND_SRC,
+  GAME4_VIEW2_SYMBOL_0_STATIC_SRC,
+  GAME4_VIEW2_SYMBOL_7_STATIC_SRC,
+  GAME4_VIEW2_SYMBOL_8_STATIC_SRC,
+  GAME4_VIEW2_SYMBOL_9_STATIC_SRC,
+  GAME4_VIEW2_SYMBOL_10_STATIC_SRC,
+  GAME4_VIEW2_SYMBOL_11_STATIC_SRC,
+  GAME4_VIEW2_SYMBOL_12_STATIC_SRC,
   GAME5_VIEW2_SYMBOL_1_BACKGROUND_SRC,
   GAME5_VIEW2_SYMBOL_2_BACKGROUND_SRC,
   GAME5_VIEW2_SYMBOL_3_BACKGROUND_SRC,
@@ -101,6 +111,33 @@ export const GAME6_WIN_ANIMATION_ASSETS = [0, 7, 8, 9, 10, 11, 12].flatMap(
         "_delay-0.04s.png",
     ),
 );
+
+export const GAME4_WIN_ANIMATION_ASSETS = [0, 7, 8, 9, 10, 11, 12].flatMap(
+  (symbol) =>
+    Array.from(
+      { length: 144 },
+      (_, index) =>
+        "/assets/img/animations/game4/" +
+        symbol +
+        "/frame_" +
+        String(index).padStart(3, "0") +
+        "_delay-0.04s.png",
+    ),
+);
+
+export const GAME4_VIEW2_ASSETS = [
+  ...SHARED_VIEW2_ASSETS,
+  ...GAME4_VIEW2_CELL_BACKGROUND_ASSETS,
+  GAME4_VIEW2_INFO_BACKGROUND_SRC,
+  ...GAME4_WIN_ANIMATION_ASSETS,
+  GAME4_VIEW2_SYMBOL_0_STATIC_SRC,
+  GAME4_VIEW2_SYMBOL_7_STATIC_SRC,
+  GAME4_VIEW2_SYMBOL_8_STATIC_SRC,
+  GAME4_VIEW2_SYMBOL_9_STATIC_SRC,
+  GAME4_VIEW2_SYMBOL_10_STATIC_SRC,
+  GAME4_VIEW2_SYMBOL_11_STATIC_SRC,
+  GAME4_VIEW2_SYMBOL_12_STATIC_SRC,
+];
 
 export const GAME5_WIN_ANIMATION_ASSETS = [0, 7, 8, 9, 10, 11, 12].map(
   (symbol) => `/assets/img/animations/game5/view2-symbol-${symbol}-win.webp`,

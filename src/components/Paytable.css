@@ -18,6 +18,8 @@
   background: linear-gradient(145deg, rgb(176, 144, 83) 0%, rgb(132, 74, 32) 46.63%, rgb(176, 144, 83) 100%);
 }
 .info-modal[data-game-id="caravan-spins"]:not(.--view2),
+.info-modal[data-game-id="golden-dice"]:not(.--view2),
+.info-modal[data-game-id="golden-dice"]:not(.--view2) .info-paytable,
 .info-modal[data-game-id="caravan-spins"]:not(.--view2) .info-paytable {
   background: linear-gradient(
     145deg,
@@ -530,4 +532,14 @@
 .info-paytable__table tbody td[rowspan],
 .info-paytable__summary tbody tr:last-child > td {
   border-bottom: 0 !important;
+}
+
+.info-modal[data-game-id="golden-dice"]:not(.--view2),
+.info-modal[data-game-id="golden-dice"]:not(.--view2) .info-paytable {
+  background: linear-gradient(145deg, rgb(136, 92, 43) 0%, rgb(82, 46, 19) 46.63%, rgb(136, 92, 43) 100%);
+}
+
+.info-modal[data-game-id]:not([data-game-id="hiranmandi"]):not(.--view2),
+.info-modal[data-game-id]:not([data-game-id="hiranmandi"]):not(.--view2) .info-paytable {
+  background: linear-gradient(145deg, rgb(136, 92, 43) 0%, rgb(82, 46, 19) 46.63%, rgb(136, 92, 43) 100%);
 }

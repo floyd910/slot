@@ -1,5 +1,6 @@
 import {
   GAME3_VIEW2_ASSETS,
+  GAME4_VIEW2_ASSETS,
   GAME5_VIEW2_ASSETS,
   GAME6_VIEW2_ASSETS,
 } from "../config/view2Assets.js";
@@ -376,22 +377,22 @@ const loadStartupAssets = async (onProgress) => {
 const isAssetAllowedForGame = (src, game) => {
   if (!game || typeof src !== "string") return true;
   if (game.id === "khocha-afandi") {
-    return !src.includes("/game3-") &&
-      !src.includes("/game5-") &&
-      !src.includes("/animations/view2-symbol-");
+    return !src.includes("/game3-") && !src.includes("/game4-") && !src.includes("/game5-") && !src.includes("/animations/game4/") && !src.includes("/animations/view2-symbol-");
   }
   if (game.id === "caravan-spins") {
-    return !src.includes("/game6-") &&
-      !src.includes("/animations/game6/");
+    return !src.includes("/game4-") && !src.includes("/game6-") && !src.includes("/animations/game4/") && !src.includes("/animations/game6/");
   }
-  return !src.includes("/game5-") &&
-    !src.includes("/game6-") &&
-    !src.includes("/animations/game6/");
+  if (game.id === "golden-dice") {
+    return !src.includes("/game5-") && !src.includes("/game6-") && !src.includes("/animations/game5/") && !src.includes("/animations/game6/");
+  }
+  return !src.includes("/game4-") && !src.includes("/game5-") && !src.includes("/game6-") && !src.includes("/animations/game4/") && !src.includes("/animations/game6/");
 };
 
 const getGameView2Assets = (game) =>
   game?.id === "khocha-afandi"
     ? GAME6_VIEW2_ASSETS
+    : game?.id === "golden-dice"
+      ? GAME4_VIEW2_ASSETS
     : game?.id === "caravan-spins"
       ? GAME5_VIEW2_ASSETS
       : GAME3_VIEW2_ASSETS;
@@ -438,6 +439,8 @@ export const preloadGameAssets = (game, onProgress) => {
   const cacheKey =
     game.id === "khocha-afandi"
       ? "game6"
+      : game.id === "golden-dice"
+        ? "game4"
       : game.id === "caravan-spins"
         ? "game5"
         : "shared";
@@ -491,8 +494,10 @@ export const preloadDoubleSceneAssets = () =>
 export const preloadDeferredStartupAssets = (game) => {
   const cacheKey = game?.id === "hiranmandi"
     ? "game3"
-    : game?.id === "caravan-spins"
-      ? "game5"
+    : game?.id === "golden-dice"
+      ? "game4"
+      : game?.id === "caravan-spins"
+        ? "game5"
       : game?.id === "khocha-afandi"
         ? "game6"
         : "shared";

@@ -97,6 +97,9 @@
 .configured-game[data-game-id="caravan-spins"] .lottery-grid-view1-cell {
   background: url("/assets/img/game5-view1-cell-background.webp") center / 100% 100%;
 }
+.configured-game[data-game-id="golden-dice"] .lottery-grid-view1-cell {
+  background: url("/assets/img/game4-view1-cell-background.png") center / 100% 100%;
+}
 .configured-game[data-game-id="khocha-afandi"] .lottery-grid-view1-cell {
   background: url("/assets/img/game6-view1-cell-background.webp") center / 100% 100%;
 }
@@ -109,6 +112,11 @@
   .lottery-grid-view1__top
   .lottery-grid-view1-cell--win-highlight {
   background: url("/assets/img/game5-view1-highlight-background.png") center / 100% 100% no-repeat;
+}
+.configured-game[data-game-id="golden-dice"]
+  .lottery-grid-view1__top
+  .lottery-grid-view1-cell--win-highlight {
+  background: url("/assets/img/game4-view1-highlight-background.png") center / 100% 100% no-repeat;
 }
 .configured-game[data-game-id="khocha-afandi"]
   .lottery-grid-view1__top
