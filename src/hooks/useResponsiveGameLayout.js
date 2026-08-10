@@ -46,22 +46,28 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       const header = root.parentElement?.querySelector("header");
       const headerHeight = header?.getBoundingClientRect().height || 48;
       root.style.setProperty("--game-header-height", `${headerHeight}px`);
+      const areaBounds = area?.getBoundingClientRect();
+      const footerTopForReserve = footer?.getBoundingClientRect().top ?? areaBounds?.bottom;
+      const footerReserve = areaBounds
+        ? Math.max(0, areaBounds.bottom - footerTopForReserve)
+        : 0;
+      const fixedFooterBottom = footer
+        ? Math.max(0, window.innerHeight - footer.getBoundingClientRect().top)
+        : 0;
       const shortFrame = root.getBoundingClientRect().height <= 620;
-      const doubleChestBottom = footer?.classList.contains("footer-block-mobile")
-        ? 200
-        : footer?.classList.contains("footer-block-tablet")
-          ? 150
-          : shortFrame
-            ? 50
-            : 150;
+      const mobilePortrait = window.matchMedia("(max-width: 639px) and (orientation: portrait)").matches;
+      const doubleChestBottom = mobilePortrait && footer?.classList.contains("footer-block-mobile")
+        ? fixedFooterBottom
+        : footer?.classList.contains("footer-block-mobile")
+          ? 200
+          : footer?.classList.contains("footer-block-tablet")
+            ? 150
+            : shortFrame
+              ? 50
+              : 150;
       root.style.setProperty("--double-chest-bottom", `${doubleChestBottom}px`);
-      if (area) {
-        const areaBounds = area.getBoundingClientRect();
-        const footerTop = footer?.getBoundingClientRect().top ?? areaBounds.bottom;
-        root.style.setProperty(
-          "--game-footer-reserve",
-          `${Math.max(0, areaBounds.bottom - footerTop)}px`,
-        );
+      if (areaBounds) {
+        root.style.setProperty("--game-footer-reserve", `${footerReserve}px`);
       }
       if (!area || !logo || !center || root.classList.contains("doubling-active")) return;
 
@@ -74,40 +80,27 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
           ? areaRect.width * 0.8
           : Math.min(440, areaRect.width - GAP * 2);
       const logoHeight = logoWidth * LOGO_RATIO;
+      const contentTop = compactLandscape
+        ? Math.max(GAP, logoHeight - headerHeight + GAP)
+        : logoHeight + GAP;
       root.dataset.fluidFit = "true";
       root.style.setProperty("--fluid-logo-width", `${logoWidth}px`);
       root.style.setProperty("--fluid-logo-height", `${logoHeight}px`);
       root.style.setProperty("--fluid-footer-reserve", `${Math.max(GAP, areaRect.bottom - footerTop + GAP)}px`);
-      root.style.setProperty("--header-content-start", `${logoHeight + GAP}px`);
+      root.style.setProperty("--fluid-content-top", `${contentTop}px`);
+      root.style.setProperty("--header-content-start", `${contentTop}px`);
       root.style.setProperty("--fluid-content-scale", "1");
 
       const bounds = getBounds(root, center);
       if (!bounds) return;
       const scale = Math.max(0.1, Math.min(
-        1,
+        compactLandscape ? Number.POSITIVE_INFINITY : 1,
         (areaRect.width - GAP * 2) / Math.max(1, bounds.right - bounds.left),
-        (footerTop - GAP - (areaRect.top + logoHeight + GAP)) / Math.max(1, bounds.bottom - bounds.top),
+        (footerTop - GAP - (areaRect.top + contentTop)) / Math.max(1, bounds.bottom - bounds.top),
       ) * 0.995);
       root.style.setProperty("--fluid-content-scale", String(scale));
 
-      // Verify the committed grid against the exact logo/footer boundaries in this same pass.
-      const fittedBounds = getBounds(root, center);
-      if (fittedBounds) {
-        const fittedWidth = Math.max(1, fittedBounds.right - fittedBounds.left);
-        const fittedHeight = Math.max(1, fittedBounds.bottom - fittedBounds.top);
-        const availableHeight = footerTop - GAP - (areaRect.top + logoHeight + GAP);
-        const overlapCorrection = Math.min(
-          1,
-          (areaRect.width - GAP * 2) / fittedWidth,
-          availableHeight / fittedHeight,
-        );
-        if (overlapCorrection < 0.999) {
-          root.style.setProperty(
-            "--fluid-content-scale",
-            String(scale * overlapCorrection * 0.995),
-          );
-        }
-      }
+
 
       if (!initialFitStarted) {
         initialFitStarted = true;

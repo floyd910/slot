@@ -444,3 +444,16 @@
     transform: none !important;
   }
 }
+
+/* In every landscape double scene, keep the ladder stack immediately below the
+   real header. It is fixed to that boundary, so scene/background sizing cannot
+   pull it back into the middle of the screen. */
+@media (orientation: landscape) {
+  .frame-app.doubling-active .doubling-desktop__levels {
+    position: fixed !important;
+    top: calc(var(--game-header-height, 48px) + 6px) !important;
+    bottom: auto !important;
+    left: 30px !important;
+    transform: none !important;
+  }
+}

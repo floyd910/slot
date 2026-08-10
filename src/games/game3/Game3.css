@@ -1086,7 +1086,7 @@ button:disabled {
 .frame-app[data-fluid-fit="true"].view-1 .game-main-layout > .frame-content,
 .frame-app[data-fluid-fit="true"].view-2 .game-main-layout > .frame-content {
   position: absolute !important;
-  inset: calc(var(--fluid-logo-height) + 10px) 0 var(--fluid-footer-reserve) !important;
+  inset: var(--fluid-content-top, calc(var(--fluid-logo-height) + 10px)) 0 var(--fluid-footer-reserve) !important;
   width: 100%;
   height: auto;
   min-height: 0;
@@ -1367,7 +1367,7 @@ button:disabled {
 .frame-app[data-fluid-fit="true"].view-2:not(.doubling-active)
   .game-main-layout > .frame-content {
   position: absolute !important;
-  inset: calc(var(--fluid-logo-height) + 10px) 0 var(--fluid-footer-reserve) !important;
+  inset: var(--fluid-content-top, calc(var(--fluid-logo-height) + 10px)) 0 var(--fluid-footer-reserve) !important;
   margin: 0 !important;
   transform: none !important;
 }
@@ -1392,5 +1392,12 @@ button:disabled {
     width: var(--fluid-logo-width) !important;
     min-width: 0 !important;
     height: var(--fluid-logo-height) !important;
+  }
+}
+
+
+@media (orientation: landscape) and (max-width: 1024px) {
+  .configured-game .frame-app[data-fluid-fit="true"] .header_img {
+    transform: translateY(calc(-1 * var(--game-header-height, 48px))) !important;
   }
 }

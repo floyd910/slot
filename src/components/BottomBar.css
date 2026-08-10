@@ -663,3 +663,12 @@
     row-gap: 5px;
   }
 }
+
+@media (max-width: 639px) {
+  .footer-block-mobile {
+    height: auto;
+    min-height: 220px;
+    max-height: none;
+    overflow: visible;
+  }
+}
