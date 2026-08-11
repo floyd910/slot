@@ -87,16 +87,28 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       root.style.setProperty("--fluid-logo-width", `${logoWidth}px`);
       root.style.setProperty("--fluid-logo-height", `${logoHeight}px`);
       root.style.setProperty("--fluid-footer-reserve", `${Math.max(GAP, areaRect.bottom - footerTop + GAP)}px`);
-      root.style.setProperty("--fluid-content-top", `${contentTop}px`);
-      root.style.setProperty("--header-content-start", `${contentTop}px`);
       root.style.setProperty("--fluid-content-scale", "1");
 
-      const bounds = getBounds(root, center);
+      let resolvedContentTop = contentTop;
+      root.style.setProperty("--fluid-content-top", `${resolvedContentTop}px`);
+      root.style.setProperty("--header-content-start", `${resolvedContentTop}px`);
+
+      // Use rendered geometry, not only the nominal logo ratio. This catches
+      // compact breakpoint transforms that would otherwise pull the grid into
+      // the logo layer before the proportional grid fit is calculated.
+      let bounds = getBounds(root, center);
+      const requiredGridTop = logo.getBoundingClientRect().bottom + GAP;
+      if (bounds && bounds.top < requiredGridTop) {
+        resolvedContentTop += Math.ceil(requiredGridTop - bounds.top);
+        root.style.setProperty("--fluid-content-top", `${resolvedContentTop}px`);
+        root.style.setProperty("--header-content-start", `${resolvedContentTop}px`);
+        bounds = getBounds(root, center);
+      }
       if (!bounds) return;
       const scale = Math.max(0.1, Math.min(
         compactLandscape ? Number.POSITIVE_INFINITY : 1,
         (areaRect.width - GAP * 2) / Math.max(1, bounds.right - bounds.left),
-        (footerTop - GAP - (areaRect.top + contentTop)) / Math.max(1, bounds.bottom - bounds.top),
+        (footerTop - GAP - (areaRect.top + resolvedContentTop)) / Math.max(1, bounds.bottom - bounds.top),
       ) * 0.995);
       root.style.setProperty("--fluid-content-scale", String(scale));
 

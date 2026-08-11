@@ -16,16 +16,16 @@ export default function GameShell({ controller, game, onBackToSlots }) {
   const shellRef = useRef(null);
   const [loaderExitComplete, setLoaderExitComplete] = useState(false);
   const { actions, derived, state } = controller;
+  const showInlineView2Paytable = state.showPaytable && state.visualMode;
   const layoutReady = useResponsiveGameLayout(
     shellRef,
-    `${state.visualMode ? "view2" : "view1"}:${state.startupLoaderVisible}:${state.startupAssetsReady}`,
+    `${state.visualMode ? "view2" : "view1"}:${derived.isVisualDoubling}:${showInlineView2Paytable}:${state.startupLoaderVisible}:${state.startupAssetsReady}`,
   );
   const { isLanguageChanging, language, t } = useLanguage();
   const showStartupLoader =
     !loaderExitComplete &&
     (state.startupLoaderVisible || state.startupLoaderLeaving || !layoutReady) &&
     !isLanguageChanging;
-  const showInlineView2Paytable = state.showPaytable && state.visualMode;
   const paytableView = buildStandardPaytableViewModel({
     stake: state.stake,
     selectedCombination: derived.selectedCombination,
@@ -44,6 +44,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
     <div
       ref={shellRef}
       className={derived.shellClass}
+      style={game.assets.doubleSceneBackground ? { "--double-scene-background": `url("${game.assets.doubleSceneBackground}")` } : undefined}
       data-fluid-fit="true"
       data-layout-ready={layoutReady ? "true" : "false"}
       data-module-mode={state.context.mode}

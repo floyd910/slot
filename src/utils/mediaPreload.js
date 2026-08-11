@@ -382,7 +382,7 @@ const isAssetAllowedForGame = (src, game) => {
   if (game.id === "caravan-spins") {
     return !src.includes("/game4-") && !src.includes("/game6-") && !src.includes("/animations/game4/") && !src.includes("/animations/game6/");
   }
-  if (game.id === "golden-dice") {
+  if (game.id === "egypt") {
     return !src.includes("/game5-") && !src.includes("/game6-") && !src.includes("/animations/game5/") && !src.includes("/animations/game6/");
   }
   return !src.includes("/game4-") && !src.includes("/game5-") && !src.includes("/game6-") && !src.includes("/animations/game4/") && !src.includes("/animations/game6/");
@@ -391,7 +391,7 @@ const isAssetAllowedForGame = (src, game) => {
 const getGameView2Assets = (game) =>
   game?.id === "khocha-afandi"
     ? GAME6_VIEW2_ASSETS
-    : game?.id === "golden-dice"
+    : game?.id === "egypt"
       ? GAME4_VIEW2_ASSETS
     : game?.id === "caravan-spins"
       ? GAME5_VIEW2_ASSETS
@@ -439,7 +439,7 @@ export const preloadGameAssets = (game, onProgress) => {
   const cacheKey =
     game.id === "khocha-afandi"
       ? "game6"
-      : game.id === "golden-dice"
+      : game.id === "egypt"
         ? "game4"
       : game.id === "caravan-spins"
         ? "game5"
@@ -455,11 +455,15 @@ export const preloadGameAssets = (game, onProgress) => {
       [
         game.assets.cover,
         game.assets.logo,
+        game.assets.doubleSceneBackground,
+        game.assets.doubleSceneClosedChest,
+        game.assets.doubleSceneWinningChest,
+        game.assets.doubleSceneEmptyChest,
         ...FIRST_PAINT_GAME_IMAGE_ASSETS,
         ...getGameView2Assets(game).filter(
           (src) => !src.includes("/assets/img/animations/"),
         ),
-      ].filter((src) => isAssetAllowedForGame(src, game)),
+      ].filter(Boolean).filter((src) => isAssetAllowedForGame(src, game)),
       onProgress,
     ),
     fontReady(),
@@ -501,7 +505,7 @@ export const preloadDoubleSceneAssets = () =>
 export const preloadDeferredStartupAssets = (game) => {
   const cacheKey = game?.id === "hiranmandi"
     ? "game3"
-    : game?.id === "golden-dice"
+    : game?.id === "egypt"
       ? "game4"
       : game?.id === "caravan-spins"
         ? "game5"

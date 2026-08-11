@@ -257,7 +257,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
 
   useEffect(() => {
     if (!visualMode) return;
-    const assets = gameDefinition?.id === "khocha-afandi" ? GAME6_VIEW2_ASSETS : gameDefinition?.id === "golden-dice" ? GAME4_VIEW2_ASSETS : GAME3_VIEW2_ASSETS;
+    const assets = gameDefinition?.id === "khocha-afandi" ? GAME6_VIEW2_ASSETS : gameDefinition?.id === "egypt" ? GAME4_VIEW2_ASSETS : GAME3_VIEW2_ASSETS;
     assets.forEach((src) => {
       preloadImage(src);
     });

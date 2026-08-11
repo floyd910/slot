@@ -42,7 +42,7 @@ export const GAME_COLORS = Object.freeze({
   "silk-fruits": placeholderPalette("#d94776"),
   "desert-treasures": placeholderPalette("#e5a443"),
   hiranmandi: GAME3_COLORS,
-  "golden-dice": placeholderPalette("#8bd36f"),
+  "egypt": placeholderPalette("#8bd36f"),
   "caravan-spins": placeholderPalette("#58d5c9"),
   "khocha-afandi": placeholderPalette("#8fb3ff"),
   "star-bazaar": placeholderPalette("#b58cff"),

@@ -114,7 +114,9 @@
 
 .view2-double__chest {
   --chest-offset: 0px;
+  --chest-shift-x: 0px;
   --chest-scale-x: 1;
+  --chest-scale-y: 1;
 
   position: absolute;
   bottom: 0;
@@ -122,7 +124,7 @@
   display: block;
   width: var(--closed-chest-width);
   height: auto;
-  transform: translate(-50%, var(--chest-offset)) scaleX(var(--chest-scale-x));
+  transform: translate(calc(-50% + var(--chest-shift-x)), var(--chest-offset)) scaleX(var(--chest-scale-x)) scaleY(var(--chest-scale-y));
   transform-origin: center bottom;
 }
 
@@ -131,7 +133,11 @@
   width: var(--winning-chest-width);
 }
 
-.view2-double__chest--empty {
+
+.view2-double__chest--opening {
+  --chest-offset: 0px;
+  width: var(--closed-chest-width);
+}.view2-double__chest--empty {
   --chest-offset: var(--empty-chest-offset);
   width: var(--empty-chest-width);
 }
@@ -342,10 +348,14 @@
 }
 
 .frame-app.doubling-active .game_area {
-  position: absolute !important;
-  inset: var(--game-header-height, 48px) 0 0 !important;
+  position: fixed !important;
+  top: var(--game-header-height, 48px) !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: 0 !important;
   width: 100% !important;
   height: auto !important;
+  min-height: 0 !important;
   margin: 0 !important;
 }
 
@@ -398,9 +408,22 @@
   --choices-bottom: 20px !important;
 }
 
-/* Dedicated full double-screen background. */
+/* Dedicated double-screen background: its paint area begins below the real header. */
+.frame-app.doubling-active::before {
+  position: absolute;
+  z-index: 0;
+  top: var(--game-header-height, 48px);
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: block;
+  content: "";
+  background: #000 var(--double-scene-background, url("/assets/img/double-scene-bg.png")) 50% 50% / cover no-repeat;
+  pointer-events: none;
+}
+
 .frame-app.doubling-active .game_area {
-  background: #000 url("/assets/img/double-scene-bg.png") 50% 50% / cover no-repeat !important;
+  background: transparent !important;
 }
 
 .frame-app.doubling-active .view2-double__landscape {
@@ -456,4 +479,33 @@
     left: 30px !important;
     transform: none !important;
   }
+}
+/* Egypt chest geometry: all three files occupy the same CSS width. Offsets
+   compensate only for their different transparent source padding, so every
+   reveal stays in the closed-chest frame regardless of side or result. */
+.view2-double--egypt {
+  --winning-chest-width: var(--closed-chest-width);
+  --empty-chest-width: var(--closed-chest-width);
+  --winning-chest-offset: calc(var(--chest-frame-size) * 0.0084);
+  --empty-chest-offset: calc(var(--chest-frame-size) * -0.0244);
+}
+
+/* Gold source faces left; the closed source faces right. */
+.view2-double--egypt .view2-double__chest--winning {
+  --chest-shift-x: calc(var(--chest-frame-size) * -0.0182);
+}
+
+.view2-double--egypt .view2-double__chest--empty {
+  --chest-shift-x: calc(var(--chest-frame-size) * -0.0083);
+}
+
+.view2-double--egypt .view2-double__choice--right .view2-double__chest--winning {
+  --chest-shift-x: calc(var(--chest-frame-size) * 0.0182);
+}
+
+.view2-double--egypt .view2-double__choice--right .view2-double__chest--empty {
+  --chest-shift-x: calc(var(--chest-frame-size) * 0.0083);
+}/* Egypt double scene keeps the floor aligned to the iframe bottom. */
+.configured-game[data-game-id="egypt"] .frame-app.doubling-active::before {
+  background-position: 50% 100%;
 }

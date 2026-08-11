@@ -45,18 +45,18 @@
   box-shadow: 0 0 10.314px 1.031px rgba(255, 255, 255, 0.10) inset, 0 4.126px 6.188px 0 rgba(0, 0, 0, 0.10);
 }
 
-.configured-game[data-game-id="golden-dice"] .view2-info-card,
-.configured-game[data-game-id="golden-dice"] .view2-info-main-card,
-.configured-game[data-game-id="golden-dice"] .view2-info-coeff-card {
+.configured-game[data-game-id="egypt"] .view2-info-card,
+.configured-game[data-game-id="egypt"] .view2-info-main-card,
+.configured-game[data-game-id="egypt"] .view2-info-coeff-card {
   border: 0;
   isolation: isolate;
   overflow: hidden;
   background: url("/assets/img/game4-view2-info-small-box-background.png") lightgray 0 0 / 100% 100% no-repeat;
 }
 
-.configured-game[data-game-id="golden-dice"] .view2-info-card::before,
-.configured-game[data-game-id="golden-dice"] .view2-info-main-card::before,
-.configured-game[data-game-id="golden-dice"] .view2-info-coeff-card::before {
+.configured-game[data-game-id="egypt"] .view2-info-card::before,
+.configured-game[data-game-id="egypt"] .view2-info-main-card::before,
+.configured-game[data-game-id="egypt"] .view2-info-coeff-card::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -65,17 +65,17 @@
   pointer-events: none;
 }
 
-.configured-game[data-game-id="golden-dice"] .view2-info-card > .view2-info-payout-list {
+.configured-game[data-game-id="egypt"] .view2-info-card > .view2-info-payout-list {
   position: relative;
   z-index: 1;
 }
 
-.configured-game[data-game-id="golden-dice"] .view2-info-card .view2-info-payout-row,
-.configured-game[data-game-id="golden-dice"] .view2-info-main-card .view2-info-payout-row {
+.configured-game[data-game-id="egypt"] .view2-info-card .view2-info-payout-row,
+.configured-game[data-game-id="egypt"] .view2-info-main-card .view2-info-payout-row {
   background: rgba(255, 255, 255, 0.10);
 }
 
-.configured-game[data-game-id="golden-dice"] .view2-info-paytable {
+.configured-game[data-game-id="egypt"] .view2-info-paytable {
   border-radius: 0;
   background:
     radial-gradient(ellipse 58% 72% at 42% 40%, rgba(111, 101, 53, 0.8) 0%, rgba(98, 83, 39, 0.66) 48%, transparent 100%),
@@ -1319,7 +1319,7 @@
   transform: none !important;
 }
 
-.configured-game[data-game-id="golden-dice"] .view2-info-main-card,
-.configured-game[data-game-id="golden-dice"] .view2-info-coeff-card {
+.configured-game[data-game-id="egypt"] .view2-info-main-card,
+.configured-game[data-game-id="egypt"] .view2-info-coeff-card {
   background: url("/assets/img/game4-view2-info-background.png") lightgray 0 0 / 100% 100% no-repeat;
 }
