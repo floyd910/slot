@@ -131,10 +131,8 @@ button {
   --slot-chooser-bg: url("/assets/img/cover.webp");
 }
 
-
 .flex {
   display: flex;
   align-items: center;
   gap: 5px;
 }
-

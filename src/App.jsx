@@ -1,9 +1,9 @@
 import { Suspense, lazy } from "react";
-import SlotChooser from "./components/SlotChooser.jsx";
-import StartupLoader from "./components/StartupLoader.jsx";
+import SlotChooser from "./components/slotChooser/SlotChooser.jsx";
+import StartupLoader from "./components/startupLoader/StartupLoader.jsx";
 import { useSlotApp } from "./hooks/useSlotApp.js";
 
-const loadSelectedSlotGame = () => import("./components/game/SelectedSlotGame.jsx");
+const loadSelectedSlotGame = () => import("./components/selectedSlotGame/SelectedSlotGame.jsx");
 const SelectedSlotGame = lazy(loadSelectedSlotGame);
 
 export default function App() {

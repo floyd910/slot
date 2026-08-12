@@ -241,7 +241,7 @@ header {
     padding-left: max(16px, env(safe-area-inset-left, 0px));
     align-items: center;
   }
-.header-btns {
+  .header-btns {
     gap: 4px;
   }
 
@@ -400,6 +400,12 @@ header {
     white-space: nowrap;
   }
 }
+@media (max-width: 440px) {
+  header {
+    padding-inline: 8px;
+  }
+}
+
 /* Keep the Games icon and language flag optically equal at every breakpoint. */
 .header-games-button__icon,
 .lang-chooser__flag,

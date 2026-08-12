@@ -1,20 +1,20 @@
-import Symbol0, { symbol0Assets } from "./Symbol0.jsx";
-import Symbol1, { symbol1Assets } from "./Symbol1.jsx";
-import Symbol2, { symbol2Assets } from "./Symbol2.jsx";
-import Symbol3, { symbol3Assets } from "./Symbol3.jsx";
-import Symbol4, { symbol4Assets } from "./Symbol4.jsx";
-import Symbol5, { symbol5Assets } from "./Symbol5.jsx";
-import Symbol6, { symbol6Assets } from "./Symbol6.jsx";
-import Symbol7, { symbol7Assets } from "./Symbol7.jsx";
-import Symbol8, { symbol8Assets } from "./Symbol8.jsx";
-import Symbol9, { symbol9Assets } from "./Symbol9.jsx";
-import Symbol10, { symbol10Assets } from "./Symbol10.jsx";
-import Symbol11, { symbol11Assets } from "./Symbol11.jsx";
-import Symbol12, { symbol12Assets } from "./Symbol12.jsx";
+import Symbol0, { symbol0Assets } from "../symbol0/Symbol0.jsx";
+import Symbol1, { symbol1Assets } from "../symbol1/Symbol1.jsx";
+import Symbol2, { symbol2Assets } from "../symbol2/Symbol2.jsx";
+import Symbol3, { symbol3Assets } from "../symbol3/Symbol3.jsx";
+import Symbol4, { symbol4Assets } from "../symbol4/Symbol4.jsx";
+import Symbol5, { symbol5Assets } from "../symbol5/Symbol5.jsx";
+import Symbol6, { symbol6Assets } from "../symbol6/Symbol6.jsx";
+import Symbol7, { symbol7Assets } from "../symbol7/Symbol7.jsx";
+import Symbol8, { symbol8Assets } from "../symbol8/Symbol8.jsx";
+import Symbol9, { symbol9Assets } from "../symbol9/Symbol9.jsx";
+import Symbol10, { symbol10Assets } from "../symbol10/Symbol10.jsx";
+import Symbol11, { symbol11Assets } from "../symbol11/Symbol11.jsx";
+import Symbol12, { symbol12Assets } from "../symbol12/Symbol12.jsx";
 import {
   VIEW2_SYMBOL_WIN_CYCLE_MS,
   view2SymbolAssetSources,
-} from "./View2SymbolBase.jsx";
+} from "../view2SymbolBase/View2SymbolBase.jsx";
 
 export const VIEW2_SYMBOL_COMPONENTS = {
   0: Symbol0,

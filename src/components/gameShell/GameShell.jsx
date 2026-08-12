@@ -1,0 +1,233 @@
+import "./GameShell.css";
+import { useLayoutEffect, useRef, useState } from "react";
+import BottomBar from "../bottomBar/BottomBar.jsx";
+import GameMenu from "../gameMenu/GameMenu.jsx";
+import Paytable from "../paytable/Paytable.jsx";
+import RuntimeState from "../runtimeState/RuntimeState.jsx";
+import StartupLoader from "../startupLoader/StartupLoader.jsx";
+import View2Paytable from "../view2Paytable/View2Paytable.jsx";
+import { useLanguage } from "../../i18n.jsx";
+import { buildStandardPaytableViewModel } from "../../viewModels/paytableViewModel.js";
+import FreeSpinsPrompt from "../freeSpinsPrompt/FreeSpinsPrompt.jsx";
+import GameContent from "../gameContent/GameContent.jsx";
+import { useResponsiveGameLayout } from "../../hooks/useResponsiveGameLayout.js";
+
+export default function GameShell({ controller, game, onBackToSlots }) {
+  const shellRef = useRef(null);
+  const backgroundRef = useRef(null);
+  const [backgroundPaintReady, setBackgroundPaintReady] = useState(false);
+  const [loaderExitComplete, setLoaderExitComplete] = useState(false);
+  const { actions, derived, state } = controller;
+  const showInlineView2Paytable = state.showPaytable && state.visualMode;
+  const layoutReady = useResponsiveGameLayout(
+    shellRef,
+    `${state.visualMode ? "view2" : "view1"}:${derived.isVisualDoubling}:${showInlineView2Paytable}:${state.startupLoaderVisible}:${state.startupAssetsReady}`,
+  );
+  useLayoutEffect(() => {
+    let active = true;
+    const image = backgroundRef.current;
+    if (!image) return undefined;
+
+    const markPaintReady = async () => {
+      try {
+        await image.decode?.();
+      } catch {
+        // Browsers may reject redundant decode calls for a cached image.
+      }
+      requestAnimationFrame(() => {
+        if (active) setBackgroundPaintReady(true);
+      });
+    };
+
+    setBackgroundPaintReady(false);
+    if (image.complete && image.naturalWidth > 0) {
+      markPaintReady();
+    } else {
+      image.addEventListener("load", markPaintReady, { once: true });
+      image.addEventListener("error", markPaintReady, { once: true });
+    }
+
+    return () => {
+      active = false;
+      image.removeEventListener("load", markPaintReady);
+      image.removeEventListener("error", markPaintReady);
+    };
+  }, [game.assets.cover]);
+  const { isLanguageChanging, language, t } = useLanguage();
+  const showStartupLoader =
+    !loaderExitComplete &&
+    (state.startupLoaderVisible ||
+      state.startupLoaderLeaving ||
+      !layoutReady ||
+      !backgroundPaintReady) &&
+    !isLanguageChanging;
+  const paytableView = buildStandardPaytableViewModel({
+    stake: state.stake,
+    selectedCombination: derived.selectedCombination,
+  });
+  const runtimeState =
+    derived.runtimeStateVisible && !isLanguageChanging && !showStartupLoader ? (
+      <RuntimeState
+        status={state.status}
+        error={state.error}
+        mode={state.context.mode}
+        onRetry={actions.init}
+      />
+    ) : null;
+
+  return (
+    <div
+      ref={shellRef}
+      className={derived.shellClass}
+      style={
+        game.assets.doubleSceneBackground
+          ? {
+              "--double-scene-background": `url("${game.assets.doubleSceneBackground}")`,
+            }
+          : undefined
+      }
+      data-fluid-fit="true"
+      data-layout-ready={layoutReady ? "true" : "false"}
+      data-module-mode={state.context.mode}
+      data-startup-loading={showStartupLoader ? "true" : "false"}
+    >
+      <div
+        className="game_area"
+        data-view2-info={showInlineView2Paytable ? "true" : "false"}
+      >
+        <img
+          ref={backgroundRef}
+          className="game_area__background"
+          src={game.assets.cover}
+          alt=""
+          aria-hidden="true"
+          decoding="sync"
+          fetchpriority="high"
+          draggable={false}
+        />
+        <div className="bg-overlay"></div>
+        <img
+          className="header_img"
+          src={game.assets.logo}
+          alt=""
+          aria-hidden="true"
+          decoding="sync"
+          fetchpriority="high"
+          draggable={false}
+          width="3096"
+          height="712"
+        />
+
+        {showInlineView2Paytable ? (
+          <section className="view2-info-inline" aria-label="View 2 payouts">
+            {state.paytableStatus === "loading" && !isLanguageChanging && (
+              <div className="info-paytable-state">{t("loading")}</div>
+            )}
+            {state.paytableStatus === "error" && (
+              <div className="info-paytable-state --error">
+                {t("paytableLoadError")}
+              </div>
+            )}
+            {state.paytableStatus !== "loading" &&
+              state.paytableStatus !== "error" && (
+                <View2Paytable
+                  language={language}
+                  payoutMultiplier={paytableView.payoutMultiplier}
+                  zeroPayoutMultiplier={paytableView.zeroPayoutMultiplier}
+                  symbolAssets={game.assets.view2Symbols}
+                  onClose={() => actions.setShowPaytable(false)}
+                />
+              )}
+          </section>
+        ) : (
+          <div className="game-main-layout">
+            <div className="frame-content">
+              <GameContent
+                controller={controller}
+                game={game}
+                runtimeState={runtimeState}
+              />
+            </div>
+            {!runtimeState && (
+              <>
+                <BottomBar
+                  player={state.player}
+                  stake={state.stake}
+                  selectedCombination={derived.selectedCombination}
+                  totalPurchase={derived.totalPurchase}
+                  spinResult={state.spinResult}
+                  revealComplete={state.gridAnimation === "settled"}
+                  disabled={derived.isBusy}
+                  spinDisabled={derived.spinButtonDisabled}
+                  spinFeedbackActive={state.spinFeedbackActive}
+                  doubleOfferAvailable={derived.doubleOfferAvailable}
+                  doublingState={state.doublingState}
+                  visualMode={state.visualMode}
+                  viewSwitchDisabled={derived.viewSwitchDisabled}
+                  paytableControlsLocked={derived.paytableControlsLocked}
+                  isVisualDoubling={derived.isVisualDoubling}
+                  onCollect={actions.collectWin}
+                  onPickLeft={() => actions.playFooterDouble("left")}
+                  onPickRight={() => actions.playFooterDouble("right")}
+                  freeSpinsLeft={state.freeSpinsLeft}
+                  freeSpinRoundStarted={state.freeSpinRoundStarted}
+                  autoPlayOn={state.autoPlayOn}
+                  infoActive={state.showPaytable}
+                  onIncreaseCombination={() => actions.cycleCombination(1)}
+                  onDecreaseCombination={() => actions.cycleCombination(-1)}
+                  onIncreaseStake={() => actions.cycleStake(1)}
+                  onDecreaseStake={() => actions.cycleStake(-1)}
+                  onSpin={actions.pressSpinButton}
+                  onDouble={
+                    state.visualMode
+                      ? actions.enterVisualDouble
+                      : actions.playFooterDouble
+                  }
+                  onInfo={actions.loadPaytable}
+                  onAutoPlay={actions.toggleAutoPlay}
+                  onMenu={onBackToSlots}
+                />
+              </>
+            )}
+          </div>
+        )}
+
+        {state.showPaytable && !state.visualMode && (
+          <Paytable
+            gameId={game.id}
+            rows={state.paytableRows}
+            loading={state.paytableStatus === "loading"}
+            error={
+              state.paytableStatus === "error" ? t("paytableLoadError") : ""
+            }
+            visualMode={state.visualMode}
+            stake={state.stake}
+            selectedCombination={derived.selectedCombination}
+            onClose={() => actions.setShowPaytable(false)}
+          />
+        )}
+        {state.showGameMenu && (
+          <GameMenu
+            gameId={game.id}
+            onClose={() => actions.setShowGameMenu(false)}
+          />
+        )}
+        {state.showFreeSpinPrompt && (
+          <FreeSpinsPrompt onStart={actions.startFreeSpinRun} />
+        )}
+        {showStartupLoader && (
+          <StartupLoader
+            ready={
+              state.startupAssetsReady && layoutReady && backgroundPaintReady
+            }
+            leaving={
+              state.startupLoaderLeaving && layoutReady && backgroundPaintReady
+            }
+            backgroundSrc={game.assets.cover}
+            onExited={() => setLoaderExitComplete(true)}
+          />
+        )}
+      </div>
+    </div>
+  );
+}

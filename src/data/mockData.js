@@ -1,9 +1,9 @@
-export const GAME_ID = "hiranmandi";
+export const GAME_ID = "khiradmandi-makor";
 
 export const games = [
   {
     id: GAME_ID,
-    name: "Hiranmandi Hushhol",
+    name: "Khiradmandi Makor",
     subtitle: "Coordinate lottery",
     accent: "#f2c14e",
     status: "ready",

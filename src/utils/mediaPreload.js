@@ -398,7 +398,7 @@ const getGameView2Assets = (game) =>
       : GAME3_VIEW2_ASSETS;
 
 const getGameAudioAssets = (game) =>
-  game?.id === "hiranmandi"
+  game?.id === "khiradmandi-makor"
     ? STARTUP_ASSETS.audio
     : game?.id === "caravan-spins"
       ? [
@@ -503,7 +503,7 @@ export const preloadDoubleSceneAssets = () =>
   });
 
 export const preloadDeferredStartupAssets = (game) => {
-  const cacheKey = game?.id === "hiranmandi"
+  const cacheKey = game?.id === "khiradmandi-makor"
     ? "game3"
     : game?.id === "egypt"
       ? "game4"

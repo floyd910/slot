@@ -1,6 +1,6 @@
-import GameShell from "../../components/game/GameShell.jsx";
+import GameShell from "../../components/gameShell/GameShell.jsx";
 import Header from "../../components/header/Header.jsx";
-import StartupLoader from "../../components/StartupLoader.jsx";
+import StartupLoader from "../../components/startupLoader/StartupLoader.jsx";
 import { useGame3 } from "../../hooks/useGame3.js";
 import "./Game3.css";
 

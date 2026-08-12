@@ -1,4 +1,4 @@
-import GameShell from "../components/game/GameShell.jsx";
+import GameShell from "../components/gameShell/GameShell.jsx";
 import Header from "../components/header/Header.jsx";
 import { toGameColorVariables } from "../config/gameColors.js";
 import { useSharedGame } from "../hooks/useSharedGame.js";
@@ -9,7 +9,7 @@ export default function SharedGame({ game, onBack }) {
 
   return (
     <div
-      className="configured-game"
+      className={`configured-game game--${game.id}`}
       data-game-id={game.id}
       style={toGameColorVariables(game.colors)}
     >

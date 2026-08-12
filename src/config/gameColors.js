@@ -41,7 +41,7 @@ const placeholderPalette = (accent) => Object.freeze({ ...GAME3_COLORS, accent }
 export const GAME_COLORS = Object.freeze({
   "silk-fruits": placeholderPalette("#d94776"),
   "desert-treasures": placeholderPalette("#e5a443"),
-  hiranmandi: GAME3_COLORS,
+  "khiradmandi-makor": GAME3_COLORS,
   "egypt": placeholderPalette("#8bd36f"),
   "caravan-spins": placeholderPalette("#58d5c9"),
   "khocha-afandi": placeholderPalette("#8fb3ff"),

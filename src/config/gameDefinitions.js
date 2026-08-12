@@ -176,7 +176,7 @@ const createGameDefinition = ({ id, title, subtitle, assets = sharedPlaceholderA
 export const GAME_DEFINITIONS = Object.freeze([
   createGameDefinition({ id: "silk-fruits", title: "Silk Fruits", subtitle: "Classic 5-reel slot" }),
   createGameDefinition({ id: "desert-treasures", title: "Desert Treasures", subtitle: "Bonus hunt adventure" }),
-  createGameDefinition({ id: "hiranmandi", title: "Hiranmandi Hushhol", subtitle: "Coordinate lottery slot" }),
+  createGameDefinition({ id: "khiradmandi-makor", title: "Khiradmandi Makor", subtitle: "Coordinate lottery slot" }),
   createGameDefinition({ id: "egypt", title: "Egypt", subtitle: "Table-style slot", assets: GAME4_ASSETS }),
   createGameDefinition({ id: "caravan-spins", title: "Kadima Drevnii", subtitle: "Ancient adventure", assets: GAME5_ASSETS }),
   createGameDefinition({ id: "khocha-afandi", title: "Khocha Afandi", subtitle: "Number draw game", assets: GAME6_ASSETS }),

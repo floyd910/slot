@@ -82,7 +82,7 @@ const game3EffectSources = [
 ];
 const game5EffectSources = [...new Set(Object.values(game5Media))];
 export function useGameAudio(gameId) {
-  const useGame3Sounds = gameId === "hiranmandi";
+  const useGame3Sounds = gameId === "khiradmandi-makor";
   const useGame5Sounds = gameId === "caravan-spins";
   const media = useGame3Sounds
     ? game3Media

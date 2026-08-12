@@ -16,7 +16,7 @@ const SENSITIVE_QUERY_KEYS = [
 const DEV_SOAP_CONTEXT = {
   token: "partner-token",
   sessionId: "partner-session",
-  gameId: "hiranmandi",
+  gameId: "khiradmandi-makor",
   idPartner: "1",
   idKassi: "70",
   idValute: "1",
@@ -37,7 +37,7 @@ const HOSTED_STANDALONE_QUERY = {
   token: "partner-token",
   sessionId: "partner-session",
   userId: "partner-user",
-  gameId: "hiranmandi",
+  gameId: "khiradmandi-makor",
   currency: "GEL",
   locale: "en",
   backendMode: "soap",
