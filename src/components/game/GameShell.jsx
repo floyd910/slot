@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import BottomBar from "../BottomBar.jsx";
 import GameBottomArea from "../GameBottomArea.jsx";
 import GameMenu from "../GameMenu.jsx";
@@ -14,6 +14,8 @@ import { useResponsiveGameLayout } from "../../hooks/useResponsiveGameLayout.js"
 
 export default function GameShell({ controller, game, onBackToSlots }) {
   const shellRef = useRef(null);
+  const backgroundRef = useRef(null);
+  const [backgroundPaintReady, setBackgroundPaintReady] = useState(false);
   const [loaderExitComplete, setLoaderExitComplete] = useState(false);
   const { actions, derived, state } = controller;
   const showInlineView2Paytable = state.showPaytable && state.visualMode;
@@ -21,10 +23,40 @@ export default function GameShell({ controller, game, onBackToSlots }) {
     shellRef,
     `${state.visualMode ? "view2" : "view1"}:${derived.isVisualDoubling}:${showInlineView2Paytable}:${state.startupLoaderVisible}:${state.startupAssetsReady}`,
   );
+  useLayoutEffect(() => {
+    let active = true;
+    const image = backgroundRef.current;
+    if (!image) return undefined;
+
+    const markPaintReady = async () => {
+      try {
+        await image.decode?.();
+      } catch {
+        // Browsers may reject redundant decode calls for a cached image.
+      }
+      requestAnimationFrame(() => {
+        if (active) setBackgroundPaintReady(true);
+      });
+    };
+
+    setBackgroundPaintReady(false);
+    if (image.complete && image.naturalWidth > 0) {
+      markPaintReady();
+    } else {
+      image.addEventListener("load", markPaintReady, { once: true });
+      image.addEventListener("error", markPaintReady, { once: true });
+    }
+
+    return () => {
+      active = false;
+      image.removeEventListener("load", markPaintReady);
+      image.removeEventListener("error", markPaintReady);
+    };
+  }, [game.assets.cover]);
   const { isLanguageChanging, language, t } = useLanguage();
   const showStartupLoader =
     !loaderExitComplete &&
-    (state.startupLoaderVisible || state.startupLoaderLeaving || !layoutReady) &&
+    (state.startupLoaderVisible || state.startupLoaderLeaving || !layoutReady || !backgroundPaintReady) &&
     !isLanguageChanging;
   const paytableView = buildStandardPaytableViewModel({
     stake: state.stake,
@@ -55,11 +87,12 @@ export default function GameShell({ controller, game, onBackToSlots }) {
         data-view2-info={showInlineView2Paytable ? "true" : "false"}
       >
         <img
+          ref={backgroundRef}
           className="game_area__background"
           src={game.assets.cover}
           alt=""
           aria-hidden="true"
-          decoding="async"
+          decoding="sync"
           fetchpriority="high"
           draggable={false}
         />
@@ -69,7 +102,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
           src={game.assets.logo}
           alt=""
           aria-hidden="true"
-          decoding="async"
+          decoding="sync"
           fetchpriority="high"
           draggable={false}
           width="3096"
@@ -179,8 +212,8 @@ export default function GameShell({ controller, game, onBackToSlots }) {
         )}
         {showStartupLoader && (
           <StartupLoader
-            ready={state.startupAssetsReady && layoutReady}
-            leaving={state.startupLoaderLeaving && layoutReady}
+            ready={state.startupAssetsReady && layoutReady && backgroundPaintReady}
+            leaving={state.startupLoaderLeaving && layoutReady && backgroundPaintReady}
             backgroundSrc={game.assets.cover}
             onExited={() => setLoaderExitComplete(true)}
           />

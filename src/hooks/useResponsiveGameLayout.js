@@ -73,7 +73,7 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
 
       const areaRect = area.getBoundingClientRect();
       const footerTop = footer?.getBoundingClientRect().top ?? areaRect.bottom;
-      const compactLandscape = areaRect.width > areaRect.height && areaRect.width <= 1024;
+      const compactLandscape = areaRect.width > areaRect.height && areaRect.width <= 1280;
       const logoWidth = compactLandscape
         ? Math.min(260, areaRect.width * 0.4)
         : areaRect.width <= 440

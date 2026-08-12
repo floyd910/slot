@@ -647,19 +647,7 @@ button:disabled {
   width: 100%;
 }
 
-@media (max-width: 1024px) {
-  .view2-info-inline {
-    width: 100vw;
-    height: calc(100vh - 48px);
-    padding-inline: 0;
-    grid-template-columns: minmax(0, 100vw);
-    grid-template-rows: minmax(0, 100%);
-  }
 
-  .view2-info-inline .view2-info-paytable {
-    height: 100%;
-  }
-}
 
 @media (max-width: 1440px) {
   .view2-info-inline__close-wrap {
@@ -680,14 +668,7 @@ button:disabled {
   }
 }
 
-@media (max-width: 720px) {
-  .view2-info-inline__close-wrap {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    margin: 0;
-  }
-}
+
 
 @media (max-width: 1024px) {
   .header_img {
@@ -1277,13 +1258,7 @@ button:disabled {
     max-width: none;
   }
 }
-@media (max-width: 720px), (orientation: landscape) and (max-height: 620px) {
-  .game_area[data-view2-info="true"] .view2-info-inline {
-    align-content: start;
-    padding: 5px 0 0;
-    grid-template-rows: minmax(0, calc(100% - 5px));
-  }
-}
+
 
 /* Make the header-to-paytable spacing visible even when the grid item fills its track. */
 .game_area[data-view2-info="true"] .view2-info-inline .view2-info-paytable {
@@ -1302,11 +1277,7 @@ button:disabled {
   -webkit-overflow-scrolling: touch;
 }
 
-@media (max-width: 1024px) {
-  .game_area[data-view2-info="true"] .view2-info-inline {
-    grid-template-rows: minmax(0, calc(100% - 64px));
-  }
-}
+
 
 /* Let the shared paytable wrapper size to its content and retain bottom clearance. */
 .game_area[data-view2-info="true"] .view2-info-inline .view2-info-paytable {
@@ -1327,22 +1298,14 @@ button:disabled {
   padding-inline: 10px !important;
 }
 
-@media (max-width: 1024px) {
-  .game_area[data-view2-info="true"] .view2-info-inline {
-    grid-template-columns: minmax(0, 100%);
-  }
-}
+
 
 /* Use the same outer spacing at every View 2 info viewport. */
 .game_area[data-view2-info="true"] .view2-info-inline {
   padding: 10px !important;
 }
 
-@media (max-width: 1024px) {
-  .game_area[data-view2-info="true"] .view2-info-inline {
-    grid-template-rows: minmax(0, calc(100% - 20px));
-  }
-}
+
 
 /* Shared minimum logo width. */
 .configured-game .frame-app .header_img {
@@ -1387,7 +1350,7 @@ button:disabled {
 
 
 /* Compact landscape logo must win over the global minimum-logo rule. */
-@media (orientation: landscape) and (max-width: 1024px) {
+@media (orientation: landscape) and (max-width: 1280px) {
   .configured-game .frame-app[data-fluid-fit="true"] .header_img {
     width: var(--fluid-logo-width) !important;
     min-width: 0 !important;
@@ -1396,7 +1359,7 @@ button:disabled {
 }
 
 
-@media (orientation: landscape) and (max-width: 1024px) {
+@media (orientation: landscape) and (max-width: 1280px) {
   .configured-game .frame-app[data-fluid-fit="true"] .header_img {
     transform: translateY(calc(-1 * var(--game-header-height, 48px))) !important;
   }
