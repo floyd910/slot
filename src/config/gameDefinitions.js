@@ -110,7 +110,7 @@ const game6WinFrames = (symbol) =>
   Array.from(
     { length: 144 },
     (_, index) =>
-      `/assets/img/animations/game6/${symbol}/frame_${String(index).padStart(3, "0")}_delay-0.04s.png`,
+      `/assets/img/animations/game6/${symbol}/frame_${String(index).padStart(3, "0")}_delay-0.04s.webp`,
   );
 
 const game6View2Symbol = (symbol, staticImage) =>
@@ -149,7 +149,7 @@ const game4WinFrames = (symbol) =>
   Array.from(
     { length: 144 },
     (_, index) =>
-      `/assets/img/animations/game4/${symbol}/frame_${String(index).padStart(3, "0")}_delay-0.04s.png`,
+      `/assets/img/animations/game4/${symbol}/frame_${String(index).padStart(3, "0")}_delay-0.04s.webp`,
   );
 
 const game4View2Symbol = (symbol, staticImage) =>

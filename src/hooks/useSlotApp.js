@@ -139,6 +139,7 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
   const chooserReadyNotifiedRef = useRef(false);
   const initialRouteSlotIdRef = useRef(getInitialSlotId());
   const openRequestRef = useRef(0);
+  const returningToChooserRef = useRef(false);
 
   useEffect(() => {
     let active = true;
@@ -212,11 +213,28 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
     setPendingSlotId(null);
   };
 
-  const closeSlot = () => {
+  const closeSlot = async () => {
+    // The chooser is unmounted while a game is active. Keep the game visible
+    // until each chooser image has been decoded again, so returning never
+    // reveals an empty grid followed by delayed logos.
+    if (returningToChooserRef.current) return;
+    returningToChooserRef.current = true;
+    const requestId = openRequestRef.current + 1;
+    openRequestRef.current = requestId;
     setHashRoute(SLOT_CHOOSER_ROUTE);
-    openRequestRef.current += 1;
     setPendingSlotId(null);
-    setSelectedSlotId(null);
+
+    try {
+      await preloadRequiredImages(SLOT_CHOOSER_REQUIRED_ASSETS);
+      await waitForAnimationFrame();
+      await waitForAnimationFrame();
+      if (openRequestRef.current !== requestId) return;
+      setSelectedSlotId(null);
+    } finally {
+      if (openRequestRef.current === requestId) {
+        returningToChooserRef.current = false;
+      }
+    }
   };
 
   useEffect(() => {

@@ -97,7 +97,7 @@
   background: url("/assets/img/game5-view1-cell-background.webp") center / 100% 100%;
 }
 .configured-game[data-game-id="egypt"] .lottery-grid-view1-cell {
-  background: url("/assets/img/game4-view1-cell-background.png") center / 100% 100%;
+  background: url("/assets/img/game4-view1-cell-background.webp") center / 100% 100%;
 }
 .configured-game[data-game-id="khocha-afandi"] .lottery-grid-view1-cell {
   background: url("/assets/img/game6-view1-cell-background.webp") center / 100% 100%;
@@ -115,12 +115,12 @@
 .configured-game[data-game-id="egypt"]
   .lottery-grid-view1__top
   .lottery-grid-view1-cell--win-highlight {
-  background: url("/assets/img/game4-view1-highlight-background.png") center / 100% 100% no-repeat;
+  background: url("/assets/img/game4-view1-highlight-background.webp") center / 100% 100% no-repeat;
 }
 .configured-game[data-game-id="khocha-afandi"]
   .lottery-grid-view1__top
   .lottery-grid-view1-cell--win-highlight {
-  background: url("/assets/img/game6-view1-highlight-background.png") center / 100% 100% no-repeat;
+  background: url("/assets/img/game6-view1-highlight-background.webp") center / 100% 100% no-repeat;
 }
 
 .lottery-grid-view1-cell__wrapper {

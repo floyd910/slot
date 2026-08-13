@@ -1,29 +1,29 @@
 export const SLOT_CHOOSER_BACKGROUND_SRC = "/assets/img/chooser/background.avif";
 export const GAME4_COVER_SRC = "/assets/img/chooser/game4-background.avif";
-export const GAME4_LOGO_SRC = "/assets/img/game4-header.png";
+export const GAME4_LOGO_SRC = "/assets/img/game4-header.webp";
 export const GAME4_CHOOSER_TILE_SRC = "/assets/img/chooser/game4.webp";
-export const GAME4_VIEW1_CELL_BACKGROUND_SRC = "/assets/img/game4-view1-cell-background.png";
-export const GAME4_VIEW1_HIGHLIGHT_BACKGROUND_SRC = "/assets/img/game4-view1-highlight-background.png";
-export const GAME4_VIEW2_INFO_BACKGROUND_SRC = "/assets/img/game4-view2-info-background.png";
-export const GAME4_VIEW2_INFO_SMALL_BOX_BACKGROUND_SRC = "/assets/img/game4-view2-info-small-box-background.png";
-export const GAME4_DOUBLE_SCENE_BACKGROUND_SRC = "/assets/img/game4-double-scene-bg.png";
-export const GAME4_DOUBLE_SCENE_CLOSED_CHEST_SRC = "/assets/img/game4-double-closed-chest.png";
-export const GAME4_DOUBLE_SCENE_WINNING_CHEST_SRC = "/assets/img/game4-double-winning-chest.png";
-export const GAME4_DOUBLE_SCENE_EMPTY_CHEST_SRC = "/assets/img/game4-double-empty-chest.png";
-export const GAME4_VIEW2_SYMBOL_0_STATIC_SRC = "/assets/img/game4-view2-symbol0-static.png";
-export const GAME4_VIEW2_SYMBOL_7_STATIC_SRC = "/assets/img/game4-view2-symbol7-static.png";
-export const GAME4_VIEW2_SYMBOL_8_STATIC_SRC = "/assets/img/game4-view2-symbol8-static.png";
-export const GAME4_VIEW2_SYMBOL_9_STATIC_SRC = "/assets/img/game4-view2-symbol9-static.png";
-export const GAME4_VIEW2_SYMBOL_10_STATIC_SRC = "/assets/img/game4-view2-symbol10-static.png";
-export const GAME4_VIEW2_SYMBOL_11_STATIC_SRC = "/assets/img/game4-view2-symbol11-static.png";
-export const GAME4_VIEW2_SYMBOL_12_STATIC_SRC = "/assets/img/game4-view2-symbol12-static.png";
+export const GAME4_VIEW1_CELL_BACKGROUND_SRC = "/assets/img/game4-view1-cell-background.webp";
+export const GAME4_VIEW1_HIGHLIGHT_BACKGROUND_SRC = "/assets/img/game4-view1-highlight-background.webp";
+export const GAME4_VIEW2_INFO_BACKGROUND_SRC = "/assets/img/game4-view2-info-background.webp";
+export const GAME4_VIEW2_INFO_SMALL_BOX_BACKGROUND_SRC = "/assets/img/game4-view2-info-small-box-background.webp";
+export const GAME4_DOUBLE_SCENE_BACKGROUND_SRC = "/assets/img/game4-double-scene-bg.webp";
+export const GAME4_DOUBLE_SCENE_CLOSED_CHEST_SRC = "/assets/img/game4-double-closed-chest.webp";
+export const GAME4_DOUBLE_SCENE_WINNING_CHEST_SRC = "/assets/img/game4-double-winning-chest.webp";
+export const GAME4_DOUBLE_SCENE_EMPTY_CHEST_SRC = "/assets/img/game4-double-empty-chest.webp";
+export const GAME4_VIEW2_SYMBOL_0_STATIC_SRC = "/assets/img/game4-view2-symbol0-static.webp";
+export const GAME4_VIEW2_SYMBOL_7_STATIC_SRC = "/assets/img/game4-view2-symbol7-static.webp";
+export const GAME4_VIEW2_SYMBOL_8_STATIC_SRC = "/assets/img/game4-view2-symbol8-static.webp";
+export const GAME4_VIEW2_SYMBOL_9_STATIC_SRC = "/assets/img/game4-view2-symbol9-static.webp";
+export const GAME4_VIEW2_SYMBOL_10_STATIC_SRC = "/assets/img/game4-view2-symbol10-static.webp";
+export const GAME4_VIEW2_SYMBOL_11_STATIC_SRC = "/assets/img/game4-view2-symbol11-static.webp";
+export const GAME4_VIEW2_SYMBOL_12_STATIC_SRC = "/assets/img/game4-view2-symbol12-static.webp";
 export const GAME4_VIEW2_CELL_BACKGROUND_ASSETS = [
-  "/assets/img/game4-view2-symbol1-background.png",
-  "/assets/img/game4-view2-symbol2-background.png",
-  "/assets/img/game4-view2-symbol3-background.png",
-  "/assets/img/game4-view2-symbol4-background.png",
-  "/assets/img/game4-view2-symbol5-background.png",
-  "/assets/img/game4-view2-symbol6-background.png",
+  "/assets/img/game4-view2-symbol1-background.webp",
+  "/assets/img/game4-view2-symbol2-background.webp",
+  "/assets/img/game4-view2-symbol3-background.webp",
+  "/assets/img/game4-view2-symbol4-background.webp",
+  "/assets/img/game4-view2-symbol5-background.webp",
+  "/assets/img/game4-view2-symbol6-background.webp",
 ];
 export const GAME6_COVER_SRC = "/assets/img/chooser/game6-background.avif";
 export const GAME6_LOGO_SRC = "/assets/img/game6-header.webp";
@@ -47,7 +47,7 @@ export const GAME5_VIEW2_SYMBOL_10_STATIC_SRC = "/assets/img/game5-view2-symbol1
 export const GAME5_VIEW2_SYMBOL_11_STATIC_SRC = "/assets/img/game5-view2-symbol11-static.webp";
 export const GAME5_VIEW2_SYMBOL_9_STATIC_SRC = "/assets/img/game5-view2-symbol9-static.webp";
 export const GAME6_VIEW1_CELL_BACKGROUND_SRC = "/assets/img/game6-view1-cell-background.webp";
-export const GAME6_VIEW1_HIGHLIGHT_BACKGROUND_SRC = "/assets/img/game6-view1-highlight-background.png";
+export const GAME6_VIEW1_HIGHLIGHT_BACKGROUND_SRC = "/assets/img/game6-view1-highlight-background.webp";
 export const GAME6_VIEW2_SYMBOL_0_STATIC_SRC = "/assets/img/game6-view2-symbol0-static.webp";
 export const GAME6_VIEW2_SYMBOL_7_STATIC_SRC = "/assets/img/game6-view2-symbol7-static.webp";
 export const GAME6_VIEW2_SYMBOL_8_STATIC_SRC = "/assets/img/game6-view2-symbol8-static.webp?v=20260804-full-no-crop";
