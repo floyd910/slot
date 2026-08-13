@@ -160,20 +160,33 @@ const GAME2_VIEW1_ASSETS = [
 ];
 
 const GAME_FIRST_PAINT_ASSETS_BY_ID = Object.freeze({
-  "marvorid-djemchug": [...SHARED_FIRST_PAINT_ASSETS, ...GAME2_VIEW1_ASSETS],
+  // Every game follows the same first-screen contract as Game 3: its own
+  // background, logo, and board skins must decode before the loader clears.
+  "marvorid-djemchug": [
+    ...SHARED_FIRST_PAINT_ASSETS,
+    GAME2_COVER_SRC,
+    GAME2_LOGO_SRC,
+    ...GAME2_VIEW1_ASSETS,
+  ],
   "khiradmandi-makor": [...SHARED_FIRST_PAINT_ASSETS, ...GAME3_SHELL_ASSETS],
   egypt: [
     ...SHARED_FIRST_PAINT_ASSETS,
+    GAME4_COVER_SRC,
+    GAME4_LOGO_SRC,
     GAME4_VIEW1_CELL_BACKGROUND_SRC,
     GAME4_VIEW1_HIGHLIGHT_BACKGROUND_SRC,
   ],
   "kadima-drevnii": [
     ...SHARED_FIRST_PAINT_ASSETS,
+    GAME5_COVER_SRC,
+    GAME5_LOGO_SRC,
     GAME5_VIEW1_CELL_BACKGROUND_SRC,
     GAME5_VIEW1_HIGHLIGHT_BACKGROUND_SRC,
   ],
   "khocha-afandi": [
     ...SHARED_FIRST_PAINT_ASSETS,
+    GAME6_COVER_SRC,
+    GAME6_LOGO_SRC,
     GAME6_VIEW1_CELL_BACKGROUND_SRC,
     GAME6_VIEW1_HIGHLIGHT_BACKGROUND_SRC,
   ],

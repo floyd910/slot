@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   SLOT_CHOOSER_BACKGROUND_SRC,
   SLOT_CHOOSER_TILE_ASSETS,
+  getGameFirstPaintAssets,
   SHARED_FIRST_PAINT_ASSETS,
 } from "../config/gameAssets.js";
 import { GAME_DEFINITIONS } from "../config/gameDefinitions.js";
@@ -110,7 +111,7 @@ const waitForControllerReady = () =>
     });
   });
 
-const waitForMountedGamePaint = async (onProgress) => {
+const waitForMountedGamePaint = async (game, onProgress) => {
   // Wait until React has committed and the game controller has completed bootstrap.
   await waitForAnimationFrame();
   onProgress?.(85);
@@ -213,7 +214,7 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
 
     if (openRequestRef.current !== requestId) return;
 
-    await waitForMountedGamePaint(setGameLoadProgress);
+    await waitForMountedGamePaint(slot, setGameLoadProgress);
 
     if (openRequestRef.current !== requestId) return;
     setPendingSlotId(null);
