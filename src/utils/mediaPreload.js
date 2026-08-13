@@ -219,20 +219,26 @@ export const preloadImages = (sources, options = {}) =>
   Promise.all(uniqueUrls(sources).map((src) => preloadImage(src, options)));
 
 export const preloadRequiredImages = async (sources, onProgress) => {
-  if (onProgress) {
-    await preloadResponseBytes(sources, (progress) =>
-      onProgress(Math.floor(progress * 0.9)),
-    );
-  }
-  await preloadImages(sources, {
-    decode: true,
-    fetchPriority: "high",
-    rejectOnError: false,
-    timeoutMs: 12000,
-  });
-  onProgress?.(100);
-};
+  const urls = uniqueUrls(sources);
+  const total = urls.length;
+  let completed = 0;
+  onProgress?.(0);
 
+  // Image.decode() performs the actual fetch and decode. Avoid a separate
+  // response-byte fetch, which doubled startup traffic on production hosts.
+  await Promise.all(
+    urls.map(async (src) => {
+      await preloadImage(src, {
+        decode: true,
+        fetchPriority: "high",
+        rejectOnError: false,
+        timeoutMs: IMAGE_PRELOAD_TIMEOUT_MS,
+      });
+      completed += 1;
+      onProgress?.(Math.floor((completed / total) * 100));
+    }),
+  );
+};
 const runWithConcurrency = async (items, limit, task) => {
   let nextIndex = 0;
   const worker = async () => {
@@ -419,8 +425,10 @@ const getGameAudioAssets = (game) =>
 const loadDeferredStartupAssets = async (game) => {
   const criticalUrls = new Set(uniqueUrls(getGameFirstPaintAssets(game)));
   const deferredImages = uniqueUrls([
+    ...STARTUP_ASSETS.images,
     ...DEFERRED_GAME_IMAGE_ASSETS,
     ...getGameView2Assets(game),
+    ...collectStylesheetImageUrls(),
   ]).filter((src) => !criticalUrls.has(src) && isAssetAllowedForGame(src, game));
 
   await preloadDeferredImages(deferredImages);
@@ -469,9 +477,6 @@ export const preloadGameAssets = (game, onProgress) => {
         game.assets.doubleSceneWinningChest,
         game.assets.doubleSceneEmptyChest,
         ...getGameFirstPaintAssets(game),
-        ...getGameView2Assets(game).filter(
-          (src) => !src.includes("/assets/img/animations/"),
-        ),
       ].filter(Boolean).filter((src) => isAssetAllowedForGame(src, game)),
       onProgress,
     ),

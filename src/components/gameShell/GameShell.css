@@ -25,7 +25,6 @@
 
 .game_area {
   position: relative;
-  --game-header-height: 48px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -38,12 +37,10 @@
 }
 .game_area__background {
   position: absolute;
-  top: calc(-1 * var(--game-header-height));
-  right: 0;
-  left: 0;
+  inset: 0;
   z-index: 0;
   width: 100%;
-  height: calc(100% + var(--game-header-height));
+  height: 100%;
   object-fit: cover;
   pointer-events: none;
   -webkit-user-drag: none;
@@ -53,11 +50,8 @@
 
 .game_area > .bg-overlay {
   position: absolute;
-  top: calc(-1 * var(--game-header-height));
-  right: 0;
-  left: 0;
+  inset: 0;
   z-index: 1;
-  height: calc(100% + var(--game-header-height));
   background: var(--game-overlay, rgba(0, 0, 0, 0.4));
   pointer-events: none;
 }

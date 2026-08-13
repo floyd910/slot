@@ -49,6 +49,7 @@ import {
   GAME5_VIEW2_SYMBOL_10_STATIC_SRC,
   GAME5_VIEW2_SYMBOL_11_STATIC_SRC,
   GAME5_VIEW2_SYMBOL_9_STATIC_SRC,
+  GAME6_COVER_SRC,
   GAME6_VIEW2_CELL_BACKGROUND_ASSETS,
   GAME6_VIEW2_SYMBOL_0_STATIC_SRC,
   GAME6_VIEW2_SYMBOL_7_STATIC_SRC,
@@ -63,7 +64,7 @@ const sharedPlaceholderAssets = Object.freeze({
   cover: GAME3_COVER_SRC,
   logo: GAME3_LOGO_SRC,
   logoOrnament: GAME3_LOGO_ORNAMENT_SRC,
-  chooserTile: "/assets/img/xiramandi-makor.webp",
+  chooserTile: "/assets/img/chooser/game3.webp",
 });
 
 const game2WinFrames = (symbol, frameCount) =>
@@ -124,9 +125,9 @@ const game6View2Symbol = (symbol, staticImage) =>
 
 const GAME6_ASSETS = Object.freeze({
   ...sharedPlaceholderAssets,
-  cover: "/assets/img/game6-background.webp",
+  cover: GAME6_COVER_SRC,
   logo: "/assets/img/game6-header.webp",
-  chooserTile: "/assets/img/game6-chooser-logo.webp",
+  chooserTile: "/assets/img/chooser/game6.webp",
   view2Symbols: Object.freeze({
     1: Object.freeze({ background: GAME6_VIEW2_CELL_BACKGROUND_ASSETS[0] }),
     2: Object.freeze({ background: GAME6_VIEW2_CELL_BACKGROUND_ASSETS[1] }),
