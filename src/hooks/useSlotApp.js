@@ -179,9 +179,9 @@ export function useSlotApp({ loadSelectedSlotGame }) {
     let cancelled = false;
     const warmUniqueGameAssets = async () => {
       const sharedGame = GAME_DEFINITIONS.find(
-        (game) => !["caravan-spins", "khocha-afandi"].includes(game.id),
+        (game) => !["kadima-drevnii", "khocha-afandi"].includes(game.id),
       );
-      const game5 = GAME_DEFINITIONS.find((game) => game.id === "caravan-spins");
+      const game5 = GAME_DEFINITIONS.find((game) => game.id === "kadima-drevnii");
       const game6 = GAME_DEFINITIONS.find((game) => game.id === "khocha-afandi");
       for (const game of [sharedGame, game5, game6].filter(Boolean)) {
         if (cancelled) return;

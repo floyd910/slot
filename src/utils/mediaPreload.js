@@ -376,10 +376,10 @@ const loadStartupAssets = async (onProgress) => {
 
 const isAssetAllowedForGame = (src, game) => {
   if (!game || typeof src !== "string") return true;
-  if (game.id === "khocha-afandi") {
+  if (["marvorid-djemchug", "khocha-afandi"].includes(game.id)) {
     return !src.includes("/game3-") && !src.includes("/game4-") && !src.includes("/game5-") && !src.includes("/animations/game4/") && !src.includes("/animations/view2-symbol-");
   }
-  if (game.id === "caravan-spins") {
+  if (game.id === "kadima-drevnii") {
     return !src.includes("/game4-") && !src.includes("/game6-") && !src.includes("/animations/game4/") && !src.includes("/animations/game6/");
   }
   if (game.id === "egypt") {
@@ -388,19 +388,27 @@ const isAssetAllowedForGame = (src, game) => {
   return !src.includes("/game4-") && !src.includes("/game5-") && !src.includes("/game6-") && !src.includes("/animations/game4/") && !src.includes("/animations/game6/");
 };
 
-const getGameView2Assets = (game) =>
-  game?.id === "khocha-afandi"
-    ? GAME6_VIEW2_ASSETS
-    : game?.id === "egypt"
-      ? GAME4_VIEW2_ASSETS
-    : game?.id === "caravan-spins"
-      ? GAME5_VIEW2_ASSETS
-      : GAME3_VIEW2_ASSETS;
+const getGameView2Assets = (game) => {
+  if (game?.id === "marvorid-djemchug") {
+    return Object.values(game.assets?.view2Symbols ?? {})
+      .flatMap(({ background, staticImage, winFrames = [] }) => [
+        background,
+        staticImage,
+        ...winFrames,
+      ])
+      .filter(Boolean);
+  }
+
+  if (game?.id === "khocha-afandi") return GAME6_VIEW2_ASSETS;
+  if (game?.id === "egypt") return GAME4_VIEW2_ASSETS;
+  if (game?.id === "kadima-drevnii") return GAME5_VIEW2_ASSETS;
+  return GAME3_VIEW2_ASSETS;
+};
 
 const getGameAudioAssets = (game) =>
   game?.id === "khiradmandi-makor"
     ? STARTUP_ASSETS.audio
-    : game?.id === "caravan-spins"
+    : game?.id === "kadima-drevnii"
       ? [
           ...STARTUP_ASSETS.audio.filter((src) => !src.includes("/arabic-")),
           GAME5_AXE_CLICK_SRC,
@@ -437,11 +445,13 @@ export const preloadStartupAssets = (onProgress) => {
 export const preloadGameAssets = (game, onProgress) => {
   if (!game) return preloadStartupAssets(onProgress);
   const cacheKey =
-    game.id === "khocha-afandi"
+    game.id === "marvorid-djemchug"
+      ? "game2"
+      : game.id === "khocha-afandi"
       ? "game6"
       : game.id === "egypt"
         ? "game4"
-      : game.id === "caravan-spins"
+      : game.id === "kadima-drevnii"
         ? "game5"
         : "shared";
   const cached = gameAssetsPromises.get(cacheKey);
@@ -467,7 +477,7 @@ export const preloadGameAssets = (game, onProgress) => {
       onProgress,
     ),
     fontReady(),
-    ...(game.id === "caravan-spins"
+    ...(game.id === "kadima-drevnii"
       ? [preloadAudioData(GAME5_AXE_CLICK_SRC)]
       : []),
     ...STARTUP_ASSETS.videos.map(preloadVideo),
@@ -503,11 +513,13 @@ export const preloadDoubleSceneAssets = () =>
   });
 
 export const preloadDeferredStartupAssets = (game) => {
-  const cacheKey = game?.id === "khiradmandi-makor"
+  const cacheKey = game?.id === "marvorid-djemchug"
+    ? "game2"
+    : game?.id === "khiradmandi-makor"
     ? "game3"
     : game?.id === "egypt"
       ? "game4"
-      : game?.id === "caravan-spins"
+      : game?.id === "kadima-drevnii"
         ? "game5"
       : game?.id === "khocha-afandi"
         ? "game6"

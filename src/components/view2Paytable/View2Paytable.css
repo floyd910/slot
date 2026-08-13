@@ -6,12 +6,15 @@
   height: 777px;
   max-height: 100%;
   overflow: visible;
-  padding: 20px 0 30px;
+  padding: 20px 0;
   border-radius: 0;
   background: rgba(44, 28, 0, 0.88);
   color: var(--game-accent-light, #e6c36a);
   font-family: "Prosto One", Arial, Helvetica, sans-serif;
   letter-spacing: 0;
+  margin-bottom: 32px;
+  border-radius: 12px;
+  border: 1px solid gray;
 }
 
 .view2-info-paytable::before {
@@ -47,6 +50,95 @@
     0 4.126px 6.188px 0 rgba(0, 0, 0, 0.1);
 }
 
+.configured-game[data-game-id="egypt"] .view2-info-paytable {
+  border: none;
+  border-radius: 0;
+}
+
+.configured-game[data-game-id="kadima-drevnii"] .view2-info-paytable {
+  background: rgba(0, 0, 0, 0.54);
+}
+
+.configured-game[data-game-id="marvorid-djemchug"] .view2-info-paytable {
+  background: rgba(0, 0, 0, 0.34);
+}
+
+.configured-game[data-game-id="khocha-afandi"] .view2-info-paytable {
+  background: rgba(0, 0, 0, 0.64);
+}
+
+.configured-game[data-game-id="khocha-afandi"]
+  .view2-info-paytable
+  .top-symbols
+  .info-symbol
+  img {
+  border: 2px solid white;
+}
+
+.configured-game[data-game-id="khocha-afandi"]
+  .view2-info-paytable
+  .view2-info-coeff-card
+  .info-symbol
+  img {
+  border: 2px solid white;
+}
+
+.configured-game[data-game-id="khocha-afandi"]
+  .view2-info-paytable
+  .view2-info-main-card
+  .info-symbol
+  img {
+  border: 2px solid white;
+}
+
+.configured-game[data-game-id="kadima-drevnii"]
+  .view2-info-paytable
+  .top-symbols
+  .info-symbol
+  img {
+  border: 2px solid white;
+}
+
+.configured-game[data-game-id="kadima-drevnii"]
+  .view2-info-paytable
+  .view2-info-coeff-card
+  .info-symbol
+  img {
+  border: 2px solid white;
+}
+
+.configured-game[data-game-id="kadima-drevnii"]
+  .view2-info-paytable
+  .view2-info-main-card
+  .info-symbol
+  img {
+  border: 2px solid white;
+}
+
+.configured-game[data-game-id="marvorid-djemchug"]
+  .view2-info-paytable
+  .top-symbols
+  .info-symbol
+  img {
+  border: 2px solid white;
+}
+
+.configured-game[data-game-id="marvorid-djemchug"]
+  .view2-info-paytable
+  .view2-info-coeff-card
+  .info-symbol
+  img {
+  border: 2px solid white;
+}
+
+.configured-game[data-game-id="marvorid-djemchug"]
+  .view2-info-paytable
+  .view2-info-main-card
+  .info-symbol
+  img {
+  border: 2px solid white;
+}
+
 .configured-game[data-game-id="egypt"] .view2-info-card,
 .configured-game[data-game-id="egypt"] .view2-info-main-card,
 .configured-game[data-game-id="egypt"] .view2-info-coeff-card {
@@ -73,7 +165,7 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(37, 28, 2, 0.4);
   pointer-events: none;
 }
 
@@ -255,8 +347,7 @@
   z-index: 4;
 }
 
-.view2-info-main-card__text,
-.view2-info-coeff-card__text {
+.view2-info-main-card__text {
   z-index: 4;
   width: 100%;
   margin: 10px 0;
@@ -278,10 +369,6 @@
 
 .view2-info-main-card__text span + span::before {
   content: " ";
-}
-
-.view2-info-coeff-card__text span {
-  display: block;
 }
 
 .view2-info-coeff-card {
@@ -367,11 +454,7 @@
 .right-top,
 .right-bottom {
   padding-left: 5%;
-}
-
-.info-bottom-right .right-top,
-.info-bottom-left .left-top {
-  margin-bottom: 20px;
+  position: relative;
 }
 
 .left_top_symbols {
@@ -403,9 +486,10 @@
 }
 
 .right-bottom .left_top_symbols {
-  position: relative;
+  position: absolute;
   z-index: 6;
-  margin-top: -50px;
+  top: -35px;
+  right: 0;
 }
 
 .left-bottom .symbol-1 {
@@ -446,7 +530,7 @@
 
 .view2-info-paytable .view2-info-symbol,
 .view2-info-paytable .view2-info-symbol__item {
-  border: none !important;
+  border: none;
   outline: none;
 }
 
@@ -596,11 +680,6 @@
     width: calc(70% + 40px);
   }
 
-  .left-bottom,
-  .right-bottom {
-    transform: translateY(-20px);
-  }
-
   .info-bottom-right {
     transform: translateX(-20px);
   }
@@ -610,7 +689,7 @@
   }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1100px) {
   .left-top .view2-info-symbol.symbol-5,
   .left-top .view2-info-symbol.symbol-6,
   .left-bottom .view2-info-symbol.symbol-1 {
@@ -628,14 +707,6 @@
     flex-direction: column;
     align-items: center;
     gap: 24px;
-  }
-  .view2-info-paytable,
-  .view2-info-paytable * {
-    margin: 0 !important;
-    top: auto !important;
-    right: auto !important;
-    bottom: auto !important;
-    left: auto !important;
   }
 
   .view2-info-card.--left-top,
@@ -712,11 +783,11 @@
   }
 
   .info-top-right .top-symbols .view2-info-symbol.symbol-11 {
-    margin-left: auto !important;
+    margin-left: auto;
   }
 
   .info-bottom-right .right-top .view2-info-symbol.symbol-9 {
-    margin-right: -30px !important;
+    margin-right: -30px;
     transform: translate(30px, 20px);
   }
 
@@ -738,10 +809,10 @@
 
   .info-bottom-left,
   .info-bottom-right {
-    margin-top: -250px !important;
+    margin-top: -250px;
   }
   .info-bottom-right {
-    margin-top: -250px !important;
+    margin-top: -250px;
   }
 
   .info-bottom .left_top_symbols,
@@ -790,7 +861,7 @@
   .info-bottom-right {
     display: flex;
     flex-direction: column;
-    align-items: flex-end !important;
+    align-items: flex-end;
   }
 
   .info-bottom-right {
@@ -803,8 +874,8 @@
   }
 
   .top-symbols {
-    margin-top: 25px !important;
-    margin-bottom: 8px !important;
+    margin-top: 25px;
+    margin-bottom: 8px;
   }
 
   .info-top-left .top-symbols,
@@ -846,17 +917,16 @@
 
   .view2-info-coeff-card > *,
   .view2-info-coeff-card__payout,
-  .view2-info-coeff-card__arrow,
-  .view2-info-coeff-card__text {
+  .view2-info-coeff-card__arrow {
     align-self: center;
-    margin-inline: auto !important;
+    margin-inline: auto;
   }
 
   .view2-info-coeff-card__arrow {
     display: block;
     width: 69px;
     height: 8px;
-    margin-block: 16px !important;
+    margin-block: 16px;
   }
 
   .view2-info-symbol.--coeff-bag {
@@ -873,10 +943,6 @@
     transform: none;
   }
 
-  .view2-info-coeff-card__text {
-    display: block;
-  }
-
   .left-bottom,
   .left-top,
   .right-top,
@@ -889,9 +955,9 @@
   .info-bottom-left .left-top,
   .info-bottom-left .left-bottom,
   .info-bottom-right .right-bottom {
-    display: flex !important;
-    flex-direction: column !important;
-    row-gap: 8px !important;
+    display: flex;
+    flex-direction: column;
+    row-gap: 8px;
   }
 
   .info-bottom .left_top_symbols {
@@ -941,22 +1007,22 @@
   }
 
   .info-bottom-left {
-    margin-top: -250px !important;
+    margin-top: -250px;
   }
 
   .info-bottom-right {
-    margin-top: -250px !important;
+    margin-top: -250px;
   }
   .view2-info-payout-row {
-    margin-bottom: 8px !important;
+    margin-bottom: 8px;
   }
 
   .view2-info-card .view2-info-payout-row:last-child {
-    margin-bottom: 0 !important;
+    margin-bottom: 0;
   }
 
   .view2-info-coeff-card .view2-info-payout-row {
-    margin-bottom: 0 !important;
+    margin-bottom: 0;
   }
 }
 
@@ -966,8 +1032,8 @@
 
 @media (max-width: 1024px) {
   .view2-info-inline {
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
+    overflow-x: hidden;
+    overflow-y: auto;
     align-content: start;
     overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
@@ -977,16 +1043,17 @@
     display: block;
     width: 100%;
     min-height: 100%;
-    height: auto !important;
+    height: auto;
     max-height: none;
     box-sizing: border-box;
     padding: 8px;
     overflow: visible;
+    margin-bottom: 32px;
   }
 
   .view2-info-paytable > .info-top,
   .view2-info-paytable > .info-bottom {
-    display: none !important;
+    display: none;
   }
 
   .view2-info-mobile {
@@ -1008,11 +1075,11 @@
 
   .view2-info-mobile > .view2-info-mobile__box {
     box-sizing: border-box;
-    width: 100% !important;
+    width: 100%;
     max-width: none;
-    height: auto !important;
+    height: auto;
     min-height: 0;
-    margin: 0 !important;
+    margin: 0;
   }
 
   .view2-info-mobile__box,
@@ -1036,18 +1103,18 @@
 
   .view2-info-mobile__symbols:has(.symbol-10):has(.symbol-11),
   .view2-info-mobile__symbols:has(.symbol-8):has(.symbol-7) {
-    gap: 8px !important;
+    gap: 8px;
   }
 
   .view2-info-mobile__symbols:has(.symbol-8):has(.symbol-7) .view2-info-symbol,
   .view2-info-mobile__symbols:has(.symbol-10):has(.symbol-11)
     .view2-info-symbol {
-    position: relative !important;
-    inset: auto !important;
-    flex: 0 0 104px !important;
-    width: 104px !important;
-    margin: 0 !important;
-    transform: none !important;
+    position: relative;
+    inset: auto;
+    flex: 0 0 104px;
+    width: 104px;
+    margin: 0;
+    transform: none;
   }
 
   .view2-info-mobile__symbols:has(.symbol-8):has(.symbol-7)
@@ -1055,64 +1122,64 @@
   .view2-info-mobile__symbols:has(.symbol-10):has(.symbol-11)
     .view2-info-symbol__item {
     display: block;
-    width: 104px !important;
+    width: 104px;
     max-width: 104px;
-    height: 105px !important;
-    transform: none !important;
+    height: 105px;
+    transform: none;
   }
 
   .view2-info-mobile__symbols:has(.symbol-10):has(.symbol-11)
     .view2-info-symbol.symbol-11 {
-    margin-top: -20px !important;
+    margin-top: -20px;
   }
 
   .view2-info-mobile__symbols:has(.symbol-8):has(.symbol-7)
     .view2-info-symbol.symbol-8 {
-    margin-top: -20px !important;
+    margin-top: -20px;
   }
 
   .view2-info-mobile__symbols .view2-info-symbol {
     flex: 0 0 104px;
     width: 104px;
     height: 105px;
-    margin: 0 !important;
-    transform: none !important;
+    margin: 0;
+    transform: none;
   }
 
   .view2-info-mobile__symbols .view2-info-symbol__item {
     width: 104px;
     height: 105px;
-    transform: none !important;
+    transform: none;
   }
 
   .view2-info-mobile__symbols
     .view2-info-symbol.symbol-3
     .view2-info-symbol__item {
-    transform: rotate(-23.716deg) !important;
+    transform: rotate(-23.716deg);
   }
 
   .view2-info-mobile__symbols
     .view2-info-symbol.symbol-5
     .view2-info-symbol__item {
-    transform: rotate(-20.607deg) !important;
+    transform: rotate(-20.607deg);
   }
 
   .view2-info-mobile .view2-info-payout-list,
   .view2-info-mobile .view2-info-coeff-card__payout {
-    width: 100% !important;
-    margin: 0 !important;
+    width: 100%;
+    margin: 0;
   }
 
   .view2-info-mobile .view2-info-payout-row {
-    margin-bottom: 8px !important;
+    margin-bottom: 8px;
   }
 
   .view2-info-mobile .view2-info-payout-row:last-child {
-    margin-bottom: 0 !important;
+    margin-bottom: 0;
   }
 
   .view2-info-mobile .view2-info-coeff-card .view2-info-payout-row {
-    margin: 0 !important;
+    margin: 0;
   }
 
   .view2-info-mobile .view2-info-main-card,
@@ -1134,7 +1201,7 @@
   .view2-info-mobile__row {
     display: flex;
     flex-direction: row;
-    align-items: center !important;
+    align-items: center;
     justify-content: space-between;
     gap: 8px;
     width: 100%;
@@ -1142,7 +1209,7 @@
 
   .view2-info-mobile__row:has(.view2-info-symbol.symbol-9) {
     flex-direction: row-reverse;
-    gap: 8px !important;
+    gap: 8px;
   }
 
   .view2-info-mobile__row:has(.symbol-4):has(.symbol-3):has(.symbol-2) {
@@ -1152,13 +1219,13 @@
   .view2-info-mobile__row:has(.view2-info-symbol.symbol-9)
     > .view2-info-mobile__symbols {
     flex: 0 0 104px;
-    width: 104px !important;
+    width: 104px;
   }
 
   .view2-info-mobile__row:has(.view2-info-symbol.symbol-9)
     > .view2-info-mobile__box {
     flex: 0 1 calc(100% - 112px);
-    width: calc(100% - 112px) !important;
+    width: calc(100% - 112px);
     max-width: calc(100% - 112px);
     min-width: 0;
     overflow: hidden;
@@ -1167,8 +1234,8 @@
   .view2-info-mobile__row:has(.view2-info-symbol.symbol-9) .view2-info-symbol,
   .view2-info-mobile__row:has(.view2-info-symbol.symbol-9)
     .view2-info-symbol__item {
-    width: 104px !important;
-    height: 105px !important;
+    width: 104px;
+    height: 105px;
   }
 
   .view2-info-mobile__row:has(.view2-info-symbol.symbol-9)
@@ -1180,7 +1247,7 @@
 
   .view2-info-mobile__row > .view2-info-mobile__symbols {
     flex: 0 0 auto;
-    width: auto !important;
+    width: auto;
     min-height: 77px;
   }
 
@@ -1189,7 +1256,7 @@
   .view2-info-mobile__row
     > .view2-info-mobile__symbols:has(.symbol-4):has(.symbol-3):has(.symbol-2) {
     flex-direction: column;
-    gap: 0 !important;
+    gap: 0;
   }
 
   .view2-info-mobile__row
@@ -1200,7 +1267,7 @@
   .view2-info-mobile__row
     .view2-info-mobile__symbols
     .view2-info-symbol.symbol-6 {
-    transform: translateX(20px) !important;
+    transform: translateX(20px);
   }
 
   .view2-info-mobile__row
@@ -1209,7 +1276,7 @@
   .view2-info-mobile__row
     .view2-info-mobile__symbols
     .view2-info-symbol.symbol-2 {
-    transform: translateX(-20px) !important;
+    transform: translateX(-20px);
   }
 
   .view2-info-mobile__row
@@ -1220,14 +1287,14 @@
     > .view2-info-mobile__symbols:has(.symbol-4):has(.symbol-3):has(.symbol-2)
     .view2-info-symbol
     + .view2-info-symbol {
-    margin-top: -60px !important;
+    margin-top: -60px;
   }
 
   .view2-info-mobile__row > .view2-info-mobile__box {
     flex: 1 1 0;
-    width: auto !important;
+    width: auto;
     min-width: 0;
-    margin: 0 !important;
+    margin: 0;
   }
 
   .view2-info-mobile__row:has(.symbol-6):has(.symbol-5)
@@ -1235,7 +1302,7 @@
   .view2-info-mobile__row:has(.symbol-4):has(.symbol-3):has(.symbol-2)
     > .view2-info-mobile__box {
     flex: 0 1 calc(100% - 104px);
-    width: calc(100% - 104px) !important;
+    width: calc(100% - 104px);
     max-width: calc(100% - 104px);
   }
 
@@ -1250,8 +1317,8 @@
   .view2-info-inline {
     width: 100vw;
     height: calc(var(--app-viewport-height) - 32px);
-    overflow-x: hidden !important;
-    overflow-y: auto !important;
+    overflow-x: hidden;
+    overflow-y: auto;
     align-content: start;
     overscroll-behavior: contain;
     touch-action: pan-y;
@@ -1259,7 +1326,7 @@
   }
 
   .view2-info-inline__close-wrap {
-    position: absolute !important;
+    position: absolute;
     top: 8px;
     right: 8px;
     z-index: 20;
@@ -1267,93 +1334,18 @@
   }
 }
 
-@media (min-width: 721px) and (min-height: 621px) {
-  .view2-info-inline .view2-info-paytable {
-    transform: translateY(-32px);
-  }
-}
-
-@media (orientation: landscape) and (min-width: 721px) and (max-height: 620px) {
-  .view2-info-inline {
-    display: block;
-    padding: 0 8px 16px;
-  }
-
-  .view2-info-inline__close-wrap {
-    top: 24px !important;
-  }
-
-  .view2-info-inline .view2-info-paytable {
-    width: min(1264px, 100%);
-    height: 777px;
-    min-height: 777px;
-    max-height: none;
-    margin: 0 auto;
-    overflow: visible;
-    position: relative;
-    top: 32px !important;
-  }
-}
-
-@media (min-width: 721px) and (min-height: 621px) {
-  .view2-info-inline__close-wrap {
-    position: relative;
-    top: -50px;
-    right: -80px;
-    grid-area: 1 / 1;
-    align-self: start;
-    justify-self: end;
-    z-index: 8;
-    padding: 6px;
-  }
-
-  .info-modal__close.view2-info-inline__close {
-    position: static;
-    transform: none;
-  }
-}
-
-@media (max-width: 720px), (orientation: landscape) and (max-height: 620px) {
-  .view2-info-inline__close-wrap {
-    position: fixed !important;
-    z-index: 30;
-  }
-}
-
-@media (max-width: 1024px), (orientation: landscape) and (max-height: 620px) {
-  .view2-info-inline__close-wrap {
-    right: 24px !important;
-  }
-
-  .info-modal__close.view2-info-inline__close {
-    transform: none;
-  }
-}
-
-@media (max-width: 1280px) {
-  .view2-info-inline__close-wrap {
-    right: 20px !important;
-  }
-}
-
-@media (min-width: 721px) and (min-height: 621px) {
-  .info-modal__close.view2-info-inline__close {
-    transform: translateX(-16px);
-  }
-}
-
 .view2-info-paytable .view2-info-inline__close-wrap {
-  position: absolute !important;
-  top: -35px !important;
-  right: 0 !important;
+  position: absolute;
+  top: -35px;
+  right: 0;
   z-index: 50;
   margin: 0;
   padding: 0;
 }
 
 .view2-info-paytable .info-modal__close.view2-info-inline__close {
-  position: static !important;
-  transform: none !important;
+  position: static;
+  transform: none;
 }
 
 /* handmade */
@@ -1368,4 +1360,13 @@
 
 .configured-game[data-game-id="egypt"] .view2-info-coeff-card {
   padding: 40px 25px 35px 25px;
+}
+
+/* overrides */
+/* Let the shared paytable wrapper size to its content and retain bottom clearance. */
+.game_area[data-view2-info="true"] .view2-info-inline .view2-info-paytable {
+  align-self: start;
+  height: auto;
+  min-height: 0;
+  max-height: none;
 }

@@ -1,4 +1,20 @@
 import {
+  GAME2_CHOOSER_TILE_SRC,
+  GAME2_COVER_SRC,
+  GAME2_LOGO_SRC,
+  GAME2_VIEW2_SYMBOL_1_BACKGROUND_SRC,
+  GAME2_VIEW2_SYMBOL_4_BACKGROUND_SRC,
+  GAME2_VIEW2_SYMBOL_3_BACKGROUND_SRC,
+  GAME2_VIEW2_SYMBOL_6_BACKGROUND_SRC,
+  GAME2_VIEW2_SYMBOL_12_STATIC_SRC,
+  GAME2_VIEW2_SYMBOL_0_STATIC_SRC,
+  GAME2_VIEW2_SYMBOL_9_STATIC_SRC,
+  GAME2_VIEW2_SYMBOL_10_STATIC_SRC,
+  GAME2_VIEW2_SYMBOL_11_STATIC_SRC,
+  GAME2_VIEW2_SYMBOL_7_STATIC_SRC,
+  GAME2_VIEW2_SYMBOL_8_STATIC_SRC,
+  GAME2_VIEW1_CELL_AND_VIEW2_SYMBOL_2_BACKGROUND_SRC,
+  GAME2_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC,
   GAME3_COVER_SRC,
   GAME3_LOGO_ORNAMENT_SRC,
   GAME3_LOGO_SRC,
@@ -48,6 +64,45 @@ const sharedPlaceholderAssets = Object.freeze({
   logo: GAME3_LOGO_SRC,
   logoOrnament: GAME3_LOGO_ORNAMENT_SRC,
   chooserTile: "/assets/img/xiramandi-makor.webp",
+});
+
+const game2WinFrames = (symbol, frameCount) =>
+  Array.from(
+    { length: frameCount },
+    (_, index) =>
+      `/assets/img/animations/game2/${symbol}/frame_${String(index).padStart(3, "0")}_delay-0.04s.webp`,
+  );
+
+const game2View2Symbol = (symbol, staticImage, frameCount) =>
+  Object.freeze({
+    staticImage,
+    // Override the shared symbol component's legacy animation for Game 2.
+    animatedImage: null,
+    winFrames: Object.freeze(game2WinFrames(symbol, frameCount)),
+    frameMs: 40,
+    cycleMs: frameCount * 40,
+    forwardLoop: true,
+  });
+const GAME2_ASSETS = Object.freeze({
+  ...sharedPlaceholderAssets,
+  cover: GAME2_COVER_SRC,
+  logo: GAME2_LOGO_SRC,
+  chooserTile: GAME2_CHOOSER_TILE_SRC,
+  view2Symbols: Object.freeze({
+    1: Object.freeze({ background: GAME2_VIEW2_SYMBOL_1_BACKGROUND_SRC }),
+    2: Object.freeze({ background: GAME2_VIEW1_CELL_AND_VIEW2_SYMBOL_2_BACKGROUND_SRC }),
+    4: Object.freeze({ background: GAME2_VIEW2_SYMBOL_4_BACKGROUND_SRC }),
+    3: Object.freeze({ background: GAME2_VIEW2_SYMBOL_3_BACKGROUND_SRC }),
+    6: Object.freeze({ background: GAME2_VIEW2_SYMBOL_6_BACKGROUND_SRC }),
+    12: game2View2Symbol(12, GAME2_VIEW2_SYMBOL_12_STATIC_SRC, 144),
+    0: game2View2Symbol(0, GAME2_VIEW2_SYMBOL_0_STATIC_SRC, 144),
+    9: game2View2Symbol(9, GAME2_VIEW2_SYMBOL_9_STATIC_SRC, 144),
+    10: game2View2Symbol(10, GAME2_VIEW2_SYMBOL_10_STATIC_SRC, 143),
+    11: game2View2Symbol(11, GAME2_VIEW2_SYMBOL_11_STATIC_SRC, 144),
+    7: game2View2Symbol(7, GAME2_VIEW2_SYMBOL_7_STATIC_SRC, 145),
+    8: game2View2Symbol(8, GAME2_VIEW2_SYMBOL_8_STATIC_SRC, 144),
+    5: Object.freeze({ background: GAME2_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC }),
+  }),
 });
 
 const game6WinFrames = (symbol) =>
@@ -175,10 +230,10 @@ const createGameDefinition = ({ id, title, subtitle, assets = sharedPlaceholderA
 
 export const GAME_DEFINITIONS = Object.freeze([
   createGameDefinition({ id: "silk-fruits", title: "Silk Fruits", subtitle: "Classic 5-reel slot" }),
-  createGameDefinition({ id: "desert-treasures", title: "Desert Treasures", subtitle: "Bonus hunt adventure" }),
+  createGameDefinition({ id: "marvorid-djemchug", title: "Marvorid Djemchug", subtitle: "Classic slot", assets: GAME2_ASSETS }),
   createGameDefinition({ id: "khiradmandi-makor", title: "Khiradmandi Makor", subtitle: "Coordinate lottery slot" }),
   createGameDefinition({ id: "egypt", title: "Egypt", subtitle: "Table-style slot", assets: GAME4_ASSETS }),
-  createGameDefinition({ id: "caravan-spins", title: "Kadima Drevnii", subtitle: "Ancient adventure", assets: GAME5_ASSETS }),
+  createGameDefinition({ id: "kadima-drevnii", title: "Kadima Drevnii", subtitle: "Ancient adventure", assets: GAME5_ASSETS }),
   createGameDefinition({ id: "khocha-afandi", title: "Khocha Afandi", subtitle: "Number draw game", assets: GAME6_ASSETS }),
   createGameDefinition({ id: "star-bazaar", title: "Star Bazaar", subtitle: "Wild multiplier slot" }),
   createGameDefinition({ id: "double-bonus", title: "Double Bonus", subtitle: "Risk ladder feature" }),

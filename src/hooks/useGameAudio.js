@@ -51,6 +51,33 @@ const game3Media = {
   win8: "/media/game3-total-win-v1.wav",
 };
 
+const GAME2_BUBBLE_CLICK_SRC = "/media/game2-bubble-click.mp3";
+const GAME2_WATER_SPARKLE_SRC = "/media/game2-water-sparkle.mp3";
+const GAME2_WIN_CHIME_SRC = "/media/game2-win-chime.mp3";
+
+const game2Media = {
+  ...originalMedia,
+  click: GAME2_BUBBLE_CLICK_SRC,
+  buttonPress: GAME2_BUBBLE_CLICK_SRC,
+  controlClick: GAME2_BUBBLE_CLICK_SRC,
+  amount: GAME2_BUBBLE_CLICK_SRC,
+  spin: GAME2_WATER_SPARKLE_SRC,
+  carpet: GAME2_WATER_SPARKLE_SRC,
+  reveal: GAME2_WATER_SPARKLE_SRC,
+  receiptWin: GAME2_WIN_CHIME_SRC,
+  cashout: GAME2_WIN_CHIME_SRC,
+  double: GAME2_WIN_CHIME_SRC,
+  freeTickets: GAME2_WIN_CHIME_SRC,
+  afterBonus: GAME2_WIN_CHIME_SRC,
+  win0: GAME2_WIN_CHIME_SRC,
+  win12: GAME2_WIN_CHIME_SRC,
+  win3: GAME2_WIN_CHIME_SRC,
+  win4: GAME2_WIN_CHIME_SRC,
+  win5: GAME2_WIN_CHIME_SRC,
+  win6: GAME2_WIN_CHIME_SRC,
+  win7: GAME2_WIN_CHIME_SRC,
+  win8: GAME2_WIN_CHIME_SRC,
+};
 const GAME5_AXE_CLICK_SRC = "/media/game5-axe-click.mp3";
 const game5Media = {
   ...originalMedia,
@@ -73,32 +100,41 @@ const createWinSoundMap = (media) => ({
   12: media.win12,
 });
 
+const game2WinSoundBySymbol = createWinSoundMap(game2Media);
 const originalWinSoundBySymbol = createWinSoundMap(originalMedia);
 const game3WinSoundBySymbol = createWinSoundMap(game3Media);
 const game5WinSoundBySymbol = createWinSoundMap(game5Media);
+const game2EffectSources = [...new Set(Object.values(game2Media))];
 const originalEffectSources = [...new Set(Object.values(originalMedia))];
 const game3EffectSources = [
   ...new Set(Object.values(game3Media)),
 ];
 const game5EffectSources = [...new Set(Object.values(game5Media))];
 export function useGameAudio(gameId) {
+  const useGame2Sounds = gameId === "marvorid-djemchug";
   const useGame3Sounds = gameId === "khiradmandi-makor";
-  const useGame5Sounds = gameId === "caravan-spins";
-  const media = useGame3Sounds
-    ? game3Media
-    : useGame5Sounds
-      ? game5Media
-      : originalMedia;
-  const winSoundBySymbol = useGame3Sounds
-    ? game3WinSoundBySymbol
-    : useGame5Sounds
-      ? game5WinSoundBySymbol
-      : originalWinSoundBySymbol;
-  const effectSources = useGame3Sounds
-    ? game3EffectSources
-    : useGame5Sounds
-      ? game5EffectSources
-      : originalEffectSources;
+  const useGame5Sounds = gameId === "kadima-drevnii";
+  const media = useGame2Sounds
+    ? game2Media
+    : useGame3Sounds
+      ? game3Media
+      : useGame5Sounds
+        ? game5Media
+        : originalMedia;
+  const winSoundBySymbol = useGame2Sounds
+    ? game2WinSoundBySymbol
+    : useGame3Sounds
+      ? game3WinSoundBySymbol
+      : useGame5Sounds
+        ? game5WinSoundBySymbol
+        : originalWinSoundBySymbol;
+  const effectSources = useGame2Sounds
+    ? game2EffectSources
+    : useGame3Sounds
+      ? game3EffectSources
+      : useGame5Sounds
+        ? game5EffectSources
+        : originalEffectSources;
   const cacheRef = useRef(new Map());
   const backgroundRef = useRef(null);
   const activePlaybackRef = useRef(new Set());

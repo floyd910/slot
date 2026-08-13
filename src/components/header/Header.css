@@ -447,3 +447,9 @@ header {
     transform: translateY(3.5px);
   }
 }
+
+@media (min-width: 440px) {
+  .header_img {
+    min-width: 440px;
+  }
+}

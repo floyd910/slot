@@ -17,10 +17,10 @@
 .info-modal[data-game-id="khocha-afandi"]:not(.--view2) .info-paytable {
   background: linear-gradient(145deg, rgb(176, 144, 83) 0%, rgb(132, 74, 32) 46.63%, rgb(176, 144, 83) 100%);
 }
-.info-modal[data-game-id="caravan-spins"]:not(.--view2),
+.info-modal[data-game-id="kadima-drevnii"]:not(.--view2),
 .info-modal[data-game-id="egypt"]:not(.--view2),
 .info-modal[data-game-id="egypt"]:not(.--view2) .info-paytable,
-.info-modal[data-game-id="caravan-spins"]:not(.--view2) .info-paytable {
+.info-modal[data-game-id="kadima-drevnii"]:not(.--view2) .info-paytable {
   background: linear-gradient(
     145deg,
     rgb(176, 144, 83) 0%,
@@ -518,20 +518,20 @@
 .info-paytable__table td,
 .info-paytable__summary th,
 .info-paytable__summary td {
-  border: 0 !important;
-  border-right: 2px solid #fff !important;
-  border-bottom: 2px solid #fff !important;
+  border: 0;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
 }
 
 .info-paytable__table tr > :last-child,
 .info-paytable__summary tr > :last-child {
-  border-right: 0 !important;
+  border-right: 0;
 }
 
 .info-paytable__table tbody tr:last-child > td,
 .info-paytable__table tbody td[rowspan],
 .info-paytable__summary tbody tr:last-child > td {
-  border-bottom: 0 !important;
+  border-bottom: 0;
 }
 
 .info-modal[data-game-id="egypt"]:not(.--view2),

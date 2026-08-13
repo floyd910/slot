@@ -1,4 +1,4 @@
-﻿.configured-game {
+.configured-game {
   width: 100vw;
   height: 100vh;
   color: var(--game-text, #fff);
@@ -166,7 +166,6 @@ button:disabled {
   align-items: stretch;
   gap: 8px;
 }
-
 
 .main-container__right {
   width: 320px;
@@ -438,7 +437,6 @@ button:disabled {
     height: auto;
     top: 0;
   }
-
 }
 
 @media (min-width: 640px) and (max-width: 720px) {
@@ -493,15 +491,15 @@ button:disabled {
       .lottery-grid-view2-cell--symbol-6
     )
     .lottery-grid-view2-cell__image {
-    inset: auto !important;
-    top: 50% !important;
-    left: 50% !important;
-    width: auto !important;
-    height: auto !important;
-    max-width: 100% !important;
-    max-height: 100% !important;
-    object-fit: contain !important;
-    transform: translate(-50%, -50%) !important;
+    inset: auto;
+    top: 50%;
+    left: 50%;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    transform: translate(-50%, -50%);
   }
 }
 
@@ -524,7 +522,6 @@ button:disabled {
   -webkit-text-fill-color: transparent;
 }
 @media (max-width: 440px) {
-
   .header_img {
     width: 100%;
     margin-top: 8px;
@@ -600,51 +597,9 @@ button:disabled {
   .view-1 .frame-content {
     margin-top: 160px;
   }
-
 }
 .game_area[data-view2-info="true"] .header_img {
   display: none;
-}
-
-.view2-info-inline {
-  position: absolute;
-  inset: 0;
-  z-index: 4;
-  display: grid;
-  grid-template-columns: minmax(0, 1264px);
-  grid-template-rows: minmax(0, 777px);
-  align-content: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  overflow: visible;
-  padding: 0 24px;
-}
-
-.view2-info-inline .view2-info-paytable,
-.view2-info-inline .info-paytable-state {
-  grid-area: 1 / 1;
-  width: 100%;
-}
-
-@media (max-width: 1440px) {
-  .view2-info-inline__close-wrap {
-    position: relative;
-    top: -5px;
-    right: -5px;
-    grid-area: 1 / 1;
-    align-self: start;
-    justify-self: end;
-    z-index: 8;
-    padding: 6px;
-    background: transparent;
-  }
-
-  .view2-info-inline .view2-info-inline__close,
-  .info-modal__close.view2-info-inline__close {
-    position: static;
-  }
 }
 
 @media (max-width: 1024px) {
@@ -714,7 +669,6 @@ button:disabled {
   }
 }
 @media (orientation: landscape) and (min-width: 1024px) and (max-width: 1280px) {
-
   .view-1 .game-main-layout > .frame-content {
     align-items: flex-end;
     gap: var(--miniature-row-gap, 8px);
@@ -722,7 +676,7 @@ button:disabled {
   }
 
   .view-1 .main-container__center {
-    transform: scale(var(--large-surface-grid-scale, 1)) !important;
+    transform: scale(var(--large-surface-grid-scale, 1));
     transform-origin: top center;
   }
 
@@ -822,13 +776,13 @@ button:disabled {
       .lottery-grid-view2-cell--symbol-6
     )
     .lottery-grid-view2-cell__image {
-    inset: auto !important;
-    top: 50% !important;
-    left: 50% !important;
-    width: 82% !important;
-    height: 82% !important;
-    object-fit: contain !important;
-    transform: translate(-50%, -50%) !important;
+    inset: auto;
+    top: 50%;
+    left: 50%;
+    width: 82%;
+    height: 82%;
+    object-fit: contain;
+    transform: translate(-50%, -50%);
   }
 }
 
@@ -872,14 +826,14 @@ button:disabled {
 }
 
 .frame-app[data-fluid-fit="true"] .header_img {
-  position: relative !important;
-  top: 0 !important;
-  width: var(--fluid-logo-width) !important;
+  position: relative;
+  top: 0;
+  width: var(--fluid-logo-width);
   min-width: 0;
-  height: var(--fluid-logo-height) !important;
-  max-height: none !important;
-  margin: 0 auto !important;
-  transform: none !important;
+  height: var(--fluid-logo-height);
+  max-height: none;
+  margin: 0 auto;
+  transform: none;
 }
 
 .frame-app[data-fluid-fit="true"] .game-main-layout {
@@ -891,47 +845,47 @@ button:disabled {
 .frame-app[data-fluid-fit="true"] .game-main-layout > .frame-content,
 .frame-app[data-fluid-fit="true"].view-1 .game-main-layout > .frame-content,
 .frame-app[data-fluid-fit="true"].view-2 .game-main-layout > .frame-content {
-  position: absolute !important;
+  position: absolute;
   inset: var(--fluid-content-top, calc(var(--fluid-logo-height) + 10px)) 0
-    var(--fluid-footer-reserve) !important;
+    var(--fluid-footer-reserve);
   width: 100%;
   height: auto;
   min-height: 0;
-  margin: 0 !important;
+  margin: 0;
   gap: 32px;
   align-items: flex-start;
   justify-content: center;
-  transform: none !important;
+  transform: none;
 }
 
 .frame-app[data-fluid-fit="true"]:not(.doubling-active) .main-container__center,
 .frame-app[data-fluid-fit="true"]:not(.doubling-active) .main-container__left,
 .frame-app[data-fluid-fit="true"]:not(.doubling-active) .main-container__right {
-  transform: scale(var(--fluid-content-scale)) !important;
-  transform-origin: top center !important;
+  transform: scale(var(--fluid-content-scale));
+  transform-origin: top center;
 }
 
 .frame-app[data-fluid-fit="true"].view-2:not(.doubling-active)
   .main-container__center {
-  transform: scale(var(--fluid-content-scale)) !important;
+  transform: scale(var(--fluid-content-scale));
 }
 .frame-app[data-fluid-logo-fit="true"] .header_img {
-  width: var(--fluid-logo-width) !important;
-  height: var(--fluid-logo-height) !important;
-  max-height: none !important;
+  width: var(--fluid-logo-width);
+  height: var(--fluid-logo-height);
+  max-height: none;
 }
 
 .frame-app .header_img {
   /* Keep the logo in a stable layer above animated win-line filters. */
-  z-index: 20 !important;
+  z-index: 20;
   flex: 0 0 auto;
   backface-visibility: hidden;
 }
 
 @media (min-width: 721px) {
   .frame-app .header_img {
-    min-width: 320px;
-    height: auto !important;
+    min-width: 440px;
+    height: auto;
   }
 }
 .frame-app.view-1 {
@@ -941,8 +895,8 @@ button:disabled {
 
 .frame-app.view-1 .game-main-layout > .frame-content,
 .frame-app[data-fluid-fit="true"].view-1 .game-main-layout > .frame-content {
-  column-gap: var(--view1-component-gap) !important;
-  row-gap: 0 !important;
+  column-gap: var(--view1-component-gap);
+  row-gap: 0;
 }
 
 @media (max-width: 1024px) {
@@ -955,16 +909,16 @@ button:disabled {
 @media (min-width: 721px) {
   .frame-app:not([data-fluid-fit="true"]):not([data-fluid-logo-fit="true"])
     .header_img {
-    min-width: 320px;
-    height: auto !important;
+    min-width: 440px;
+    height: auto;
   }
 }
 /* View 1 scales as one group so fitted space stays outside, not between panels. */
 .frame-app[data-fluid-fit="true"].view-1:not(.doubling-active)
   .game-main-layout
   > .frame-content {
-  transform: scale(var(--fluid-content-scale)) !important;
-  transform-origin: top center !important;
+  transform: scale(var(--fluid-content-scale));
+  transform-origin: top center;
 }
 
 .frame-app[data-fluid-fit="true"].view-1:not(.doubling-active)
@@ -973,14 +927,14 @@ button:disabled {
   .main-container__center,
 .frame-app[data-fluid-fit="true"].view-1:not(.doubling-active)
   .main-container__right {
-  transform: none !important;
+  transform: none;
 }
 @media (min-width: 320px) and (max-width: 1024px) {
   .frame-app[data-fluid-fit="true"].view-1 .main-container__center {
-    width: 525px !important;
+    width: 525px;
     flex: 0 0 525px;
-    max-width: none !important;
-    height: 403px !important;
+    max-width: none;
+    height: 403px;
   }
 
   .frame-app[data-fluid-fit="true"].view-1 .lottery-grid-view1 {
@@ -1024,7 +978,7 @@ button:disabled {
 
   .frame-app[data-fluid-fit="true"].view-1 .lottery-grid-view1-cell {
     width: auto;
-    height: 64px !important;
+    height: 64px;
   }
 
   .frame-app[data-fluid-fit="true"].view-1 .lottery-grid-view1-cell__value {
@@ -1037,9 +991,9 @@ button:disabled {
     .game-main-layout
     .lottery-grid--view2,
   .frame-app[data-fluid-fit="true"].view-2 .lottery-grid-view2 {
-    width: max-content !important;
-    max-width: none !important;
-    height: max-content !important;
+    width: max-content;
+    max-width: none;
+    height: max-content;
   }
 
   .frame-app[data-fluid-fit="true"].view-2 .lottery-grid-view2 {
@@ -1051,24 +1005,24 @@ button:disabled {
   }
 
   .frame-app[data-fluid-fit="true"].view-2 .lottery-grid-view2-cell {
-    width: 200px !important;
-    height: 130px !important;
+    width: 200px;
+    height: 130px;
   }
 
   .frame-app[data-fluid-fit="true"].view-2
     .lottery-grid-view2-cell--dice
     .lottery-grid-view2-cell__image {
-    width: 100px !important;
-    height: 108px !important;
+    width: 100px;
+    height: 108px;
   }
 }
 
 /* Large View 2 surfaces: grid follows the logo; the ticket follows the grid. */
 @media (min-width: 1025px) and (min-height: 761px) {
   .frame-app.view-2:not(.doubling-active) .game-main-layout > .frame-content {
-    position: absolute !important;
-    top: var(--header-content-start, 161px) !important;
-    margin-top: 0 !important;
+    position: absolute;
+    top: var(--header-content-start, 161px);
+    margin-top: 0;
     align-items: flex-start;
   }
 
@@ -1082,81 +1036,40 @@ button:disabled {
   }
 }
 
-/* Make the header-to-paytable spacing visible even when the grid item fills its track. */
-.game_area[data-view2-info="true"] .view2-info-inline .view2-info-paytable {
-  position: relative;
-  top: 32px !important;
-  margin-top: 0 !important;
-  transform: none !important;
-}
-
-/* Shared vertical breathing room and scrolling for the View 2 information screen. */
-.game_area[data-view2-info="true"] .view2-info-inline {
-  padding-block: 32px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Let the shared paytable wrapper size to its content and retain bottom clearance. */
-.game_area[data-view2-info="true"] .view2-info-inline .view2-info-paytable {
-  align-self: start;
-  height: auto !important;
-  min-height: 0 !important;
-  max-height: none;
-  padding-bottom: 10px !important;
-}
-
-/* Reserve bottom clearance for the complete View 2 info screen. */
-.game_area[data-view2-info="true"] .view2-info-inline {
-  padding-bottom: 32px !important;
-}
-
-/* Keep consistent side clearance inside every View 2 information screen. */
-.game_area[data-view2-info="true"] .view2-info-inline {
-  padding-inline: 10px !important;
-}
-
-/* Use the same outer spacing at every View 2 info viewport. */
-.game_area[data-view2-info="true"] .view2-info-inline {
-  padding: 10px !important;
-}
-
 /* Shared minimum logo width. */
 .configured-game .frame-app .header_img {
-  min-width: 320px !important;
+  min-width: 440px;
 }
 @media (max-width: 440px) {
   .configured-game .frame-app .header_img {
-    min-width: 80% !important;
+    min-width: 80%;
   }
 }
 /* View-independent logo dimensions: identical for View 1 and View 2. */
 .configured-game .frame-app .header_img {
-  width: min(46vw, 440px) !important;
-  height: auto !important;
-  transform: none !important;
+  width: min(46vw, 440px);
+  height: auto;
+  transform: none;
 }
 :fullscreen .frame-app.view-2:not(.doubling-active) .header_img {
-  top: 0 !important;
-  margin-top: 0 !important;
+  top: 0;
+  margin-top: 0;
 }
 /* Final shared fit contract: these rules must win over per-view breakpoints. */
 .frame-app[data-fluid-fit="true"].view-2:not(.doubling-active)
   .game-main-layout
   > .frame-content {
-  position: absolute !important;
+  position: absolute;
   inset: var(--fluid-content-top, calc(var(--fluid-logo-height) + 10px)) 0
-    var(--fluid-footer-reserve) !important;
-  margin: 0 !important;
-  transform: none !important;
+    var(--fluid-footer-reserve);
+  margin: 0;
+  transform: none;
 }
 
 .frame-app[data-fluid-fit="true"].view-2:not(.doubling-active)
   .main-container__center {
-  transform: scale(var(--fluid-content-scale)) !important;
-  transform-origin: top center !important;
+  transform: scale(var(--fluid-content-scale));
+  transform-origin: top center;
 }
 
 .frame-app[data-layout-ready="false"] .game-main-layout {
@@ -1166,16 +1079,14 @@ button:disabled {
 /* Compact landscape logo must win over the global minimum-logo rule. */
 @media (orientation: landscape) and (max-width: 1280px) {
   .configured-game .frame-app[data-fluid-fit="true"] .header_img {
-    width: var(--fluid-logo-width) !important;
-    min-width: 0 !important;
-    height: var(--fluid-logo-height) !important;
+    width: var(--fluid-logo-width);
+    min-width: 0;
+    height: var(--fluid-logo-height);
   }
 }
 
 @media (orientation: landscape) and (max-width: 1280px) {
   .configured-game .frame-app[data-fluid-fit="true"] .header_img {
-    transform: translateY(
-      calc(-1 * var(--game-header-height, 48px))
-    ) !important;
+    transform: translateY(calc(-1 * var(--game-header-height, 48px)));
   }
 }

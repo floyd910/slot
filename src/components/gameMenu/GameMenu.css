@@ -351,7 +351,7 @@
   color: var(--game-accent-dark, #d6aa38);
   outline: none;
 }
-.game-rules-screen[data-game-id="caravan-spins"],
+.game-rules-screen[data-game-id="kadima-drevnii"],
 .game-rules-screen[data-game-id="egypt"],
 .game-rules-screen[data-game-id="khocha-afandi"] {
   background: linear-gradient(145deg, rgb(176, 144, 83) 0%, rgb(132, 74, 32) 46.63%, rgb(176, 144, 83) 100%);
@@ -359,8 +359,8 @@
 /* Never let a stale game portal block the slot chooser. */
 .app-root[data-playing="false"] ~ .game-menu-layer,
 .app-root[data-playing="false"] ~ .game-rules-screen {
-  display: none !important;
-  pointer-events: none !important;
+  display: none;
+  pointer-events: none;
 }
 .game-rules-screen[data-game-id="egypt"] {
   background: linear-gradient(145deg, rgb(136, 92, 43) 0%, rgb(82, 46, 19) 46.63%, rgb(136, 92, 43) 100%);
