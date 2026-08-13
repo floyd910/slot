@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import {
   SLOT_CHOOSER_BACKGROUND_SRC,
   SLOT_CHOOSER_TILE_ASSETS,
+  SHARED_FIRST_PAINT_ASSETS,
 } from "../config/gameAssets.js";
 import { GAME_DEFINITIONS } from "../config/gameDefinitions.js";
+import { SHARED_VIEW2_ASSETS } from "../config/view2Assets.js";
 import { notifySlotChooserReady } from "../services/frameReadyNotifier.js";
 import {
   preloadGameAssets,
@@ -15,6 +17,10 @@ const SLOT_CHOOSER_REQUIRED_ASSETS = [
   SLOT_CHOOSER_BACKGROUND_SRC,
   ...SLOT_CHOOSER_TILE_ASSETS,
   ...GAME_DEFINITIONS.map((game) => game.assets.chooserTile),
+  // Shared game UI and View 2 artwork: load once before the chooser, never
+  // again when a specific game is selected. Game-specific assets stay scoped.
+  ...SHARED_FIRST_PAINT_ASSETS,
+  ...SHARED_VIEW2_ASSETS,
 ];
 
 
