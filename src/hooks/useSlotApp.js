@@ -172,11 +172,7 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
     chooserReadyNotifiedRef.current = true;
     return notifyAfterPaint();
   }, [chooserAssetsReady]);
-<<<<<<< HEAD
   const openSlot = async (slot) => {
-=======
-const openSlot = async (slot) => {
->>>>>>> 1e669f63d5d3d2f3b27cd7ca954f960969dcc235
     if (slot.status !== "ready" || selectedSlotId || pendingSlotId) return;
 
     setHashRoute(`/games/${encodeURIComponent(slot.id)}`);
