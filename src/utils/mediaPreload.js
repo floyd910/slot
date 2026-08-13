@@ -8,6 +8,7 @@ import {
   DOUBLE_SCENE_ASSETS,
   DEFERRED_GAME_IMAGE_ASSETS,
   FIRST_PAINT_GAME_IMAGE_ASSETS,
+  getGameFirstPaintAssets,
   STARTUP_ASSETS,
 } from "../config/gameAssets.js";
 import {
@@ -416,12 +417,10 @@ const getGameAudioAssets = (game) =>
       : STARTUP_ASSETS.audio.filter((src) => !src.includes("/arabic-"));
 
 const loadDeferredStartupAssets = async (game) => {
-  const criticalUrls = new Set(uniqueUrls(FIRST_PAINT_GAME_IMAGE_ASSETS));
+  const criticalUrls = new Set(uniqueUrls(getGameFirstPaintAssets(game)));
   const deferredImages = uniqueUrls([
-    ...STARTUP_ASSETS.images,
     ...DEFERRED_GAME_IMAGE_ASSETS,
     ...getGameView2Assets(game),
-    ...collectStylesheetImageUrls(),
   ]).filter((src) => !criticalUrls.has(src) && isAssetAllowedForGame(src, game));
 
   await preloadDeferredImages(deferredImages);
@@ -469,7 +468,7 @@ export const preloadGameAssets = (game, onProgress) => {
         game.assets.doubleSceneClosedChest,
         game.assets.doubleSceneWinningChest,
         game.assets.doubleSceneEmptyChest,
-        ...FIRST_PAINT_GAME_IMAGE_ASSETS,
+        ...getGameFirstPaintAssets(game),
         ...getGameView2Assets(game).filter(
           (src) => !src.includes("/assets/img/animations/"),
         ),
