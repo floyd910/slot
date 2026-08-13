@@ -120,7 +120,12 @@ const waitForMountedGamePaint = async (game, onProgress) => {
   const mountedImages = Array.from(
     document.querySelectorAll(".app-selected-game img"),
   );
-  await Promise.all(mountedImages.map(waitForMountedImage));
+  // Grid skins are CSS backgrounds, not img elements. Re-decode the exact
+  // first-screen manifest after the game DOM has mounted before hiding loader.
+  await Promise.all([
+    ...mountedImages.map(waitForMountedImage),
+    preloadRequiredImages(getGameFirstPaintAssets(game)),
+  ]);
   await (document.fonts?.ready ?? Promise.resolve());
   onProgress?.(98);
 
