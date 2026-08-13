@@ -130,7 +130,7 @@ const notifyAfterPaint = () => {
   return () => window.cancelAnimationFrame(firstFrame);
 };
 
-export function useSlotApp({ loadSelectedSlotGame }) {
+export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
   const [chooserAssetsReady, setChooserAssetsReady] = useState(false);
   const [chooserLoadProgress, setChooserLoadProgress] = useState(0);
   const [gameLoadProgress, setGameLoadProgress] = useState(0);
@@ -146,17 +146,16 @@ export function useSlotApp({ loadSelectedSlotGame }) {
     Promise.all([
       // Decode every chooser card/background image while the initial loader is up.
       preloadRequiredImages(SLOT_CHOOSER_REQUIRED_ASSETS, setChooserLoadProgress),
+      // Load the chooser JSX and its CSS before its first render.
+      loadSlotChooser(),
       // Cache the lazy game screen module before any card can be selected.
       loadSelectedSlotGame(),
     ])
       .then(async () => {
-        // The CSS background and mounted <img> nodes must paint once before
-        // the overlay disappears; detached Image decoding alone is not enough.
+        // The lazy component stylesheet is now installed and every chooser
+        // image/background has decoded. Give the browser a stable paint frame
+        // before allowing the chooser to mount.
         await waitForAnimationFrame();
-        const chooserImages = Array.from(
-          document.querySelectorAll(".app-slot-chooser img"),
-        );
-        await Promise.all(chooserImages.map(waitForMountedImage));
         await waitForAnimationFrame();
         if (!active) return;
         setChooserAssetsReady(true);
@@ -173,38 +172,6 @@ export function useSlotApp({ loadSelectedSlotGame }) {
     chooserReadyNotifiedRef.current = true;
     return notifyAfterPaint();
   }, [chooserAssetsReady]);
-  useEffect(() => {
-    if (!chooserAssetsReady) return undefined;
-
-    let cancelled = false;
-    const warmUniqueGameAssets = async () => {
-      const sharedGame = GAME_DEFINITIONS.find(
-        (game) => !["kadima-drevnii", "khocha-afandi"].includes(game.id),
-      );
-      const game5 = GAME_DEFINITIONS.find((game) => game.id === "kadima-drevnii");
-      const game6 = GAME_DEFINITIONS.find((game) => game.id === "khocha-afandi");
-      for (const game of [sharedGame, game5, game6].filter(Boolean)) {
-        if (cancelled) return;
-        try {
-          await preloadGameAssets(game);
-        } catch (assetError) {
-          console.error(assetError);
-        }
-      }
-    };
-
-    const start = () => void warmUniqueGameAssets();
-    const idleId = "requestIdleCallback" in window
-      ? window.requestIdleCallback(start, { timeout: 1200 })
-      : window.setTimeout(start, 0);
-
-    return () => {
-      cancelled = true;
-      if ("cancelIdleCallback" in window) window.cancelIdleCallback(idleId);
-      else window.clearTimeout(idleId);
-    };
-  }, [chooserAssetsReady]);
-
   const openSlot = async (slot) => {
     if (slot.status !== "ready" || selectedSlotId || pendingSlotId) return;
 
@@ -216,22 +183,21 @@ export function useSlotApp({ loadSelectedSlotGame }) {
     setPendingSlotId(slot.id);
 
     try {
-      // Block only on code and assets required by the first game paint.
-      await loadSelectedSlotGame();
+      // Keep the chooser background loader visible while the selected game's
+      // code and first screen assets load together.
+      await Promise.all([
+        loadSelectedSlotGame(),
+        preloadGameAssets(slot, (progress) =>
+          setGameLoadProgress(Math.floor(progress * 0.9)),
+        ),
+      ]);
       if (openRequestRef.current !== requestId) return;
 
-      // Decode the loader background before replacing the chooser. This prevents
-      // the browser from flashing the app root while the cover image arrives.
-      await preloadRequiredImages([slot.assets.cover]);
-      if (openRequestRef.current !== requestId) return;
-
-      // Replace the chooser with the game shell; it owns the only visible loader
-      // while the rest of the assets and session bootstrap.
+      setGameLoadProgress(92);
       setSelectedSlotId(slot.id);
-      setGameLoadProgress(10);
-      await preloadGameAssets(slot, (progress) =>
-        setGameLoadProgress(10 + Math.floor(progress * 0.7)),
-      );
+      // Main-screen assets are ready; begin low-priority loading for optional
+      // screens as soon as the game mounts.
+      scheduleDeferredStartupAssets(slot);
     } catch (assetError) {
       console.error(assetError);
       if (openRequestRef.current === requestId) setPendingSlotId(null);
@@ -244,7 +210,6 @@ export function useSlotApp({ loadSelectedSlotGame }) {
 
     if (openRequestRef.current !== requestId) return;
     setPendingSlotId(null);
-    scheduleDeferredStartupAssets(slot);
   };
 
   const closeSlot = () => {

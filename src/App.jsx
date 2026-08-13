@@ -1,13 +1,15 @@
 import { Suspense, lazy } from "react";
-import SlotChooser from "./components/slotChooser/SlotChooser.jsx";
 import StartupLoader from "./components/startupLoader/StartupLoader.jsx";
+import { SLOT_CHOOSER_BACKGROUND_SRC } from "./config/gameAssets.js";
 import { useSlotApp } from "./hooks/useSlotApp.js";
 
+const loadSlotChooser = () => import("./components/slotChooser/SlotChooser.jsx");
+const SlotChooser = lazy(loadSlotChooser);
 const loadSelectedSlotGame = () => import("./components/selectedSlotGame/SelectedSlotGame.jsx");
 const SelectedSlotGame = lazy(loadSelectedSlotGame);
 
 export default function App() {
-  const slotApp = useSlotApp({ loadSelectedSlotGame });
+  const slotApp = useSlotApp({ loadSelectedSlotGame, loadSlotChooser });
   const query = new URLSearchParams(window.location.search);
   const isDirectGameRoute =
     /^#\/games\/[^/?#]+$/.test(window.location.hash) ||
@@ -17,26 +19,32 @@ export default function App() {
 
   const showChooserLoader =
     !slotApp.chooserAssetsReady && !isDirectGameRoute && !slotApp.selectedSlotId;
+  const showGameLoader = Boolean(
+    slotApp.pendingSlotId,
+  );
 
   return (
     <div className="app-root" data-playing={slotApp.isPlaying ? "true" : "false"}>
-      {(!slotApp.selectedSlotId || slotApp.pendingSlotId) && (
+      {slotApp.chooserAssetsReady && (!slotApp.selectedSlotId || slotApp.pendingSlotId) && (
         <div className="app-slot-chooser">
-          <SlotChooser
+          <Suspense fallback={null}>
+            <SlotChooser
             interactive={
               slotApp.slotChooserInteractive && slotApp.chooserAssetsReady
             }
-            onSelectSlot={slotApp.openSlot}
-          />
+              onSelectSlot={slotApp.openSlot}
+            />
+          </Suspense>
         </div>
       )}
 
-      {showChooserLoader && (
+      {(showChooserLoader || showGameLoader) && (
         <StartupLoader
           ready={false}
           leaving={false}
-          variant="brand"
-          progress={slotApp.chooserLoadProgress}
+          variant={showChooserLoader ? "brand" : "default"}
+          backgroundSrc={showGameLoader ? SLOT_CHOOSER_BACKGROUND_SRC : undefined}
+          progress={showChooserLoader ? slotApp.chooserLoadProgress : slotApp.gameLoadProgress}
         />
       )}
 

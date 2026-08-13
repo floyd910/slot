@@ -108,6 +108,10 @@ button {
   background: var(--bg);
 }
 
+.app-root > .startup-loader {
+  z-index: 10000;
+}
+
 .app-slot-chooser,
 .app-selected-game {
   position: absolute;

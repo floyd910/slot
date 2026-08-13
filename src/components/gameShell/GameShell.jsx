@@ -6,6 +6,7 @@ import Paytable from "../paytable/Paytable.jsx";
 import RuntimeState from "../runtimeState/RuntimeState.jsx";
 import StartupLoader from "../startupLoader/StartupLoader.jsx";
 import View2Paytable from "../view2Paytable/View2Paytable.jsx";
+import { SLOT_CHOOSER_BACKGROUND_SRC } from "../../config/gameAssets.js";
 import { useLanguage } from "../../i18n.jsx";
 import { buildStandardPaytableViewModel } from "../../viewModels/paytableViewModel.js";
 import FreeSpinsPrompt from "../freeSpinsPrompt/FreeSpinsPrompt.jsx";
@@ -223,7 +224,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
             leaving={
               state.startupLoaderLeaving && layoutReady && backgroundPaintReady
             }
-            backgroundSrc={game.assets.cover}
+            backgroundSrc={SLOT_CHOOSER_BACKGROUND_SRC}
             onExited={() => setLoaderExitComplete(true)}
           />
         )}
