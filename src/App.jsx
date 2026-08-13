@@ -1,6 +1,10 @@
 import { Suspense, lazy } from "react";
 import StartupLoader from "./components/startupLoader/StartupLoader.jsx";
+<<<<<<< HEAD
 import { SLOT_CHOOSER_BACKGROUND_SRC } from "./config/gameAssets.js";
+=======
+import { GAME3_COVER_SRC } from "./config/gameAssets.js";
+>>>>>>> 1e669f63d5d3d2f3b27cd7ca954f960969dcc235
 import { useSlotApp } from "./hooks/useSlotApp.js";
 
 const loadSlotChooser = () => import("./components/slotChooser/SlotChooser.jsx");
@@ -19,8 +23,13 @@ export default function App() {
 
   const showChooserLoader =
     !slotApp.chooserAssetsReady && !isDirectGameRoute && !slotApp.selectedSlotId;
+<<<<<<< HEAD
   const showGameLoader = Boolean(
     slotApp.pendingSlotId,
+=======
+  const showSelectionLoader = Boolean(
+    slotApp.pendingSlotId && !slotApp.selectedSlotId,
+>>>>>>> 1e669f63d5d3d2f3b27cd7ca954f960969dcc235
   );
 
   return (
@@ -38,13 +47,22 @@ export default function App() {
         </div>
       )}
 
+<<<<<<< HEAD
       {(showChooserLoader || showGameLoader) && (
+=======
+      {(showChooserLoader || showSelectionLoader) && (
+>>>>>>> 1e669f63d5d3d2f3b27cd7ca954f960969dcc235
         <StartupLoader
           ready={false}
           leaving={false}
           variant={showChooserLoader ? "brand" : "default"}
+<<<<<<< HEAD
           backgroundSrc={showGameLoader ? SLOT_CHOOSER_BACKGROUND_SRC : undefined}
           progress={showChooserLoader ? slotApp.chooserLoadProgress : slotApp.gameLoadProgress}
+=======
+          backgroundSrc={showSelectionLoader ? GAME3_COVER_SRC : undefined}
+          progress={showChooserLoader ? slotApp.chooserLoadProgress : undefined}
+>>>>>>> 1e669f63d5d3d2f3b27cd7ca954f960969dcc235
         />
       )}
 

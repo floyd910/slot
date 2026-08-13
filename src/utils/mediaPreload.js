@@ -419,10 +419,8 @@ const getGameAudioAssets = (game) =>
 const loadDeferredStartupAssets = async (game) => {
   const criticalUrls = new Set(uniqueUrls(getGameFirstPaintAssets(game)));
   const deferredImages = uniqueUrls([
-    ...STARTUP_ASSETS.images,
     ...DEFERRED_GAME_IMAGE_ASSETS,
     ...getGameView2Assets(game),
-    ...collectStylesheetImageUrls(),
   ]).filter((src) => !criticalUrls.has(src) && isAssetAllowedForGame(src, game));
 
   await preloadDeferredImages(deferredImages);
