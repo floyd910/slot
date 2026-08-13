@@ -20,7 +20,7 @@ export default function App() {
 
   return (
     <div className="app-root" data-playing={slotApp.isPlaying ? "true" : "false"}>
-      {(!slotApp.selectedSlotId || slotApp.pendingSlotId) && (
+      {slotApp.chooserAssetsReady && (!slotApp.selectedSlotId || slotApp.pendingSlotId) && (
         <div className="app-slot-chooser">
           <SlotChooser
             interactive={
