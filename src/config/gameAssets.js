@@ -159,9 +159,22 @@ const GAME2_VIEW1_ASSETS = [
   GAME2_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC,
 ];
 
+const GAME3_MAIN_SCREEN_ASSETS = [
+  GAME3_LOGO_ORNAMENT_SRC,
+  GAME_AREA_BACKGROUND_SRC,
+  GAME_AREA_FOOTER_SRC,
+  GAME_HEADER_SRC,
+  "/img/eldorado-winnings-table-bg.webp",
+  "/img/eldorado-winnings-title-bg.webp",
+];
+
 const GAME_FIRST_PAINT_ASSETS_BY_ID = Object.freeze({
   "marvorid-djemchug": [...SHARED_FIRST_PAINT_ASSETS, ...GAME2_VIEW1_ASSETS],
-  "khiradmandi-makor": [...SHARED_FIRST_PAINT_ASSETS, ...GAME3_SHELL_ASSETS],
+  "khiradmandi-makor": [
+    ...SHARED_FIRST_PAINT_ASSETS,
+    ...GAME3_SHELL_ASSETS,
+    ...GAME3_MAIN_SCREEN_ASSETS,
+  ],
   egypt: [
     ...SHARED_FIRST_PAINT_ASSETS,
     GAME4_VIEW1_CELL_BACKGROUND_SRC,
@@ -186,15 +199,6 @@ export const getGameFirstPaintAssets = (game) =>
   ];
 
 export const FIRST_PAINT_GAME_IMAGE_ASSETS = SHARED_FIRST_PAINT_ASSETS;
-
-export const MAIN_SCREEN_IMAGE_ASSETS = [
-  GAME3_LOGO_ORNAMENT_SRC,
-  GAME_AREA_BACKGROUND_SRC,
-  GAME_AREA_FOOTER_SRC,
-  GAME_HEADER_SRC,
-  "/img/eldorado-winnings-table-bg.webp",
-  "/img/eldorado-winnings-title-bg.webp",
-];
 
 export const DEFERRED_GAME_IMAGE_ASSETS = [
   GAME3_LOGO_ORNAMENT_SRC,
