@@ -1,7 +1,7 @@
 import { Suspense, lazy } from "react";
 import SlotChooser from "./components/slotChooser/SlotChooser.jsx";
 import StartupLoader from "./components/startupLoader/StartupLoader.jsx";
-import { GAME_DEFINITIONS } from "./config/gameDefinitions.js";
+import { GAME3_COVER_SRC } from "./config/gameAssets.js";
 import { useSlotApp } from "./hooks/useSlotApp.js";
 
 const loadSelectedSlotGame = () => import("./components/selectedSlotGame/SelectedSlotGame.jsx");
@@ -20,9 +20,6 @@ export default function App() {
     !slotApp.chooserAssetsReady && !isDirectGameRoute && !slotApp.selectedSlotId;
   const showSelectionLoader = Boolean(
     slotApp.pendingSlotId && !slotApp.selectedSlotId,
-  );
-  const pendingSlot = GAME_DEFINITIONS.find(
-    (game) => game.id === slotApp.pendingSlotId,
   );
 
   return (
@@ -43,7 +40,7 @@ export default function App() {
           ready={false}
           leaving={false}
           variant={showChooserLoader ? "brand" : "default"}
-          backgroundSrc={showSelectionLoader ? pendingSlot?.assets.cover : undefined}
+          backgroundSrc={showSelectionLoader ? GAME3_COVER_SRC : undefined}
           progress={showChooserLoader ? slotApp.chooserLoadProgress : undefined}
         />
       )}

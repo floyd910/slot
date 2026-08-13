@@ -187,6 +187,15 @@ export const getGameFirstPaintAssets = (game) =>
 
 export const FIRST_PAINT_GAME_IMAGE_ASSETS = SHARED_FIRST_PAINT_ASSETS;
 
+export const MAIN_SCREEN_IMAGE_ASSETS = [
+  GAME3_LOGO_ORNAMENT_SRC,
+  GAME_AREA_BACKGROUND_SRC,
+  GAME_AREA_FOOTER_SRC,
+  GAME_HEADER_SRC,
+  "/img/eldorado-winnings-table-bg.webp",
+  "/img/eldorado-winnings-title-bg.webp",
+];
+
 export const DEFERRED_GAME_IMAGE_ASSETS = [
   GAME3_LOGO_ORNAMENT_SRC,
   GAME_AREA_BACKGROUND_SRC,

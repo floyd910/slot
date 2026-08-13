@@ -9,6 +9,7 @@ import {
   DEFERRED_GAME_IMAGE_ASSETS,
   FIRST_PAINT_GAME_IMAGE_ASSETS,
   getGameFirstPaintAssets,
+  MAIN_SCREEN_IMAGE_ASSETS,
   STARTUP_ASSETS,
 } from "../config/gameAssets.js";
 import {
@@ -469,6 +470,7 @@ export const preloadGameAssets = (game, onProgress) => {
         game.assets.doubleSceneWinningChest,
         game.assets.doubleSceneEmptyChest,
         ...getGameFirstPaintAssets(game),
+        ...MAIN_SCREEN_IMAGE_ASSETS,
         ...getGameView2Assets(game).filter(
           (src) => !src.includes("/assets/img/animations/"),
         ),
