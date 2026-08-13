@@ -1,6 +1,6 @@
 export const SLOT_CHOOSER_BACKGROUND_SRC = "/assets/img/chooser/background.avif";
 export const GAME4_COVER_SRC = "/assets/img/chooser/game4-background.avif";
-export const GAME4_LOGO_SRC = "/assets/img/game4-header.webp";
+export const GAME4_LOGO_SRC = "/assets/img/game4-header-optimized.webp";
 export const GAME4_CHOOSER_TILE_SRC = "/assets/img/chooser/game4.webp";
 export const GAME4_VIEW1_CELL_BACKGROUND_SRC = "/assets/img/game4-view1-cell-background.webp";
 export const GAME4_VIEW1_HIGHLIGHT_BACKGROUND_SRC = "/assets/img/game4-view1-highlight-background.webp";
