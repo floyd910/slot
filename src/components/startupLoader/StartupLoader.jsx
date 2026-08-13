@@ -8,8 +8,14 @@ export default function StartupLoader({ ready, leaving, variant = "default", pro
 
   useEffect(() => {
     if (hasMeasuredProgress) {
-      setProgress(Math.max(0, Math.min(100, Math.round(measuredProgress))));
-      return undefined;
+      const measured = Math.max(0, Math.min(100, Math.round(measuredProgress)));
+      setProgress((current) => Math.max(current, measured));
+
+      if (measured > 0) return undefined;
+      const interval = window.setInterval(() => {
+        setProgress((current) => Math.min(12, current + 1));
+      }, 120);
+      return () => window.clearInterval(interval);
     }
 
     if (ready) {
@@ -45,6 +51,7 @@ export default function StartupLoader({ ready, leaving, variant = "default", pro
   return (
     <div
       className={`startup-loader startup-loader--${variant}${ready ? " --ready" : ""}${leaving ? " --leaving" : ""}`}
+      style={backgroundSrc ? { "--startup-loader-background": `url("${backgroundSrc}")` } : undefined}
       role="status"
       aria-live="polite"
       aria-label="Loading game"

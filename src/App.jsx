@@ -1,6 +1,7 @@
 import { Suspense, lazy } from "react";
 import SlotChooser from "./components/slotChooser/SlotChooser.jsx";
 import StartupLoader from "./components/startupLoader/StartupLoader.jsx";
+import { GAME_DEFINITIONS } from "./config/gameDefinitions.js";
 import { useSlotApp } from "./hooks/useSlotApp.js";
 
 const loadSelectedSlotGame = () => import("./components/selectedSlotGame/SelectedSlotGame.jsx");
@@ -17,10 +18,16 @@ export default function App() {
 
   const showChooserLoader =
     !slotApp.chooserAssetsReady && !isDirectGameRoute && !slotApp.selectedSlotId;
+  const showSelectionLoader = Boolean(
+    slotApp.pendingSlotId && !slotApp.selectedSlotId,
+  );
+  const pendingSlot = GAME_DEFINITIONS.find(
+    (game) => game.id === slotApp.pendingSlotId,
+  );
 
   return (
     <div className="app-root" data-playing={slotApp.isPlaying ? "true" : "false"}>
-      {slotApp.chooserAssetsReady && (!slotApp.selectedSlotId || slotApp.pendingSlotId) && (
+      {(!slotApp.selectedSlotId || slotApp.pendingSlotId) && (
         <div className="app-slot-chooser">
           <SlotChooser
             interactive={
@@ -31,12 +38,13 @@ export default function App() {
         </div>
       )}
 
-      {showChooserLoader && (
+      {(showChooserLoader || showSelectionLoader) && (
         <StartupLoader
           ready={false}
           leaving={false}
-          variant="brand"
-          progress={slotApp.chooserLoadProgress}
+          variant={showChooserLoader ? "brand" : "default"}
+          backgroundSrc={showSelectionLoader ? pendingSlot?.assets.cover : undefined}
+          progress={showChooserLoader ? slotApp.chooserLoadProgress : undefined}
         />
       )}
 

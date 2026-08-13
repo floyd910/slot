@@ -173,39 +173,7 @@ export function useSlotApp({ loadSelectedSlotGame }) {
     chooserReadyNotifiedRef.current = true;
     return notifyAfterPaint();
   }, [chooserAssetsReady]);
-  useEffect(() => {
-    if (!chooserAssetsReady) return undefined;
-
-    let cancelled = false;
-    const warmUniqueGameAssets = async () => {
-      const sharedGame = GAME_DEFINITIONS.find(
-        (game) => !["kadima-drevnii", "khocha-afandi"].includes(game.id),
-      );
-      const game5 = GAME_DEFINITIONS.find((game) => game.id === "kadima-drevnii");
-      const game6 = GAME_DEFINITIONS.find((game) => game.id === "khocha-afandi");
-      for (const game of [sharedGame, game5, game6].filter(Boolean)) {
-        if (cancelled) return;
-        try {
-          await preloadGameAssets(game);
-        } catch (assetError) {
-          console.error(assetError);
-        }
-      }
-    };
-
-    const start = () => void warmUniqueGameAssets();
-    const idleId = "requestIdleCallback" in window
-      ? window.requestIdleCallback(start, { timeout: 1200 })
-      : window.setTimeout(start, 0);
-
-    return () => {
-      cancelled = true;
-      if ("cancelIdleCallback" in window) window.cancelIdleCallback(idleId);
-      else window.clearTimeout(idleId);
-    };
-  }, [chooserAssetsReady]);
-
-  const openSlot = async (slot) => {
+const openSlot = async (slot) => {
     if (slot.status !== "ready" || selectedSlotId || pendingSlotId) return;
 
     setHashRoute(`/games/${encodeURIComponent(slot.id)}`);
