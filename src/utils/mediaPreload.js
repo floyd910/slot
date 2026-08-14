@@ -218,21 +218,25 @@ export const preloadImage = (
 export const preloadImages = (sources, options = {}) =>
   Promise.all(uniqueUrls(sources).map((src) => preloadImage(src, options)));
 
-export const preloadRequiredImages = async (sources, onProgress) => {
+export const preloadRequiredImages = async (
+  sources,
+  onProgress,
+  { timeoutMs = 30000 } = {},
+) => {
   const urls = uniqueUrls(sources);
   const total = urls.length;
   let completed = 0;
   onProgress?.(0);
 
-  // Image.decode() performs the actual fetch and decode. Avoid a separate
-  // response-byte fetch, which doubled startup traffic on production hosts.
+  // Required means decoded before a screen is shown. A longer timeout prevents
+  // slow production requests from being marked ready before their pixels exist.
   await Promise.all(
     urls.map(async (src) => {
       await preloadImage(src, {
         decode: true,
         fetchPriority: "high",
         rejectOnError: false,
-        timeoutMs: IMAGE_PRELOAD_TIMEOUT_MS,
+        timeoutMs,
       });
       completed += 1;
       onProgress?.(Math.floor((completed / total) * 100));
@@ -395,7 +399,7 @@ const isAssetAllowedForGame = (src, game) => {
   return !src.includes("/game4-") && !src.includes("/game5-") && !src.includes("/game6-") && !src.includes("/animations/game4/") && !src.includes("/animations/game6/");
 };
 
-const getGameView2Assets = (game) => {
+export const getGameView2Assets = (game) => {
   if (game?.id === "marvorid-djemchug") {
     return Object.values(game.assets?.view2Symbols ?? {})
       .flatMap(({ background, staticImage, winFrames = [] }) => [
@@ -411,6 +415,15 @@ const getGameView2Assets = (game) => {
   if (game?.id === "kadima-drevnii") return GAME5_VIEW2_ASSETS;
   return GAME3_VIEW2_ASSETS;
 };
+
+// Complete main-screen contract: all main-screen artwork is decoded before
+// the game is mounted. View 2 remains deferred until after main-screen mount.
+export const getRequiredGameMainScreenAssets = (game) =>
+  uniqueUrls([
+    game?.assets?.cover,
+    game?.assets?.logo,
+    ...getGameFirstPaintAssets(game),
+  ]).filter((src) => isAssetAllowedForGame(src, game));
 
 const getGameAudioAssets = (game) =>
   game?.id === "khiradmandi-makor"
@@ -469,15 +482,7 @@ export const preloadGameAssets = (game, onProgress) => {
 
   const promise = Promise.all([
     preloadRequiredImages(
-      [
-        game.assets.cover,
-        game.assets.logo,
-        game.assets.doubleSceneBackground,
-        game.assets.doubleSceneClosedChest,
-        game.assets.doubleSceneWinningChest,
-        game.assets.doubleSceneEmptyChest,
-        ...getGameFirstPaintAssets(game),
-      ].filter(Boolean).filter((src) => isAssetAllowedForGame(src, game)),
+      getRequiredGameMainScreenAssets(game),
       onProgress,
     ),
     fontReady(),

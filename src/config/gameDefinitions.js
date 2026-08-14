@@ -50,6 +50,7 @@ import {
   GAME5_VIEW2_SYMBOL_11_STATIC_SRC,
   GAME5_VIEW2_SYMBOL_9_STATIC_SRC,
   GAME6_COVER_SRC,
+  GAME6_LOGO_SRC,
   GAME6_VIEW2_CELL_BACKGROUND_ASSETS,
   GAME6_VIEW2_SYMBOL_0_STATIC_SRC,
   GAME6_VIEW2_SYMBOL_7_STATIC_SRC,
@@ -126,7 +127,7 @@ const game6View2Symbol = (symbol, staticImage) =>
 const GAME6_ASSETS = Object.freeze({
   ...sharedPlaceholderAssets,
   cover: GAME6_COVER_SRC,
-  logo: "/assets/img/game6-header.webp",
+  logo: GAME6_LOGO_SRC,
   chooserTile: "/assets/img/chooser/game6.webp",
   view2Symbols: Object.freeze({
     1: Object.freeze({ background: GAME6_VIEW2_CELL_BACKGROUND_ASSETS[0] }),

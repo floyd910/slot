@@ -56,86 +56,95 @@
 }
 
 .configured-game[data-game-id="kadima-drevnii"] .view2-info-paytable {
-  background: rgba(0, 0, 0, 0.54);
+  background: rgba(0, 0, 0, 0.44);
 }
 
 .configured-game[data-game-id="marvorid-djemchug"] .view2-info-paytable {
   background: rgba(0, 0, 0, 0.34);
 }
 
-.configured-game[data-game-id="khocha-afandi"] .view2-info-paytable {
+.configured-game[data-game-id="khiradmandi-makor"] .view2-info-paytable {
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(100, 106, 225, 0.1) 0%,
+      rgba(22, 17, 170, 0.1) 46.63%,
+      rgba(106, 162, 230, 0.1) 100%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(29, 29, 29, 0.64) 0%,
+      rgba(25, 25, 25, 0.64) 46.63%,
+      rgba(60, 60, 60, 0.64) 100%
+    ),
+    linear-gradient(0deg, #000 0%, #000 100%),
+    linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0.1) 100%
+    ),
+    rgba(13, 13, 13, 0.6);
+}
+
+.configured-game[data-game-id="marvorid-djemchug"] .view2-info-card,
+.configured-game[data-game-id="marvorid-djemchug"] .view2-info-main-card,
+.configured-game[data-game-id="marvorid-djemchug"] .view2-coeff-card,
+.configured-game[data-game-id="marvorid-djemchug"] .view2-info-coeff-card {
+  border-radius: 12.377px;
+  background:
+    linear-gradient(
+      320deg,
+      rgba(3, 0, 44, 0.64) 2.87%,
+      rgba(0, 16, 97, 0.64) 46.83%,
+      rgba(4, 0, 44, 0.64) 97.13%
+    ),
+    rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 0 10.314px 1.031px rgba(255, 255, 255, 0.1) inset,
+    0 4.126px 6.188px 0 rgba(0, 0, 0, 0.1);
+}
+
+.configured-game[data-game-id="kadima-drevnii"] .view2-info-card,
+.configured-game[data-game-id="kadima-drevnii"] .view2-info-main-card,
+.configured-game[data-game-id="kadima-drevnii"] .view2-coeff-card,
+.configured-game[data-game-id="kadima-drevnii"] .view2-info-coeff-card {
+  background:
+    linear-gradient(
+      320deg,
+      rgba(44, 28, 0, 0.64) 2.87%,
+      rgba(0, 0, 0, 0.64) 46.83%,
+      rgba(44, 28, 0, 0.64) 97.13%
+    ),
+    rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 0 10.314px 1.031px rgba(255, 255, 255, 0.1) inset,
+    0 4.126px 6.188px 0 rgba(0, 0, 0, 0.1);
+}
+
+.configured-game[data-game-id="khiradmandi-makor"] .view2-info-card,
+.configured-game[data-game-id="khiradmandi-makor"] .view2-info-main-card,
+.configured-game[data-game-id="khiradmandi-makor"] .view2-coeff-card,
+.configured-game[data-game-id="khiradmandi-makor"] .view2-info-coeff-card {
+  border-radius: 12.377px;
+  background:
+    linear-gradient(
+      320deg,
+      rgba(20, 0, 5, 0.64) 2.87%,
+      rgba(87, 2, 112, 0.64) 46.83%,
+      rgba(20, 0, 5, 0.64) 97.13%
+    ),
+    rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 0 10.314px 1.031px rgba(255, 255, 255, 0.1) inset,
+    0 4.126px 6.188px 0 rgba(0, 0, 0, 0.1);
+}
+
+.view2-info-paytable {
   background: rgba(0, 0, 0, 0.64);
 }
 
-.configured-game[data-game-id="khocha-afandi"]
-  .view2-info-paytable
-  .top-symbols
-  .info-symbol
-  img {
-  border: 2px solid white;
-}
-
-.configured-game[data-game-id="khocha-afandi"]
-  .view2-info-paytable
-  .view2-info-coeff-card
-  .info-symbol
-  img {
-  border: 2px solid white;
-}
-
-.configured-game[data-game-id="khocha-afandi"]
-  .view2-info-paytable
-  .view2-info-main-card
-  .info-symbol
-  img {
-  border: 2px solid white;
-}
-
-.configured-game[data-game-id="kadima-drevnii"]
-  .view2-info-paytable
-  .top-symbols
-  .info-symbol
-  img {
-  border: 2px solid white;
-}
-
-.configured-game[data-game-id="kadima-drevnii"]
-  .view2-info-paytable
-  .view2-info-coeff-card
-  .info-symbol
-  img {
-  border: 2px solid white;
-}
-
-.configured-game[data-game-id="kadima-drevnii"]
-  .view2-info-paytable
-  .view2-info-main-card
-  .info-symbol
-  img {
-  border: 2px solid white;
-}
-
-.configured-game[data-game-id="marvorid-djemchug"]
-  .view2-info-paytable
-  .top-symbols
-  .info-symbol
-  img {
-  border: 2px solid white;
-}
-
-.configured-game[data-game-id="marvorid-djemchug"]
-  .view2-info-paytable
-  .view2-info-coeff-card
-  .info-symbol
-  img {
-  border: 2px solid white;
-}
-
-.configured-game[data-game-id="marvorid-djemchug"]
-  .view2-info-paytable
-  .view2-info-main-card
-  .info-symbol
-  img {
+.view2-info-paytable .info-symbol img {
   border: 2px solid white;
 }
 
@@ -148,14 +157,14 @@
 }
 
 .configured-game[data-game-id="egypt"] .view2-info-card {
-  background: url("/assets/img/game4-view2-info-small-box-background.webp")
+  background: url("/assets/img/game4-view2-info-small-box-background-optimized.webp")
     lightgray 0 0 / 100% 100% no-repeat;
 }
 
 .configured-game[data-game-id="egypt"] .view2-info-main-card,
 .configured-game[data-game-id="egypt"] .view2-info-coeff-card {
-  background: url("/assets/img/game4-view2-info-background.webp") lightgray 0 0 /
-    100% 100% no-repeat;
+  background: url("/assets/img/game4-view2-info-background-optimized.webp")
+    lightgray 0 0 / 100% 100% no-repeat;
 }
 
 .configured-game[data-game-id="egypt"] .view2-info-card::before,
@@ -222,8 +231,19 @@
 
 .info-bottom {
   margin-top: 20px;
+  align-items: center;
 }
 
+.info-bottom-left,
+.info-bottom-right {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.info-bottom-right {
+  gap: 15px;
+}
 .info-top-left,
 .info-top-right {
   width: 28.5%;
@@ -387,8 +407,28 @@
 .view2-info-coeff-card__payout {
   width: 80%;
   padding: 0;
-  border: 2.063px solid #000;
+  border: 2.063px solid white;
   border-radius: 12.377px;
+}
+
+.view2-info-coeff-card__payout .view2-info-payout-row:last-child {
+  border-top: 2.063px solid white;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.configured-game[data-game-id="khiradmandi-makor"]
+  .view2-info-coeff-card__payout {
+  width: 80%;
+  padding: 0;
+  border: 2.063px solid #e1bf64;
+  border-radius: 12.377px;
+}
+
+.configured-game[data-game-id="khiradmandi-makor"]
+  .view2-info-coeff-card__payout
+  .view2-info-payout-row:last-child {
+  border-top: 2.063px solid #e1bf64;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .view2-info-coeff-card__payout .view2-info-payout-row {
@@ -411,18 +451,18 @@
 }
 
 .view2-info-coeff-card__payout .view2-info-payout-row:last-child {
-  border-top: 2.063px solid #000;
+  border-top: 2.063px solid white;
   background: rgba(255, 255, 255, 0.1);
 }
 
 .view2-info-coeff-card__arrow {
   z-index: 5;
   display: block;
-  width: 122px;
-  max-width: 100%;
   height: auto;
   margin: 24px auto;
-  object-fit: contain;
+  stroke-width: 1.031px;
+  stroke: #e1bf64;
+  fill: linear-gradient(145deg, #e1bf64 0%, #aa7c11 46.63%, #e6c36a 100%);
 }
 
 .info-bottom-left,
@@ -669,31 +709,15 @@
   height: 320px;
 }
 
-@media (max-width: 1280px) {
-  .view2-info-card.--left-top,
-  .view2-info-card.--right-top {
-    width: calc(80% + 40px);
-  }
-
-  .info-bottom-left .view2-info-card,
-  .info-bottom-right .view2-info-card {
-    width: calc(70% + 40px);
-  }
-
-  .info-bottom-right {
-    transform: translateX(-20px);
-  }
-
-  .view2-info-coeff-card__arrow {
-    display: none;
-  }
-}
-
 @media (max-width: 1100px) {
   .left-top .view2-info-symbol.symbol-5,
   .left-top .view2-info-symbol.symbol-6,
   .left-bottom .view2-info-symbol.symbol-1 {
     transform: translateX(-45px);
+  }
+
+  .view2-info-symbol.symbol-2 .view2-info-symbol__item {
+    transform: translateY(0px);
   }
 
   .left-bottom .view2-info-symbol.symbol-1 {
@@ -1030,7 +1054,7 @@
   display: none;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1100px) {
   .view2-info-inline {
     overflow-x: hidden;
     overflow-y: auto;
@@ -1301,7 +1325,6 @@
     > .view2-info-mobile__box,
   .view2-info-mobile__row:has(.symbol-4):has(.symbol-3):has(.symbol-2)
     > .view2-info-mobile__box {
-    flex: 0 1 calc(100% - 104px);
     width: calc(100% - 104px);
     max-width: calc(100% - 104px);
   }
@@ -1349,10 +1372,6 @@
 }
 
 /* handmade */
-
-.configured-game[data-game-id="egypt"] .view2-info-coeff-card__arrow {
-  display: none;
-}
 
 .configured-game[data-game-id="egypt"] .view2-info-main-card {
   padding: 40px 40px 35px 50px;

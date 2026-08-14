@@ -193,12 +193,33 @@ export default function View2Paytable({
                 />
               </div>
             </div>
-            <img
+            <svg
               className="view2-info-coeff-card__arrow"
-              src="/assets/img/view2-coeff-arrow.png"
-              alt=""
-              aria-hidden="true"
-            />
+              xmlns="http://www.w3.org/2000/svg"
+              width="62"
+              height="16"
+              viewBox="0 0 62 16"
+              fill="none"
+            >
+              <path
+                d="M30.8154 15.4707L6.23876e-05 3.99717e-05L61.6308 4.53596e-05L30.8154 15.4707Z"
+                fill="url(#paint0_linear_31_18004)"
+              />
+              <defs>
+                <linearGradient
+                  id="paint0_linear_31_18004"
+                  x1="74.3812"
+                  y1="13.8734"
+                  x2="67.6738"
+                  y2="-19.6506"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stop-color="#E1BF64" />
+                  <stop offset="0.466346" stop-color="#AA7C11" />
+                  <stop offset="1" stop-color="#E6C36A" />
+                </linearGradient>
+              </defs>
+            </svg>
             <p className="view2-info-main-card__text">
               {copy.coefficient.map((line) => (
                 <span key={line}>{line}</span>

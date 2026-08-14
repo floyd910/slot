@@ -6,9 +6,9 @@ import {
   SHARED_FIRST_PAINT_ASSETS,
 } from "../config/gameAssets.js";
 import { GAME_DEFINITIONS } from "../config/gameDefinitions.js";
-import { SHARED_VIEW2_ASSETS } from "../config/view2Assets.js";
 import { notifySlotChooserReady } from "../services/frameReadyNotifier.js";
 import {
+  getRequiredGameMainScreenAssets,
   preloadGameAssets,
   preloadRequiredImages,
   scheduleDeferredStartupAssets,
@@ -18,10 +18,8 @@ const SLOT_CHOOSER_REQUIRED_ASSETS = [
   SLOT_CHOOSER_BACKGROUND_SRC,
   ...SLOT_CHOOSER_TILE_ASSETS,
   ...GAME_DEFINITIONS.map((game) => game.assets.chooserTile),
-  // Shared game UI and View 2 artwork: load once before the chooser, never
-  // again when a specific game is selected. Game-specific assets stay scoped.
+  // Only chooser and shared main-screen UI assets load before chooser mount.
   ...SHARED_FIRST_PAINT_ASSETS,
-  ...SHARED_VIEW2_ASSETS,
 ];
 
 
@@ -198,12 +196,13 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
     try {
       // Keep the chooser background loader visible while the selected game's
       // code and first screen assets load together.
-      await Promise.all([
-        loadSelectedSlotGame(),
-        preloadGameAssets(slot, (progress) =>
-          setGameLoadProgress(Math.floor(progress * 0.9)),
-        ),
-      ]);
+      // Load the game chunk/CSS first. Only then can we discover all CSS
+      // URLs that belong to the visible main screen.
+      await loadSelectedSlotGame();
+      await preloadGameAssets(slot, (progress) =>
+        setGameLoadProgress(Math.floor(progress * 0.9)),
+      );
+      await preloadRequiredImages(getRequiredGameMainScreenAssets(slot));
       if (openRequestRef.current !== requestId) return;
 
       setGameLoadProgress(92);
