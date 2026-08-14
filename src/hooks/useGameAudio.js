@@ -114,6 +114,8 @@ export function useGameAudio(gameId) {
   const useGame2Sounds = gameId === "marvorid-djemchug";
   const useGame3Sounds = gameId === "khiradmandi-makor";
   const useGame5Sounds = gameId === "kadima-drevnii";
+  // Kadima keeps its existing click level; other games use a stronger UI gain.
+  const uiClickVolume = useGame5Sounds ? EFFECT_VOLUME : 1.35;
   const media = useGame2Sounds
     ? game2Media
     : useGame3Sounds
@@ -419,10 +421,10 @@ export function useGameAudio(gameId) {
       if (event === "background")
         playBackground("/media/eldorado-main-theme.39d363ed.mp3");
       if (event === "stopBackground") stopBackground();
-      if (event === "click") playSrc(media.click, { volume: EFFECT_VOLUME });
-      if (event === "buttonPress") playSrc(media.buttonPress, { volume: EFFECT_VOLUME });
-      if (event === "controlClick") playSrc(media.controlClick, { volume: EFFECT_VOLUME });
-      if (event === "amount") playSrc(media.amount, { volume: EFFECT_VOLUME });
+      if (event === "click") playSrc(media.click, { volume: uiClickVolume });
+      if (event === "buttonPress") playSrc(media.buttonPress, { volume: uiClickVolume });
+      if (event === "controlClick") playSrc(media.controlClick, { volume: uiClickVolume });
+      if (event === "amount") playSrc(media.amount, { volume: uiClickVolume });
       if (event === "spin") playSrc(media.spin, { volume: EFFECT_VOLUME });
       if (event === "carpet") playSrc(media.carpet, { volume: EFFECT_VOLUME });
       if (event === "stopReveal") {

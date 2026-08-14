@@ -369,3 +369,13 @@
 .game-rules-screen[data-game-id]:not([data-game-id="khiradmandi-makor"]) {
   background: linear-gradient(145deg, rgb(136, 92, 43) 0%, rgb(82, 46, 19) 46.63%, rgb(136, 92, 43) 100%);
 }
+
+/* Marvorid Djemchug rules page: fully opaque blue background. */
+.game-rules-screen[data-game-id="marvorid-djemchug"] {
+  background: linear-gradient(
+    145deg,
+    rgb(0, 74, 159) 0%,
+    rgb(26, 0, 142) 46.63%,
+    rgb(0, 74, 159) 100%
+  ) !important;
+}
