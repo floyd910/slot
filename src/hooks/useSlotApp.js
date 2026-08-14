@@ -194,14 +194,14 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
     setPendingSlotId(slot.id);
 
     try {
-      // Keep the chooser background loader visible while the selected game's
-      // code and first screen assets load together.
-      // Load the game chunk/CSS first. Only then can we discover all CSS
-      // URLs that belong to the visible main screen.
-      await loadSelectedSlotGame();
-      await preloadGameAssets(slot, (progress) =>
-        setGameLoadProgress(Math.floor(progress * 0.9)),
-      );
+      // Fetch game JSX and the explicit main-screen image manifest together.
+      // Neither is allowed to mount/show until both have completed.
+      await Promise.all([
+        loadSelectedSlotGame(),
+        preloadGameAssets(slot, (progress) =>
+          setGameLoadProgress(Math.floor(progress * 0.9)),
+        ),
+      ]);
       await preloadRequiredImages(getRequiredGameMainScreenAssets(slot));
       if (openRequestRef.current !== requestId) return;
 

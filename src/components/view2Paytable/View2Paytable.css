@@ -63,6 +63,10 @@
   background: rgba(0, 0, 0, 0.34);
 }
 
+.configured-game[data-game-id="korvonsaroi-karavan"] .view2-info-paytable {
+  background: rgba(0, 0, 0, 0.44);
+}
+
 .configured-game[data-game-id="khiradmandi-makor"] .view2-info-paytable {
   border-radius: 18px;
   background:
@@ -103,6 +107,20 @@
   box-shadow:
     0 0 10.314px 1.031px rgba(255, 255, 255, 0.1) inset,
     0 4.126px 6.188px 0 rgba(0, 0, 0, 0.1);
+}
+
+.configured-game[data-game-id="korvonsaroi-karavan"] .view2-info-card,
+.configured-game[data-game-id="korvonsaroi-karavan"] .view2-info-main-card,
+.configured-game[data-game-id="korvonsaroi-karavan"] .view2-coeff-card,
+.configured-game[data-game-id="korvonsaroi-karavan"] .view2-info-coeff-card {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(146, 0, 159, 0.41) 0%,
+      rgba(142, 0, 128, 0.41) 46.63%,
+      rgba(119, 0, 159, 0.41) 100%
+    ),
+    rgba(255, 255, 255, 0.1);
 }
 
 .configured-game[data-game-id="kadima-drevnii"] .view2-info-card,
@@ -760,7 +778,6 @@
   .view2-info-paytable {
     width: 100vw;
     max-width: none;
-    border-radius: 0;
   }
 
   .info-top,

@@ -20,6 +20,7 @@ import {
 const CSS_URL_PATTERN = /url\(\s*(['"]?)(.*?)\1\s*\)/g;
 
 const retainedPreloadedImages = new Map();
+const decodedPreloadedImages = new Set();
 const retainedPreloadedAudio = new Map();
 let startupAssetsPromise = null;
 const gameAssetsPromises = new Map();
@@ -146,8 +147,15 @@ export const preloadImage = (
 
     const retainedImage = retainedPreloadedImages.get(normalizedSrc);
     if (retainedImage?.complete && retainedImage.naturalWidth > 0) {
-      if (decode && retainedImage.decode) {
-        retainedImage.decode().catch(() => {}).finally(() => resolve(normalizedSrc));
+      // A required image was already decoded for this session. Do not make the
+      // game loader decode the same pixels a second time.
+      if (!decode || decodedPreloadedImages.has(normalizedSrc)) {
+        resolve(normalizedSrc);
+      } else if (retainedImage.decode) {
+        retainedImage.decode().catch(() => {}).finally(() => {
+          decodedPreloadedImages.add(normalizedSrc);
+          resolve(normalizedSrc);
+        });
       } else {
         resolve(normalizedSrc);
       }
@@ -180,6 +188,7 @@ export const preloadImage = (
           // Loaded images can still reject decode in some browsers.
         }
       }
+      if (decode) decodedPreloadedImages.add(normalizedSrc);
       resolve(normalizedSrc);
     };
 
@@ -400,6 +409,16 @@ const isAssetAllowedForGame = (src, game) => {
 };
 
 export const getGameView2Assets = (game) => {
+  if (game?.id === "korvonsaroi-karavan") {
+    return Object.values(game.assets?.view2Symbols ?? {})
+      .flatMap(({ background, staticImage, winFrames = [] }) => [
+        background,
+        staticImage,
+        ...winFrames,
+      ])
+      .filter(Boolean);
+  }
+
   if (game?.id === "marvorid-djemchug") {
     return Object.values(game.assets?.view2Symbols ?? {})
       .flatMap(({ background, staticImage, winFrames = [] }) => [

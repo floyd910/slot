@@ -1,4 +1,33 @@
 export const SLOT_CHOOSER_BACKGROUND_SRC = "/assets/img/chooser/background.avif";
+export const GAME1_CHOOSER_TILE_SRC =
+  "/assets/img/chooser/game1-korvonsaroi-karavan.webp";
+export const GAME1_LOGO_SRC = "/assets/img/game1-korvonsaroi-karavan-header.webp";
+export const GAME1_COVER_SRC =
+  "/assets/img/game1-korvonsaroi-karavan-background.webp?v=20260814-purple";
+export const GAME1_VIEW1_CELL_AND_VIEW2_SYMBOL_2_BACKGROUND_SRC =
+  "/assets/img/game1-korvonsaroi-karavan-cell-background.webp";
+export const GAME1_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC =
+  "/assets/img/game1-korvonsaroi-karavan-highlight-background.webp";
+export const GAME1_VIEW2_SYMBOL_4_BACKGROUND_SRC =
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol4-background.webp";
+export const GAME1_VIEW2_SYMBOL_3_BACKGROUND_SRC =
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol3-background.webp";
+export const GAME1_VIEW2_SYMBOL_6_BACKGROUND_SRC =
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol6-background.webp";
+export const GAME1_VIEW2_SYMBOL_12_STATIC_SRC =
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol12-static.webp";
+export const GAME1_VIEW2_SYMBOL_0_STATIC_SRC =
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol0-static.webp";
+export const GAME1_VIEW2_SYMBOL_10_STATIC_SRC =
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol10-static.webp";
+export const GAME1_VIEW2_SYMBOL_7_STATIC_SRC =
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol7-static.webp";
+export const GAME1_VIEW2_SYMBOL_9_STATIC_SRC =
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol9-static.webp";
+export const GAME1_VIEW2_SYMBOL_8_STATIC_SRC =
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol8-static.webp";
+export const GAME1_VIEW2_SYMBOL_11_STATIC_SRC =
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol11-static.webp";
 export const GAME4_COVER_SRC = "/assets/img/chooser/game4-background.avif";
 export const GAME4_LOGO_SRC = "/assets/img/game4-header-optimized.webp";
 export const GAME4_CHOOSER_TILE_SRC = "/assets/img/chooser/game4.webp";
@@ -86,6 +115,7 @@ export const GAME2_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC =
   "/assets/img/game2-view1-highlight-and-view2-symbol5-background.webp";
 
 export const SLOT_CHOOSER_TILE_ASSETS = [
+  GAME1_CHOOSER_TILE_SRC,
   GAME2_CHOOSER_TILE_SRC,
   "/assets/img/chooser/game3.webp",
   "/assets/img/chooser/gameframe.webp",
@@ -97,6 +127,12 @@ export const GAME3_COVER_SRC = "/assets/img/chooser/game3-background.avif";
 export const GAME3_LOGO_SRC = "/assets/img/game3-logo-optimized.webp";
 export const GAME3_LOGO_ORNAMENT_SRC = "/assets/img/game3-logo-ornament.webp";
 export const GAME3_SHELL_ASSETS = [GAME3_COVER_SRC, GAME3_LOGO_SRC];
+export const GAME1_SHELL_ASSETS = [
+  GAME1_COVER_SRC,
+  GAME1_LOGO_SRC,
+  GAME1_VIEW1_CELL_AND_VIEW2_SYMBOL_2_BACKGROUND_SRC,
+  GAME1_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC,
+];
 export const LOTTERY_PAINTBRUSH_SRC = "/assets/img/paintbrush.png";
 export const GAME_HOME_ICON_SRC = "/img/header/games-home.png";
 export const LANGUAGE_CHOOSER_ASSETS = [
@@ -166,6 +202,7 @@ const GAME2_VIEW1_ASSETS = [
 const GAME_FIRST_PAINT_ASSETS_BY_ID = Object.freeze({
   // Every game follows the same first-screen contract as Game 3: its own
   // background, logo, and board skins must decode before the loader clears.
+  "korvonsaroi-karavan": [...SHARED_FIRST_PAINT_ASSETS, ...GAME1_SHELL_ASSETS],
   "marvorid-djemchug": [
     ...SHARED_FIRST_PAINT_ASSETS,
     GAME2_COVER_SRC,

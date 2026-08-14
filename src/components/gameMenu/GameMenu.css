@@ -379,3 +379,12 @@
     rgb(0, 74, 159) 100%
   ) !important;
 }
+/* Korvonsaroi Karavan rules page: the same purple gradient, fully opaque. */
+.game-rules-screen[data-game-id="korvonsaroi-karavan"] {
+  background: linear-gradient(
+    145deg,
+    rgb(146, 0, 159) 0%,
+    rgb(142, 0, 128) 46.63%,
+    rgb(119, 0, 159) 100%
+  ) !important;
+}

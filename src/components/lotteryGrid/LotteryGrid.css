@@ -93,6 +93,9 @@
   background: linear-gradient(145deg, var(--game-accent-border, #e1bf64) 0%, var(--game-accent-dark, #aa7c11) 46.63%, var(--game-accent-light, #e6c36a) 100%);
 }
 
+.configured-game[data-game-id="korvonsaroi-karavan"] .lottery-grid-view1-cell {
+  background: url("/assets/img/game1-korvonsaroi-karavan-cell-background.webp") center / 100% 100%;
+}
 .configured-game[data-game-id="kadima-drevnii"] .lottery-grid-view1-cell {
   background: url("/assets/img/game5-view1-cell-background-optimized.webp") center / 100% 100%;
 }
@@ -1064,4 +1067,9 @@
 }
 .configured-game[data-game-id="marvorid-djemchug"] .lottery-grid-view1-cell {
   background: url("/assets/img/game2-view1-cell-and-view2-symbol2-background.webp") center / 100% 100% no-repeat;
+}
+.configured-game[data-game-id="korvonsaroi-karavan"]
+  .lottery-grid-view1__top
+  .lottery-grid-view1-cell--win-highlight {
+  background: url("/assets/img/game1-korvonsaroi-karavan-highlight-background.webp") center / 100% 100% no-repeat;
 }

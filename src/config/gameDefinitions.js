@@ -1,4 +1,19 @@
 import {
+  GAME1_CHOOSER_TILE_SRC,
+  GAME1_LOGO_SRC,
+  GAME1_COVER_SRC,
+  GAME1_VIEW1_CELL_AND_VIEW2_SYMBOL_2_BACKGROUND_SRC,
+  GAME1_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC,
+  GAME1_VIEW2_SYMBOL_4_BACKGROUND_SRC,
+  GAME1_VIEW2_SYMBOL_3_BACKGROUND_SRC,
+  GAME1_VIEW2_SYMBOL_6_BACKGROUND_SRC,
+  GAME1_VIEW2_SYMBOL_12_STATIC_SRC,
+  GAME1_VIEW2_SYMBOL_0_STATIC_SRC,
+  GAME1_VIEW2_SYMBOL_10_STATIC_SRC,
+  GAME1_VIEW2_SYMBOL_7_STATIC_SRC,
+  GAME1_VIEW2_SYMBOL_9_STATIC_SRC,
+  GAME1_VIEW2_SYMBOL_8_STATIC_SRC,
+  GAME1_VIEW2_SYMBOL_11_STATIC_SRC,
   GAME2_CHOOSER_TILE_SRC,
   GAME2_COVER_SRC,
   GAME2_LOGO_SRC,
@@ -85,6 +100,55 @@ const game2View2Symbol = (symbol, staticImage, frameCount) =>
     cycleMs: frameCount * 40,
     forwardLoop: true,
   });
+const game1WinFrames = (symbol, frameCount) =>
+  Array.from(
+    { length: frameCount },
+    (_, index) =>
+      `/assets/img/animations/game1/${symbol}/frame_${String(index).padStart(3, "0")}_delay-0.04s.webp`,
+  );
+
+const game1View2Symbol = (symbol, staticImage, frameCount = 144) => {
+  const winFrames = Object.freeze(game1WinFrames(symbol, frameCount));
+
+  return Object.freeze({
+    staticImage,
+    animatedImage: null,
+    winFrames,
+    frameMs: 40,
+    cycleMs: winFrames.length * 40,
+    forwardLoop: true,
+  });
+};
+const GAME1_ASSETS = Object.freeze({
+  ...sharedPlaceholderAssets,
+  cover: GAME1_COVER_SRC,
+  logo: GAME1_LOGO_SRC,
+  chooserTile: GAME1_CHOOSER_TILE_SRC,
+  view2Symbols: Object.freeze({
+    2: Object.freeze({
+      background: GAME1_VIEW1_CELL_AND_VIEW2_SYMBOL_2_BACKGROUND_SRC,
+    }),
+    5: Object.freeze({
+      background: GAME1_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC,
+    }),
+    4: Object.freeze({
+      background: GAME1_VIEW2_SYMBOL_4_BACKGROUND_SRC,
+    }),
+    3: Object.freeze({
+      background: GAME1_VIEW2_SYMBOL_3_BACKGROUND_SRC,
+    }),
+    6: Object.freeze({
+      background: GAME1_VIEW2_SYMBOL_6_BACKGROUND_SRC,
+    }),
+    12: game1View2Symbol(12, GAME1_VIEW2_SYMBOL_12_STATIC_SRC),
+    0: game1View2Symbol(0, GAME1_VIEW2_SYMBOL_0_STATIC_SRC),
+    10: game1View2Symbol(10, GAME1_VIEW2_SYMBOL_10_STATIC_SRC),
+    7: game1View2Symbol(7, GAME1_VIEW2_SYMBOL_7_STATIC_SRC),
+    9: game1View2Symbol(9, GAME1_VIEW2_SYMBOL_9_STATIC_SRC, 143),
+    8: game1View2Symbol(8, GAME1_VIEW2_SYMBOL_8_STATIC_SRC),
+    11: game1View2Symbol(11, GAME1_VIEW2_SYMBOL_11_STATIC_SRC),
+  }),
+});
 const GAME2_ASSETS = Object.freeze({
   ...sharedPlaceholderAssets,
   cover: GAME2_COVER_SRC,
@@ -231,7 +295,7 @@ const createGameDefinition = ({ id, title, subtitle, assets = sharedPlaceholderA
 });
 
 export const GAME_DEFINITIONS = Object.freeze([
-  createGameDefinition({ id: "silk-fruits", title: "Silk Fruits", subtitle: "Classic 5-reel slot" }),
+  createGameDefinition({ id: "korvonsaroi-karavan", title: "Korvonsaroi Karavan", subtitle: "Classic 5-reel slot", assets: GAME1_ASSETS }),
   createGameDefinition({ id: "marvorid-djemchug", title: "Marvorid Djemchug", subtitle: "Classic slot", assets: GAME2_ASSETS }),
   createGameDefinition({ id: "khiradmandi-makor", title: "Khiradmandi Makor", subtitle: "Coordinate lottery slot" }),
   createGameDefinition({ id: "egypt", title: "Egypt", subtitle: "Table-style slot", assets: GAME4_ASSETS }),
