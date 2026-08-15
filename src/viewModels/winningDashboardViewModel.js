@@ -10,8 +10,13 @@ export const WINNING_DASHBOARD_COLUMNS = PAYOUT_COLUMNS.map((label, index) => ({
   label,
 }));
 
-export function buildWinningDashboardRows(stake, selectedCombination) {
-  return PAYOUT_ROWS.map((row) => ({
+export function buildWinningDashboardRows(stake, selectedCombination, gameId) {
+  const payoutRows =
+    gameId === "babylon"
+      ? PAYOUT_ROWS.filter(({ symbol }) => symbol <= 9)
+      : PAYOUT_ROWS;
+
+  return payoutRows.map((row) => ({
     id: row.symbol,
     values: row.values.map((value) =>
       formatPayoutValue(

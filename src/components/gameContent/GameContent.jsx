@@ -224,6 +224,7 @@ export default function GameContent({ controller, game, runtimeState }) {
       {view.showRightPanel && (
         <div className="main-container__right">
           <WinningsDashboard
+            gameId={game.id}
             stake={state.stake}
             selectedCombination={derived.selectedCombination}
             spinResult={state.spinResult}

@@ -63,7 +63,7 @@ export function View2SymbolBase({
   winLineDimmed = false,
   winLineOverlay = null,
 }) {
-  const [animationFrameTick, setAnimationFrameTick] = useState(0);
+  const [animationClockMs, setAnimationClockMs] = useState(0);
   const [animatedImageDone, setAnimatedImageDone] = useState(false);
   const animationActive = highlighted || animated;
   const animatedImagePlayMs =
@@ -96,20 +96,18 @@ export function View2SymbolBase({
   ]);
 
   useEffect(() => {
-    setAnimationFrameTick(0);
     if (!activeWinFrames || frameCycleLength <= 1) return undefined;
-    const interval = window.setInterval(() => {
-      setAnimationFrameTick((tick) => (tick + 1) % frameCycleLength);
-    }, frameDurationMs);
-    return () => window.clearInterval(interval);
-  }, [
-    animationKey,
-    frameCycleLength,
-    frameDurationMs,
-    symbol,
-    Boolean(activeWinFrames),
-  ]);
 
+    // Use one absolute clock instead of a per-cell counter. A symbol returning
+    // on another win line therefore resumes at its current frame, and matching
+    // symbols remain frame-synchronised throughout the complete win sequence.
+    const updateClock = () => setAnimationClockMs(window.performance.now());
+    updateClock();
+    const interval = window.setInterval(updateClock, frameDurationMs);
+    return () => window.clearInterval(interval);
+  }, [frameCycleLength, frameDurationMs, Boolean(activeWinFrames)]);
+
+  const animationFrameTick = Math.floor(animationClockMs / frameDurationMs);
   const frameIndex =
     activeWinFrames?.length > 1
       ? forwardLoop

@@ -58,7 +58,11 @@ export default function Paytable({
 }) {
   const { isLanguageChanging, language, t } = useLanguage();
   const copy = PAYTABLE_COPY[language] ?? PAYTABLE_COPY.ru;
-  const view = buildStandardPaytableViewModel({ stake, selectedCombination });
+  const view = buildStandardPaytableViewModel({
+    stake,
+    selectedCombination,
+    gameId,
+  });
   useEscapeKey(onClose);
 
   const modal = (

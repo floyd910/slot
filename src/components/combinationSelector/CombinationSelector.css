@@ -10,6 +10,21 @@
   width: 100%;
 }
 
+/* Babylon creates a root stacking context; keep it above the global header so
+   its View 1 controls, including the combination chooser, stay interactive. */
+.configured-game[data-game-id="babylon"] {
+  position: relative;
+  z-index: 6;
+}
+
+/* The View 1 payout panel has a very high layer in fitted layouts. Keep the
+   Babylon combination controls above it so the panel cannot intercept taps. */
+.configured-game[data-game-id="babylon"] .main-container__left {
+  position: relative;
+  z-index: 8889;
+  pointer-events: auto;
+}
+
 .combination-group {
   display: flex;
   flex-direction: column;
@@ -97,7 +112,6 @@
   margin-top: 10px;
 }
 
-
 .main-container__left .combination-group {
   width: 100%;
   flex: 0 0 auto;
@@ -125,4 +139,16 @@
   .view-1 .main-container__left .combination-item {
     padding: 8px 16px;
   }
+}
+
+/* Combination selectors are real buttons so they use the same state change as footer controls. */
+.combination-item {
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+.combination-item:disabled {
+  cursor: default;
 }

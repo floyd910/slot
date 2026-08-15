@@ -409,6 +409,15 @@ const isAssetAllowedForGame = (src, game) => {
 };
 
 export const getGameView2Assets = (game) => {
+  if (game?.id === "babylon") {
+    return Object.values(game.assets?.view2Symbols ?? {})
+      .flatMap(({ background, staticImage, winFrames = [] }) => [
+        background,
+        staticImage,
+        ...winFrames,
+      ])
+      .filter(Boolean);
+  }
   if (game?.id === "korvonsaroi-karavan") {
     return Object.values(game.assets?.view2Symbols ?? {})
       .flatMap(({ background, staticImage, winFrames = [] }) => [

@@ -9,7 +9,7 @@ import {
   getPayoutMultiplier,
 } from "../utils/payoutTable.js";
 
-export function buildStandardPaytableViewModel({ stake, selectedCombination }) {
+export function buildStandardPaytableViewModel({ stake, selectedCombination, gameId }) {
   const combinationNumber = getCombinationNumber(selectedCombination);
   const combinationGroups = getCombinationGroups(
     selectedCombination,
@@ -21,14 +21,18 @@ export function buildStandardPaytableViewModel({ stake, selectedCombination }) {
     selectedCombination,
     0,
   );
+  const payoutRows =
+    gameId === "babylon"
+      ? PAYOUT_ROWS.filter(({ symbol }) => symbol <= 9)
+      : PAYOUT_ROWS;
 
   return {
     columns: PAYOUT_COLUMNS.slice(1, 5),
     combinationNumber,
     groupLabels: combinationGroups.map(formatPayoutGroup),
     payoutMultiplier,
-    rowSpan: PAYOUT_ROWS.length,
-    rows: PAYOUT_ROWS.map((row) => ({
+    rowSpan: payoutRows.length,
+    rows: payoutRows.map((row) => ({
       symbol: row.symbol,
       values: row.values.map((value) =>
         formatPayoutValue(

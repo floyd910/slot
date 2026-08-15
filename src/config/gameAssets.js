@@ -57,6 +57,30 @@ export const GAME4_VIEW2_CELL_BACKGROUND_ASSETS = [
 export const GAME6_COVER_SRC = "/assets/img/chooser/game6-background.avif";
 export const GAME6_LOGO_SRC = "/assets/img/game6-header-optimized.webp";
 export const GAME6_CHOOSER_TILE_SRC = "/assets/img/chooser/game6.webp";
+export const GAME7_CHOOSER_TILE_SRC = "/assets/img/chooser/game7-babylon.webp";
+export const GAME7_COVER_SRC =
+  "/assets/img/game7-babylon-background.webp";
+export const GAME7_LOGO_SRC = "/assets/img/game7-babylon-header.webp";
+export const GAME7_VIEW1_CELL_AND_VIEW2_SYMBOL_2_BACKGROUND_SRC =
+  "/assets/img/game7-babylon-cell-background.webp";
+export const GAME7_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC =
+  "/assets/img/game7-babylon-highlight-background.webp";
+export const GAME7_VIEW2_SYMBOL_1_BACKGROUND_SRC =
+  "/assets/img/game7-babylon-view2-symbol1-background.webp";
+export const GAME7_VIEW2_SYMBOL_4_BACKGROUND_SRC =
+  "/assets/img/game7-babylon-view2-symbol4-background.webp";
+export const GAME7_VIEW2_SYMBOL_6_BACKGROUND_SRC =
+  "/assets/img/game7-babylon-view2-symbol6-background.webp";
+export const GAME7_VIEW2_SYMBOL_3_BACKGROUND_SRC =
+  "/assets/img/game7-babylon-view2-symbol3-background.webp";
+export const GAME7_VIEW2_SYMBOL_0_STATIC_SRC =
+  "/assets/img/game7-babylon-view2-symbol0-static.webp";
+export const GAME7_VIEW2_SYMBOL_9_STATIC_SRC =
+  "/assets/img/game7-babylon-view2-symbol9-static.webp";
+export const GAME7_VIEW2_SYMBOL_7_STATIC_SRC =
+  "/assets/img/game7-babylon-view2-symbol7-static.webp";
+export const GAME7_VIEW2_SYMBOL_8_STATIC_SRC =
+  "/assets/img/game7-babylon-view2-symbol8-static.webp";
 export const GAME5_CHOOSER_TILE_SRC = "/assets/img/chooser/game5.webp";
 export const GAME5_COVER_SRC = "/assets/img/chooser/game5-background.avif";
 export const GAME5_LOGO_SRC = "/assets/img/game5-header-optimized.webp";
@@ -122,11 +146,19 @@ export const SLOT_CHOOSER_TILE_ASSETS = [
   GAME4_CHOOSER_TILE_SRC,
   GAME5_CHOOSER_TILE_SRC,
   GAME6_CHOOSER_TILE_SRC,
+  GAME7_CHOOSER_TILE_SRC,
 ];
 export const GAME3_COVER_SRC = "/assets/img/chooser/game3-background.avif";
 export const GAME3_LOGO_SRC = "/assets/img/game3-logo-optimized.webp";
 export const GAME3_LOGO_ORNAMENT_SRC = "/assets/img/game3-logo-ornament.webp";
 export const GAME3_SHELL_ASSETS = [GAME3_COVER_SRC, GAME3_LOGO_SRC];
+export const GAME7_SHELL_ASSETS = [
+  GAME7_COVER_SRC,
+  GAME7_LOGO_SRC,
+  GAME7_VIEW1_CELL_AND_VIEW2_SYMBOL_2_BACKGROUND_SRC,
+  GAME7_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC,
+];
+
 export const GAME1_SHELL_ASSETS = [
   GAME1_COVER_SRC,
   GAME1_LOGO_SRC,
@@ -203,6 +235,7 @@ const GAME_FIRST_PAINT_ASSETS_BY_ID = Object.freeze({
   // Every game follows the same first-screen contract as Game 3: its own
   // background, logo, and board skins must decode before the loader clears.
   "korvonsaroi-karavan": [...SHARED_FIRST_PAINT_ASSETS, ...GAME1_SHELL_ASSETS],
+  "babylon": [...SHARED_FIRST_PAINT_ASSETS, ...GAME7_SHELL_ASSETS],
   "marvorid-djemchug": [
     ...SHARED_FIRST_PAINT_ASSETS,
     GAME2_COVER_SRC,

@@ -52,7 +52,7 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: var(--game-overlay, rgba(0, 0, 0, 0.4));
+  background: rgba(0, 0, 0, 0.9);
   pointer-events: none;
 }
 
@@ -1089,4 +1089,33 @@ button:disabled {
   .configured-game .frame-app[data-fluid-fit="true"] .header_img {
     transform: translateY(calc(-1 * var(--game-header-height, 48px)));
   }
+}
+
+/* Keep Babylon at the shared game contrast level; the old 0.9 overlay made
+   the complete screen substantially darker than every other game. */
+.configured-game[data-game-id="babylon"] .game_area > .bg-overlay {
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Babylon's View 1 panels must stay above all decorative screen layers. */
+.configured-game[data-game-id="babylon"] .game-main-layout {
+  z-index: 21;
+  pointer-events: auto;
+}
+
+/* Keep every game component above its background contrast layer. */
+.game_area > :not(.game_area__background):not(.bg-overlay) {
+  z-index: 2;
+}
+
+/* One shared logo box and layer for every game. Keep it above the app header
+   (z-index: 5) and above the game content regardless of theme. */
+.game_area > .header_img {
+  width: min(46vw, 440px);
+  height: auto;
+  aspect-ratio: 258 / 61;
+  object-fit: contain;
+  z-index: 20;
 }

@@ -73,6 +73,19 @@ import {
   GAME6_VIEW2_SYMBOL_10_STATIC_SRC,
   GAME6_VIEW2_SYMBOL_11_STATIC_SRC,
   GAME6_VIEW2_SYMBOL_12_STATIC_SRC,
+  GAME7_CHOOSER_TILE_SRC,
+  GAME7_COVER_SRC,
+  GAME7_LOGO_SRC,
+  GAME7_VIEW1_CELL_AND_VIEW2_SYMBOL_2_BACKGROUND_SRC,
+  GAME7_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC,
+  GAME7_VIEW2_SYMBOL_1_BACKGROUND_SRC,
+  GAME7_VIEW2_SYMBOL_4_BACKGROUND_SRC,
+  GAME7_VIEW2_SYMBOL_6_BACKGROUND_SRC,
+  GAME7_VIEW2_SYMBOL_3_BACKGROUND_SRC,
+  GAME7_VIEW2_SYMBOL_0_STATIC_SRC,
+  GAME7_VIEW2_SYMBOL_9_STATIC_SRC,
+  GAME7_VIEW2_SYMBOL_7_STATIC_SRC,
+  GAME7_VIEW2_SYMBOL_8_STATIC_SRC,
 } from "./gameAssets.js";
 import { getGameColors } from "./gameColors.js";
 
@@ -107,6 +120,28 @@ const game1WinFrames = (symbol, frameCount) =>
       `/assets/img/animations/game1/${symbol}/frame_${String(index).padStart(3, "0")}_delay-0.04s.webp`,
   );
 
+const game7WinFrames = (symbol, frameCount = 144) =>
+  Array.from(
+    { length: frameCount },
+    (_, index) =>
+      `/assets/img/animations/game7/${symbol}/frame_${String(index).padStart(3, "0")}_delay-0.04s.webp`,
+  );
+
+const game7View2Symbol = (symbol, staticImage, frameCount = 144) => {
+  const winFrames = Object.freeze(game7WinFrames(symbol, frameCount));
+
+  return Object.freeze({
+    staticImage,
+    animatedImage: null,
+    winFrames,
+    // Babylon source frames are exported at 40 ms. Play them once, in order,
+    // so the win sequence reaches every supplied frame instead of reversing
+    // partway through at the generic symbol-animation speed.
+    frameMs: 40,
+    cycleMs: winFrames.length * 40,
+    forwardLoop: true,
+  });
+};
 const game1View2Symbol = (symbol, staticImage, frameCount = 144) => {
   const winFrames = Object.freeze(game1WinFrames(symbol, frameCount));
 
@@ -294,6 +329,24 @@ const createGameDefinition = ({ id, title, subtitle, assets = sharedPlaceholderA
   colors: getGameColors(id),
 });
 
+const GAME7_ASSETS = Object.freeze({
+  ...sharedPlaceholderAssets,
+  cover: GAME7_COVER_SRC,
+  logo: GAME7_LOGO_SRC,
+  chooserTile: GAME7_CHOOSER_TILE_SRC,
+  view2Symbols: Object.freeze({
+    0: game7View2Symbol(0, GAME7_VIEW2_SYMBOL_0_STATIC_SRC),
+    9: game7View2Symbol(9, GAME7_VIEW2_SYMBOL_9_STATIC_SRC),
+    7: game7View2Symbol(7, GAME7_VIEW2_SYMBOL_7_STATIC_SRC),
+    8: game7View2Symbol(8, GAME7_VIEW2_SYMBOL_8_STATIC_SRC),
+    1: Object.freeze({ background: GAME7_VIEW2_SYMBOL_1_BACKGROUND_SRC }),
+    4: Object.freeze({ background: GAME7_VIEW2_SYMBOL_4_BACKGROUND_SRC }),
+    3: Object.freeze({ background: GAME7_VIEW2_SYMBOL_3_BACKGROUND_SRC }),
+    6: Object.freeze({ background: GAME7_VIEW2_SYMBOL_6_BACKGROUND_SRC }),
+    2: Object.freeze({ background: GAME7_VIEW1_CELL_AND_VIEW2_SYMBOL_2_BACKGROUND_SRC }),
+    5: Object.freeze({ background: GAME7_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC }),
+  }),
+});
 export const GAME_DEFINITIONS = Object.freeze([
   createGameDefinition({ id: "korvonsaroi-karavan", title: "Korvonsaroi Karavan", subtitle: "Classic 5-reel slot", assets: GAME1_ASSETS }),
   createGameDefinition({ id: "marvorid-djemchug", title: "Marvorid Djemchug", subtitle: "Classic slot", assets: GAME2_ASSETS }),
@@ -301,7 +354,7 @@ export const GAME_DEFINITIONS = Object.freeze([
   createGameDefinition({ id: "egypt", title: "Egypt", subtitle: "Table-style slot", assets: GAME4_ASSETS }),
   createGameDefinition({ id: "kadima-drevnii", title: "Kadima Drevnii", subtitle: "Ancient adventure", assets: GAME5_ASSETS }),
   createGameDefinition({ id: "khocha-afandi", title: "Khocha Afandi", subtitle: "Number draw game", assets: GAME6_ASSETS }),
-  createGameDefinition({ id: "star-bazaar", title: "Star Bazaar", subtitle: "Wild multiplier slot" }),
+  createGameDefinition({ id: "babylon", title: "Babylon", subtitle: "Classic slot", assets: GAME7_ASSETS }),
   createGameDefinition({ id: "double-bonus", title: "Double Bonus", subtitle: "Risk ladder feature" }),
 ]);
 

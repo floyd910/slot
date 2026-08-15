@@ -45,7 +45,7 @@ export const GAME_COLORS = Object.freeze({
   "egypt": placeholderPalette("#8bd36f"),
   "kadima-drevnii": placeholderPalette("#58d5c9"),
   "khocha-afandi": placeholderPalette("#8fb3ff"),
-  "star-bazaar": placeholderPalette("#b58cff"),
+  "babylon": placeholderPalette("#b58cff"),
   "double-bonus": placeholderPalette("#ff7a59"),
 });
 

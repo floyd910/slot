@@ -18,16 +18,20 @@ export default function CombinationSelector({
   return (
     <div className={`combination-group${disabled ? " --disabled" : ""}`}>
       <label>
-        Выбор лотерейной <br />
-        комбинации
+        {t("combinationSelectorTitle").split("\n").map((line, index) => (
+          <span key={line}>
+            {index > 0 && <br />}
+            {line}
+          </span>
+        ))}
       </label>
       {items.map((item) => (
-        <div
+        <button
           key={item.id}
           className={`combination-item${item.isSelected ? " --glow" : ""}`}
           id={`combi-${item.id}`}
-          role="button"
-          tabIndex={disabled ? -1 : 0}
+          type="button"
+          disabled={disabled}
           onClick={() => {
             if (!disabled) onSelect(item.id);
           }}
@@ -49,7 +53,7 @@ export default function CombinationSelector({
             </p>
           </div>
           <span className="combination-item__count">{item.count}</span>
-        </div>
+        </button>
       ))}
     </div>
   );

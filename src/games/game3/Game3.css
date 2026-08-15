@@ -1342,3 +1342,8 @@ button:disabled {
     transform: translateY(calc(-1 * var(--game-header-height, 48px)));
   }
 }
+/* SharedGame imports this stylesheet for every game. The logo must sit above
+   the app header (z-index: 5), independent of stylesheet import order. */
+.game_area > .header_img {
+  z-index: 20 !important;
+}

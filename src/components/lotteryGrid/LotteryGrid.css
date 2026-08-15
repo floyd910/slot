@@ -1073,3 +1073,12 @@
   .lottery-grid-view1-cell--win-highlight {
   background: url("/assets/img/game1-korvonsaroi-karavan-highlight-background.webp") center / 100% 100% no-repeat;
 }
+.configured-game[data-game-id="babylon"] .lottery-grid-view1-cell {
+  background: url("/assets/img/game7-babylon-cell-background.webp") center / 100% 100% no-repeat;
+}
+
+.configured-game[data-game-id="babylon"]
+  .lottery-grid-view1__top
+  .lottery-grid-view1-cell--win-highlight {
+  background: url("/assets/img/game7-babylon-highlight-background.webp") center / 100% 100% no-repeat;
+}
