@@ -97,13 +97,13 @@
   background: url("/assets/img/game1-korvonsaroi-karavan-cell-background.avif") center / 100% 100%;
 }
 .configured-game[data-game-id="kadima-drevnii"] .lottery-grid-view1-cell {
-  background: url("/assets/img/game5-view1-cell-background-optimized.webp") center / 100% 100%;
+  background: url("/assets/img/game5-view1-cell-background-optimized.avif") center / 100% 100%;
 }
 .configured-game[data-game-id="egypt"] .lottery-grid-view1-cell {
-  background: url("/assets/img/game4-view1-cell-background-optimized.webp") center / 100% 100%;
+  background: url("/assets/img/game4-view1-cell-background-optimized.avif") center / 100% 100%;
 }
 .configured-game[data-game-id="khocha-afandi"] .lottery-grid-view1-cell {
-  background: url("/assets/img/game6-view1-cell-background-optimized.webp") center / 100% 100%;
+  background: url("/assets/img/game6-view1-cell-background-optimized.avif") center / 100% 100%;
 }
 
 .lottery-grid-view1__top .lottery-grid-view1-cell--win-highlight {
@@ -113,17 +113,17 @@
 .configured-game[data-game-id="kadima-drevnii"]
   .lottery-grid-view1__top
   .lottery-grid-view1-cell--win-highlight {
-  background: url("/assets/img/game5-view1-highlight-background-optimized.webp") center / 100% 100% no-repeat;
+  background: url("/assets/img/game5-view1-highlight-background-optimized.avif") center / 100% 100% no-repeat;
 }
 .configured-game[data-game-id="egypt"]
   .lottery-grid-view1__top
   .lottery-grid-view1-cell--win-highlight {
-  background: url("/assets/img/game4-view1-highlight-background-optimized.webp") center / 100% 100% no-repeat;
+  background: url("/assets/img/game4-view1-highlight-background-optimized.avif") center / 100% 100% no-repeat;
 }
 .configured-game[data-game-id="khocha-afandi"]
   .lottery-grid-view1__top
   .lottery-grid-view1-cell--win-highlight {
-  background: url("/assets/img/game6-view1-highlight-background-optimized.webp") center / 100% 100% no-repeat;
+  background: url("/assets/img/game6-view1-highlight-background-optimized.avif") center / 100% 100% no-repeat;
 }
 
 .lottery-grid-view1-cell__wrapper {
@@ -300,7 +300,7 @@
 .configured-game[data-game-id="khocha-afandi"]
   .lottery-grid-view2-cell--symbol-1
   .lottery-grid-view2-cell__container {
-  background: url("/assets/img/game6-view2-symbol1-background.webp") center / cover;
+  background: url("/assets/img/game6-view2-symbol1-background.avif") center / cover;
 }
 
 .lottery-grid-view2-cell--symbol-2 .lottery-grid-view2-cell__container {
@@ -311,7 +311,7 @@
 .configured-game[data-game-id="khocha-afandi"]
   .lottery-grid-view2-cell--symbol-2
   .lottery-grid-view2-cell__container {
-  background: url("/assets/img/game6-view2-symbol2-background.webp") center / cover;
+  background: url("/assets/img/game6-view2-symbol2-background.avif") center / cover;
 }
 
 .lottery-grid-view2-cell--symbol-3 .lottery-grid-view2-cell__container {
@@ -322,7 +322,7 @@
 .configured-game[data-game-id="khocha-afandi"]
   .lottery-grid-view2-cell--symbol-3
   .lottery-grid-view2-cell__container {
-  background: url("/assets/img/game6-view2-symbol3-background.webp") center / cover;
+  background: url("/assets/img/game6-view2-symbol3-background.avif") center / cover;
 }
 
 .lottery-grid-view2-cell--symbol-4 .lottery-grid-view2-cell__container {
@@ -333,7 +333,7 @@
 .configured-game[data-game-id="khocha-afandi"]
   .lottery-grid-view2-cell--symbol-4
   .lottery-grid-view2-cell__container {
-  background: url("/assets/img/game6-view2-symbol4-background.webp") center / cover;
+  background: url("/assets/img/game6-view2-symbol4-background.avif") center / cover;
 }
 
 .lottery-grid-view2-cell--symbol-5 .lottery-grid-view2-cell__container {
@@ -344,7 +344,7 @@
 .configured-game[data-game-id="khocha-afandi"]
   .lottery-grid-view2-cell--symbol-5
   .lottery-grid-view2-cell__container {
-  background: url("/assets/img/game6-view2-symbol5-background.webp") center / cover;
+  background: url("/assets/img/game6-view2-symbol5-background.avif") center / cover;
 }
 
 .lottery-grid-view2-cell--symbol-6 .lottery-grid-view2-cell__container {
@@ -355,7 +355,7 @@
 .configured-game[data-game-id="khocha-afandi"]
   .lottery-grid-view2-cell--symbol-6
   .lottery-grid-view2-cell__container {
-  background: url("/assets/img/game6-view2-symbol6-background.webp") center / cover;
+  background: url("/assets/img/game6-view2-symbol6-background.avif") center / cover;
 }
 
 
@@ -1063,10 +1063,10 @@
 }
 
 .configured-game[data-game-id="marvorid-djemchug"] .lottery-grid-view1-cell.lottery-grid-view1-cell--win-highlight {
-  background: url("/assets/img/game2-view1-highlight-and-view2-symbol5-background.webp") center / 100% 100% no-repeat;
+  background: url("/assets/img/game2-view1-highlight-and-view2-symbol5-background.avif") center / 100% 100% no-repeat;
 }
 .configured-game[data-game-id="marvorid-djemchug"] .lottery-grid-view1-cell {
-  background: url("/assets/img/game2-view1-cell-and-view2-symbol2-background.webp") center / 100% 100% no-repeat;
+  background: url("/assets/img/game2-view1-cell-and-view2-symbol2-background.avif") center / 100% 100% no-repeat;
 }
 .configured-game[data-game-id="korvonsaroi-karavan"]
   .lottery-grid-view1__top
@@ -1074,11 +1074,11 @@
   background: url("/assets/img/game1-korvonsaroi-karavan-highlight-background.avif") center / 100% 100% no-repeat;
 }
 .configured-game[data-game-id="babylon"] .lottery-grid-view1-cell {
-  background: url("/assets/img/game7-babylon-cell-background.webp") center / 100% 100% no-repeat;
+  background: url("/assets/img/game7-babylon-cell-background.avif") center / 100% 100% no-repeat;
 }
 
 .configured-game[data-game-id="babylon"]
   .lottery-grid-view1__top
   .lottery-grid-view1-cell--win-highlight {
-  background: url("/assets/img/game7-babylon-highlight-background.webp") center / 100% 100% no-repeat;
+  background: url("/assets/img/game7-babylon-highlight-background.avif") center / 100% 100% no-repeat;
 }

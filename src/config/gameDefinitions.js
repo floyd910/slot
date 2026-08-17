@@ -106,7 +106,7 @@ const game2WinFrames = (symbol, frameCount) =>
 const game2View2Symbol = (symbol, staticImage) =>
   Object.freeze({
     staticImage,
-    animatedImage: "/assets/img/animations/game2/" + symbol + "/win.webp",
+    animatedImage: "/assets/img/animations/game2/" + symbol + "/win.avif",
   });
 const game1WinFrames = (symbol, frameCount) =>
   Array.from(

@@ -50,6 +50,27 @@ const setHashRoute = (route) => {
   if (window.location.hash !== nextHash) window.location.hash = nextHash;
 };
 
+const waitForControllerReady = () =>
+  new Promise((resolve) => {
+    const selector =
+      '.app-selected-game .frame-app[data-startup-loading="false"]';
+    if (document.querySelector(selector)) {
+      resolve();
+      return;
+    }
+
+    const observer = new MutationObserver(() => {
+      if (!document.querySelector(selector)) return;
+      observer.disconnect();
+      resolve();
+    });
+    observer.observe(document.body, {
+      attributes: true,
+      attributeFilter: ["data-startup-loading"],
+      childList: true,
+      subtree: true,
+    });
+  });
 const waitForMountedGamePaint = async () => {
   // At this point every loader-required asset, font, and module is ready.
   // Keep the overlay only for React's final mount and layout/paint frames.
@@ -128,11 +149,13 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
         preloadGameAssets(slot, setGameLoadProgress),
       ]);
       if (openRequestRef.current !== requestId) return;
-      setGameLoadProgress(100);
+      // Mount the game while progress remains below 100. Its controller and
+      // first layout must be complete before the loader can truthfully finish.
       setSelectedSlotId(slot.id);
-      // Main-screen assets are ready; begin low-priority loading for optional
-      // screens as soon as the game mounts.
       scheduleDeferredStartupAssets(slot);
+      await waitForControllerReady();
+      if (openRequestRef.current !== requestId) return;
+      setGameLoadProgress(100);
     } catch (assetError) {
       console.error(assetError);
       if (openRequestRef.current === requestId) setPendingSlotId(null);

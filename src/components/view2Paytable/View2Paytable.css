@@ -179,13 +179,13 @@
 }
 
 .configured-game[data-game-id="egypt"] .view2-info-card {
-  background: url("/assets/img/game4-view2-info-small-box-background-optimized.webp")
+  background: url("/assets/img/game4-view2-info-small-box-background-optimized.avif")
     lightgray 0 0 / 100% 100% no-repeat;
 }
 
 .configured-game[data-game-id="egypt"] .view2-info-main-card,
 .configured-game[data-game-id="egypt"] .view2-info-coeff-card {
-  background: url("/assets/img/game4-view2-symbol1-background-optimized.webp")
+  background: url("/assets/img/game4-view2-symbol1-background-optimized.avif")
     lightgray 0 0 / 100% 100% no-repeat;
 }
 
