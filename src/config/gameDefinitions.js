@@ -103,15 +103,10 @@ const game2WinFrames = (symbol, frameCount) =>
       `/assets/img/animations/game2/${symbol}/frame_${String(index).padStart(3, "0")}_delay-0.04s.webp`,
   );
 
-const game2View2Symbol = (symbol, staticImage, frameCount) =>
+const game2View2Symbol = (symbol, staticImage) =>
   Object.freeze({
     staticImage,
-    // Override the shared symbol component's legacy animation for Game 2.
-    animatedImage: null,
-    winFrames: Object.freeze(game2WinFrames(symbol, frameCount)),
-    frameMs: 40,
-    cycleMs: frameCount * 40,
-    forwardLoop: true,
+    animatedImage: "/assets/img/animations/game2/" + symbol + "/win.webp",
   });
 const game1WinFrames = (symbol, frameCount) =>
   Array.from(
@@ -120,40 +115,27 @@ const game1WinFrames = (symbol, frameCount) =>
       `/assets/img/animations/game1/${symbol}/frame_${String(index).padStart(3, "0")}_delay-0.04s.webp`,
   );
 
-const game7WinFrames = (symbol, frameCount = 144) =>
-  Array.from(
-    { length: frameCount },
-    (_, index) =>
-      `/assets/img/animations/game7/${symbol}/frame_${String(index).padStart(3, "0")}_delay-0.04s.webp`,
-  );
+const game7WinFrames = (symbol, skippedFrameIndexes = []) => {
+  const skipped = new Set(skippedFrameIndexes);
 
-const game7View2Symbol = (symbol, staticImage, frameCount = 144) => {
-  const winFrames = Object.freeze(game7WinFrames(symbol, frameCount));
-
-  return Object.freeze({
-    staticImage,
-    animatedImage: null,
-    winFrames,
-    // Babylon source frames are exported at 40 ms. Play them once, in order,
-    // so the win sequence reaches every supplied frame instead of reversing
-    // partway through at the generic symbol-animation speed.
-    frameMs: 40,
-    cycleMs: winFrames.length * 40,
-    forwardLoop: true,
-  });
+  return Array.from({ length: 144 }, (_, index) => index)
+    .filter((index) => !skipped.has(index))
+    .map(
+      (index) =>
+        `/assets/img/animations/game7/${symbol}/frame_${String(index).padStart(3, "0")}_delay-0.04s.webp`,
+    );
 };
-const game1View2Symbol = (symbol, staticImage, frameCount = 144) => {
-  const winFrames = Object.freeze(game1WinFrames(symbol, frameCount));
 
-  return Object.freeze({
+const game7View2Symbol = (symbol, staticImage) =>
+  Object.freeze({
     staticImage,
-    animatedImage: null,
-    winFrames,
-    frameMs: 40,
-    cycleMs: winFrames.length * 40,
-    forwardLoop: true,
+    animatedImage: "/assets/img/animations/game7/" + symbol + "/win.webp",
   });
-};
+const game1View2Symbol = (symbol, staticImage) =>
+  Object.freeze({
+    staticImage,
+    animatedImage: "/assets/img/animations/game1/" + symbol + "/win.webp",
+  });
 const GAME1_ASSETS = Object.freeze({
   ...sharedPlaceholderAssets,
   cover: GAME1_COVER_SRC,
@@ -179,7 +161,7 @@ const GAME1_ASSETS = Object.freeze({
     0: game1View2Symbol(0, GAME1_VIEW2_SYMBOL_0_STATIC_SRC),
     10: game1View2Symbol(10, GAME1_VIEW2_SYMBOL_10_STATIC_SRC),
     7: game1View2Symbol(7, GAME1_VIEW2_SYMBOL_7_STATIC_SRC),
-    9: game1View2Symbol(9, GAME1_VIEW2_SYMBOL_9_STATIC_SRC, 143),
+    9: game1View2Symbol(9, GAME1_VIEW2_SYMBOL_9_STATIC_SRC),
     8: game1View2Symbol(8, GAME1_VIEW2_SYMBOL_8_STATIC_SRC),
     11: game1View2Symbol(11, GAME1_VIEW2_SYMBOL_11_STATIC_SRC),
   }),
@@ -195,13 +177,13 @@ const GAME2_ASSETS = Object.freeze({
     4: Object.freeze({ background: GAME2_VIEW2_SYMBOL_4_BACKGROUND_SRC }),
     3: Object.freeze({ background: GAME2_VIEW2_SYMBOL_3_BACKGROUND_SRC }),
     6: Object.freeze({ background: GAME2_VIEW2_SYMBOL_6_BACKGROUND_SRC }),
-    12: game2View2Symbol(12, GAME2_VIEW2_SYMBOL_12_STATIC_SRC, 144),
-    0: game2View2Symbol(0, GAME2_VIEW2_SYMBOL_0_STATIC_SRC, 144),
-    9: game2View2Symbol(9, GAME2_VIEW2_SYMBOL_9_STATIC_SRC, 144),
-    10: game2View2Symbol(10, GAME2_VIEW2_SYMBOL_10_STATIC_SRC, 143),
-    11: game2View2Symbol(11, GAME2_VIEW2_SYMBOL_11_STATIC_SRC, 144),
-    7: game2View2Symbol(7, GAME2_VIEW2_SYMBOL_7_STATIC_SRC, 145),
-    8: game2View2Symbol(8, GAME2_VIEW2_SYMBOL_8_STATIC_SRC, 144),
+    12: game2View2Symbol(12, GAME2_VIEW2_SYMBOL_12_STATIC_SRC),
+    0: game2View2Symbol(0, GAME2_VIEW2_SYMBOL_0_STATIC_SRC),
+    9: game2View2Symbol(9, GAME2_VIEW2_SYMBOL_9_STATIC_SRC),
+    10: game2View2Symbol(10, GAME2_VIEW2_SYMBOL_10_STATIC_SRC),
+    11: game2View2Symbol(11, GAME2_VIEW2_SYMBOL_11_STATIC_SRC),
+    7: game2View2Symbol(7, GAME2_VIEW2_SYMBOL_7_STATIC_SRC),
+    8: game2View2Symbol(8, GAME2_VIEW2_SYMBOL_8_STATIC_SRC),
     5: Object.freeze({ background: GAME2_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC }),
   }),
 });
@@ -216,11 +198,7 @@ const game6WinFrames = (symbol) =>
 const game6View2Symbol = (symbol, staticImage) =>
   Object.freeze({
     staticImage,
-    animatedImage: null,
-    winFrames: Object.freeze(game6WinFrames(symbol)),
-    frameMs: 40,
-    cycleMs: 5760,
-    forwardLoop: true,
+    animatedImage: "/assets/img/animations/game6/" + symbol + "/win.webp",
   });
 
 const GAME6_ASSETS = Object.freeze({
@@ -255,11 +233,7 @@ const game4WinFrames = (symbol) =>
 const game4View2Symbol = (symbol, staticImage) =>
   Object.freeze({
     staticImage,
-    animatedImage: null,
-    winFrames: Object.freeze(game4WinFrames(symbol)),
-    frameMs: 40,
-    cycleMs: 5760,
-    forwardLoop: true,
+    animatedImage: "/assets/img/animations/game4/" + symbol + "/win.webp",
   });
 
 const GAME4_ASSETS = Object.freeze({
@@ -292,8 +266,6 @@ const game5View2Symbol = (symbol, staticImage) =>
   Object.freeze({
     staticImage,
     animatedImage: `/assets/img/animations/game5/view2-symbol-${symbol}-win.webp`,
-    cycleMs: 5760,
-    singlePlayMs: 5760,
   });
 
 const GAME5_ASSETS = Object.freeze({
@@ -334,6 +306,11 @@ const GAME7_ASSETS = Object.freeze({
   cover: GAME7_COVER_SRC,
   logo: GAME7_LOGO_SRC,
   chooserTile: GAME7_CHOOSER_TILE_SRC,
+  view2Info: Object.freeze({
+    symbolImageOverrides: Object.freeze({ 10: 8, 11: 8, 12: 9 }),
+    hiddenPayoutSymbols: Object.freeze([9]),
+    hiddenSymbolTiles: Object.freeze([8, 11]),
+  }),
   view2Symbols: Object.freeze({
     0: game7View2Symbol(0, GAME7_VIEW2_SYMBOL_0_STATIC_SRC),
     9: game7View2Symbol(9, GAME7_VIEW2_SYMBOL_9_STATIC_SRC),

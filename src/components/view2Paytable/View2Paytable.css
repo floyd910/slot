@@ -55,6 +55,10 @@
   border-radius: 0;
 }
 
+.configured-game[data-game-id="babylon"] .view2-info-paytable {
+  background: rgba(0, 0, 0, 0.54);
+}
+
 .configured-game[data-game-id="kadima-drevnii"] .view2-info-paytable {
   background: rgba(0, 0, 0, 0.44);
 }
@@ -651,6 +655,20 @@
   height: 102.341px;
 }
 
+/* Babylon uses the symbol 8 artwork in the former symbol 10 slot. */
+.configured-game[data-game-id="babylon"] .info-top-right .top-symbols {
+  margin-right: -5px;
+  justify-content: flex-end;
+}
+
+.configured-game[data-game-id="babylon"]
+  .info-top-right
+  .top-symbols
+  > .view2-info-symbol.symbol-10 {
+  flex: 0 0 130.727px;
+  width: 130.727px;
+  margin: 0;
+}
 @media (max-width: 1440px) {
   .left-top .view2-info-symbol.symbol-5,
   .left-top .view2-info-symbol.symbol-6 {
@@ -664,6 +682,10 @@
 
   .info-top-right .top-symbols {
     transform: translate(-50px, 0);
+  }
+
+  .configured-game[data-game-id="babylon"] .info-top-right .top-symbols {
+    transform: none;
   }
 }
 

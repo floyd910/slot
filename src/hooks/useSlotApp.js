@@ -2,13 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import {
   SLOT_CHOOSER_BACKGROUND_SRC,
   SLOT_CHOOSER_TILE_ASSETS,
-  getGameFirstPaintAssets,
-  SHARED_FIRST_PAINT_ASSETS,
 } from "../config/gameAssets.js";
 import { GAME_DEFINITIONS } from "../config/gameDefinitions.js";
 import { notifySlotChooserReady } from "../services/frameReadyNotifier.js";
 import {
-  getRequiredGameMainScreenAssets,
   preloadGameAssets,
   preloadRequiredImages,
   scheduleDeferredStartupAssets,
@@ -18,10 +15,7 @@ const SLOT_CHOOSER_REQUIRED_ASSETS = [
   SLOT_CHOOSER_BACKGROUND_SRC,
   ...SLOT_CHOOSER_TILE_ASSETS,
   ...GAME_DEFINITIONS.map((game) => game.assets.chooserTile),
-  // Only chooser and shared main-screen UI assets load before chooser mount.
-  ...SHARED_FIRST_PAINT_ASSETS,
 ];
-
 
 const waitForAnimationFrame = () =>
   new Promise((resolve) => window.requestAnimationFrame(resolve));
@@ -109,23 +103,15 @@ const waitForControllerReady = () =>
     });
   });
 
-const waitForMountedGamePaint = async (game, onProgress) => {
+const waitForMountedGamePaint = async (onProgress) => {
   // Wait until React has committed and the game controller has completed bootstrap.
   await waitForAnimationFrame();
-  onProgress?.(85);
   await waitForControllerReady();
-  onProgress?.(92);
   const mountedImages = Array.from(
     document.querySelectorAll(".app-selected-game img"),
   );
-  // Grid skins are CSS backgrounds, not img elements. Re-decode the exact
-  // first-screen manifest after the game DOM has mounted before hiding loader.
-  await Promise.all([
-    ...mountedImages.map(waitForMountedImage),
-    preloadRequiredImages(getGameFirstPaintAssets(game)),
-  ]);
+  await Promise.all(mountedImages.map(waitForMountedImage));
   await (document.fonts?.ready ?? Promise.resolve());
-  onProgress?.(98);
 
   // Give decoded images and completed component layout two stable paint frames.
   await waitForAnimationFrame();
@@ -149,14 +135,16 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
   const chooserReadyNotifiedRef = useRef(false);
   const initialRouteSlotIdRef = useRef(getInitialSlotId());
   const openRequestRef = useRef(0);
-  const returningToChooserRef = useRef(false);
 
   useEffect(() => {
     let active = true;
 
     Promise.all([
       // Decode every chooser card/background image while the initial loader is up.
-      preloadRequiredImages(SLOT_CHOOSER_REQUIRED_ASSETS, setChooserLoadProgress),
+      preloadRequiredImages(
+        SLOT_CHOOSER_REQUIRED_ASSETS,
+        setChooserLoadProgress,
+      ),
       // Load the chooser JSX and its CSS before its first render.
       loadSlotChooser(),
       // Cache the lazy game screen module before any card can be selected.
@@ -179,7 +167,8 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
   }, []);
 
   useEffect(() => {
-    if (!chooserAssetsReady || chooserReadyNotifiedRef.current) return undefined;
+    if (!chooserAssetsReady || chooserReadyNotifiedRef.current)
+      return undefined;
     chooserReadyNotifiedRef.current = true;
     return notifyAfterPaint();
   }, [chooserAssetsReady]);
@@ -194,18 +183,13 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
     setPendingSlotId(slot.id);
 
     try {
-      // Fetch game JSX and the explicit main-screen image manifest together.
-      // Neither is allowed to mount/show until both have completed.
+      // Keep the chooser background loader visible while the selected game's
+      // code and first screen assets load together.
       await Promise.all([
         loadSelectedSlotGame(),
-        preloadGameAssets(slot, (progress) =>
-          setGameLoadProgress(Math.floor(progress * 0.9)),
-        ),
+        preloadGameAssets(slot, setGameLoadProgress),
       ]);
-      await preloadRequiredImages(getRequiredGameMainScreenAssets(slot));
       if (openRequestRef.current !== requestId) return;
-
-      setGameLoadProgress(92);
       setSelectedSlotId(slot.id);
       // Main-screen assets are ready; begin low-priority loading for optional
       // screens as soon as the game mounts.
@@ -218,34 +202,17 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
 
     if (openRequestRef.current !== requestId) return;
 
-    await waitForMountedGamePaint(slot, setGameLoadProgress);
+    await waitForMountedGamePaint(setGameLoadProgress);
 
     if (openRequestRef.current !== requestId) return;
     setPendingSlotId(null);
   };
 
-  const closeSlot = async () => {
-    // The chooser is unmounted while a game is active. Keep the game visible
-    // until each chooser image has been decoded again, so returning never
-    // reveals an empty grid followed by delayed logos.
-    if (returningToChooserRef.current) return;
-    returningToChooserRef.current = true;
-    const requestId = openRequestRef.current + 1;
-    openRequestRef.current = requestId;
+  const closeSlot = () => {
     setHashRoute(SLOT_CHOOSER_ROUTE);
+    openRequestRef.current += 1;
     setPendingSlotId(null);
-
-    try {
-      await preloadRequiredImages(SLOT_CHOOSER_REQUIRED_ASSETS);
-      await waitForAnimationFrame();
-      await waitForAnimationFrame();
-      if (openRequestRef.current !== requestId) return;
-      setSelectedSlotId(null);
-    } finally {
-      if (openRequestRef.current === requestId) {
-        returningToChooserRef.current = false;
-      }
-    }
+    setSelectedSlotId(null);
   };
 
   useEffect(() => {
@@ -294,5 +261,3 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
     slotChooserInteractive: !selectedSlotId && !pendingSlotId,
   };
 }
-
-

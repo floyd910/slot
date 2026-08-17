@@ -136,6 +136,9 @@ export default function GameShell({ controller, game, onBackToSlots }) {
                   payoutMultiplier={paytableView.payoutMultiplier}
                   zeroPayoutMultiplier={paytableView.zeroPayoutMultiplier}
                   symbolAssets={game.assets.view2Symbols}
+                  symbolImageOverrides={game.assets.view2Info?.symbolImageOverrides}
+                  hiddenPayoutSymbols={game.assets.view2Info?.hiddenPayoutSymbols}
+                  hiddenSymbolTiles={game.assets.view2Info?.hiddenSymbolTiles}
                   onClose={() => actions.setShowPaytable(false)}
                 />
               )}

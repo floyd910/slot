@@ -70,7 +70,7 @@ const preloadResponseBytes = async (sources, onProgress) => {
   const totalBytes = weights.reduce((sum, length) => sum + length, 0);
   let loadedBytes = 0;
   const report = () =>
-    onProgress?.(Math.min(99, Math.floor((loadedBytes / totalBytes) * 100)));
+    onProgress?.(Math.min(100, Math.floor((loadedBytes / totalBytes) * 100)));
 
   await Promise.all(
     responses.map(async (response, index) => {
@@ -409,41 +409,23 @@ const isAssetAllowedForGame = (src, game) => {
 };
 
 export const getGameView2Assets = (game) => {
-  if (game?.id === "babylon") {
-    return Object.values(game.assets?.view2Symbols ?? {})
-      .flatMap(({ background, staticImage, winFrames = [] }) => [
+  const configuredSymbols = game?.assets?.view2Symbols;
+
+  // Themed games keep their own backgrounds and static symbols, while the
+  // shared Game 3 animated WebPs provide their lightweight win animation.
+  if (configuredSymbols) {
+    return Object.values(configuredSymbols)
+      .flatMap(({ background, staticImage, animatedImage, winFrames = [] }) => [
         background,
         staticImage,
-        ...winFrames,
-      ])
-      .filter(Boolean);
-  }
-  if (game?.id === "korvonsaroi-karavan") {
-    return Object.values(game.assets?.view2Symbols ?? {})
-      .flatMap(({ background, staticImage, winFrames = [] }) => [
-        background,
-        staticImage,
+        animatedImage,
         ...winFrames,
       ])
       .filter(Boolean);
   }
 
-  if (game?.id === "marvorid-djemchug") {
-    return Object.values(game.assets?.view2Symbols ?? {})
-      .flatMap(({ background, staticImage, winFrames = [] }) => [
-        background,
-        staticImage,
-        ...winFrames,
-      ])
-      .filter(Boolean);
-  }
-
-  if (game?.id === "khocha-afandi") return GAME6_VIEW2_ASSETS;
-  if (game?.id === "egypt") return GAME4_VIEW2_ASSETS;
-  if (game?.id === "kadima-drevnii") return GAME5_VIEW2_ASSETS;
   return GAME3_VIEW2_ASSETS;
 };
-
 // Complete main-screen contract: all main-screen artwork is decoded before
 // the game is mounted. View 2 remains deferred until after main-screen mount.
 export const getRequiredGameMainScreenAssets = (game) =>
@@ -508,10 +490,12 @@ export const preloadGameAssets = (game, onProgress) => {
     return cached;
   }
 
+  const requiredAssets = getRequiredGameMainScreenAssets(game);
   const promise = Promise.all([
-    preloadRequiredImages(
-      getRequiredGameMainScreenAssets(game),
-      onProgress,
+    // Stream required files first: percentage is weighted by their real bytes.
+    // Decode the cached responses before the game is allowed to open.
+    preloadResponseBytes(requiredAssets, onProgress).then(() =>
+      preloadRequiredImages(requiredAssets),
     ),
     fontReady(),
     ...(game.id === "kadima-drevnii"

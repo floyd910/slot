@@ -16,7 +16,7 @@ const VIEW2_COPY = {
   },
 };
 
-const View2SymbolAssetsContext = createContext({});
+const View2SymbolAssetsContext = createContext({ symbolAssets: {}, imageOverrides: {}, hiddenSymbolTiles: [] });
 
 const getSymbolImage = (symbol, symbolAssets) => {
   const gameAsset = symbolAssets?.[symbol];
@@ -34,7 +34,9 @@ const getSymbolImage = (symbol, symbolAssets) => {
 };
 
 function SymbolTile({ symbol, imageSymbol = symbol, className = "" }) {
-  const symbolAssets = useContext(View2SymbolAssetsContext);
+  const { symbolAssets, imageOverrides, hiddenSymbolTiles } = useContext(View2SymbolAssetsContext);
+
+  if (hiddenSymbolTiles.includes(symbol)) return null;
 
   return (
     <span
@@ -43,7 +45,7 @@ function SymbolTile({ symbol, imageSymbol = symbol, className = "" }) {
     >
       <img
         className="view2-info-symbol__item"
-        src={getSymbolImage(imageSymbol, symbolAssets)}
+        src={getSymbolImage(imageOverrides[symbol] ?? imageSymbol, symbolAssets)}
         alt=""
       />
     </span>
@@ -84,12 +86,17 @@ export default function View2Paytable({
   payoutMultiplier,
   zeroPayoutMultiplier = payoutMultiplier,
   symbolAssets = {},
+  symbolImageOverrides = {},
+  hiddenPayoutSymbols = [],
+  hiddenSymbolTiles = [],
   onClose,
 }) {
   const copy = VIEW2_COPY[language] ?? VIEW2_COPY.ru;
+  const showsSymbolEight = !hiddenPayoutSymbols.includes(8);
+  const showsSymbolNine = !hiddenPayoutSymbols.includes(9);
 
   return (
-    <View2SymbolAssetsContext.Provider value={symbolAssets}>
+    <View2SymbolAssetsContext.Provider value={{ symbolAssets, imageOverrides: symbolImageOverrides, hiddenSymbolTiles }}>
       <div className="view2-info-paytable" aria-label={copy.ariaLabel}>
         {onClose && (
           <div className="view2-info-inline__close-wrap">
@@ -228,17 +235,19 @@ export default function View2Paytable({
           </article>
 
           <div className="info-card info-bottom-right">
-            <div className="right-top">
-              <PayoutCard
-                className="--right-middle"
-                symbol={9}
-                counts={[5, 4, 3]}
-                payoutMultiplier={payoutMultiplier}
-              />
-              <div className="left_top_symbols">
-                <SymbolTile symbol={9} />
+            {showsSymbolNine && (
+              <div className="right-top">
+                <PayoutCard
+                  className="--right-middle"
+                  symbol={9}
+                  counts={[5, 4, 3]}
+                  payoutMultiplier={payoutMultiplier}
+                />
+                <div className="left_top_symbols">
+                  <SymbolTile symbol={9} />
+                </div>
               </div>
-            </div>
+            )}
 
             <div className="right-bottom">
               <PayoutCard
@@ -285,17 +294,19 @@ export default function View2Paytable({
             payoutMultiplier={zeroPayoutMultiplier}
           />
 
-          <div className="view2-info-mobile__row">
-            <div className="view2-info-mobile__symbols">
-              <SymbolTile symbol={9} />
+          {showsSymbolNine && (
+            <div className="view2-info-mobile__row">
+              <div className="view2-info-mobile__symbols">
+                <SymbolTile symbol={9} />
+              </div>
+              <PayoutCard
+                className="view2-info-mobile__box"
+                symbol={9}
+                counts={[5, 4, 3]}
+                payoutMultiplier={payoutMultiplier}
+              />
             </div>
-            <PayoutCard
-              className="view2-info-mobile__box"
-              symbol={9}
-              counts={[5, 4, 3]}
-              payoutMultiplier={payoutMultiplier}
-            />
-          </div>
+          )}
 
           <div className="view2-info-mobile__symbols">
             <SymbolTile symbol={8} />
