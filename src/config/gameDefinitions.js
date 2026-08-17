@@ -129,7 +129,7 @@ const game7WinFrames = (symbol, skippedFrameIndexes = []) => {
 const game7View2Symbol = (symbol, staticImage) =>
   Object.freeze({
     staticImage,
-    animatedImage: "/assets/img/animations/game7/" + symbol + "/win.webp",
+    animatedImage: "/assets/img/animations/game7/" + symbol + "/win.avif",
   });
 const game1View2Symbol = (symbol, staticImage) =>
   Object.freeze({
@@ -198,7 +198,7 @@ const game6WinFrames = (symbol) =>
 const game6View2Symbol = (symbol, staticImage) =>
   Object.freeze({
     staticImage,
-    animatedImage: "/assets/img/animations/game6/" + symbol + "/win.webp",
+    animatedImage: "/assets/img/animations/game6/" + symbol + "/win.avif",
   });
 
 const GAME6_ASSETS = Object.freeze({
@@ -233,7 +233,7 @@ const game4WinFrames = (symbol) =>
 const game4View2Symbol = (symbol, staticImage) =>
   Object.freeze({
     staticImage,
-    animatedImage: "/assets/img/animations/game4/" + symbol + "/win.webp",
+    animatedImage: "/assets/img/animations/game4/" + symbol + "/win.avif",
   });
 
 const GAME4_ASSETS = Object.freeze({

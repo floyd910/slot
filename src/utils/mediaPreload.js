@@ -428,11 +428,24 @@ export const getGameView2Assets = (game) => {
 };
 // Complete main-screen contract: all main-screen artwork is decoded before
 // the game is mounted. View 2 remains deferred until after main-screen mount.
+const getGameView2StaticAssets = (game) => {
+  const configuredSymbols = game?.assets?.view2Symbols;
+  if (configuredSymbols) {
+    return Object.values(configuredSymbols)
+      .flatMap(({ background, staticImage }) => [background, staticImage])
+      .filter(Boolean);
+  }
+
+  return GAME3_VIEW2_ASSETS.filter(
+    (src) => !src.includes("/assets/img/animations/"),
+  );
+};
 export const getRequiredGameMainScreenAssets = (game) =>
   uniqueUrls([
     game?.assets?.cover,
     game?.assets?.logo,
     ...getGameFirstPaintAssets(game),
+    ...getGameView2StaticAssets(game),
   ]).filter((src) => isAssetAllowedForGame(src, game));
 
 const getGameAudioAssets = (game) =>
@@ -446,7 +459,7 @@ const getGameAudioAssets = (game) =>
       : STARTUP_ASSETS.audio.filter((src) => !src.includes("/arabic-"));
 
 const loadDeferredStartupAssets = async (game) => {
-  const criticalUrls = new Set(uniqueUrls(getGameFirstPaintAssets(game)));
+  const criticalUrls = new Set(uniqueUrls(getRequiredGameMainScreenAssets(game)));
   const deferredImages = uniqueUrls([
     ...STARTUP_ASSETS.images,
     ...DEFERRED_GAME_IMAGE_ASSETS,
