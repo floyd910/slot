@@ -94,7 +94,7 @@
 }
 
 .configured-game[data-game-id="korvonsaroi-karavan"] .lottery-grid-view1-cell {
-  background: url("/assets/img/game1-korvonsaroi-karavan-cell-background.webp") center / 100% 100%;
+  background: url("/assets/img/game1-korvonsaroi-karavan-cell-background.avif") center / 100% 100%;
 }
 .configured-game[data-game-id="kadima-drevnii"] .lottery-grid-view1-cell {
   background: url("/assets/img/game5-view1-cell-background-optimized.webp") center / 100% 100%;
@@ -1071,7 +1071,7 @@
 .configured-game[data-game-id="korvonsaroi-karavan"]
   .lottery-grid-view1__top
   .lottery-grid-view1-cell--win-highlight {
-  background: url("/assets/img/game1-korvonsaroi-karavan-highlight-background.webp") center / 100% 100% no-repeat;
+  background: url("/assets/img/game1-korvonsaroi-karavan-highlight-background.avif") center / 100% 100% no-repeat;
 }
 .configured-game[data-game-id="babylon"] .lottery-grid-view1-cell {
   background: url("/assets/img/game7-babylon-cell-background.webp") center / 100% 100% no-repeat;

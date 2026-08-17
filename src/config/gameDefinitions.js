@@ -134,7 +134,7 @@ const game7View2Symbol = (symbol, staticImage) =>
 const game1View2Symbol = (symbol, staticImage) =>
   Object.freeze({
     staticImage,
-    animatedImage: "/assets/img/animations/game1/" + symbol + "/win.webp",
+    animatedImage: "/assets/img/animations/game1/" + symbol + "/win.avif",
   });
 const GAME1_ASSETS = Object.freeze({
   ...sharedPlaceholderAssets,

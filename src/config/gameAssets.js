@@ -1,33 +1,33 @@
 export const SLOT_CHOOSER_BACKGROUND_SRC = "/assets/img/chooser/background.avif";
 export const GAME1_CHOOSER_TILE_SRC =
   "/assets/img/chooser/game1-korvonsaroi-karavan.avif";
-export const GAME1_LOGO_SRC = "/assets/img/game1-korvonsaroi-karavan-header.webp";
+export const GAME1_LOGO_SRC = "/assets/img/game1-korvonsaroi-karavan-header.avif";
 export const GAME1_COVER_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-background.webp?v=20260814-purple";
+  "/assets/img/game1-korvonsaroi-karavan-background.avif?v=20260814-purple";
 export const GAME1_VIEW1_CELL_AND_VIEW2_SYMBOL_2_BACKGROUND_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-cell-background.webp";
+  "/assets/img/game1-korvonsaroi-karavan-cell-background.avif";
 export const GAME1_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-highlight-background.webp";
+  "/assets/img/game1-korvonsaroi-karavan-highlight-background.avif";
 export const GAME1_VIEW2_SYMBOL_4_BACKGROUND_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-view2-symbol4-background.webp";
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol4-background.avif";
 export const GAME1_VIEW2_SYMBOL_3_BACKGROUND_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-view2-symbol3-background.webp";
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol3-background.avif";
 export const GAME1_VIEW2_SYMBOL_6_BACKGROUND_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-view2-symbol6-background.webp";
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol6-background.avif";
 export const GAME1_VIEW2_SYMBOL_12_STATIC_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-view2-symbol12-static.webp";
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol12-static.avif";
 export const GAME1_VIEW2_SYMBOL_0_STATIC_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-view2-symbol0-static.webp";
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol0-static.avif";
 export const GAME1_VIEW2_SYMBOL_10_STATIC_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-view2-symbol10-static.webp";
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol10-static.avif";
 export const GAME1_VIEW2_SYMBOL_7_STATIC_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-view2-symbol7-static.webp";
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol7-static.avif";
 export const GAME1_VIEW2_SYMBOL_9_STATIC_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-view2-symbol9-static.webp";
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol9-static.avif";
 export const GAME1_VIEW2_SYMBOL_8_STATIC_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-view2-symbol8-static.webp";
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol8-static.avif";
 export const GAME1_VIEW2_SYMBOL_11_STATIC_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-view2-symbol11-static.webp";
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol11-static.avif";
 export const GAME4_COVER_SRC = "/assets/img/game4-background-lossless.webp";
 export const GAME4_LOGO_SRC = "/assets/img/game4-header-optimized.webp";
 export const GAME4_CHOOSER_TILE_SRC = "/assets/img/chooser/game4.avif";
