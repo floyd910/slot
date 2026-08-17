@@ -152,7 +152,6 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
       // Mount the game while progress remains below 100. Its controller and
       // first layout must be complete before the loader can truthfully finish.
       setSelectedSlotId(slot.id);
-      scheduleDeferredStartupAssets(slot);
       await waitForControllerReady();
       if (openRequestRef.current !== requestId) return;
       setGameLoadProgress(100);
@@ -168,6 +167,9 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
 
     if (openRequestRef.current !== requestId) return;
     setPendingSlotId(null);
+    // Optional View 2/media assets must never compete with the final loader
+    // paint. Begin them only after the game is already visible.
+    scheduleDeferredStartupAssets(slot);
   };
 
   const closeSlot = () => {
