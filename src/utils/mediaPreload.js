@@ -42,7 +42,7 @@ const uniqueUrls = (sources) => [
 const preloadResponseBytes = async (sources, onProgress) => {
   const urls = uniqueUrls(sources);
   if (urls.length === 0) {
-    onProgress?.(100);
+    onProgress?.(99);
     return;
   }
 
@@ -70,7 +70,7 @@ const preloadResponseBytes = async (sources, onProgress) => {
   const totalBytes = weights.reduce((sum, length) => sum + length, 0);
   let loadedBytes = 0;
   const report = () =>
-    onProgress?.(Math.min(100, Math.floor((loadedBytes / totalBytes) * 100)));
+    onProgress?.(Math.min(99, Math.floor((loadedBytes / totalBytes) * 99)));
 
   await Promise.all(
     responses.map(async (response, index) => {
@@ -486,7 +486,7 @@ export const preloadGameAssets = (game, onProgress) => {
         : "shared";
   const cached = gameAssetsPromises.get(cacheKey);
   if (cached) {
-    onProgress?.(100);
+    onProgress?.(99);
     return cached;
   }
 
@@ -503,6 +503,9 @@ export const preloadGameAssets = (game, onProgress) => {
       : []),
     ...STARTUP_ASSETS.videos.map(preloadVideo),
   ]).then(() => {
+    // All loader-blocking work has completed. The caller reserves 100% until
+    // the lazy game module is ready too.
+    onProgress?.(99);
     warmStartupAudio();
   }).catch((error) => {
     gameAssetsPromises.delete(cacheKey);

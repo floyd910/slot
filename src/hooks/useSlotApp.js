@@ -20,7 +20,6 @@ const SLOT_CHOOSER_REQUIRED_ASSETS = [
 const waitForAnimationFrame = () =>
   new Promise((resolve) => window.requestAnimationFrame(resolve));
 
-const MOUNTED_IMAGE_WAIT_MS = 8000;
 const SLOT_CHOOSER_ROUTE = "/slots";
 const readHashGameId = () => {
   const match = window.location.hash.match(/^#\/games\/([^/?#]+)$/);
@@ -51,72 +50,11 @@ const setHashRoute = (route) => {
   if (window.location.hash !== nextHash) window.location.hash = nextHash;
 };
 
-const waitForMountedImage = async (image) => {
-  if (!image.complete || image.naturalWidth === 0) {
-    await new Promise((resolve) => {
-      const timeoutId = window.setTimeout(resolve, MOUNTED_IMAGE_WAIT_MS);
-      const done = () => {
-        window.clearTimeout(timeoutId);
-        resolve();
-      };
-      image.addEventListener("load", done, { once: true });
-      image.addEventListener("error", done, { once: true });
-    });
-  }
-
-  if (image.decode) {
-    try {
-      await Promise.race([
-        image.decode(),
-        new Promise((resolve) =>
-          window.setTimeout(resolve, MOUNTED_IMAGE_WAIT_MS),
-        ),
-      ]);
-    } catch {
-      // A loaded browser-cached image can reject a redundant decode request.
-    }
-  }
-};
-
-const waitForControllerReady = () =>
-  new Promise((resolve) => {
-    const isReady = () =>
-      document.querySelector(
-        '.app-selected-game .frame-app[data-startup-loading="false"]',
-      );
-
-    if (isReady()) {
-      resolve();
-      return;
-    }
-
-    const observer = new MutationObserver(() => {
-      if (!isReady()) return;
-      observer.disconnect();
-      resolve();
-    });
-    observer.observe(document.body, {
-      attributes: true,
-      attributeFilter: ["data-startup-loading"],
-      childList: true,
-      subtree: true,
-    });
-  });
-
-const waitForMountedGamePaint = async (onProgress) => {
-  // Wait until React has committed and the game controller has completed bootstrap.
-  await waitForAnimationFrame();
-  await waitForControllerReady();
-  const mountedImages = Array.from(
-    document.querySelectorAll(".app-selected-game img"),
-  );
-  await Promise.all(mountedImages.map(waitForMountedImage));
-  await (document.fonts?.ready ?? Promise.resolve());
-
-  // Give decoded images and completed component layout two stable paint frames.
+const waitForMountedGamePaint = async () => {
+  // At this point every loader-required asset, font, and module is ready.
+  // Keep the overlay only for React's final mount and layout/paint frames.
   await waitForAnimationFrame();
   await waitForAnimationFrame();
-  onProgress?.(100);
 };
 
 const notifyAfterPaint = () => {
@@ -190,6 +128,7 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
         preloadGameAssets(slot, setGameLoadProgress),
       ]);
       if (openRequestRef.current !== requestId) return;
+      setGameLoadProgress(100);
       setSelectedSlotId(slot.id);
       // Main-screen assets are ready; begin low-priority loading for optional
       // screens as soon as the game mounts.
@@ -202,7 +141,7 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
 
     if (openRequestRef.current !== requestId) return;
 
-    await waitForMountedGamePaint(setGameLoadProgress);
+    await waitForMountedGamePaint();
 
     if (openRequestRef.current !== requestId) return;
     setPendingSlotId(null);
