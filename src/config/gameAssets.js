@@ -160,10 +160,11 @@ export const GAME7_SHELL_ASSETS = [
 ];
 
 export const GAME1_SHELL_ASSETS = [
+  // The game can paint its frame with these two images. Board skins are
+  // requested after mount so they never delay opening the game.
   GAME1_COVER_SRC,
   GAME1_LOGO_SRC,
   GAME1_VIEW1_CELL_AND_VIEW2_SYMBOL_2_BACKGROUND_SRC,
-  GAME1_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC,
 ];
 export const LOTTERY_PAINTBRUSH_SRC = "/assets/img/paintbrush.png";
 export const GAME_HOME_ICON_SRC = "/img/header/games-home.png";
