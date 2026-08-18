@@ -11,11 +11,7 @@ export default function StartupLoader({ ready, leaving, variant = "default", pro
       const measured = Math.max(0, Math.min(100, Math.round(measuredProgress)));
       setProgress((current) => Math.max(current, measured));
 
-      if (measured > 0) return undefined;
-      const interval = window.setInterval(() => {
-        setProgress((current) => Math.min(12, current + 1));
-      }, 120);
-      return () => window.clearInterval(interval);
+      return undefined;
     }
 
     if (ready) {

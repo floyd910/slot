@@ -418,8 +418,8 @@
   display: block;
   content: "";
   background: #000
-    var(--double-scene-background, url("/assets/img/double-scene-bg.png")) 50%
-    50% / cover no-repeat;
+    var(--double-scene-background, url("/assets/img/double-scene-bg.png"))
+    var(--double-scene-background-position, 50% 50%) / cover no-repeat;
   pointer-events: none;
 }
 
@@ -480,35 +480,4 @@
     left: 30px;
     transform: none;
   }
-}
-/* Egypt chest geometry: all three files occupy the same CSS width. Offsets
-   compensate only for their different transparent source padding, so every
-   reveal stays in the closed-chest frame regardless of side or result. */
-.view2-double--egypt {
-  --winning-chest-width: var(--closed-chest-width);
-  --empty-chest-width: var(--closed-chest-width);
-  --winning-chest-offset: calc(var(--chest-frame-size) * 0.0244);
-  --empty-chest-offset: calc(var(--chest-frame-size) * -0.0244);
-}
-
-/* Gold source faces left; the closed source faces right. */
-.view2-double--egypt .view2-double__chest--winning {
-  --chest-shift-x: calc(var(--chest-frame-size) * -0.0083);
-}
-
-.view2-double--egypt .view2-double__chest--empty {
-  --chest-shift-x: calc(var(--chest-frame-size) * -0.0083);
-}
-
-.view2-double--egypt
-  .view2-double__choice--right
-  .view2-double__chest--winning {
-  --chest-shift-x: calc(var(--chest-frame-size) * 0.0083);
-}
-
-.view2-double--egypt .view2-double__choice--right .view2-double__chest--empty {
-  --chest-shift-x: calc(var(--chest-frame-size) * 0.0083);
-} /* Egypt double scene keeps the floor aligned to the iframe bottom. */
-.configured-game[data-game-id="egypt"] .frame-app.doubling-active::before {
-  background-position: 50% 100%;
 }

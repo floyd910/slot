@@ -58,7 +58,7 @@ const collectImageSources = (...values) =>
     return [];
   });
 
-const SHARED_DICE_SYMBOL_ASSETS = [
+export const SHARED_DICE_SYMBOL_ASSETS = [
   "/assets/img/view2-symbol-1-static.webp?v=20260711-1",
   "/assets/img/view2-symbol-2-static.webp?v=20260711-2",
   "/assets/img/view2-symbol-3-static.webp?v=20260711-1",

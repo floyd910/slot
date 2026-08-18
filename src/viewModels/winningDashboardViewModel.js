@@ -1,6 +1,6 @@
 import {
   PAYOUT_COLUMNS,
-  PAYOUT_ROWS,
+  getPayoutRows,
   formatPayoutValue,
   getPayoutMultiplier,
 } from "../utils/payoutTable.js";
@@ -10,19 +10,20 @@ export const WINNING_DASHBOARD_COLUMNS = PAYOUT_COLUMNS.map((label, index) => ({
   label,
 }));
 
-export function buildWinningDashboardRows(stake, selectedCombination, gameId) {
-  const payoutRows =
-    gameId === "babylon"
-      ? PAYOUT_ROWS.filter(({ symbol }) => symbol <= 9)
-      : PAYOUT_ROWS;
+export function buildWinningDashboardRows(stake, selectedCombination, gameId, selectedCombinationId) {
+  const payoutRows = getPayoutRows(gameId);
 
-  return payoutRows.map((row) => ({
-    id: row.symbol,
-    values: row.values.map((value) =>
+  return payoutRows.map((row) => {
+    const values = row.values.map((value) =>
       formatPayoutValue(
         value,
-        getPayoutMultiplier(stake, selectedCombination, row.symbol),
+        getPayoutMultiplier(stake, selectedCombination, row.symbol, gameId, selectedCombinationId),
       ),
-    ),
-  }));
+    );
+
+    return {
+      id: row.symbol,
+      values,
+    };
+  });
 }

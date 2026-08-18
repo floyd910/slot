@@ -2,9 +2,6 @@ import { useView2DoubleSceneViewModel } from "../../hooks/useView2DoubleSceneVie
 import "./View2DoubleScene.css";
 
 export default function View2DoubleScene({
-  closedChestSource,
-  winningChestSource,
-  emptyChestSource,
   gameId,
   amount,
   ladderAmount,
@@ -66,8 +63,8 @@ export default function View2DoubleScene({
               {choice.isSelected && choice.status && <ChestSpotlight egypt={gameId === "egypt"} />}
               <div className="view2-double__chest-frame">
                 <img
-                  className={`view2-double__chest view2-double__chest--${choice.variant}${choice.isSelected && choice.variant !== "closed" ? " view2-double__chest--selected-reveal" : ""}${!choice.isSelected && choice.variant !== "closed" ? " view2-double__chest--other-reveal" : ""}${(choice.variant === "empty" && emptyChestSource ? choice.side === "left" : (choice.variant === "closed" && closedChestSource ? choice.side === "left" : choice.variant === "winning" && winningChestSource ? choice.side === "right" : choice.mirrored)) ? " view2-double__chest--mirrored" : ""}`}
-                  src={choice.variant === "closed" && closedChestSource ? closedChestSource : choice.variant === "winning" && winningChestSource ? winningChestSource : choice.variant === "empty" && emptyChestSource ? emptyChestSource : choice.source}
+                  className={`view2-double__chest view2-double__chest--${choice.variant}${choice.isSelected && choice.variant !== "closed" ? " view2-double__chest--selected-reveal" : ""}${!choice.isSelected && choice.variant !== "closed" ? " view2-double__chest--other-reveal" : ""}${choice.mirrored ? " view2-double__chest--mirrored" : ""}`}
+                  src={choice.source}
                   alt=""
                   aria-hidden="true"
                   decoding="sync"
@@ -83,9 +80,6 @@ export default function View2DoubleScene({
 
 function ChestImage({
   choice,
-  closedChestSource,
-  winningChestSource,
-  emptyChestSource,
   openingFrames,
 }) {
   const [openingFrame, setOpeningFrame] = useState(null);
@@ -108,20 +102,8 @@ function ChestImage({
     };
   }, [choice.variant, openingFrames]);
 
-  const source = choice.variant === "closed" && closedChestSource
-    ? closedChestSource
-    : choice.variant === "winning" && winningChestSource
-      ? winningChestSource
-      : choice.variant === "empty" && emptyChestSource
-        ? emptyChestSource
-        : choice.source;
-  const mirrored = choice.variant === "empty" && emptyChestSource
-    ? choice.side === "left"
-    : choice.variant === "closed" && closedChestSource
-      ? choice.side === "left"
-      : choice.variant === "winning" && winningChestSource
-        ? choice.side === "right"
-        : choice.mirrored;
+  const source = choice.source;
+  const mirrored = choice.mirrored;
   const isOpening = openingFrame !== null;
 
   return (

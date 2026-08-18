@@ -80,9 +80,6 @@ export default function GameContent({ controller, game, runtimeState }) {
     return (
       <section className="view2-double-screen" aria-busy={derived.isBusy}>
         <View2DoubleScene
-          closedChestSource={game.assets.doubleSceneClosedChest}
-          winningChestSource={game.assets.doubleSceneWinningChest}
-          emptyChestSource={game.assets.doubleSceneEmptyChest}
           gameId={game.id}
           amount={
             state.doublingState.currentAmount ?? state.spinResult?.WinSum ?? 0
@@ -227,6 +224,7 @@ export default function GameContent({ controller, game, runtimeState }) {
             gameId={game.id}
             stake={state.stake}
             selectedCombination={derived.selectedCombination}
+            selectedCombinationId={state.selectedCombinationId}
             spinResult={state.spinResult}
             doublingState={state.doublingState}
             revealComplete={state.gridAnimation === "settled"}

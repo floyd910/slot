@@ -6,11 +6,11 @@ import {
 } from "../../viewModels/winningDashboardViewModel.js";
 import "./WinningDashboard.css";
 
-export default function WinningsDashboard({ stake = 10, selectedCombination, gameId }) {
+export default function WinningsDashboard({ stake = 10, selectedCombination, selectedCombinationId, gameId }) {
   const { t } = useLanguage();
   const tableRows = useMemo(
-    () => buildWinningDashboardRows(stake, selectedCombination, gameId),
-    [stake, selectedCombination, gameId],
+    () => buildWinningDashboardRows(stake, selectedCombination, gameId, selectedCombinationId),
+    [stake, selectedCombination, selectedCombinationId, gameId],
   );
 
   return (

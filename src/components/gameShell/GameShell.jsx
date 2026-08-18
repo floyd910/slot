@@ -65,6 +65,8 @@ export default function GameShell({ controller, game, onBackToSlots }) {
   const paytableView = buildStandardPaytableViewModel({
     stake: state.stake,
     selectedCombination: derived.selectedCombination,
+    selectedCombinationId: state.selectedCombinationId,
+    gameId: game.id,
   });
   const runtimeState =
     derived.runtimeStateVisible && !isLanguageChanging && !showStartupLoader ? (
@@ -84,6 +86,8 @@ export default function GameShell({ controller, game, onBackToSlots }) {
         game.assets.doubleSceneBackground
           ? {
               "--double-scene-background": `url("${game.assets.doubleSceneBackground}")`,
+              "--double-scene-background-position":
+                game.assets.doubleSceneBackgroundPosition ?? "50% 50%",
             }
           : undefined
       }
@@ -133,6 +137,8 @@ export default function GameShell({ controller, game, onBackToSlots }) {
               state.paytableStatus !== "error" && (
                 <View2Paytable
                   language={language}
+                  gameId={game.id}
+                  selectedCombinationId={state.selectedCombinationId}
                   payoutMultiplier={paytableView.payoutMultiplier}
                   zeroPayoutMultiplier={paytableView.zeroPayoutMultiplier}
                   symbolAssets={game.assets.view2Symbols}
@@ -207,6 +213,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
             visualMode={state.visualMode}
             stake={state.stake}
             selectedCombination={derived.selectedCombination}
+            selectedCombinationId={state.selectedCombinationId}
             onClose={() => actions.setShowPaytable(false)}
           />
         )}

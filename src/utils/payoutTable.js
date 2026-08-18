@@ -18,6 +18,24 @@ export const PAYOUT_ROWS = [
   { symbol: 12, values: [10, 250, 2500, 9000] },
 ];
 
+// Babylon reference schedule: values below are normalized to a 1.00 bet.
+// At 25.00 and one selected line, the x3–x5 amounts exactly match
+// the supplied reference. The zero symbol is the only row affected by lines.
+export const BABYLON_PAYOUT_ROWS = [
+  { symbol: 0, values: [null, 2, 15, 50] },
+  { symbol: 1, values: [null, 5, 20, 100] },
+  { symbol: 2, values: [null, 5, 20, 100] },
+  { symbol: 3, values: [null, 5, 20, 100] },
+  { symbol: 4, values: [null, 5, 20, 100] },
+  { symbol: 5, values: [null, 10, 40, 200] },
+  { symbol: 6, values: [5, 15, 65, 250] },
+  { symbol: 7, values: [10, 25, 100, 500] },
+  { symbol: 8, values: [10, 30, 200, 1000] },
+  { symbol: 9, values: [10, 80, 1000, 5000] },
+];
+
+export const getPayoutRows = (gameId) =>
+  gameId === "babylon" ? BABYLON_PAYOUT_ROWS : PAYOUT_ROWS;
 const FALLBACK_GROUPS = {
   1: [["B1", "B2", "B3", "B4", "B5"]],
   3: [
@@ -60,6 +78,7 @@ export const toPayoutNumber = (value, fallback = 0) => {
 };
 
 export const getCombinationNumber = (selectedCombination) => {
+  // Groups are the actual selected lottery lines and update with the chooser.
   const groupCount = selectedCombination?.groups?.length;
   if (Number.isFinite(groupCount) && groupCount > 0) return groupCount;
 
@@ -84,14 +103,28 @@ export const getCombinationGroups = (
   return FALLBACK_GROUPS[combinationNumber] ?? FALLBACK_GROUPS[1];
 };
 
-export const getPayoutMultiplier = (stake, selectedCombination, symbol) => {
+export const getPayoutMultiplier = (
+  stake,
+  selectedCombination,
+  symbol,
+  gameId,
+  selectedCombinationId,
+) => {
   const betMultiplier =
     toPayoutNumber(stake, BASE_PAYOUT_STAKE) / BASE_PAYOUT_STAKE;
   if (Number(symbol) !== 0) return betMultiplier;
-  return (
-    betMultiplier *
-    (getCombinationNumber(selectedCombination) / BASE_ZERO_PAYOUT_COMBINATION)
+
+  // selectedCombinationId is the live chooser value; it must control zero
+  // payouts even when the session's combination object is stale.
+  const selectedLines = toPayoutNumber(
+    selectedCombinationId,
+    getCombinationNumber(selectedCombination),
   );
+  const lineMultiplier =
+    gameId === "babylon"
+      ? selectedLines
+      : selectedLines / BASE_ZERO_PAYOUT_COMBINATION;
+  return betMultiplier * lineMultiplier;
 };
 
 export const formatPayoutValue = (baseValue, multiplier) => {

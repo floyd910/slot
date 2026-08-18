@@ -3,6 +3,7 @@ import {
   GAME4_VIEW2_ASSETS,
   GAME5_VIEW2_ASSETS,
   GAME6_VIEW2_ASSETS,
+  SHARED_DICE_SYMBOL_ASSETS,
 } from "../config/view2Assets.js";
 import {
   DOUBLE_SCENE_ASSETS,
@@ -446,6 +447,7 @@ export const getRequiredGameMainScreenAssets = (game) =>
     game?.assets?.logo,
     ...getGameFirstPaintAssets(game),
     ...getGameView2StaticAssets(game),
+    ...SHARED_DICE_SYMBOL_ASSETS,
   ]).filter((src) => isAssetAllowedForGame(src, game));
 
 const getGameAudioAssets = (game) =>
@@ -463,6 +465,7 @@ const loadDeferredStartupAssets = async (game) => {
   const deferredImages = uniqueUrls([
     ...STARTUP_ASSETS.images,
     ...DEFERRED_GAME_IMAGE_ASSETS,
+    game?.assets?.doubleSceneBackground,
     ...getGameView2Assets(game),
     ...collectStylesheetImageUrls(),
   ]).filter((src) => !criticalUrls.has(src) && isAssetAllowedForGame(src, game));
@@ -550,17 +553,10 @@ export const preloadDoubleSceneAssets = () =>
   });
 
 export const preloadDeferredStartupAssets = (game) => {
-  const cacheKey = game?.id === "marvorid-djemchug"
-    ? "game2"
-    : game?.id === "khiradmandi-makor"
-    ? "game3"
-    : game?.id === "egypt"
-      ? "game4"
-      : game?.id === "kadima-drevnii"
-        ? "game5"
-      : game?.id === "khocha-afandi"
-        ? "game6"
-        : "shared";
+  // Each game owns a distinct double-scene background. Never share this cache
+  // between games, otherwise a prior game can prevent the later background
+  // from being requested.
+  const cacheKey = game?.id ?? "shared";
   if (!deferredStartupAssetsPromises.has(cacheKey)) {
     const promise = loadDeferredStartupAssets(game).catch((error) => {
       deferredStartupAssetsPromises.delete(cacheKey);
@@ -572,16 +568,11 @@ export const preloadDeferredStartupAssets = (game) => {
 };
 
 export const scheduleDeferredStartupAssets = (game) => {
-  const start = () => {
+  // This runs only after the game is visible. Start now rather than waiting for
+  // browser idle so double-scene backgrounds and shared chests are ready on View 2.
+  window.setTimeout(() => {
     preloadDeferredStartupAssets(game).catch((error) => console.error(error));
-  };
-
-  if ("requestIdleCallback" in window) {
-    window.requestIdleCallback(start, { timeout: 1500 });
-    return;
-  }
-
-  window.setTimeout(start, 0);
+  }, 0);
 };
 export const preloadWinAnimations = (game) =>
   preloadImages(

@@ -274,7 +274,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
 
   const selectedCombination = useMemo(
     () =>
-      combinations.find((item) => item.id === selectedCombinationId) ??
+      combinations.find((item) => String(item.id) === String(selectedCombinationId)) ??
       combinations[0],
     [combinations, selectedCombinationId],
   );

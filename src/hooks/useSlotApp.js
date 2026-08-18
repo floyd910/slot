@@ -89,6 +89,62 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
   const [chooserAssetsReady, setChooserAssetsReady] = useState(false);
   const [chooserLoadProgress, setChooserLoadProgress] = useState(0);
   const [gameLoadProgress, setGameLoadProgress] = useState(0);
+  const gameLoadProgressRef = useRef(0);
+  const gameLoadTargetRef = useRef(0);
+  const gameLoadFrameRef = useRef(0);
+  const gameLoadWaitersRef = useRef([]);
+
+  const resolveGameLoadWaiters = () => {
+    const current = gameLoadProgressRef.current;
+    const pending = gameLoadWaitersRef.current;
+    gameLoadWaitersRef.current = pending.filter(({ target, resolve }) => {
+      if (current < target) return true;
+      resolve();
+      return false;
+    });
+  };
+
+  const reportGameLoadProgress = (value) => {
+    const target = Math.max(
+      gameLoadTargetRef.current,
+      Math.max(0, Math.min(100, Math.round(value))),
+    );
+    gameLoadTargetRef.current = target;
+    if (gameLoadFrameRef.current) return;
+
+    const tick = () => {
+      const current = gameLoadProgressRef.current;
+      const next = Math.min(gameLoadTargetRef.current, current + 1);
+      if (next !== current) {
+        gameLoadProgressRef.current = next;
+        setGameLoadProgress(next);
+        resolveGameLoadWaiters();
+      }
+      if (gameLoadProgressRef.current < gameLoadTargetRef.current) {
+        gameLoadFrameRef.current = window.requestAnimationFrame(tick);
+      } else {
+        gameLoadFrameRef.current = 0;
+      }
+    };
+    gameLoadFrameRef.current = window.requestAnimationFrame(tick);
+  };
+
+  const resetGameLoadProgress = () => {
+    if (gameLoadFrameRef.current) {
+      window.cancelAnimationFrame(gameLoadFrameRef.current);
+      gameLoadFrameRef.current = 0;
+    }
+    gameLoadProgressRef.current = 0;
+    gameLoadTargetRef.current = 0;
+    setGameLoadProgress(0);
+  };
+
+  const waitForDisplayedGameProgress = (target) =>
+    gameLoadProgressRef.current >= target
+      ? Promise.resolve()
+      : new Promise((resolve) =>
+          gameLoadWaitersRef.current.push({ target, resolve }),
+        );
   const [selectedSlotId, setSelectedSlotId] = useState(getInitialSlotId);
   const [pendingSlotId, setPendingSlotId] = useState(null);
   const chooserReadyNotifiedRef = useRef(false);
@@ -138,7 +194,7 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
 
     const requestId = openRequestRef.current + 1;
     openRequestRef.current = requestId;
-    setGameLoadProgress(0);
+    resetGameLoadProgress();
     setPendingSlotId(slot.id);
 
     try {
@@ -146,15 +202,18 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
       // code and first screen assets load together.
       await Promise.all([
         loadSelectedSlotGame(),
-        preloadGameAssets(slot, setGameLoadProgress),
+        preloadGameAssets(slot, reportGameLoadProgress),
       ]);
+      if (openRequestRef.current !== requestId) return;
+      await waitForDisplayedGameProgress(99);
       if (openRequestRef.current !== requestId) return;
       // Mount the game while progress remains below 100. Its controller and
       // first layout must be complete before the loader can truthfully finish.
       setSelectedSlotId(slot.id);
       await waitForControllerReady();
       if (openRequestRef.current !== requestId) return;
-      setGameLoadProgress(100);
+      reportGameLoadProgress(100);
+      await waitForDisplayedGameProgress(100);
     } catch (assetError) {
       console.error(assetError);
       if (openRequestRef.current === requestId) setPendingSlotId(null);

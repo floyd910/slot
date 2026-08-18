@@ -54,6 +54,7 @@ export default function Paytable({
   gameId,
   stake = BASE_PAYOUT_STAKE,
   selectedCombination,
+  selectedCombinationId,
   onClose,
 }) {
   const { isLanguageChanging, language, t } = useLanguage();
@@ -61,6 +62,7 @@ export default function Paytable({
   const view = buildStandardPaytableViewModel({
     stake,
     selectedCombination,
+    selectedCombinationId,
     gameId,
   });
   useEscapeKey(onClose);
@@ -84,6 +86,8 @@ export default function Paytable({
       {!loading && !error && visualMode && (
         <View2Paytable
           language={language}
+          gameId={gameId}
+          selectedCombinationId={selectedCombinationId}
           payoutMultiplier={view.payoutMultiplier}
           zeroPayoutMultiplier={view.zeroPayoutMultiplier}
         />

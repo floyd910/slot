@@ -1,7 +1,7 @@
 import { createContext, useContext } from "react";
 import { VIEW2_SYMBOL_CONFIGS } from "../view2Symbols/index.jsx";
 import "./View2Paytable.css";
-import { getView2MatchPayout } from "../../viewModels/view2PaytableViewModel.js";
+import { getView2MatchPayout, getView2ZeroPayout } from "../../viewModels/view2PaytableViewModel.js";
 
 const VIEW2_COPY = {
   ru: {
@@ -16,7 +16,7 @@ const VIEW2_COPY = {
   },
 };
 
-const View2SymbolAssetsContext = createContext({ symbolAssets: {}, imageOverrides: {}, hiddenSymbolTiles: [] });
+const View2SymbolAssetsContext = createContext({ symbolAssets: {}, imageOverrides: {}, hiddenSymbolTiles: [], gameId: undefined });
 
 const getSymbolImage = (symbol, symbolAssets) => {
   const gameAsset = symbolAssets?.[symbol];
@@ -53,14 +53,36 @@ function SymbolTile({ symbol, imageSymbol = symbol, className = "" }) {
 }
 
 function PayoutRows({ symbol, counts, payoutMultiplier, compact = false }) {
+  const { gameId } = useContext(View2SymbolAssetsContext);
   return (
     <div className={`view2-info-payout-list${compact ? " --compact" : ""}`}>
       {counts.map((count) => {
-        const value = getView2MatchPayout(symbol, count, payoutMultiplier);
+        const value = getView2MatchPayout(symbol, count, payoutMultiplier, gameId);
 
         return (
           <div className="view2-info-payout-row" key={`${symbol}-${count}`}>
             <span>{count}x</span>
+            <span className={value ? undefined : "--empty"}>{value}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function ZeroPayoutRows({ payoutMultiplier, combinationId, compact = false }) {
+  const { gameId } = useContext(View2SymbolAssetsContext);
+  const selectedLines = Number(combinationId) || 1;
+  const lineMultiplier = gameId === "babylon" ? selectedLines : selectedLines / 9;
+  const zeroPayoutMultiplier = payoutMultiplier * lineMultiplier;
+
+  return (
+    <div className={`view2-info-payout-list${compact ? " --compact" : ""}`}>
+      {[5, 4, 3, 2].map((column) => {
+        const value = getView2ZeroPayout(column, zeroPayoutMultiplier, gameId);
+        return (
+          <div className="view2-info-payout-row" key={`zero-${column}`}>
+            <span>{column}x</span>
             <span className={value ? undefined : "--empty"}>{value}</span>
           </div>
         );
@@ -83,6 +105,8 @@ function PayoutCard({ className, symbol, counts, payoutMultiplier }) {
 
 export default function View2Paytable({
   language,
+  gameId,
+  selectedCombinationId,
   payoutMultiplier,
   zeroPayoutMultiplier = payoutMultiplier,
   symbolAssets = {},
@@ -92,11 +116,15 @@ export default function View2Paytable({
   onClose,
 }) {
   const copy = VIEW2_COPY[language] ?? VIEW2_COPY.ru;
+  const payoutSymbols =
+    gameId === "babylon"
+      ? { main: 9, topLeft: 7, topRight: 8, coefficient: 0 }
+      : { main: 12, topLeft: 8, topRight: 10, coefficient: 0 };
   const showsSymbolEight = !hiddenPayoutSymbols.includes(8);
   const showsSymbolNine = !hiddenPayoutSymbols.includes(9);
 
   return (
-    <View2SymbolAssetsContext.Provider value={{ symbolAssets, imageOverrides: symbolImageOverrides, hiddenSymbolTiles }}>
+    <View2SymbolAssetsContext.Provider value={{ symbolAssets, imageOverrides: symbolImageOverrides, hiddenSymbolTiles, gameId }}>
       <div className="view2-info-paytable" aria-label={copy.ariaLabel}>
         {onClose && (
           <div className="view2-info-inline__close-wrap">
@@ -123,8 +151,8 @@ export default function View2Paytable({
             </div>
             <PayoutCard
               className="--left-top"
-              symbol={8}
-              counts={[5, 4, 3]}
+              symbol={payoutSymbols.topLeft}
+              counts={gameId === "babylon" ? [5, 4, 3, 2] : [5, 4, 3]}
               payoutMultiplier={payoutMultiplier}
             />
           </div>
@@ -132,7 +160,7 @@ export default function View2Paytable({
             <div className="main-card-top">
               <SymbolTile symbol={12} className="--wild-main" />
               <PayoutRows
-                symbol={12}
+                symbol={payoutSymbols.main}
                 counts={[5, 4, 3, 2]}
                 payoutMultiplier={payoutMultiplier}
               />
@@ -153,9 +181,9 @@ export default function View2Paytable({
 
             <PayoutCard
               className="--right-top"
-              symbol={10}
+              symbol={payoutSymbols.topRight}
               counts={[5, 4, 3, 2]}
-              payoutMultiplier={zeroPayoutMultiplier}
+              payoutMultiplier={payoutMultiplier}
             />
           </div>
         </div>
@@ -192,10 +220,9 @@ export default function View2Paytable({
             <div className="zero-card-top">
               <SymbolTile symbol={0} className="--coeff-bag" />
               <div className="view2-info-coeff-card__payout">
-                <PayoutRows
-                  symbol={0}
-                  counts={[5, 4, 3, 2]}
-                  payoutMultiplier={zeroPayoutMultiplier}
+                <ZeroPayoutRows
+                  payoutMultiplier={payoutMultiplier}
+                  combinationId={selectedCombinationId}
                   compact
                 />
               </div>
@@ -270,7 +297,7 @@ export default function View2Paytable({
             <div className="main-card-top">
               <SymbolTile symbol={12} className="--wild-main" />
               <PayoutRows
-                symbol={12}
+                symbol={payoutSymbols.main}
                 counts={[5, 4, 3, 2]}
                 payoutMultiplier={payoutMultiplier}
               />
@@ -362,10 +389,9 @@ export default function View2Paytable({
             <div className="zero-card-top">
               <SymbolTile symbol={0} className="--coeff-bag" />
               <div className="view2-info-coeff-card__payout">
-                <PayoutRows
-                  symbol={0}
-                  counts={[5, 4, 3, 2]}
-                  payoutMultiplier={zeroPayoutMultiplier}
+                <ZeroPayoutRows
+                  payoutMultiplier={payoutMultiplier}
+                  combinationId={selectedCombinationId}
                   compact
                 />
               </div>
