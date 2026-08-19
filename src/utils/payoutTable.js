@@ -26,11 +26,11 @@ export const BABYLON_PAYOUT_ROWS = [
   { symbol: 1, values: [null, 5, 20, 100] },
   { symbol: 2, values: [null, 5, 20, 100] },
   { symbol: 3, values: [null, 5, 20, 100] },
-  { symbol: 4, values: [null, 5, 20, 100] },
+  { symbol: 4, values: [null, 10, 40, 200] },
   { symbol: 5, values: [null, 10, 40, 200] },
   { symbol: 6, values: [5, 15, 65, 250] },
-  { symbol: 7, values: [10, 25, 100, 500] },
-  { symbol: 8, values: [10, 30, 200, 1000] },
+  { symbol: 7, values: [5, 25, 100, 500] },
+  { symbol: 8, values: [5, 30, 200, 1000] },
   { symbol: 9, values: [10, 80, 1000, 5000] },
 ];
 

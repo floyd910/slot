@@ -78,7 +78,7 @@ function ZeroPayoutRows({ payoutMultiplier, combinationId, compact = false }) {
 
   return (
     <div className={`view2-info-payout-list${compact ? " --compact" : ""}`}>
-      {[5, 4, 3, 2].map((column) => {
+      {(gameId === "babylon" ? [5, 4, 3] : [5, 4, 3, 2]).map((column) => {
         const value = getView2ZeroPayout(column, zeroPayoutMultiplier, gameId);
         return (
           <div className="view2-info-payout-row" key={`zero-${column}`}>
@@ -192,25 +192,25 @@ export default function View2Paytable({
             <div className="left-top">
               <div className="left_top_symbols">
                 <SymbolTile symbol={6} />
-                <SymbolTile symbol={5} />
+                {gameId !== "babylon" && <SymbolTile symbol={5} />}
               </div>
 
               <PayoutCard
                 className="--left-middle"
-                symbol={5}
-                counts={[5, 4, 3]}
+                symbol={gameId === "babylon" ? 6 : 5}
+                counts={gameId === "babylon" ? [5, 4, 3, 2] : [5, 4, 3]}
                 payoutMultiplier={payoutMultiplier}
               />
             </div>
             <div className="left-bottom">
               <div className="left_top_symbols">
-                <SymbolTile symbol={1} />
+                {gameId === "babylon" ? <><SymbolTile symbol={3} /><SymbolTile symbol={2} /><SymbolTile symbol={1} /></> : <SymbolTile symbol={1} />}
               </div>
 
               <PayoutCard
                 className="--left-bottom"
                 symbol={1}
-                counts={[5, 4, 3, 2]}
+                counts={gameId === "babylon" ? [5, 4, 3] : [5, 4, 3, 2]}
                 payoutMultiplier={payoutMultiplier}
               />
             </div>
@@ -262,7 +262,7 @@ export default function View2Paytable({
           </article>
 
           <div className="info-card info-bottom-right">
-            {showsSymbolNine && (
+            {showsSymbolNine && gameId !== "babylon" && (
               <div className="right-top">
                 <PayoutCard
                   className="--right-middle"
@@ -284,9 +284,7 @@ export default function View2Paytable({
                 payoutMultiplier={payoutMultiplier}
               />
               <div className="left_top_symbols">
-                <SymbolTile symbol={4} />
-                <SymbolTile symbol={3} />
-                <SymbolTile symbol={2} />
+                {gameId === "babylon" ? <><SymbolTile symbol={5} /><SymbolTile symbol={4} /></> : <><SymbolTile symbol={4} /><SymbolTile symbol={3} /><SymbolTile symbol={2} /></>}
               </div>
             </div>
           </div>
@@ -316,12 +314,12 @@ export default function View2Paytable({
           </div>
           <PayoutCard
             className="view2-info-mobile__box"
-            symbol={10}
+            symbol={payoutSymbols.topRight}
             counts={[5, 4, 3, 2]}
-            payoutMultiplier={zeroPayoutMultiplier}
+            payoutMultiplier={payoutMultiplier}
           />
 
-          {showsSymbolNine && (
+          {showsSymbolNine && gameId !== "babylon" && (
             <div className="view2-info-mobile__row">
               <div className="view2-info-mobile__symbols">
                 <SymbolTile symbol={9} />
@@ -341,29 +339,27 @@ export default function View2Paytable({
           </div>
           <PayoutCard
             className="view2-info-mobile__box"
-            symbol={8}
-            counts={[5, 4, 3]}
+            symbol={payoutSymbols.topLeft}
+            counts={gameId === "babylon" ? [5, 4, 3, 2] : [5, 4, 3]}
             payoutMultiplier={payoutMultiplier}
           />
 
           <div className="view2-info-mobile__row">
             <div className="view2-info-mobile__symbols">
               <SymbolTile symbol={6} />
-              <SymbolTile symbol={5} />
+              {gameId !== "babylon" && <SymbolTile symbol={5} />}
             </div>
             <PayoutCard
               className="view2-info-mobile__box"
-              symbol={5}
-              counts={[5, 4, 3]}
+              symbol={gameId === "babylon" ? 6 : 5}
+              counts={gameId === "babylon" ? [5, 4, 3, 2] : [5, 4, 3]}
               payoutMultiplier={payoutMultiplier}
             />
           </div>
 
           <div className="view2-info-mobile__row">
             <div className="view2-info-mobile__symbols">
-              <SymbolTile symbol={4} />
-              <SymbolTile symbol={3} />
-              <SymbolTile symbol={2} />
+              {gameId === "babylon" ? <><SymbolTile symbol={5} /><SymbolTile symbol={4} /></> : <><SymbolTile symbol={4} /><SymbolTile symbol={3} /><SymbolTile symbol={2} /></>}
             </div>
             <PayoutCard
               className="view2-info-mobile__box"
@@ -375,12 +371,12 @@ export default function View2Paytable({
 
           <div className="view2-info-mobile__row">
             <div className="view2-info-mobile__symbols">
-              <SymbolTile symbol={1} />
+              {gameId === "babylon" ? <><SymbolTile symbol={3} /><SymbolTile symbol={2} /><SymbolTile symbol={1} /></> : <SymbolTile symbol={1} />}
             </div>
             <PayoutCard
               className="view2-info-mobile__box"
               symbol={1}
-              counts={[5, 4, 3, 2]}
+              counts={gameId === "babylon" ? [5, 4, 3] : [5, 4, 3, 2]}
               payoutMultiplier={payoutMultiplier}
             />
           </div>
