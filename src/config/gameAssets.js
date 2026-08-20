@@ -59,8 +59,8 @@ export const GAME6_CHOOSER_TILE_SRC = "/assets/img/chooser/game6.webp";
 export const GAME6_DOUBLE_SCENE_BACKGROUND_SRC =
   "/assets/img/game6-double-scene-background.png";
 export const GAME7_CHOOSER_TILE_SRC = "/assets/img/chooser/game7-babylon.webp";
-export const GAME8_CHOOSER_TILE_SRC = "/assets/img/chooser/game8-frukty.png";
-export const GAME8_LOGO_SRC = "/assets/img/game8-frukty-header.png";
+export const GAME8_CHOOSER_TILE_SRC = "/assets/img/chooser/game8-frukty.webp";
+export const GAME8_LOGO_SRC = "/assets/img/game8-frukty-header.webp";
 export const GAME8_COVER_SRC = "/assets/img/game8-frukty-background.webp";
 export const GAME8_VIEW2_SYMBOL_1_STATIC_SRC = "/assets/img/game8-frukty-view2-symbol1-static.webp";
 export const GAME8_VIEW2_SYMBOL_2_STATIC_SRC = "/assets/img/game8-frukty-view2-symbol2-static.webp";

@@ -427,29 +427,14 @@ export const getGameView2Assets = (game) => {
 
   return GAME3_VIEW2_ASSETS;
 };
-// Complete main-screen contract: all main-screen artwork is decoded before
-// the game is mounted. View 2 remains deferred until after main-screen mount.
-const getGameView2StaticAssets = (game) => {
-  const configuredSymbols = game?.assets?.view2Symbols;
-  if (configuredSymbols) {
-    return Object.values(configuredSymbols)
-      .flatMap(({ background, staticImage }) => [background, staticImage])
-      .filter(Boolean);
-  }
-
-  return GAME3_VIEW2_ASSETS.filter(
-    (src) => !src.includes("/assets/img/animations/"),
-  );
-};
+// The loader blocks only on View 1 artwork. Every View 2 image is deferred
+// until the game has opened, including the former shared dice assets.
 export const getRequiredGameMainScreenAssets = (game) =>
   uniqueUrls([
     game?.assets?.cover,
     game?.assets?.logo,
     ...getGameFirstPaintAssets(game),
-    ...getGameView2StaticAssets(game),
-    ...SHARED_DICE_SYMBOL_ASSETS,
   ]).filter((src) => isAssetAllowedForGame(src, game));
-
 const getGameAudioAssets = (game) =>
   game?.id === "khiradmandi-makor"
     ? STARTUP_ASSETS.audio
