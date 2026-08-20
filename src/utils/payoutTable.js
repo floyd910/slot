@@ -34,8 +34,22 @@ export const BABYLON_PAYOUT_ROWS = [
   { symbol: 9, values: [10, 80, 1000, 5000] },
 ];
 
-export const getPayoutRows = (gameId) =>
-  gameId === "babylon" ? BABYLON_PAYOUT_ROWS : PAYOUT_ROWS;
+export const FRUITS_PAYOUT_ROWS = [
+  { symbol: 0, values: [null, 10, 50, 250] },
+  { symbol: 1, values: [5, 20, 50, 200] },
+  { symbol: 2, values: [null, 20, 50, 200] },
+  { symbol: 3, values: [null, 20, 50, 200] },
+  { symbol: 4, values: [null, 20, 50, 200] },
+  { symbol: 5, values: [null, 50, 200, 500] },
+  { symbol: 6, values: [null, 50, 200, 500] },
+  { symbol: 7, values: [null, 100, 1000, 5000] },
+];
+
+export const getPayoutRows = (gameId) => {
+  if (gameId === "babylon") return BABYLON_PAYOUT_ROWS;
+  if (gameId === "fruits") return FRUITS_PAYOUT_ROWS;
+  return PAYOUT_ROWS;
+};
 const FALLBACK_GROUPS = {
   1: [["B1", "B2", "B3", "B4", "B5"]],
   3: [
@@ -112,7 +126,7 @@ export const getPayoutMultiplier = (
 ) => {
   const betMultiplier =
     toPayoutNumber(stake, BASE_PAYOUT_STAKE) / BASE_PAYOUT_STAKE;
-  if (Number(symbol) !== 0) return betMultiplier;
+  if (Number(symbol) !== 0 || gameId === "fruits") return betMultiplier;
 
   // selectedCombinationId is the live chooser value; it must control zero
   // payouts even when the session's combination object is stale.

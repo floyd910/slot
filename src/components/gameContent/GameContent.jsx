@@ -50,6 +50,11 @@ export default function GameContent({ controller, game, runtimeState }) {
 
   const drawNumber = lastTicket?.drawNumber ?? "—";
   const receiptNumber = lastTicket?.receiptNumber ?? "—";
+  const frameCombinations = game.id === "fruits"
+    ? state.combinations.filter(({ id }) => Number(id) === 5)
+    : state.combinations;
+  const frameSelectedCombinationId =
+    game.id === "fruits" ? 5 : state.selectedCombinationId;
 
   if (runtimeState) return runtimeState;
 
@@ -101,8 +106,8 @@ export default function GameContent({ controller, game, runtimeState }) {
     <>
       <aside className="main-container__left">
         <CombinationSelector
-          combinations={state.combinations}
-          selectedCombinationId={state.selectedCombinationId}
+          combinations={frameCombinations}
+          selectedCombinationId={frameSelectedCombinationId}
           disabled={derived.isBusy || derived.isDoublingLocked}
           onSelect={actions.selectCombination}
         />
@@ -224,7 +229,7 @@ export default function GameContent({ controller, game, runtimeState }) {
             gameId={game.id}
             stake={state.stake}
             selectedCombination={derived.selectedCombination}
-            selectedCombinationId={state.selectedCombinationId}
+            selectedCombinationId={frameSelectedCombinationId}
             spinResult={state.spinResult}
             doublingState={state.doublingState}
             revealComplete={state.gridAnimation === "settled"}

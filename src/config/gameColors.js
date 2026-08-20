@@ -46,6 +46,7 @@ export const GAME_COLORS = Object.freeze({
   "kadima-drevnii": placeholderPalette("#58d5c9"),
   "khocha-afandi": placeholderPalette("#8fb3ff"),
   "babylon": placeholderPalette("#b58cff"),
+  fruits: placeholderPalette("#de3bd3"),
   "double-bonus": placeholderPalette("#ff7a59"),
 });
 

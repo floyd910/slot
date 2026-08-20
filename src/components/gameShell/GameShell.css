@@ -1119,3 +1119,12 @@ button:disabled {
   object-fit: contain;
   z-index: 20;
 }
+/* Fruits has three chooser cards and eight payout rows: side panels follow their content. */
+.configured-game[data-game-id="fruits"] .view-1 .main-container__left,
+.configured-game[data-game-id="fruits"] .view-1 .main-container__right {
+  align-self: flex-start;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  overflow: visible;
+}

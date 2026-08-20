@@ -4,7 +4,7 @@ import { buildSlotChooserItems } from "../viewModels/slotChooserViewModel.js";
 
 export function useSlotChooserItems(interactive) {
   return useMemo(
-    () => buildSlotChooserItems({ interactive, slots: slotCatalog }),
+    () => buildSlotChooserItems({ interactive, slots: slotCatalog.filter(({ id }) => id !== "double-bonus") }),
     [interactive],
   );
 }

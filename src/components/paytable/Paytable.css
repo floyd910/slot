@@ -633,6 +633,18 @@
     rgba(255, 255, 255, 1) !important;
 }
 
+.info-modal[data-game-id="fruits"]:not(.--view2),
+.info-modal[data-game-id="fruits"]:not(.--view2) .info-paytable {
+  background:
+    linear-gradient(
+      145deg,
+      rgba(159, 0, 119, 1) 0%,
+      rgba(142, 0, 123, 1) 46.63%,
+      rgba(159, 0, 119, 1) 100%
+    ),
+    rgba(255, 255, 255, 1) !important;
+}
+
 /* Korvonsaroi Karavan View 1 info screen. */
 .info-modal[data-game-id="korvonsaroi-karavan"]:not(.--view2),
 .info-modal[data-game-id="korvonsaroi-karavan"]:not(.--view2) .info-paytable {
@@ -642,4 +654,14 @@
     rgb(142, 0, 128) 46.63%,
     rgb(119, 0, 159) 100%
   ) !important;
+}
+/* Fruits View 1 info screen: opaque purple surface. */
+.info-modal[data-game-id="fruits"]:not(.--view2),
+.info-modal[data-game-id="fruits"]:not(.--view2) .info-paytable {
+  background: linear-gradient(
+    145deg,
+    rgb(159, 0, 119) 0%,
+    rgb(142, 0, 123) 46.63%,
+    rgb(159, 0, 119) 100%
+  );
 }

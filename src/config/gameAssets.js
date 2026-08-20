@@ -1,163 +1,175 @@
-export const SLOT_CHOOSER_BACKGROUND_SRC = "/assets/img/chooser/background.avif";
+export const SLOT_CHOOSER_BACKGROUND_SRC = "/assets/img/chooser/background.webp";
 export const GAME1_CHOOSER_TILE_SRC =
-  "/assets/img/chooser/game1-korvonsaroi-karavan.avif";
-export const GAME1_LOGO_SRC = "/assets/img/game1-korvonsaroi-karavan-header.avif";
+  "/assets/img/chooser/game1-korvonsaroi-karavan.webp";
+export const GAME1_LOGO_SRC = "/assets/img/game1-korvonsaroi-karavan-header.webp";
 export const GAME1_DOUBLE_SCENE_BACKGROUND_SRC =
   "/assets/img/game1-double-scene-background.png";
 export const GAME1_COVER_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-background.avif?v=20260814-purple";
+  "/assets/img/game1-korvonsaroi-karavan-background.webp?v=20260814-purple";
 export const GAME1_VIEW1_CELL_AND_VIEW2_SYMBOL_2_BACKGROUND_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-cell-background.avif";
+  "/assets/img/game1-korvonsaroi-karavan-cell-background.webp";
 export const GAME1_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-highlight-background.avif";
+  "/assets/img/game1-korvonsaroi-karavan-highlight-background.webp";
 export const GAME1_VIEW2_SYMBOL_4_BACKGROUND_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-view2-symbol4-background.avif";
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol4-background.webp";
 export const GAME1_VIEW2_SYMBOL_3_BACKGROUND_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-view2-symbol3-background.avif";
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol3-background.webp";
 export const GAME1_VIEW2_SYMBOL_6_BACKGROUND_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-view2-symbol6-background.avif";
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol6-background.webp";
 export const GAME1_VIEW2_SYMBOL_12_STATIC_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-view2-symbol12-static.avif";
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol12-static.webp";
 export const GAME1_VIEW2_SYMBOL_0_STATIC_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-view2-symbol0-static.avif";
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol0-static.webp";
 export const GAME1_VIEW2_SYMBOL_10_STATIC_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-view2-symbol10-static.avif";
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol10-static.webp";
 export const GAME1_VIEW2_SYMBOL_7_STATIC_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-view2-symbol7-static.avif";
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol7-static.webp";
 export const GAME1_VIEW2_SYMBOL_9_STATIC_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-view2-symbol9-static.avif";
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol9-static.webp";
 export const GAME1_VIEW2_SYMBOL_8_STATIC_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-view2-symbol8-static.avif";
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol8-static.webp";
 export const GAME1_VIEW2_SYMBOL_11_STATIC_SRC =
-  "/assets/img/game1-korvonsaroi-karavan-view2-symbol11-static.avif";
-export const GAME4_COVER_SRC = "/assets/img/game4-background-lossless.avif";
-export const GAME4_LOGO_SRC = "/assets/img/game4-header-optimized.avif";
-export const GAME4_CHOOSER_TILE_SRC = "/assets/img/chooser/game4.avif";
-export const GAME4_VIEW1_CELL_BACKGROUND_SRC = "/assets/img/game4-view1-cell-background-optimized.avif";
-export const GAME4_VIEW1_HIGHLIGHT_BACKGROUND_SRC = "/assets/img/game4-view1-highlight-background-optimized.avif";
-export const GAME4_VIEW2_INFO_BACKGROUND_SRC = "/assets/img/game4-view2-symbol1-background-optimized.avif";
-export const GAME4_VIEW2_INFO_SMALL_BOX_BACKGROUND_SRC = "/assets/img/game4-view2-info-small-box-background-optimized.avif";
-export const GAME4_DOUBLE_SCENE_BACKGROUND_SRC = "/assets/img/game4-double-scene-bg.avif";
-export const GAME4_VIEW2_SYMBOL_0_STATIC_SRC = "/assets/img/game4-view2-symbol0-static-optimized.avif";
-export const GAME4_VIEW2_SYMBOL_7_STATIC_SRC = "/assets/img/game4-view2-symbol7-static-optimized.avif";
-export const GAME4_VIEW2_SYMBOL_8_STATIC_SRC = "/assets/img/game4-view2-symbol8-static-optimized.avif";
-export const GAME4_VIEW2_SYMBOL_9_STATIC_SRC = "/assets/img/game4-view2-symbol9-static-optimized.avif";
-export const GAME4_VIEW2_SYMBOL_10_STATIC_SRC = "/assets/img/game4-view2-symbol10-static-optimized.avif";
-export const GAME4_VIEW2_SYMBOL_11_STATIC_SRC = "/assets/img/game4-view2-symbol11-static-optimized.avif";
-export const GAME4_VIEW2_SYMBOL_12_STATIC_SRC = "/assets/img/game4-view2-symbol12-static-optimized.avif";
+  "/assets/img/game1-korvonsaroi-karavan-view2-symbol11-static.webp";
+export const GAME4_COVER_SRC = "/assets/img/game4-background-lossless.webp";
+export const GAME4_LOGO_SRC = "/assets/img/game4-header-optimized.webp";
+export const GAME4_CHOOSER_TILE_SRC = "/assets/img/chooser/game4.webp";
+export const GAME4_VIEW1_CELL_BACKGROUND_SRC = "/assets/img/game4-view1-cell-background-optimized.webp";
+export const GAME4_VIEW1_HIGHLIGHT_BACKGROUND_SRC = "/assets/img/game4-view1-highlight-background-optimized.webp";
+export const GAME4_VIEW2_INFO_BACKGROUND_SRC = "/assets/img/game4-view2-symbol1-background-optimized.webp";
+export const GAME4_VIEW2_INFO_SMALL_BOX_BACKGROUND_SRC = "/assets/img/game4-view2-info-small-box-background-optimized.webp";
+export const GAME4_DOUBLE_SCENE_BACKGROUND_SRC = "/assets/img/game4-double-scene-bg.webp";
+export const GAME4_VIEW2_SYMBOL_0_STATIC_SRC = "/assets/img/game4-view2-symbol0-static-optimized.webp";
+export const GAME4_VIEW2_SYMBOL_7_STATIC_SRC = "/assets/img/game4-view2-symbol7-static-optimized.webp";
+export const GAME4_VIEW2_SYMBOL_8_STATIC_SRC = "/assets/img/game4-view2-symbol8-static-optimized.webp";
+export const GAME4_VIEW2_SYMBOL_9_STATIC_SRC = "/assets/img/game4-view2-symbol9-static-optimized.webp";
+export const GAME4_VIEW2_SYMBOL_10_STATIC_SRC = "/assets/img/game4-view2-symbol10-static-optimized.webp";
+export const GAME4_VIEW2_SYMBOL_11_STATIC_SRC = "/assets/img/game4-view2-symbol11-static-optimized.webp";
+export const GAME4_VIEW2_SYMBOL_12_STATIC_SRC = "/assets/img/game4-view2-symbol12-static-optimized.webp";
 export const GAME4_VIEW2_CELL_BACKGROUND_ASSETS = [
-  "/assets/img/game4-view2-symbol1-background-optimized.avif",
-  "/assets/img/game4-view2-symbol2-background-optimized.avif",
-  "/assets/img/game4-view2-symbol3-background-optimized.avif",
-  "/assets/img/game4-view2-symbol4-background-optimized.avif",
-  "/assets/img/game4-view2-symbol5-background-optimized.avif",
-  "/assets/img/game4-view2-symbol6-background-optimized.avif",
+  "/assets/img/game4-view2-symbol1-background-optimized.webp",
+  "/assets/img/game4-view2-symbol2-background-optimized.webp",
+  "/assets/img/game4-view2-symbol3-background-optimized.webp",
+  "/assets/img/game4-view2-symbol4-background-optimized.webp",
+  "/assets/img/game4-view2-symbol5-background-optimized.webp",
+  "/assets/img/game4-view2-symbol6-background-optimized.webp",
 ];
-export const GAME6_COVER_SRC = "/assets/img/game6-background-lossless.avif";
-export const GAME6_LOGO_SRC = "/assets/img/game6-header-optimized.avif";
-export const GAME6_CHOOSER_TILE_SRC = "/assets/img/chooser/game6.avif";
+export const GAME6_COVER_SRC = "/assets/img/game6-background-lossless.webp";
+export const GAME6_LOGO_SRC = "/assets/img/game6-header-optimized.webp";
+export const GAME6_CHOOSER_TILE_SRC = "/assets/img/chooser/game6.webp";
 export const GAME6_DOUBLE_SCENE_BACKGROUND_SRC =
   "/assets/img/game6-double-scene-background.png";
-export const GAME7_CHOOSER_TILE_SRC = "/assets/img/chooser/game7-babylon.avif";
+export const GAME7_CHOOSER_TILE_SRC = "/assets/img/chooser/game7-babylon.webp";
+export const GAME8_CHOOSER_TILE_SRC = "/assets/img/chooser/game8-frukty.png";
+export const GAME8_LOGO_SRC = "/assets/img/game8-frukty-header.png";
+export const GAME8_COVER_SRC = "/assets/img/game8-frukty-background.webp";
+export const GAME8_VIEW2_SYMBOL_1_STATIC_SRC = "/assets/img/game8-frukty-view2-symbol1-static.webp";
+export const GAME8_VIEW2_SYMBOL_2_STATIC_SRC = "/assets/img/game8-frukty-view2-symbol2-static.webp";
+export const GAME8_VIEW2_SYMBOL_0_STATIC_SRC = "/assets/img/game8-frukty-view2-symbol0-static.webp";
+export const GAME8_VIEW2_SYMBOL_3_STATIC_SRC = "/assets/img/game8-frukty-view2-symbol3-static.webp";
+export const GAME8_VIEW2_SYMBOL_4_STATIC_SRC = "/assets/img/game8-frukty-view2-symbol4-static.webp";
+export const GAME8_VIEW2_SYMBOL_5_STATIC_SRC = "/assets/img/game8-frukty-view2-symbol5-static.webp";
+export const GAME8_VIEW2_SYMBOL_6_STATIC_SRC = "/assets/img/game8-frukty-view2-symbol6-static.webp";
+export const GAME8_VIEW2_SYMBOL_7_STATIC_SRC = "/assets/img/game8-frukty-view2-symbol7-static.webp";
 export const GAME7_DOUBLE_SCENE_BACKGROUND_SRC =
   "/assets/img/game7-babylon-double-scene-background.png";
 export const GAME7_COVER_SRC =
-  "/assets/img/game7-babylon-background.avif";
-export const GAME7_LOGO_SRC = "/assets/img/game7-babylon-header.avif";
+  "/assets/img/game7-babylon-background.webp";
+export const GAME7_LOGO_SRC = "/assets/img/game7-babylon-header.webp";
 export const GAME7_VIEW1_CELL_AND_VIEW2_SYMBOL_2_BACKGROUND_SRC =
-  "/assets/img/game7-babylon-cell-background.avif";
+  "/assets/img/game7-babylon-cell-background.webp";
 export const GAME7_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC =
-  "/assets/img/game7-babylon-highlight-background.avif";
+  "/assets/img/game7-babylon-highlight-background.webp";
 export const GAME7_VIEW2_SYMBOL_1_BACKGROUND_SRC =
-  "/assets/img/game7-babylon-view2-symbol1-background.avif";
+  "/assets/img/game7-babylon-view2-symbol1-background.webp";
 export const GAME7_VIEW2_SYMBOL_4_BACKGROUND_SRC =
-  "/assets/img/game7-babylon-view2-symbol4-background.avif";
+  "/assets/img/game7-babylon-view2-symbol4-background.webp";
 export const GAME7_VIEW2_SYMBOL_6_BACKGROUND_SRC =
-  "/assets/img/game7-babylon-view2-symbol6-background.avif";
+  "/assets/img/game7-babylon-view2-symbol6-background.webp";
 export const GAME7_VIEW2_SYMBOL_3_BACKGROUND_SRC =
-  "/assets/img/game7-babylon-view2-symbol3-background.avif";
+  "/assets/img/game7-babylon-view2-symbol3-background.webp";
 export const GAME7_VIEW2_SYMBOL_0_STATIC_SRC =
-  "/assets/img/game7-babylon-view2-symbol0-static.avif";
+  "/assets/img/game7-babylon-view2-symbol0-static.webp";
 export const GAME7_VIEW2_SYMBOL_9_STATIC_SRC =
-  "/assets/img/game7-babylon-view2-symbol9-static.avif";
+  "/assets/img/game7-babylon-view2-symbol9-static.webp";
 export const GAME7_VIEW2_SYMBOL_7_STATIC_SRC =
-  "/assets/img/game7-babylon-view2-symbol7-static.avif";
+  "/assets/img/game7-babylon-view2-symbol7-static.webp";
 export const GAME7_VIEW2_SYMBOL_8_STATIC_SRC =
-  "/assets/img/game7-babylon-view2-symbol8-static.avif";
-export const GAME5_CHOOSER_TILE_SRC = "/assets/img/chooser/game5.avif";
-export const GAME5_COVER_SRC = "/assets/img/game5-background-lossless.avif";
+  "/assets/img/game7-babylon-view2-symbol8-static.webp";
+export const GAME5_CHOOSER_TILE_SRC = "/assets/img/chooser/game5.webp";
+export const GAME5_COVER_SRC = "/assets/img/game5-background-lossless.webp";
 export const GAME5_DOUBLE_SCENE_BACKGROUND_SRC =
   "/assets/img/game5-kadima-drevnii-double-scene-background.png";
-export const GAME5_LOGO_SRC = "/assets/img/game5-header-optimized.avif";
-export const GAME5_VIEW1_CELL_BACKGROUND_SRC = "/assets/img/game5-view1-cell-background-optimized.avif";
-export const GAME5_VIEW1_HIGHLIGHT_BACKGROUND_SRC = "/assets/img/game5-view1-highlight-background-optimized.avif";
-export const GAME5_VIEW2_SYMBOL_1_BACKGROUND_SRC = "/assets/img/game5-view2-symbol1-background.avif";
-export const GAME5_VIEW2_SYMBOL_2_BACKGROUND_SRC = "/assets/img/game5-view2-symbol2-background.avif";
-export const GAME5_VIEW2_SYMBOL_3_BACKGROUND_SRC = "/assets/img/game5-view2-symbol3-background.avif";
-export const GAME5_VIEW2_SYMBOL_4_BACKGROUND_SRC = "/assets/img/game5-view2-symbol4-background.avif";
-export const GAME5_VIEW2_SYMBOL_5_BACKGROUND_SRC = "/assets/img/game5-view2-symbol5-background.avif";
-export const GAME5_VIEW2_SYMBOL_6_BACKGROUND_SRC = "/assets/img/game5-view2-symbol6-background.avif";
-export const GAME5_VIEW2_SYMBOL_12_STATIC_SRC = "/assets/img/game5-view2-symbol12-static.avif";
-export const GAME5_VIEW2_SYMBOL_0_STATIC_SRC = "/assets/img/game5-view2-symbol0-static.avif";
-export const GAME5_VIEW2_SYMBOL_8_STATIC_SRC = "/assets/img/game5-view2-symbol8-static.avif";
-export const GAME5_VIEW2_SYMBOL_7_STATIC_SRC = "/assets/img/game5-view2-symbol7-static.avif";
-export const GAME5_VIEW2_SYMBOL_10_STATIC_SRC = "/assets/img/game5-view2-symbol10-static.avif";
-export const GAME5_VIEW2_SYMBOL_11_STATIC_SRC = "/assets/img/game5-view2-symbol11-static.avif";
-export const GAME5_VIEW2_SYMBOL_9_STATIC_SRC = "/assets/img/game5-view2-symbol9-static.avif";
-export const GAME6_VIEW1_CELL_BACKGROUND_SRC = "/assets/img/game6-view1-cell-background-optimized.avif";
-export const GAME6_VIEW1_HIGHLIGHT_BACKGROUND_SRC = "/assets/img/game6-view1-highlight-background-optimized.avif";
-export const GAME6_VIEW2_SYMBOL_0_STATIC_SRC = "/assets/img/game6-view2-symbol0-static.avif";
-export const GAME6_VIEW2_SYMBOL_7_STATIC_SRC = "/assets/img/game6-view2-symbol7-static.avif";
-export const GAME6_VIEW2_SYMBOL_8_STATIC_SRC = "/assets/img/game6-view2-symbol8-static.avif?v=20260804-full-no-crop";
-export const GAME6_VIEW2_SYMBOL_10_STATIC_SRC = "/assets/img/game6-view2-symbol10-static.avif";
-export const GAME6_VIEW2_SYMBOL_11_STATIC_SRC = "/assets/img/game6-view2-symbol11-static.avif";
-export const GAME6_VIEW2_SYMBOL_12_STATIC_SRC = "/assets/img/game6-view2-symbol12-static.avif";
+export const GAME5_LOGO_SRC = "/assets/img/game5-header-optimized.webp";
+export const GAME5_VIEW1_CELL_BACKGROUND_SRC = "/assets/img/game5-view1-cell-background-optimized.webp";
+export const GAME5_VIEW1_HIGHLIGHT_BACKGROUND_SRC = "/assets/img/game5-view1-highlight-background-optimized.webp";
+export const GAME5_VIEW2_SYMBOL_1_BACKGROUND_SRC = "/assets/img/game5-view2-symbol1-background.webp";
+export const GAME5_VIEW2_SYMBOL_2_BACKGROUND_SRC = "/assets/img/game5-view2-symbol2-background.webp";
+export const GAME5_VIEW2_SYMBOL_3_BACKGROUND_SRC = "/assets/img/game5-view2-symbol3-background.webp";
+export const GAME5_VIEW2_SYMBOL_4_BACKGROUND_SRC = "/assets/img/game5-view2-symbol4-background.webp";
+export const GAME5_VIEW2_SYMBOL_5_BACKGROUND_SRC = "/assets/img/game5-view2-symbol5-background.webp";
+export const GAME5_VIEW2_SYMBOL_6_BACKGROUND_SRC = "/assets/img/game5-view2-symbol6-background.webp";
+export const GAME5_VIEW2_SYMBOL_12_STATIC_SRC = "/assets/img/game5-view2-symbol12-static.webp";
+export const GAME5_VIEW2_SYMBOL_0_STATIC_SRC = "/assets/img/game5-view2-symbol0-static.webp";
+export const GAME5_VIEW2_SYMBOL_8_STATIC_SRC = "/assets/img/game5-view2-symbol8-static.webp";
+export const GAME5_VIEW2_SYMBOL_7_STATIC_SRC = "/assets/img/game5-view2-symbol7-static.webp";
+export const GAME5_VIEW2_SYMBOL_10_STATIC_SRC = "/assets/img/game5-view2-symbol10-static.webp";
+export const GAME5_VIEW2_SYMBOL_11_STATIC_SRC = "/assets/img/game5-view2-symbol11-static.webp";
+export const GAME5_VIEW2_SYMBOL_9_STATIC_SRC = "/assets/img/game5-view2-symbol9-static.webp";
+export const GAME6_VIEW1_CELL_BACKGROUND_SRC = "/assets/img/game6-view1-cell-background-optimized.webp";
+export const GAME6_VIEW1_HIGHLIGHT_BACKGROUND_SRC = "/assets/img/game6-view1-highlight-background-optimized.webp";
+export const GAME6_VIEW2_SYMBOL_0_STATIC_SRC = "/assets/img/game6-view2-symbol0-static.webp";
+export const GAME6_VIEW2_SYMBOL_7_STATIC_SRC = "/assets/img/game6-view2-symbol7-static.webp";
+export const GAME6_VIEW2_SYMBOL_8_STATIC_SRC = "/assets/img/game6-view2-symbol8-static.webp?v=20260804-full-no-crop";
+export const GAME6_VIEW2_SYMBOL_10_STATIC_SRC = "/assets/img/game6-view2-symbol10-static.webp";
+export const GAME6_VIEW2_SYMBOL_11_STATIC_SRC = "/assets/img/game6-view2-symbol11-static.webp";
+export const GAME6_VIEW2_SYMBOL_12_STATIC_SRC = "/assets/img/game6-view2-symbol12-static.webp";
 export const GAME6_VIEW2_CELL_BACKGROUND_ASSETS = [
-  "/assets/img/game6-view2-symbol1-background.avif",
-  "/assets/img/game6-view2-symbol2-background.avif",
-  "/assets/img/game6-view2-symbol3-background.avif",
-  "/assets/img/game6-view2-symbol4-background.avif",
-  "/assets/img/game6-view2-symbol5-background.avif",
-  "/assets/img/game6-view2-symbol6-background.avif",
+  "/assets/img/game6-view2-symbol1-background.webp",
+  "/assets/img/game6-view2-symbol2-background.webp",
+  "/assets/img/game6-view2-symbol3-background.webp",
+  "/assets/img/game6-view2-symbol4-background.webp",
+  "/assets/img/game6-view2-symbol5-background.webp",
+  "/assets/img/game6-view2-symbol6-background.webp",
 ];
 
 
 
 
-export const GAME2_CHOOSER_TILE_SRC = "/assets/img/chooser/game2.avif";
-export const GAME2_COVER_SRC = "/assets/img/game2-background-lossless.avif";
+export const GAME2_CHOOSER_TILE_SRC = "/assets/img/chooser/game2.webp";
+export const GAME2_COVER_SRC = "/assets/img/game2-background-lossless.webp";
 export const GAME2_DOUBLE_SCENE_BACKGROUND_SRC =
   "/assets/img/game2-double-scene-background.png";
-export const GAME2_LOGO_SRC = "/assets/img/game2-header-logo.avif";
-export const GAME2_VIEW2_SYMBOL_1_BACKGROUND_SRC = "/assets/img/game2-view2-symbol1-background.avif";
-export const GAME2_VIEW2_SYMBOL_4_BACKGROUND_SRC = "/assets/img/game2-view2-symbol4-background.avif";
-export const GAME2_VIEW2_SYMBOL_3_BACKGROUND_SRC = "/assets/img/game2-view2-symbol3-background.avif";
-export const GAME2_VIEW2_SYMBOL_6_BACKGROUND_SRC = "/assets/img/game2-view2-symbol6-background.avif";
-export const GAME2_VIEW2_SYMBOL_12_STATIC_SRC = "/assets/img/game2-view2-symbol12-static.avif";
-export const GAME2_VIEW2_SYMBOL_0_STATIC_SRC = "/assets/img/game2-view2-symbol0-static.avif";
-export const GAME2_VIEW2_SYMBOL_9_STATIC_SRC = "/assets/img/game2-view2-symbol9-static.avif";
-export const GAME2_VIEW2_SYMBOL_10_STATIC_SRC = "/assets/img/game2-view2-symbol10-static.avif";
-export const GAME2_VIEW2_SYMBOL_11_STATIC_SRC = "/assets/img/game2-view2-symbol11-static.avif";
-export const GAME2_VIEW2_SYMBOL_7_STATIC_SRC = "/assets/img/game2-view2-symbol7-static.avif";
-export const GAME2_VIEW2_SYMBOL_8_STATIC_SRC = "/assets/img/game2-view2-symbol8-static.avif";
+export const GAME2_LOGO_SRC = "/assets/img/game2-header-logo.webp";
+export const GAME2_VIEW2_SYMBOL_1_BACKGROUND_SRC = "/assets/img/game2-view2-symbol1-background.webp";
+export const GAME2_VIEW2_SYMBOL_4_BACKGROUND_SRC = "/assets/img/game2-view2-symbol4-background.webp";
+export const GAME2_VIEW2_SYMBOL_3_BACKGROUND_SRC = "/assets/img/game2-view2-symbol3-background.webp";
+export const GAME2_VIEW2_SYMBOL_6_BACKGROUND_SRC = "/assets/img/game2-view2-symbol6-background.webp";
+export const GAME2_VIEW2_SYMBOL_12_STATIC_SRC = "/assets/img/game2-view2-symbol12-static.webp";
+export const GAME2_VIEW2_SYMBOL_0_STATIC_SRC = "/assets/img/game2-view2-symbol0-static.webp";
+export const GAME2_VIEW2_SYMBOL_9_STATIC_SRC = "/assets/img/game2-view2-symbol9-static.webp";
+export const GAME2_VIEW2_SYMBOL_10_STATIC_SRC = "/assets/img/game2-view2-symbol10-static.webp";
+export const GAME2_VIEW2_SYMBOL_11_STATIC_SRC = "/assets/img/game2-view2-symbol11-static.webp";
+export const GAME2_VIEW2_SYMBOL_7_STATIC_SRC = "/assets/img/game2-view2-symbol7-static.webp";
+export const GAME2_VIEW2_SYMBOL_8_STATIC_SRC = "/assets/img/game2-view2-symbol8-static.webp";
 export const GAME2_VIEW1_CELL_AND_VIEW2_SYMBOL_2_BACKGROUND_SRC =
-  "/assets/img/game2-view1-cell-and-view2-symbol2-background.avif";
+  "/assets/img/game2-view1-cell-and-view2-symbol2-background.webp";
 export const GAME2_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC =
-  "/assets/img/game2-view1-highlight-and-view2-symbol5-background.avif";
+  "/assets/img/game2-view1-highlight-and-view2-symbol5-background.webp";
 
 export const SLOT_CHOOSER_TILE_ASSETS = [
   GAME1_CHOOSER_TILE_SRC,
   GAME2_CHOOSER_TILE_SRC,
-  "/assets/img/chooser/game3.avif",
-  "/assets/img/chooser/gameframe.avif",
+  "/assets/img/chooser/game3.webp",
+  "/assets/img/chooser/gameframe.webp",
   GAME4_CHOOSER_TILE_SRC,
   GAME5_CHOOSER_TILE_SRC,
   GAME6_CHOOSER_TILE_SRC,
   GAME7_CHOOSER_TILE_SRC,
+  GAME8_CHOOSER_TILE_SRC,
 ];
-export const GAME3_COVER_SRC = "/assets/img/game3-background-lossless.avif";
-export const GAME3_LOGO_SRC = "/assets/img/game3-logo-optimized.avif";
-export const GAME3_LOGO_ORNAMENT_SRC = "/assets/img/game3-logo-ornament.avif";
+export const GAME3_COVER_SRC = "/assets/img/game3-background-lossless.webp";
+export const GAME3_LOGO_SRC = "/assets/img/game3-logo-optimized.webp";
+export const GAME3_LOGO_ORNAMENT_SRC = "/assets/img/game3-logo-ornament.webp";
 export const GAME3_SHELL_ASSETS = [GAME3_COVER_SRC, GAME3_LOGO_SRC];
 export const GAME7_SHELL_ASSETS = [
   GAME7_COVER_SRC,
@@ -206,6 +218,7 @@ const GAME_FIRST_PAINT_ASSETS_BY_ID = Object.freeze({
   // background, logo, and board skins must decode before the loader clears.
   "korvonsaroi-karavan": [...SHARED_FIRST_PAINT_ASSETS, ...GAME1_SHELL_ASSETS],
   "babylon": [...SHARED_FIRST_PAINT_ASSETS, ...GAME7_SHELL_ASSETS],
+  fruits: [...SHARED_FIRST_PAINT_ASSETS, GAME8_COVER_SRC, GAME8_LOGO_SRC],
   "marvorid-djemchug": [
     ...SHARED_FIRST_PAINT_ASSETS,
     GAME2_COVER_SRC,

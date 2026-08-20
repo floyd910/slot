@@ -69,6 +69,7 @@ export default function GameMenu({ gameId, onClose }) {
   const ruleBoxRefs = useRef([]);
   const ruleGridRefs = useRef([]);
   const ruleLabelRefs = useRef([]);
+  const ruleLines = gameId === "fruits" ? RULE_LINES.slice(0, 5) : RULE_LINES;
 
   useLayoutEffect(() => {
     if (!showRules) return undefined;
@@ -124,7 +125,7 @@ export default function GameMenu({ gameId, onClose }) {
       observer.disconnect();
       window.removeEventListener("resize", alignLabels);
     };
-  }, [language, showRules]);
+  }, [gameId, language, showRules]);
 
   if (showRules) {
     return createPortal(
@@ -147,7 +148,7 @@ export default function GameMenu({ gameId, onClose }) {
             <p>{rulesCopy.description}</p>
           </div>
           <div className="game-rules-screen__boxes">
-            {RULE_LINES.map((line, lineIndex) => (
+            {ruleLines.map((line, lineIndex) => (
               <div
                 className="game-rules-screen__box"
                 key={lineIndex}

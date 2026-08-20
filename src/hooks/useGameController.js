@@ -30,11 +30,9 @@ import {
 } from "../utils/gameResult.js";
 import {
   loadAudioDurationMs,
-  preloadDoubleSceneAssets,
   preloadImage,
   preloadGameAssets,
   preloadStartupAssets,
-  preloadView2FirstPaintAssets,
 } from "../utils/mediaPreload.js";
 import { normalizeRuntimeStatus } from "../utils/runtimeStatus.js";
 import { useGameAudio } from "./useGameAudio.js";
@@ -48,6 +46,20 @@ import {
 
 const initialContext = readFrameParams();
 
+const getSupportedCombinations = (gameId, sourceCombinations) =>
+  gameId === "fruits"
+    ? sourceCombinations.filter(({ id }) => Number(id) === 5)
+    : sourceCombinations;
+
+const setSupportedCombinations = (setCombinations, setSelectedCombinationId, gameId, sourceCombinations) => {
+  const supportedCombinations = getSupportedCombinations(gameId, sourceCombinations);
+  setCombinations(supportedCombinations);
+  setSelectedCombinationId((currentId) =>
+    supportedCombinations.some(({ id }) => String(id) === String(currentId))
+      ? currentId
+      : (supportedCombinations[0]?.id ?? 1),
+  );
+};
 export function useGameController(selectedGameId, gameDefinition = null) {
   const { t } = useLanguage();
   const tRef = useRef(t);
@@ -92,6 +104,20 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const [startupAssetsReady, setStartupAssetsReady] = useState(false);
   const [startupLoaderVisible, setStartupLoaderVisible] = useState(true);
   const [startupLoaderLeaving, setStartupLoaderLeaving] = useState(false);
+
+  useEffect(() => {
+    if (gameDefinition?.id !== "fruits") return;
+
+    const onlyFiveLineCombination = combinations.filter(
+      ({ id }) => Number(id) === 5,
+    );
+    if (onlyFiveLineCombination.length !== combinations.length) {
+      setCombinations(onlyFiveLineCombination);
+    }
+    if (String(selectedCombinationId) !== "5") {
+      setSelectedCombinationId(5);
+    }
+  }, [combinations, gameDefinition?.id, selectedCombinationId]);
   const spinFeedbackTimerRef = useRef(null);
   const autoPlayOnRef = useRef(autoPlayOn);
   const freeSpinRunRef = useRef(false);
@@ -241,21 +267,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       active = false;
     };
   }, []);
-
-  useEffect(() => {
-    preloadDoubleSceneAssets().catch((assetError) => {
-      console.error("Double scene asset preload failed", assetError);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (!startupAssetsReady) return;
-    preloadView2FirstPaintAssets(gameDefinition).catch((assetError) => {
-      console.error("View 2 static asset preload failed", assetError);
-    });
-  }, [gameDefinition, startupAssetsReady]);
-
-  useEffect(() => {
+useEffect(() => {
     if (!visualMode) return;
     const assets = gameDefinition?.id === "khocha-afandi" ? GAME6_VIEW2_ASSETS : gameDefinition?.id === "egypt" ? GAME4_VIEW2_ASSETS : GAME3_VIEW2_ASSETS;
     assets.forEach((src) => {
@@ -272,11 +284,14 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     [context.initSource, lastKnownState],
   );
 
+  const isFruitsGame = gameDefinition?.id === "fruits";
+  const effectiveSelectedCombinationId = isFruitsGame ? 5 : selectedCombinationId;
   const selectedCombination = useMemo(
     () =>
-      combinations.find((item) => String(item.id) === String(selectedCombinationId)) ??
-      combinations[0],
-    [combinations, selectedCombinationId],
+      combinations.find(
+        (item) => String(item.id) === String(effectiveSelectedCombinationId),
+      ) ?? combinations[0],
+    [combinations, effectiveSelectedCombinationId],
   );
 
   useEffect(() => {
@@ -426,7 +441,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
           },
       );
       setGames(fallbackGames);
-      setCombinations(fallbackCombinations);
+      setSupportedCombinations(setCombinations, setSelectedCombinationId, gameDefinition?.id ?? context.gameId, fallbackCombinations);
       setGrid(initialGrid);
       setPaytableRows(fallbackPaytable);
       setPaytableStatus("ready");
@@ -479,7 +494,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       }
       setPlayer(session.player);
       setGames(session.games);
-      setCombinations(session.combinations);
+      setSupportedCombinations(setCombinations, setSelectedCombinationId, gameDefinition?.id ?? context.gameId, session.combinations);
       setGrid(session.grid);
       setPaytableRows(paymentRows);
       setPaytableStatus("ready");
@@ -592,10 +607,10 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   };
 
   const cycleCombination = (direction) => {
-    if (paytableControlsLocked || !combinations.length) return;
+    if (isFruitsGame || paytableControlsLocked || !combinations.length) return;
     emitSound("buttonPress");
     const index = combinations.findIndex(
-      (item) => item.id === selectedCombinationId,
+      (item) => String(item.id) === String(selectedCombinationId),
     );
     const nextIndex =
       (index + direction + combinations.length) % combinations.length;
@@ -603,6 +618,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   };
 
   const selectCombination = (comboId) => {
+    if (isFruitsGame && Number(comboId) !== 5) return;
     emitSound("buttonPress");
     setSelectedCombinationId(comboId);
   };
@@ -793,7 +809,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       paytableRows,
       paytableStatus,
       player,
-      selectedCombinationId,
+      selectedCombinationId: effectiveSelectedCombinationId,
       showFreeSpinPrompt,
       showGameMenu,
       showPaytable,

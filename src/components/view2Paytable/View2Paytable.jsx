@@ -72,17 +72,21 @@ function PayoutRows({ symbol, counts, payoutMultiplier, compact = false }) {
 
 function ZeroPayoutRows({ payoutMultiplier, combinationId, compact = false }) {
   const { gameId } = useContext(View2SymbolAssetsContext);
+  const isFruits = gameId === "fruits";
   const selectedLines = Number(combinationId) || 1;
   const lineMultiplier = gameId === "babylon" ? selectedLines : selectedLines / 9;
   const zeroPayoutMultiplier = payoutMultiplier * lineMultiplier;
+  const counts = isFruits || gameId === "babylon" ? [5, 4, 3] : [5, 4, 3, 2];
 
   return (
     <div className={`view2-info-payout-list${compact ? " --compact" : ""}`}>
-      {(gameId === "babylon" ? [5, 4, 3] : [5, 4, 3, 2]).map((column) => {
-        const value = getView2ZeroPayout(column, zeroPayoutMultiplier, gameId);
+      {counts.map((count) => {
+        const value = isFruits
+          ? getView2MatchPayout(0, count, payoutMultiplier, gameId)
+          : getView2ZeroPayout(count, zeroPayoutMultiplier, gameId);
         return (
-          <div className="view2-info-payout-row" key={`zero-${column}`}>
-            <span>{column}x</span>
+          <div className="view2-info-payout-row" key={`zero-${count}`}>
+            <span>{count}x</span>
             <span className={value ? undefined : "--empty"}>{value}</span>
           </div>
         );
@@ -92,8 +96,14 @@ function ZeroPayoutRows({ payoutMultiplier, combinationId, compact = false }) {
 }
 
 function PayoutCard({ className, symbol, counts, payoutMultiplier }) {
+  const { gameId } = useContext(View2SymbolAssetsContext);
+  const showInlineSymbol = gameId === "fruits";
+
   return (
     <article className={`view2-info-card ${className} `}>
+      {showInlineSymbol && (
+        <SymbolTile symbol={symbol} className="--payout-card-symbol" />
+      )}
       <PayoutRows
         symbol={symbol}
         counts={counts}
@@ -116,12 +126,24 @@ export default function View2Paytable({
   onClose,
 }) {
   const copy = VIEW2_COPY[language] ?? VIEW2_COPY.ru;
-  const payoutSymbols =
-    gameId === "babylon"
+  const isFruits = gameId === "fruits";
+  const payoutSymbols = isFruits
+    ? {
+        main: 7,
+        topLeft: 5,
+        topRight: 6,
+        bottomTopLeft: 3,
+        bottomBottomLeft: 1,
+        bottomTopRight: 4,
+        bottomBottomRight: 2,
+        coefficient: 0,
+      }
+    : gameId === "babylon"
       ? { main: 9, topLeft: 7, topRight: 8, coefficient: 0 }
       : { main: 12, topLeft: 8, topRight: 10, coefficient: 0 };
   const showsSymbolEight = !hiddenPayoutSymbols.includes(8);
   const showsSymbolNine = !hiddenPayoutSymbols.includes(9);
+  const showsBottomTopRightCard = isFruits || (showsSymbolNine && gameId !== "babylon");
 
   return (
     <View2SymbolAssetsContext.Provider value={{ symbolAssets, imageOverrides: symbolImageOverrides, hiddenSymbolTiles, gameId }}>
@@ -145,10 +167,12 @@ export default function View2Paytable({
       <SymbolTile symbol={3} className="--decor --dice-right-b" /> */}
         <div className="info-top">
           <div className="info-card info-top-left">
-            <div className="top-symbols">
-              <SymbolTile symbol={7} className="--decor --top-left-b" />
-              <SymbolTile symbol={8} className="--decor --top-left-a" />
-            </div>
+            {!isFruits && (
+              <div className="top-symbols">
+                <SymbolTile symbol={7} className="--decor --top-left-b" />
+                <SymbolTile symbol={8} className="--decor --top-left-a" />
+              </div>
+            )}
             <PayoutCard
               className="--left-top"
               symbol={payoutSymbols.topLeft}
@@ -158,10 +182,10 @@ export default function View2Paytable({
           </div>
           <article className="view2-info-main-card">
             <div className="main-card-top">
-              <SymbolTile symbol={12} className="--wild-main" />
+              <SymbolTile symbol={isFruits ? payoutSymbols.main : 12} className="--wild-main" />
               <PayoutRows
                 symbol={payoutSymbols.main}
-                counts={[5, 4, 3, 2]}
+                counts={isFruits ? [5, 4, 3] : [5, 4, 3, 2]}
                 payoutMultiplier={payoutMultiplier}
               />
             </div>
@@ -174,15 +198,17 @@ export default function View2Paytable({
             <SymbolTile symbol={0} className="--free-bag" />
           </article>
           <div className="info-top-right">
-            <div className="top-symbols">
-              <SymbolTile symbol={10} className="--decor --top-right-a" />
-              <SymbolTile symbol={11} className="--decor --top-right-b" />
-            </div>
+            {!isFruits && (
+              <div className="top-symbols">
+                <SymbolTile symbol={10} className="--decor --top-right-a" />
+                <SymbolTile symbol={11} className="--decor --top-right-b" />
+              </div>
+            )}
 
             <PayoutCard
               className="--right-top"
               symbol={payoutSymbols.topRight}
-              counts={[5, 4, 3, 2]}
+              counts={isFruits ? [5, 4, 3] : [5, 4, 3, 2]}
               payoutMultiplier={payoutMultiplier}
             />
           </div>
@@ -190,26 +216,30 @@ export default function View2Paytable({
         <div className="info-bottom">
           <div className="info-card info-bottom-left">
             <div className="left-top">
-              <div className="left_top_symbols">
-                <SymbolTile symbol={6} />
-                {gameId !== "babylon" && <SymbolTile symbol={5} />}
-              </div>
+              {!isFruits && (
+                <div className="left_top_symbols">
+                  <SymbolTile symbol={6} />
+                  {gameId !== "babylon" && <SymbolTile symbol={5} />}
+                </div>
+              )}
 
               <PayoutCard
                 className="--left-middle"
-                symbol={gameId === "babylon" ? 6 : 5}
+                symbol={isFruits ? payoutSymbols.bottomTopLeft : gameId === "babylon" ? 6 : 5}
                 counts={gameId === "babylon" ? [5, 4, 3, 2] : [5, 4, 3]}
                 payoutMultiplier={payoutMultiplier}
               />
             </div>
             <div className="left-bottom">
-              <div className="left_top_symbols">
-                {gameId === "babylon" ? <><SymbolTile symbol={3} /><SymbolTile symbol={2} /><SymbolTile symbol={1} /></> : <SymbolTile symbol={1} />}
-              </div>
+              {!isFruits && (
+                <div className="left_top_symbols">
+                  {gameId === "babylon" ? <><SymbolTile symbol={3} /><SymbolTile symbol={2} /><SymbolTile symbol={1} /></> : <SymbolTile symbol={1} />}
+                </div>
+              )}
 
               <PayoutCard
                 className="--left-bottom"
-                symbol={1}
+                symbol={isFruits ? payoutSymbols.bottomBottomLeft : 1}
                 counts={gameId === "babylon" ? [5, 4, 3] : [5, 4, 3, 2]}
                 payoutMultiplier={payoutMultiplier}
               />
@@ -262,29 +292,44 @@ export default function View2Paytable({
           </article>
 
           <div className="info-card info-bottom-right">
-            {showsSymbolNine && gameId !== "babylon" && (
+            {showsBottomTopRightCard && (
               <div className="right-top">
                 <PayoutCard
                   className="--right-middle"
-                  symbol={9}
+                  symbol={isFruits ? payoutSymbols.bottomTopRight : 9}
                   counts={[5, 4, 3]}
                   payoutMultiplier={payoutMultiplier}
                 />
-                <div className="left_top_symbols">
-                  <SymbolTile symbol={9} />
-                </div>
+                {!isFruits && (
+                  <div className="left_top_symbols">
+                    <SymbolTile symbol={9} />
+                  </div>
+                )}
               </div>
             )}
 
             <div className="right-bottom">
               <PayoutCard
                 className="--right-bottom"
-                symbol={4}
+                symbol={isFruits ? payoutSymbols.bottomBottomRight : 4}
                 counts={[5, 4, 3]}
                 payoutMultiplier={payoutMultiplier}
               />
               <div className="left_top_symbols">
-                {gameId === "babylon" ? <><SymbolTile symbol={5} /><SymbolTile symbol={4} /></> : <><SymbolTile symbol={4} /><SymbolTile symbol={3} /><SymbolTile symbol={2} /></>}
+                {isFruits ? (
+                  <SymbolTile symbol={payoutSymbols.bottomBottomRight} />
+                ) : gameId === "babylon" ? (
+                  <>
+                    <SymbolTile symbol={5} />
+                    <SymbolTile symbol={4} />
+                  </>
+                ) : (
+                  <>
+                    <SymbolTile symbol={4} />
+                    <SymbolTile symbol={3} />
+                    <SymbolTile symbol={2} />
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -293,10 +338,10 @@ export default function View2Paytable({
         <div className="view2-info-mobile">
           <article className="view2-info-main-card view2-info-mobile__box">
             <div className="main-card-top">
-              <SymbolTile symbol={12} className="--wild-main" />
+              <SymbolTile symbol={isFruits ? payoutSymbols.main : 12} className="--wild-main" />
               <PayoutRows
                 symbol={payoutSymbols.main}
-                counts={[5, 4, 3, 2]}
+                counts={isFruits ? [5, 4, 3] : [5, 4, 3, 2]}
                 payoutMultiplier={payoutMultiplier}
               />
             </div>
@@ -309,24 +354,24 @@ export default function View2Paytable({
           </article>
 
           <div className="view2-info-mobile__symbols">
-            <SymbolTile symbol={10} />
-            <SymbolTile symbol={11} />
+            <SymbolTile symbol={isFruits ? payoutSymbols.topRight : 10} />
+            {!isFruits && <SymbolTile symbol={11} />}
           </div>
           <PayoutCard
             className="view2-info-mobile__box"
             symbol={payoutSymbols.topRight}
-            counts={[5, 4, 3, 2]}
+            counts={isFruits ? [5, 4, 3] : [5, 4, 3, 2]}
             payoutMultiplier={payoutMultiplier}
           />
 
-          {showsSymbolNine && gameId !== "babylon" && (
+          {showsBottomTopRightCard && (
             <div className="view2-info-mobile__row">
               <div className="view2-info-mobile__symbols">
-                <SymbolTile symbol={9} />
+                <SymbolTile symbol={isFruits ? payoutSymbols.bottomTopRight : 9} />
               </div>
               <PayoutCard
                 className="view2-info-mobile__box"
-                symbol={9}
+                symbol={isFruits ? payoutSymbols.bottomTopRight : 9}
                 counts={[5, 4, 3]}
                 payoutMultiplier={payoutMultiplier}
               />
@@ -334,8 +379,8 @@ export default function View2Paytable({
           )}
 
           <div className="view2-info-mobile__symbols">
-            <SymbolTile symbol={8} />
-            <SymbolTile symbol={7} />
+            <SymbolTile symbol={isFruits ? payoutSymbols.topLeft : 8} />
+            {!isFruits && <SymbolTile symbol={7} />}
           </div>
           <PayoutCard
             className="view2-info-mobile__box"
@@ -346,12 +391,12 @@ export default function View2Paytable({
 
           <div className="view2-info-mobile__row">
             <div className="view2-info-mobile__symbols">
-              <SymbolTile symbol={6} />
-              {gameId !== "babylon" && <SymbolTile symbol={5} />}
+              <SymbolTile symbol={isFruits ? payoutSymbols.bottomTopLeft : 6} />
+              {isFruits ? null : gameId !== "babylon" && <SymbolTile symbol={5} />}
             </div>
             <PayoutCard
               className="view2-info-mobile__box"
-              symbol={gameId === "babylon" ? 6 : 5}
+              symbol={isFruits ? payoutSymbols.bottomTopLeft : gameId === "babylon" ? 6 : 5}
               counts={gameId === "babylon" ? [5, 4, 3, 2] : [5, 4, 3]}
               payoutMultiplier={payoutMultiplier}
             />
@@ -359,11 +404,24 @@ export default function View2Paytable({
 
           <div className="view2-info-mobile__row">
             <div className="view2-info-mobile__symbols">
-              {gameId === "babylon" ? <><SymbolTile symbol={5} /><SymbolTile symbol={4} /></> : <><SymbolTile symbol={4} /><SymbolTile symbol={3} /><SymbolTile symbol={2} /></>}
+              {isFruits ? (
+                  <SymbolTile symbol={payoutSymbols.bottomBottomRight} />
+                ) : gameId === "babylon" ? (
+                  <>
+                    <SymbolTile symbol={5} />
+                    <SymbolTile symbol={4} />
+                  </>
+                ) : (
+                  <>
+                    <SymbolTile symbol={4} />
+                    <SymbolTile symbol={3} />
+                    <SymbolTile symbol={2} />
+                  </>
+                )}
             </div>
             <PayoutCard
               className="view2-info-mobile__box"
-              symbol={4}
+              symbol={isFruits ? payoutSymbols.bottomBottomRight : 4}
               counts={[5, 4, 3]}
               payoutMultiplier={payoutMultiplier}
             />
@@ -371,11 +429,11 @@ export default function View2Paytable({
 
           <div className="view2-info-mobile__row">
             <div className="view2-info-mobile__symbols">
-              {gameId === "babylon" ? <><SymbolTile symbol={3} /><SymbolTile symbol={2} /><SymbolTile symbol={1} /></> : <SymbolTile symbol={1} />}
+              {gameId === "babylon" ? <><SymbolTile symbol={3} /><SymbolTile symbol={2} /><SymbolTile symbol={isFruits ? payoutSymbols.bottomBottomLeft : 1} /></> : <SymbolTile symbol={isFruits ? payoutSymbols.bottomBottomLeft : 1} />}
             </div>
             <PayoutCard
               className="view2-info-mobile__box"
-              symbol={1}
+              symbol={isFruits ? payoutSymbols.bottomBottomLeft : 1}
               counts={gameId === "babylon" ? [5, 4, 3] : [5, 4, 3, 2]}
               payoutMultiplier={payoutMultiplier}
             />

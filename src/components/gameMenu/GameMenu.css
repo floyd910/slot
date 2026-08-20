@@ -90,8 +90,18 @@
   box-sizing: border-box;
   overflow: auto;
   background:
-    linear-gradient(145deg, rgba(100, 106, 225, 0.1) 0%, rgba(22, 17, 170, 0.1) 46.63%, rgba(106, 162, 230, 0.1) 100%),
-    linear-gradient(145deg, rgba(29, 29, 29, 0.64) 0%, rgba(25, 25, 25, 0.64) 46.63%, rgba(60, 60, 60, 0.64) 100%),
+    linear-gradient(
+      145deg,
+      rgba(100, 106, 225, 0.1) 0%,
+      rgba(22, 17, 170, 0.1) 46.63%,
+      rgba(106, 162, 230, 0.1) 100%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(29, 29, 29, 0.64) 0%,
+      rgba(25, 25, 25, 0.64) 46.63%,
+      rgba(60, 60, 60, 0.64) 100%
+    ),
     linear-gradient(0deg, #000 0%, #000 100%),
     var(--game-highlight, rgba(255, 255, 255, 0.1));
 }
@@ -156,7 +166,6 @@
   border: 1px solid #fff;
   background: rgba(255, 255, 255, 0.03);
 }
-
 
 .game-rules-screen__diagram {
   display: grid;
@@ -242,7 +251,6 @@
   border-top-color: #000;
 }
 
-
 .game-rules-screen__box-label {
   margin: 0;
   grid-column: 2;
@@ -288,7 +296,6 @@
   }
 }
 
-
 @media (max-width: 440px) {
   .game-rules-screen__intro p {
     text-align: center;
@@ -302,7 +309,6 @@
     width: 100%;
   }
 }
-
 
 .game-rules-screen__close {
   position: absolute;
@@ -329,7 +335,6 @@
   }
 }
 
-
 /* Keep the portaled menu interactive above every game layer. */
 .game-menu-panel,
 .game-menu-panel button,
@@ -354,8 +359,14 @@
 .game-rules-screen[data-game-id="kadima-drevnii"],
 .game-rules-screen[data-game-id="egypt"],
 .game-rules-screen[data-game-id="khocha-afandi"] {
-  background: linear-gradient(145deg, rgb(176, 144, 83) 0%, rgb(132, 74, 32) 46.63%, rgb(176, 144, 83) 100%);
+  background: linear-gradient(
+    145deg,
+    rgb(176, 144, 83) 0%,
+    rgb(132, 74, 32) 46.63%,
+    rgb(176, 144, 83) 100%
+  );
 }
+
 /* Never let a stale game portal block the slot chooser. */
 .app-root[data-playing="false"] ~ .game-menu-layer,
 .app-root[data-playing="false"] ~ .game-rules-screen {
@@ -363,11 +374,21 @@
   pointer-events: none;
 }
 .game-rules-screen[data-game-id="egypt"] {
-  background: linear-gradient(145deg, rgb(136, 92, 43) 0%, rgb(82, 46, 19) 46.63%, rgb(136, 92, 43) 100%);
+  background: linear-gradient(
+    145deg,
+    rgb(136, 92, 43) 0%,
+    rgb(82, 46, 19) 46.63%,
+    rgb(136, 92, 43) 100%
+  );
 }
 
 .game-rules-screen[data-game-id]:not([data-game-id="khiradmandi-makor"]) {
-  background: linear-gradient(145deg, rgb(136, 92, 43) 0%, rgb(82, 46, 19) 46.63%, rgb(136, 92, 43) 100%);
+  background: linear-gradient(
+    145deg,
+    rgb(136, 92, 43) 0%,
+    rgb(82, 46, 19) 46.63%,
+    rgb(136, 92, 43) 100%
+  );
 }
 
 /* Marvorid Djemchug rules page: fully opaque blue background. */
@@ -380,11 +401,21 @@
   ) !important;
 }
 /* Korvonsaroi Karavan rules page: the same purple gradient, fully opaque. */
-.game-rules-screen[data-game-id="korvonsaroi-karavan"] {
+.game-rules-screen[data-game-id="korvonsaroi-karavan"],
+.game-rules-screen[data-game-id="fruits"] {
   background: linear-gradient(
     145deg,
     rgb(146, 0, 159) 0%,
     rgb(142, 0, 128) 46.63%,
     rgb(119, 0, 159) 100%
   ) !important;
+}
+/* Fruits rules screen: opaque purple surface. */
+.game-rules-screen[data-game-id="fruits"] {
+  background: linear-gradient(
+    145deg,
+    rgb(159, 0, 119) 0%,
+    rgb(142, 0, 123) 46.63%,
+    rgb(159, 0, 119) 100%
+  );
 }
