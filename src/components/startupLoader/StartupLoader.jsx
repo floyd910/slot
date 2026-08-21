@@ -58,7 +58,6 @@ export default function StartupLoader({ ready, leaving, variant = "default", pro
       <div className="startup-loader__shade" />
       {isBrandLoader ? (
         <div className="startup-loader__brand">
-          <div className="startup-loader__brand-wordmark">betproduct.com</div>
           {progressBar}
         </div>
       ) : (
