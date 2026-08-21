@@ -113,6 +113,10 @@ export const createSpinActions = ({
       stateRecoveryService.saveRound({
         requestId, operationType: "SPIN", operationStatus: ROUND_OPERATION_STATUS.SPIN_PROCESSING,
         WasDouble: 0, currentWinSum: 0, doubleAvailable: false,
+        freeSpinsActive: isFreeSpin || freeSpinsLeft > 0,
+        freeSpinsTotal,
+        freeSpinsLeft,
+        freeSpinsPlayed: Math.max(0, freeSpinsTotal - freeSpinsLeft),
       }, context);
       setStatus("processing");
       liveSpinStateRef.current = {
@@ -248,6 +252,13 @@ export const createSpinActions = ({
           !autoExpressSpin && !autoPlayOnRef.current;
 
         if (visualMode) emitSound("freeTickets");
+      }
+
+      if (isFreeSpin || awardedFreeSpins > 0) {
+        const persistedFreeSpinsLeft = Number(liveSpinStateRef.current.freeSpinsLeft ?? 0);
+        const persistedFreeSpinsTotal = Number(liveSpinStateRef.current.freeSpinsTotal ?? 0);
+        stateRecoveryService.saveRound({ idCard: result.idCard, roundId: result.idCard, requestId, operationType: "FREE_SPIN", operationStatus: persistedFreeSpinsLeft > 0 ? ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION : ROUND_OPERATION_STATUS.ROUND_COMPLETED, currentWinSum: getTicketWinAmount(nextSpinResult, nextDoublingState), WasDouble: 0, doubleAvailable: false, freeSpinsActive: persistedFreeSpinsLeft > 0, freeSpinsTotal: persistedFreeSpinsTotal, freeSpinsLeft: persistedFreeSpinsLeft, freeSpinsPlayed: Math.max(0, persistedFreeSpinsTotal - persistedFreeSpinsLeft), spinResult: nextSpinResult, doublingState: nextDoublingState }, context);
+        if (persistedFreeSpinsLeft <= 0) stateRecoveryService.completeRound(context);
       }
 
       await wait(LOTTERY_REVEAL_SETTLE_MS);

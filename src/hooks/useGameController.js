@@ -501,7 +501,11 @@ useEffect(() => {
         setRoundRecoveryStatus(recoveredState.operationStatus ?? ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION);
         setRestoredDoubleAvailable(recoveredState.doubleAvailable === true);
         setFreeSpinsLeft(Number(recoveredState.freeSpinsLeft ?? 0));
-        setFreeSpinsTotal(Number(recoveredState.freeSpinsLeft ?? 0));
+        setFreeSpinsTotal(Number(recoveredState.freeSpinsTotal ?? recoveredState.freeSpinsLeft ?? 0));
+        if (recoveredState.freeSpinsActive === true && Number(recoveredState.freeSpinsLeft ?? 0) > 0) {
+          setFreeSpinRoundStarted(true);
+          setShowFreeSpinPrompt(true);
+        }
       }
       setPlayer(session.player);
       setGames(session.games);

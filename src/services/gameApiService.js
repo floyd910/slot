@@ -151,7 +151,12 @@ export class GameApiService {
 
     try {
       const result = normalizePayResult({ ...(await mockPay(params)), requestId: params.requestId });
-      stateRecoveryService.clearLocalState(getContext());
+      const activeRound = stateRecoveryService.getLocalState(getContext());
+      // A zero-win Free Spin uses the same Pay transport, but must not erase
+      // the active bonus series and its remaining spins.
+      if (!activeRound?.freeSpinsActive) {
+        stateRecoveryService.completeRound(getContext());
+      }
       complete(params.requestId);
       return result;
     } catch (error) {
