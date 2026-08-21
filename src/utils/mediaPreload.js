@@ -435,6 +435,17 @@ export const getRequiredGameMainScreenAssets = (game) =>
     game?.assets?.logo,
     ...getGameFirstPaintAssets(game),
   ]).filter((src) => isAssetAllowedForGame(src, game));
+const collectAssetUrls = (value, urls = []) => {
+  if (typeof value === "string") {
+    urls.push(value);
+  } else if (Array.isArray(value)) {
+    value.forEach((item) => collectAssetUrls(item, urls));
+  } else if (value && typeof value === "object") {
+    Object.values(value).forEach((item) => collectAssetUrls(item, urls));
+  }
+  return urls;
+};
+
 const getGameAudioAssets = (game) =>
   game?.id === "khiradmandi-makor"
     ? STARTUP_ASSETS.audio
@@ -444,6 +455,9 @@ const getGameAudioAssets = (game) =>
           GAME5_AXE_CLICK_SRC,
         ]
       : STARTUP_ASSETS.audio.filter((src) => !src.includes("/arabic-"));
+
+export const preloadGameBackgroundAudio = (game) =>
+  runWithConcurrency(getGameAudioAssets(game), 2, preloadAudioData);
 
 const loadDeferredStartupAssets = async (game) => {
   const criticalUrls = new Set(uniqueUrls(getRequiredGameMainScreenAssets(game)));
@@ -547,10 +561,15 @@ export const preloadDeferredStartupAssets = (game) => {
 };
 
 export const scheduleDeferredStartupAssets = (game) => {
-  // This runs only after the game is visible. Start now rather than waiting for
-  // browser idle so double-scene backgrounds and shared chests are ready on View 2.
+  // Background work begins as soon as the game mounts. Queue the View 2 grid
+  // first, then every Double-scene background/chest/remaining asset. None of
+  // this work participates in the visible game-loader progress.
   window.setTimeout(() => {
-    preloadDeferredStartupAssets(game).catch((error) => console.error(error));
+    preloadView2FirstPaintAssets(game)
+      .then(() => preloadGameBackgroundAudio(game))
+      .then(() => preloadWinAnimations(game))
+      .then(() => preloadDeferredStartupAssets(game))
+      .catch((error) => console.error(error));
   }, 0);
 };
 export const preloadWinAnimations = (game) =>

@@ -74,6 +74,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const [error, setError] = useState("");
   const [lastKnownState, setLastKnownState] = useState(null);
   const [roundRecoveryStatus, setRoundRecoveryStatus] = useState(null);
+  const [restoredDoubleAvailable, setRestoredDoubleAvailable] = useState(null);
   const [player, setPlayer] = useState(null);
   const [games, setGames] = useState([]);
   const [currentGame, setCurrentGame] = useState(bootGameId);
@@ -498,6 +499,7 @@ useEffect(() => {
         if (Number.isFinite(Number(recoveredState.stake))) setStake(Number(recoveredState.stake));
         if (recoveredState.selectedCombinationId != null) setSelectedCombinationId(recoveredState.selectedCombinationId);
         setRoundRecoveryStatus(recoveredState.operationStatus ?? ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION);
+        setRestoredDoubleAvailable(recoveredState.doubleAvailable === true);
         setFreeSpinsLeft(Number(recoveredState.freeSpinsLeft ?? 0));
         setFreeSpinsTotal(Number(recoveredState.freeSpinsLeft ?? 0));
       }
@@ -538,6 +540,7 @@ useEffect(() => {
       if (Number.isFinite(Number(recovered.stake))) setStake(Number(recovered.stake));
       if (recovered.selectedCombinationId != null) setSelectedCombinationId(recovered.selectedCombinationId);
       setRoundRecoveryStatus(recovered.operationStatus);
+      setRestoredDoubleAvailable(recovered.doubleAvailable === true);
       setError("");
       setStatus("ready");
     };
@@ -594,6 +597,10 @@ useEffect(() => {
     setShowPaytable((current) => !current);
     setPaytableStatus("ready");
   };
+
+  useEffect(() => {
+    if (!spinResult) setRestoredDoubleAvailable(null);
+  }, [spinResult]);
 
   const freeSpinsActive =
     freeSpinsLeft > 0 || showFreeSpinPrompt || freeSpinRunRef.current;
@@ -758,7 +765,7 @@ useEffect(() => {
     autoPlayOn ||
     freeSpinRunRef.current ||
     visualDoubleSceneActive;
-  const doubleOfferAvailable = shouldOfferDouble({
+  const doubleOfferAvailable = restoredDoubleAvailable === true || shouldOfferDouble({
     autoPlayOn,
     doublingState,
     freeSpinsLeft,
