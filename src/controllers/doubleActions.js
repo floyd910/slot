@@ -8,6 +8,7 @@ import {
 import { buildRequestId } from "../hooks/useFrameBridge.js";
 import { withTimeout } from "../utils/async.js";
 import { getTicketWinAmount } from "../utils/gameResult.js";
+import { ROUND_OPERATION_STATUS, stateRecoveryService } from "../services/stateRecoveryService.js";
 
 const CHEST_SIDES = new Set(["left", "right"]);
 
@@ -176,7 +177,7 @@ export const createDoubleActions = ({
   };
   const playFooterDouble = async (side = "x2") => {
     const { doublingState, spinResult, status } = liveSpinStateRef.current;
-    if (!spinResult?.idCard || doublingState.loading || status === "processing")
+    if (!spinResult?.idCard || liveSpinStateRef.current.roundRecoveryBlocked || doublingState.loading || status === "processing")
       return;
 
     const step = doublingState.step || 0;
@@ -216,6 +217,8 @@ export const createDoubleActions = ({
         );
       }
 
+      const requestId = buildRequestId("double");
+      stateRecoveryService.saveRound({ idCard: spinResult.idCard, roundId: spinResult.idCard, requestId, operationType: "DOUBLE", operationStatus: ROUND_OPERATION_STATUS.DOUBLE_PROCESSING, currentWinSum: currentAmount, WasDouble: step, doubleAvailable: false, spinResult, doublingState: loadingState }, liveSpinStateRef.current.context);
       setStatus("processing");
       setDoublingState(loadingState);
       syncLiveState({
@@ -229,7 +232,7 @@ export const createDoubleActions = ({
           wasDouble: step + 1,
           sum: originalCardWin,
           side,
-          requestId: buildRequestId("double"),
+          requestId,
         }),
         "Double",
       );
@@ -263,6 +266,9 @@ export const createDoubleActions = ({
 
       setDoublingState(revealState);
       syncLiveState({ doublingState: revealState });
+      if (won && nextStep < DOUBLE_MAX_STEPS) {
+        stateRecoveryService.saveRound({ idCard: nextSpinResult.idCard, roundId: nextSpinResult.idCard, requestId, operationType: "DOUBLE", operationStatus: ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION, currentWinSum: nextAmount, WasDouble: nextStep, doubleAvailable: true, spinResult: nextSpinResult, doublingState: revealState }, liveSpinStateRef.current.context);
+      }
       setLastKnownState(won ? "double-win" : "double-lose");
       emitSound(won ? "win" : "lose", { WinSum: nextAmount });
 
@@ -312,11 +318,13 @@ export const createDoubleActions = ({
   const pickDouble = async (side) => {
     const { doubleState, doublingState, spinResult, status } =
       liveSpinStateRef.current;
-    if (!spinResult?.idCard || doubleState.loading || status === "processing")
+    if (!spinResult?.idCard || liveSpinStateRef.current.roundRecoveryBlocked || doubleState.loading || status === "processing")
       return;
 
     try {
       emitSound("double");
+      const requestId = buildRequestId("double");
+      stateRecoveryService.saveRound({ idCard: spinResult.idCard, roundId: spinResult.idCard, requestId, operationType: "DOUBLE", operationStatus: ROUND_OPERATION_STATUS.DOUBLE_PROCESSING, currentWinSum: getTicketWinAmount(spinResult, doublingState), WasDouble: doubleState.step ?? 0, doubleAvailable: false, spinResult, doubleState }, liveSpinStateRef.current.context);
       setStatus("processing");
       const loadingDoubleState = {
         ...doubleState,
@@ -332,7 +340,7 @@ export const createDoubleActions = ({
           wasDouble: doubleState.step,
           sum: getOriginalCardWin(spinResult, doublingState),
           side,
-          requestId: buildRequestId("double"),
+          requestId,
         }),
         "Double",
       );

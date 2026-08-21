@@ -2,6 +2,16 @@ const LEGACY_PENDING_KEY = "hiranmandi-frame:pending-operation:v1";
 const LEGACY_GAME_STATE_KEY = "hiranmandi-frame:game-state:v1";
 const PENDING_KEY = "hiranmandi-frame:pending-operation:v2";
 const GAME_STATE_KEY = "hiranmandi-frame:game-state:v2";
+const memoryStore = new Map();
+
+export const ROUND_OPERATION_STATUS = Object.freeze({
+  SPIN_PROCESSING: "SPIN_PROCESSING",
+  WAITING_FOR_PLAYER_ACTION: "WAITING_FOR_PLAYER_ACTION",
+  DOUBLE_PROCESSING: "DOUBLE_PROCESSING",
+  WAITING_FOR_COLLECT: "WAITING_FOR_COLLECT",
+  ROUND_COMPLETED: "ROUND_COMPLETED",
+  RECOVERY_REQUIRED: "RECOVERY_REQUIRED",
+});
 
 const hashScope = (value) => {
   let hash = 2166136261;
@@ -13,9 +23,9 @@ const hashScope = (value) => {
 };
 
 const getScopedKey = (baseKey, context = {}) => {
-  const sessionId = context.sessionId ?? context.session;
+  const sessionId = context.sessionId ?? context.session ?? "anonymous";
   const gameId = context.recoveryGameId ?? context.gameId;
-  if (!sessionId || !gameId) return null;
+  if (!gameId) return null;
   return `${baseKey}:${hashScope(`${sessionId}:${gameId}`)}`;
 };
 
@@ -30,7 +40,9 @@ const safeJson = (value) => {
 const readStorage = (key) => {
   if (!key) return null;
   try {
-    return safeJson(window.sessionStorage.getItem(key));
+    const value = safeJson(window.sessionStorage.getItem(key));
+    if (value) memoryStore.set(key, value);
+    return value;
   } catch {
     return null;
   }
@@ -102,6 +114,29 @@ export class StateRecoveryService {
     });
   }
 
+  saveRound(round = {}, context = {}) {
+    const gameId = context.recoveryGameId ?? context.gameId ?? round.gameId;
+    if (!gameId) return null;
+    const current = this.getLocalState({ ...context, recoveryGameId: gameId }) ?? {};
+    const next = {
+      ...current, ...round, gameId,
+      idCard: round.idCard ?? round.roundId ?? current.idCard ?? current.roundId ?? null,
+      roundId: round.roundId ?? round.idCard ?? current.roundId ?? current.idCard ?? null,
+      requestId: round.requestId ?? current.requestId ?? null,
+      WasDouble: Number(round.WasDouble ?? round.wasDouble ?? current.WasDouble ?? 0),
+      operationStatus: round.operationStatus ?? current.operationStatus ?? ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION,
+      savedAt: new Date().toISOString(),
+    };
+    writeStorage(getScopedKey(GAME_STATE_KEY, { ...context, recoveryGameId: gameId }), next);
+    return next;
+  }
+
+  markRoundRecoveryRequired(error, patch = {}, context = {}) {
+    return this.saveRound({ ...patch, operationStatus: ROUND_OPERATION_STATUS.RECOVERY_REQUIRED, recoveryError: { code: error?.code ?? "UNKNOWN", message: error?.message ?? "Operation result is unknown" } }, context);
+  }
+
+  completeRound(context = {}) { this.clearLocalState(context); }
+
   getLocalState(context = {}) {
     return readStorage(getScopedKey(GAME_STATE_KEY, context));
   }
@@ -114,7 +149,7 @@ export class StateRecoveryService {
     return {
       requestId: operation.requestId ?? null,
       roundId: operation.roundId ?? operation.idCard ?? null,
-      gameId: context.gameId ?? operation.gameId ?? null,
+      gameId: context.recoveryGameId ?? context.gameId ?? operation.gameId ?? null,
       idCard: operation.idCard ?? null,
       methodName: operation.methodName ?? null,
     };

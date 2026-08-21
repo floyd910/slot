@@ -13,6 +13,7 @@ import {
 } from "../config/gameSettings.js";
 import { createDoubleActions } from "../controllers/doubleActions.js";
 import { createSpinActions } from "../controllers/spinActions.js";
+import { ROUND_OPERATION_STATUS } from "../services/stateRecoveryService.js";
 import {
   combinations as fallbackCombinations,
   games as fallbackGames,
@@ -72,6 +73,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const [status, setStatus] = useState("initial-loading");
   const [error, setError] = useState("");
   const [lastKnownState, setLastKnownState] = useState(null);
+  const [roundRecoveryStatus, setRoundRecoveryStatus] = useState(null);
   const [player, setPlayer] = useState(null);
   const [games, setGames] = useState([]);
   const [currentGame, setCurrentGame] = useState(bootGameId);
@@ -310,6 +312,7 @@ useEffect(() => {
       stake,
       status,
       visualMode,
+      roundRecoveryBlocked: roundRecoveryStatus === ROUND_OPERATION_STATUS.RECOVERY_REQUIRED,
     };
   }, [
     carpetCloseMs,
@@ -481,21 +484,27 @@ useEffect(() => {
       const paymentRows = await withTimeout(frameApi.getPaytable(), "Paytable");
       const pendingRecovery = frameApi.getPendingRequest(context);
       const recoveredState = frameApi.recoverState(context);
-      if (pendingRecovery) {
+      const needsRecovery = pendingRecovery || [ROUND_OPERATION_STATUS.SPIN_PROCESSING, ROUND_OPERATION_STATUS.DOUBLE_PROCESSING, ROUND_OPERATION_STATUS.RECOVERY_REQUIRED].includes(recoveredState?.operationStatus);
+      if (needsRecovery) {
+        setRoundRecoveryStatus(ROUND_OPERATION_STATUS.RECOVERY_REQUIRED);
         setError(tRef.current("recoveryFailed"));
-        postEvent("RECOVERY_REQUIRED", {
-          requestId: pendingRecovery.requestId ?? null,
-          message: tRef.current("recoveryFailed"),
-        });
+        postEvent("RECOVERY_REQUIRED", { requestId: pendingRecovery?.requestId ?? recoveredState?.requestId ?? null, message: tRef.current("recoveryFailed") });
       } else if (recoveredState?.spinResult) {
         setSpinResult(recoveredState.spinResult);
+        setDoublingState(recoveredState.doublingState ? { ...recoveredState.doublingState, loading: false, lastPick: "", lastStatus: "" } : createEmptyDoublingState());
+        setDoubleState(recoveredState.doubleState ? { ...recoveredState.doubleState, loading: false } : createDoubleState());
+        setGrid(recoveredState.spinResult.grid ?? session.grid);
+        setGridAnimation("settled");
+        if (Number.isFinite(Number(recoveredState.stake))) setStake(Number(recoveredState.stake));
+        if (recoveredState.selectedCombinationId != null) setSelectedCombinationId(recoveredState.selectedCombinationId);
+        setRoundRecoveryStatus(recoveredState.operationStatus ?? ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION);
         setFreeSpinsLeft(Number(recoveredState.freeSpinsLeft ?? 0));
         setFreeSpinsTotal(Number(recoveredState.freeSpinsLeft ?? 0));
       }
       setPlayer(session.player);
       setGames(session.games);
       setSupportedCombinations(setCombinations, setSelectedCombinationId, gameDefinition?.id ?? context.gameId, session.combinations);
-      setGrid(session.grid);
+      setGrid(recoveredState?.spinResult?.grid ?? session.grid);
       setPaytableRows(paymentRows);
       setPaytableStatus("ready");
       setCurrentGame((current) => current ?? context.gameId ?? null);
@@ -514,6 +523,28 @@ useEffect(() => {
       reportError(initError, tRef.current("initError"));
     }
   }, [context, postEvent, recoverStartupToGameShell, reportError]);
+
+  useEffect(() => {
+    if (roundRecoveryStatus !== ROUND_OPERATION_STATUS.RECOVERY_REQUIRED) return undefined;
+
+    const restoreResolvedRound = () => {
+      const recovered = frameApi.recoverState(context);
+      if (!recovered?.spinResult || ![ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION, ROUND_OPERATION_STATUS.WAITING_FOR_COLLECT].includes(recovered.operationStatus)) return;
+      setSpinResult(recovered.spinResult);
+      setDoublingState(recovered.doublingState ? { ...recovered.doublingState, loading: false, lastPick: "", lastStatus: "" } : createEmptyDoublingState());
+      setDoubleState(recovered.doubleState ? { ...recovered.doubleState, loading: false } : createDoubleState());
+      setGrid(recovered.spinResult.grid ?? initialGrid);
+      setGridAnimation("settled");
+      if (Number.isFinite(Number(recovered.stake))) setStake(Number(recovered.stake));
+      if (recovered.selectedCombinationId != null) setSelectedCombinationId(recovered.selectedCombinationId);
+      setRoundRecoveryStatus(recovered.operationStatus);
+      setError("");
+      setStatus("ready");
+    };
+    restoreResolvedRound();
+    const timer = window.setInterval(restoreResolvedRound, 300);
+    return () => window.clearInterval(timer);
+  }, [context, roundRecoveryStatus]);
 
   useEffect(() => {
     if (!window.ResizeObserver || !window.Promise) {
@@ -701,7 +732,9 @@ useEffect(() => {
   const totalPurchase = Number(
     (stake * (selectedCombination?.groups.length ?? 0)).toFixed(2),
   );
+  const isRoundRecoveryBlocked = roundRecoveryStatus === ROUND_OPERATION_STATUS.RECOVERY_REQUIRED;
   const isBusy =
+    isRoundRecoveryBlocked ||
     status === "initial-loading" ||
     status === "bootstrap-loading" ||
     status === "processing";
@@ -751,6 +784,7 @@ useEffect(() => {
           (pendingTicketWin && doublingState.step > 0)),
     );
   const spinButtonDisabled =
+    isRoundRecoveryBlocked ||
     status === "initial-loading" ||
     status === "bootstrap-loading" ||
     Boolean(doublingState.loading) ||

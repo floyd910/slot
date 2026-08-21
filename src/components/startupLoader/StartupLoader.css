@@ -77,6 +77,16 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
+.startup-loader--default .startup-loader__progress {
+  top: 58%;
+  right: auto;
+  bottom: auto;
+  left: 50%;
+  width: min(720px, calc(100vw - 32px));
+  margin: 0;
+  transform: translate(-50%, -50%);
+}
+
 .startup-loader--brand .startup-loader__progress {
   position: static;
   width: 100%;

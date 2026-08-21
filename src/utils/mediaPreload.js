@@ -475,16 +475,10 @@ export const preloadStartupAssets = (onProgress) => {
 
 export const preloadGameAssets = (game, onProgress) => {
   if (!game) return preloadStartupAssets(onProgress);
-  const cacheKey =
-    game.id === "marvorid-djemchug"
-      ? "game2"
-      : game.id === "khocha-afandi"
-      ? "game6"
-      : game.id === "egypt"
-        ? "game4"
-      : game.id === "kadima-drevnii"
-        ? "game5"
-        : "shared";
+  // Each game has distinct View 1 artwork. Do not share a completed preload
+  // promise across games, otherwise a later game can mount before its own
+  // header and cell background have decoded.
+  const cacheKey = game.id;
   const cached = gameAssetsPromises.get(cacheKey);
   if (cached) {
     onProgress?.(99);

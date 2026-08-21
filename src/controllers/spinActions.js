@@ -10,6 +10,7 @@ import { buildRequestId } from "../hooks/useFrameBridge.js";
 import { wait, withTimeout } from "../utils/async.js";
 import { getAwardedFreeSpinCount } from "../utils/freeSpins.js";
 import { getTicketWinAmount } from "../utils/gameResult.js";
+import { ROUND_OPERATION_STATUS, stateRecoveryService } from "../services/stateRecoveryService.js";
 import { getNextSpinDelayMs } from "../utils/spinTiming.js";
 import { asNumber } from "../utils/number.js";
 
@@ -48,6 +49,7 @@ export const createSpinActions = ({
   setStatus,
   showFreeSpinPrompt,
   t,
+  onRecoveryRequired,
 }) => {
   const handleSpin = async ({
     autoExpressSpin = false,
@@ -67,6 +69,7 @@ export const createSpinActions = ({
       visualMode,
     } = liveSpinStateRef.current;
     if (
+      liveSpinStateRef.current.roundRecoveryBlocked ||
       !selectedCombination ||
       status === "processing" ||
       doubleState.loading ||
@@ -107,6 +110,10 @@ export const createSpinActions = ({
         return null;
       }
 
+      stateRecoveryService.saveRound({
+        requestId, operationType: "SPIN", operationStatus: ROUND_OPERATION_STATUS.SPIN_PROCESSING,
+        WasDouble: 0, currentWinSum: 0, doubleAvailable: false,
+      }, context);
       setStatus("processing");
       liveSpinStateRef.current = {
         ...liveSpinStateRef.current,
@@ -180,6 +187,17 @@ export const createSpinActions = ({
         : createEmptyDoublingState();
       setSpinResult(nextSpinResult);
       setDoublingState(nextDoublingState);
+      if (isDigitWin && !shouldCreditWin) {
+        stateRecoveryService.saveRound({
+          requestId, idCard: result.idCard, roundId: result.idCard, operationType: "SPIN",
+          operationStatus: ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION,
+          currentWinSum: ticketWinAmount, WasDouble: 0, doubleAvailable: true,
+          stake, selectedCombinationId: selectedCombination.id,
+          spinResult: nextSpinResult, doublingState: nextDoublingState, doubleState: createDoubleState(),
+        }, context);
+      } else {
+        stateRecoveryService.completeRound(context);
+      }
       liveSpinStateRef.current = {
         ...liveSpinStateRef.current,
         spinResult: nextSpinResult,
@@ -288,6 +306,8 @@ export const createSpinActions = ({
             },
           })
           .catch(() => null);
+        stateRecoveryService.markRoundRecoveryRequired(spinError, { requestId, operationType: "SPIN" }, context);
+        onRecoveryRequired?.();
         postEvent("RECOVERY_REQUIRED", {
           requestId,
           message: "Spin result is unknown; blind retry is disabled.",
@@ -324,6 +344,7 @@ export const createSpinActions = ({
         ...liveSpinStateRef.current,
         status: "processing",
       };
+      stateRecoveryService.saveRound({ idCard: spinResult.idCard, roundId: spinResult.idCard, requestId, operationType: "COLLECT", operationStatus: ROUND_OPERATION_STATUS.WAITING_FOR_COLLECT, currentWinSum: payout, WasDouble: doublingState?.step ?? 0, doubleAvailable: false, spinResult, doublingState }, liveSpinStateRef.current.context);
       setLastKnownState("pay-submitted");
       await withTimeout(
         frameApi.pay({ idCard: spinResult.idCard, requestId }),
@@ -362,6 +383,7 @@ export const createSpinActions = ({
         spinResult: null,
         status: "ready",
       };
+      stateRecoveryService.completeRound(liveSpinStateRef.current.context);
       setLastKnownState("paid");
       emitSound("cashout");
       if (!alreadyCredited)
