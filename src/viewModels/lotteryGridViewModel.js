@@ -79,7 +79,10 @@ export function buildLotteryGridViewModel({
 
   const isRevealing = animationState === "revealing";
   const isSettled = animationState === "settled";
-  const hideDigitsBeforeReveal = !isRevealing && !isSettled;
+  // View 1 has no placeholder symbols. A persisted board must stay visible
+  // after remount even when React restores it before the animation state.
+  // Only a real in-progress Spin conceals values.
+  const hideDigitsBeforeReveal = animationState === "spinning";
   const topCells = buildTopCells(grid);
   const detectedZeroCells = topCells
     .filter((cell) => Number(cell.value) === 0)

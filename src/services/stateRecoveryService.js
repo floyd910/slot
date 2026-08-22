@@ -2,6 +2,7 @@ const LEGACY_PENDING_KEY = "hiranmandi-frame:pending-operation:v1";
 const LEGACY_GAME_STATE_KEY = "hiranmandi-frame:game-state:v1";
 const PENDING_KEY = "hiranmandi-frame:pending-operation:v2";
 const GAME_STATE_KEY = "hiranmandi-frame:game-state:v2";
+const LAST_SPIN_KEY = "hiranmandi-frame:last-spin:v1";
 const memoryStore = new Map();
 
 export const ROUND_OPERATION_STATUS = Object.freeze({
@@ -114,7 +115,19 @@ export class StateRecoveryService {
     });
   }
 
-  saveRound(round = {}, context = {}) {
+  saveLastSpin(snapshot = {}, context = {}) {
+    const grid = snapshot.grid;
+    if (!grid?.A?.length || !grid?.B?.length || !grid?.C?.length) return null;
+    const value = { ...snapshot, savedAt: new Date().toISOString() };
+    writeStorage(getScopedKey(LAST_SPIN_KEY, context), value);
+    return value;
+  }
+
+  getLastSpin(context = {}) {
+    return readStorage(getScopedKey(LAST_SPIN_KEY, context));
+  }
+
+    saveRound(round = {}, context = {}) {
     const gameId = context.recoveryGameId ?? context.gameId ?? round.gameId;
     if (!gameId) return null;
     const current = this.getLocalState({ ...context, recoveryGameId: gameId }) ?? {};
@@ -124,6 +137,9 @@ export class StateRecoveryService {
       roundId: round.roundId ?? round.idCard ?? current.roundId ?? current.idCard ?? null,
       requestId: round.requestId ?? current.requestId ?? null,
       WasDouble: Number(round.WasDouble ?? round.wasDouble ?? current.WasDouble ?? 0),
+      // A processing snapshot must never erase the last completed board.
+      lastConfirmedGrid: round.lastConfirmedGrid ?? current.lastConfirmedGrid ?? round.grid ?? current.grid ?? null,
+      lastConfirmedSpinResult: round.lastConfirmedSpinResult ?? current.lastConfirmedSpinResult ?? round.spinResult ?? current.spinResult ?? null,
       operationStatus: round.operationStatus ?? current.operationStatus ?? ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION,
       savedAt: new Date().toISOString(),
     };

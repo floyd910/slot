@@ -41,6 +41,7 @@ export const createSpinActions = ({
   setGrid,
   setGridAnimation,
   setGridRevealKey,
+  setHasRecoveredGrid,
   setLastKnownState,
   setPlayer,
   setShowFreeSpinPrompt,
@@ -117,6 +118,8 @@ export const createSpinActions = ({
         freeSpinsTotal,
         freeSpinsLeft,
         freeSpinsPlayed: Math.max(0, freeSpinsTotal - freeSpinsLeft),
+        lastConfirmedSpinResult: liveSpinStateRef.current.spinResult ?? null,
+        lastConfirmedGrid: liveSpinStateRef.current.grid ?? null,
       }, context);
       setStatus("processing");
       liveSpinStateRef.current = {
@@ -125,6 +128,7 @@ export const createSpinActions = ({
       };
 
       playSpinFeedback();
+      setHasRecoveredGrid?.(false);
       if (!visualMode) setGridAnimation("spinning");
       setDoublingState(createEmptyDoublingState());
       setLastKnownState("spin-submitted");
@@ -170,12 +174,14 @@ export const createSpinActions = ({
         result.WinSum > 0 && (creditWinOnReveal || awardedFreeSpins > 0);
       if (visualMode) {
         setGrid(result.grid);
+        liveSpinStateRef.current = { ...liveSpinStateRef.current, grid: result.grid };
         setGridRevealKey((key) => key + 1);
         setGridAnimation("revealing");
         emitLotteryRevealSounds();
       } else {
         flushSync(() => {
           setGrid(result.grid);
+          liveSpinStateRef.current = { ...liveSpinStateRef.current, grid: result.grid };
           setGridRevealKey((key) => key + 1);
           setGridAnimation("revealing");
         });
@@ -191,13 +197,16 @@ export const createSpinActions = ({
         : createEmptyDoublingState();
       setSpinResult(nextSpinResult);
       setDoublingState(nextDoublingState);
+      // Keep the last completed board separately from an active round.
+      // It is used only to repopulate the otherwise empty View 1 on return.
+      stateRecoveryService.saveLastSpin({ grid: result.grid, spinResult: nextSpinResult }, context);
       if (isDigitWin && !shouldCreditWin) {
         stateRecoveryService.saveRound({
           requestId, idCard: result.idCard, roundId: result.idCard, operationType: "SPIN",
           operationStatus: ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION,
           currentWinSum: ticketWinAmount, WasDouble: 0, doubleAvailable: true,
           stake, selectedCombinationId: selectedCombination.id,
-          spinResult: nextSpinResult, doublingState: nextDoublingState, doubleState: createDoubleState(),
+          spinResult: nextSpinResult, grid: result.grid, doublingState: nextDoublingState, doubleState: createDoubleState(),
         }, context);
       } else {
         stateRecoveryService.completeRound(context);
@@ -257,7 +266,7 @@ export const createSpinActions = ({
       if (isFreeSpin || awardedFreeSpins > 0) {
         const persistedFreeSpinsLeft = Number(liveSpinStateRef.current.freeSpinsLeft ?? 0);
         const persistedFreeSpinsTotal = Number(liveSpinStateRef.current.freeSpinsTotal ?? 0);
-        stateRecoveryService.saveRound({ idCard: result.idCard, roundId: result.idCard, requestId, operationType: "FREE_SPIN", operationStatus: persistedFreeSpinsLeft > 0 ? ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION : ROUND_OPERATION_STATUS.ROUND_COMPLETED, currentWinSum: getTicketWinAmount(nextSpinResult, nextDoublingState), WasDouble: 0, doubleAvailable: false, freeSpinsActive: persistedFreeSpinsLeft > 0, freeSpinsTotal: persistedFreeSpinsTotal, freeSpinsLeft: persistedFreeSpinsLeft, freeSpinsPlayed: Math.max(0, persistedFreeSpinsTotal - persistedFreeSpinsLeft), spinResult: nextSpinResult, doublingState: nextDoublingState }, context);
+        stateRecoveryService.saveRound({ idCard: result.idCard, roundId: result.idCard, requestId, operationType: "FREE_SPIN", operationStatus: persistedFreeSpinsLeft > 0 ? ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION : ROUND_OPERATION_STATUS.ROUND_COMPLETED, currentWinSum: getTicketWinAmount(nextSpinResult, nextDoublingState), WasDouble: 0, doubleAvailable: false, freeSpinsActive: persistedFreeSpinsLeft > 0, freeSpinsTotal: persistedFreeSpinsTotal, freeSpinsLeft: persistedFreeSpinsLeft, freeSpinsPlayed: Math.max(0, persistedFreeSpinsTotal - persistedFreeSpinsLeft), spinResult: nextSpinResult, lastConfirmedSpinResult: nextSpinResult, lastConfirmedGrid: liveSpinStateRef.current.grid ?? result.grid, grid: result.grid, doublingState: nextDoublingState }, context);
         if (persistedFreeSpinsLeft <= 0) stateRecoveryService.completeRound(context);
       }
 
@@ -297,7 +306,9 @@ export const createSpinActions = ({
           ).toFixed(2),
         ),
       });
-      if (!hasBackendWin) {
+      // Free Spins are already settled by their Spin response. Sending the
+      // legacy zero-win Pay request here can close the saved bonus round.
+      if (!hasBackendWin && !isFreeSpin && awardedFreeSpins === 0) {
         frameApi
           .pay({ idCard: result.idCard, requestId: buildRequestId("pay") })
           .catch(() => {});
@@ -434,7 +445,9 @@ export const createSpinActions = ({
           }),
         );
 
-        if (getTicketWinAmount(result) > 0) {
+        // Free Spin winnings are credited by the Spin response itself. Calling
+        // Collect here would incorrectly finish the whole active Free Spin round.
+        if (getTicketWinAmount(result) > 0 && result.creditedToBalance !== true) {
           await collectWin();
         }
       }

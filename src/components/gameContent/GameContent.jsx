@@ -127,7 +127,7 @@ export default function GameContent({ controller, game, runtimeState }) {
                 symbolAssets={game.assets.view2Symbols}
                 grid={state.grid}
                 revealKey={state.gridRevealKey}
-                animationState={state.visualMode ? "idle" : state.gridAnimation}
+                animationState={state.visualMode ? "idle" : (state.hasRecoveredGrid ? "settled" : state.gridAnimation)}
                 visualMode={false}
                 autoSequence={state.autoPlayOn || state.freeSpinRoundStarted}
                 carpetCloseMs={state.carpetCloseMs}

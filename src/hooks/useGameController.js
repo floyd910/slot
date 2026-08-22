@@ -13,7 +13,7 @@ import {
 } from "../config/gameSettings.js";
 import { createDoubleActions } from "../controllers/doubleActions.js";
 import { createSpinActions } from "../controllers/spinActions.js";
-import { ROUND_OPERATION_STATUS } from "../services/stateRecoveryService.js";
+import { ROUND_OPERATION_STATUS, stateRecoveryService } from "../services/stateRecoveryService.js";
 import {
   combinations as fallbackCombinations,
   games as fallbackGames,
@@ -83,6 +83,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const [grid, setGrid] = useState({ A: [], B: [], C: [], D: [] });
   const [gridRevealKey, setGridRevealKey] = useState(0);
   const [gridAnimation, setGridAnimation] = useState("idle");
+  const [hasRecoveredGrid, setHasRecoveredGrid] = useState(false);
   const [stake, setStake] = useState(0.1);
   const [visualMode, setVisualMode] = useState(false);
   const [carpetCloseMs, setCarpetCloseMs] = useState(CARPET_ANIMATION_HALF_MS);
@@ -447,6 +448,30 @@ useEffect(() => {
       setGames(fallbackGames);
       setSupportedCombinations(setCombinations, setSelectedCombinationId, gameDefinition?.id ?? context.gameId, fallbackCombinations);
       setGrid(initialGrid);
+      const recoveredRound = frameApi.recoverState(context);
+      const lastSpinSnapshot = stateRecoveryService.getLastSpin(context);
+      const restoredSpinResult = recoveredRound?.spinResult ?? recoveredRound?.lastConfirmedSpinResult ?? lastSpinSnapshot?.spinResult;
+      if (restoredSpinResult) {
+        setSpinResult(restoredSpinResult);
+        setDoublingState(recoveredRound.doublingState ? { ...recoveredRound.doublingState, loading: false, lastPick: "", lastStatus: "" } : createEmptyDoublingState());
+        setDoubleState(recoveredRound.doubleState ? { ...recoveredRound.doubleState, loading: false } : createDoubleState());
+        setGrid(recoveredRound.lastConfirmedGrid ?? recoveredRound.grid ?? lastSpinSnapshot?.grid ?? restoredSpinResult.grid ?? initialGrid);
+        setHasRecoveredGrid(true);
+        setGridRevealKey((key) => key + 1);
+        setGridAnimation("settled");
+        if (Number.isFinite(Number(recoveredRound.stake))) setStake(Number(recoveredRound.stake));
+        if (recoveredRound.selectedCombinationId != null) setSelectedCombinationId(recoveredRound.selectedCombinationId);
+      }
+      const restoredFreeSpinsLeft = Number(recoveredRound?.freeSpinsLeft ?? 0);
+      if (recoveredRound?.freeSpinsActive === true && restoredFreeSpinsLeft > 0) {
+        setFreeSpinsLeft(restoredFreeSpinsLeft);
+        setFreeSpinsTotal(Number(recoveredRound.freeSpinsTotal ?? restoredFreeSpinsLeft));
+        setFreeSpinRoundStarted(true);
+        setShowFreeSpinPrompt(true);
+      }
+      if ([ROUND_OPERATION_STATUS.SPIN_PROCESSING, ROUND_OPERATION_STATUS.DOUBLE_PROCESSING, ROUND_OPERATION_STATUS.RECOVERY_REQUIRED].includes(recoveredRound?.operationStatus)) {
+        setRoundRecoveryStatus(ROUND_OPERATION_STATUS.RECOVERY_REQUIRED);
+      }
       setPaytableRows(fallbackPaytable);
       setPaytableStatus("ready");
       setCurrentGame(
@@ -485,16 +510,36 @@ useEffect(() => {
       const paymentRows = await withTimeout(frameApi.getPaytable(), "Paytable");
       const pendingRecovery = frameApi.getPendingRequest(context);
       const recoveredState = frameApi.recoverState(context);
+      const lastSpinSnapshot = stateRecoveryService.getLastSpin(context);
+      const confirmedSpinResult = recoveredState?.spinResult ?? recoveredState?.lastConfirmedSpinResult ?? lastSpinSnapshot?.spinResult;
       const needsRecovery = pendingRecovery || [ROUND_OPERATION_STATUS.SPIN_PROCESSING, ROUND_OPERATION_STATUS.DOUBLE_PROCESSING, ROUND_OPERATION_STATUS.RECOVERY_REQUIRED].includes(recoveredState?.operationStatus);
       if (needsRecovery) {
+        // Keep the last confirmed Free Spin result visible while the next
+        // request remains unknown and therefore safely blocked.
+        if (confirmedSpinResult) {
+          setSpinResult(confirmedSpinResult);
+          setDoublingState(recoveredState.doublingState ? { ...recoveredState.doublingState, loading: false, lastPick: "", lastStatus: "" } : createEmptyDoublingState());
+          setDoubleState(recoveredState.doubleState ? { ...recoveredState.doubleState, loading: false } : createDoubleState());
+          setGrid(recoveredState.lastConfirmedGrid ?? recoveredState.grid ?? confirmedSpinResult.grid ?? session.grid);
+          setHasRecoveredGrid(true);
+          setGridRevealKey((key) => key + 1);
+          setGridAnimation("settled");
+          if (Number.isFinite(Number(recoveredState.stake))) setStake(Number(recoveredState.stake));
+          if (recoveredState.selectedCombinationId != null) setSelectedCombinationId(recoveredState.selectedCombinationId);
+          setFreeSpinsLeft(Number(recoveredState.freeSpinsLeft ?? 0));
+          setFreeSpinsTotal(Number(recoveredState.freeSpinsTotal ?? recoveredState.freeSpinsLeft ?? 0));
+          if (recoveredState.freeSpinsActive === true && Number(recoveredState.freeSpinsLeft ?? 0) > 0) setFreeSpinRoundStarted(true);
+        }
         setRoundRecoveryStatus(ROUND_OPERATION_STATUS.RECOVERY_REQUIRED);
         setError(tRef.current("recoveryFailed"));
         postEvent("RECOVERY_REQUIRED", { requestId: pendingRecovery?.requestId ?? recoveredState?.requestId ?? null, message: tRef.current("recoveryFailed") });
       } else if (recoveredState?.spinResult) {
-        setSpinResult(recoveredState.spinResult);
+        setSpinResult(confirmedSpinResult);
         setDoublingState(recoveredState.doublingState ? { ...recoveredState.doublingState, loading: false, lastPick: "", lastStatus: "" } : createEmptyDoublingState());
         setDoubleState(recoveredState.doubleState ? { ...recoveredState.doubleState, loading: false } : createDoubleState());
-        setGrid(recoveredState.spinResult.grid ?? session.grid);
+        setGrid(recoveredState.lastConfirmedGrid ?? recoveredState.grid ?? confirmedSpinResult.grid ?? session.grid);
+        setHasRecoveredGrid(true);
+          setGridRevealKey((key) => key + 1);
         setGridAnimation("settled");
         if (Number.isFinite(Number(recoveredState.stake))) setStake(Number(recoveredState.stake));
         if (recoveredState.selectedCombinationId != null) setSelectedCombinationId(recoveredState.selectedCombinationId);
@@ -510,12 +555,24 @@ useEffect(() => {
       setPlayer(session.player);
       setGames(session.games);
       setSupportedCombinations(setCombinations, setSelectedCombinationId, gameDefinition?.id ?? context.gameId, session.combinations);
-      setGrid(recoveredState?.spinResult?.grid ?? session.grid);
+      const startupGrid = recoveredState?.lastConfirmedGrid ?? recoveredState?.grid ?? lastSpinSnapshot?.grid ?? confirmedSpinResult?.grid ?? session.grid;
+      setGrid(startupGrid);
+      setHasRecoveredGrid(Boolean(recoveredState?.spinResult || recoveredState?.lastConfirmedSpinResult || lastSpinSnapshot?.grid));
+      setGridRevealKey((key) => key + 1);
       setPaytableRows(paymentRows);
       setPaytableStatus("ready");
       setCurrentGame((current) => current ?? context.gameId ?? null);
-      setStatus(session.games.length ? "ready" : "empty");
-      setLastKnownState("ready");
+      setStatus(session.games.length ? "ready" : "empty");      setLastKnownState("ready");
+      // View 1 begins with an empty board. Reapply the saved board after all
+      // bootstrap state has been set, so the default session grid cannot win.
+      if (recoveredState?.spinResult || recoveredState?.lastConfirmedSpinResult || lastSpinSnapshot?.grid) {
+        window.requestAnimationFrame(() => {
+          setGrid(startupGrid);
+          setGridAnimation("settled");
+          setHasRecoveredGrid(true);
+          setGridRevealKey((key) => key + 1);
+        });
+      }
       postEvent("LOADED", {
         gameId: context.gameId,
         userId: session.player.id,
@@ -539,7 +596,9 @@ useEffect(() => {
       setSpinResult(recovered.spinResult);
       setDoublingState(recovered.doublingState ? { ...recovered.doublingState, loading: false, lastPick: "", lastStatus: "" } : createEmptyDoublingState());
       setDoubleState(recovered.doubleState ? { ...recovered.doubleState, loading: false } : createDoubleState());
-      setGrid(recovered.spinResult.grid ?? initialGrid);
+      setGrid(recovered.lastConfirmedGrid ?? recovered.grid ?? recovered.spinResult.grid ?? initialGrid);
+      setHasRecoveredGrid(true);
+      setGridRevealKey((key) => key + 1);
       setGridAnimation("settled");
       if (Number.isFinite(Number(recovered.stake))) setStake(Number(recovered.stake));
       if (recovered.selectedCombinationId != null) setSelectedCombinationId(recovered.selectedCombinationId);
@@ -629,6 +688,7 @@ useEffect(() => {
       setGrid,
       setGridAnimation,
       setGridRevealKey,
+      setHasRecoveredGrid,
       setLastKnownState,
       setPlayer,
       setShowFreeSpinPrompt,
@@ -851,6 +911,7 @@ useEffect(() => {
       grid,
       gridAnimation,
       gridRevealKey,
+      hasRecoveredGrid,
       paytableRows,
       paytableStatus,
       player,
