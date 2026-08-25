@@ -21,6 +21,7 @@ export function useLotteryGridViewModel({
   winningCells,
   winningGroups,
   onActiveWinGroupChange,
+  winLineHighlightMs = VIEW1_WIN_LINE_HIGHLIGHT_MS,
 }) {
   const lineWinningGroups = useMemo(
     () => getGroupedWins(winningGroups, winningCells),
@@ -46,8 +47,16 @@ export function useLotteryGridViewModel({
     const soundKey = `${revealKey}:${activeWinGroup}`;
     if (soundedWinGroupsRef.current.has(soundKey)) return;
     soundedWinGroupsRef.current.add(soundKey);
-    onActiveWinGroupChange?.(activeWinGroup);
-  }, [activeWinGroup, onActiveWinGroupChange, revealKey, visualMode]);
+    onActiveWinGroupChange?.(activeWinGroup, {
+      isScatter: activeWinGroup >= lineWinningGroups.length,
+    });
+  }, [
+    activeWinGroup,
+    lineWinningGroups.length,
+    onActiveWinGroupChange,
+    revealKey,
+    visualMode,
+  ]);
   const winningLineIds = useMemo(
     () =>
       winningGroups
@@ -89,7 +98,7 @@ export function useLotteryGridViewModel({
     setActiveWinGroup(null);
     if (groupedWins.length === 0 || animationState !== "settled") return undefined;
 
-    const cycleMs = VIEW1_WIN_LINE_HIGHLIGHT_MS;
+    const cycleMs = winLineHighlightMs;
     let cycleTimeoutId;
     const startTimeoutId = window.setTimeout(() => {
       setActiveWinGroup(0);
@@ -127,7 +136,14 @@ export function useLotteryGridViewModel({
       window.clearTimeout(startTimeoutId);
       window.clearTimeout(cycleTimeoutId);
     };
-  }, [animationState, autoSequence, groupedWins.length, revealKey, visualMode]);
+  }, [
+    animationState,
+    autoSequence,
+    groupedWins.length,
+    revealKey,
+    visualMode,
+    winLineHighlightMs,
+  ]);
 
   return useMemo(
     () =>

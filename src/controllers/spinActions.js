@@ -234,11 +234,17 @@ export const createSpinActions = ({
 
       let shouldShowFreeSpinPrompt = false;
       if (isFreeSpin) {
+        const currentFreeSpinsLeft = Number(
+          liveSpinStateRef.current.freeSpinsLeft ?? freeSpinsLeft,
+        );
+        const currentFreeSpinsTotal = Number(
+          liveSpinStateRef.current.freeSpinsTotal ?? freeSpinsTotal,
+        );
         const nextFreeSpinsLeft = Math.max(
           0,
-          freeSpinsLeft - 1 + awardedFreeSpins,
+          currentFreeSpinsLeft - 1 + awardedFreeSpins,
         );
-        const nextFreeSpinsTotal = freeSpinsTotal + awardedFreeSpins;
+        const nextFreeSpinsTotal = currentFreeSpinsTotal + awardedFreeSpins;
         if (awardedFreeSpins > 0) setFreeSpinsTotal(nextFreeSpinsTotal);
         setFreeSpinsLeft(nextFreeSpinsLeft);
         liveSpinStateRef.current = {
@@ -293,8 +299,9 @@ export const createSpinActions = ({
         status: "ready",
       };
       setLastKnownState(hasBackendWin ? "win" : "lose");
-      if (hasBackendWin) emitSound("win", result);
-      if (visualMode && !hasBackendWin) emitSound("lose", result);
+      const hasAudibleWin = hasBackendWin || (visualMode && isDigitWin);
+      if (hasAudibleWin) emitSound("win", { ...result, visualMode });
+      if (visualMode && !hasAudibleWin) emitSound("lose", result);
       if (shouldShowFreeSpinPrompt) setShowFreeSpinPrompt(true);
       postEvent("LOADED", { requestId, state: "spin-complete" });
       postEvent("UPDATE_BALANCE", {

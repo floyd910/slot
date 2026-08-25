@@ -1,9 +1,11 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 const EFFECT_VOLUME = 0.8;
 const TARGET_EFFECT_RMS = 0.18;
 const MIN_NORMALIZATION_GAIN = 0.4;
 const MAX_NORMALIZATION_GAIN = 3;
+const VIEW2_WIN_LINE_SOUND_MS = 1000;
+const VIEW2_WIN_LINE_PITCH_STEP_SEMITONES = 2;
 
 const originalMedia = {
   click: "/media/pressing-bet-amount-button.8819b8f6.mp3",
@@ -30,12 +32,14 @@ const originalMedia = {
   win8: "/media/eldorado-win-sound-8.131fcfc1.mp3",
 };
 
+const GAME3_VIEW2_WIN_SRC = "/media/game3-view2-win.opus";
 const game3Media = {
   ...originalMedia,
   click: "/media/arabic-ui-click.mp3",
   controlClick: "/media/arabic-ui-click.mp3",
   amount: "/media/arabic-ui-click.mp3",
   receiptWin: "/media/game3-total-win-v1.wav",
+  view2Win: GAME3_VIEW2_WIN_SRC,
   cashout: "/media/arabic-cashout.mp3",
   double: "/media/arabic-double.mp3",
   lose: "/media/arabic-lose.mp3",
@@ -51,9 +55,32 @@ const game3Media = {
   win8: "/media/game3-total-win-v1.wav",
 };
 
+const GAME1_BUTTON_CLICK_SRC = "/media/game1-btn-click.opus";
+const GAME1_VIEW2_WIN_SRC = "/media/game1-view2-win.opus";
+const GAME4_BUTTON_CLICK_SRC = "/media/game4-button-click.opus";
+const GAME4_VIEW2_WIN_SRC = "/media/game4-view2-win.opus";
+const GAME6_BUTTON_CLICK_SRC = "/media/game6-button-click.opus";
+const GAME6_VIEW2_WIN_SRC = "/media/game6-view2-win.opus";
+const GAME7_BUTTON_CLICK_SRC = "/media/game7-button-click.opus";
+const GAME7_VIEW2_WIN_SRC = "/media/game7-view2-win.opus";
+const GAME8_BUTTON_CLICK_SRC = "/media/game8-button-click.opus";
+const GAME8_VIEW2_WIN_SRC = "/media/game8-view2-win.opus";
+
+const VIEW1_SPIN_SOURCE_BY_GAME = Object.freeze({
+  "korvonsaroi-karavan": "/media/game2-view1-spin.opus",
+  "marvorid-djemchug": "/media/game2-view1-reveal.opus",
+  egypt: "/media/game4-view1-spin.opus",
+  "kadima-drevnii": "/media/game5-view1-reveal.opus",
+  "khocha-afandi": "/media/game6-view1-spin.ogg",
+  babylon: "/media/game7-view1-spin.ogg",
+  fruits: "/media/game8-view1-spin.ogg",
+});
+
 const GAME2_BUBBLE_CLICK_SRC = "/media/game2-bubble-click.mp3";
 const GAME2_WATER_SPARKLE_SRC = "/media/game2-water-sparkle.mp3";
+const GAME2_CARPET_REVEAL_SRC = "/media/game2-view2-carpet-reveal.opus";
 const GAME2_WIN_CHIME_SRC = "/media/game2-win-chime.mp3";
+const GAME2_VIEW2_WIN_SRC = "/media/game2-view2-win.opus";
 
 const game2Media = {
   ...originalMedia,
@@ -62,9 +89,10 @@ const game2Media = {
   controlClick: GAME2_BUBBLE_CLICK_SRC,
   amount: GAME2_BUBBLE_CLICK_SRC,
   spin: GAME2_WATER_SPARKLE_SRC,
-  carpet: GAME2_WATER_SPARKLE_SRC,
+  carpet: GAME2_CARPET_REVEAL_SRC,
   reveal: GAME2_WATER_SPARKLE_SRC,
   receiptWin: GAME2_WIN_CHIME_SRC,
+  view2Win: GAME2_VIEW2_WIN_SRC,
   cashout: GAME2_WIN_CHIME_SRC,
   double: GAME2_WIN_CHIME_SRC,
   freeTickets: GAME2_WIN_CHIME_SRC,
@@ -78,13 +106,15 @@ const game2Media = {
   win7: GAME2_WIN_CHIME_SRC,
   win8: GAME2_WIN_CHIME_SRC,
 };
-const GAME5_AXE_CLICK_SRC = "/media/game5-axe-click.mp3";
+const GAME5_BUTTON_CLICK_SRC = "/media/game5-button-click-v2.opus";
+const GAME5_VIEW2_WIN_SRC = "/media/game5-view2-win.opus";
 const game5Media = {
   ...originalMedia,
-  click: GAME5_AXE_CLICK_SRC,
-  buttonPress: GAME5_AXE_CLICK_SRC,
-  controlClick: GAME5_AXE_CLICK_SRC,
-  amount: GAME5_AXE_CLICK_SRC,
+  click: GAME5_BUTTON_CLICK_SRC,
+  buttonPress: GAME5_BUTTON_CLICK_SRC,
+  controlClick: GAME5_BUTTON_CLICK_SRC,
+  amount: GAME5_BUTTON_CLICK_SRC,
+  view2Win: GAME5_VIEW2_WIN_SRC,
 };
 
 const createWinSoundMap = (media) => ({
@@ -106,9 +136,7 @@ const game3WinSoundBySymbol = createWinSoundMap(game3Media);
 const game5WinSoundBySymbol = createWinSoundMap(game5Media);
 const game2EffectSources = [...new Set(Object.values(game2Media))];
 const originalEffectSources = [...new Set(Object.values(originalMedia))];
-const game3EffectSources = [
-  ...new Set(Object.values(game3Media)),
-];
+const game3EffectSources = [...new Set(Object.values(game3Media))];
 const game5EffectSources = [...new Set(Object.values(game5Media))];
 export function useGameAudio(gameId) {
   const useGame2Sounds = gameId === "marvorid-djemchug";
@@ -116,13 +144,73 @@ export function useGameAudio(gameId) {
   const useGame5Sounds = gameId === "kadima-drevnii";
   // Kadima keeps its existing click level; other games use a stronger UI gain.
   const uiClickVolume = useGame5Sounds ? EFFECT_VOLUME : 1.35;
-  const media = useGame2Sounds
+  const baseMedia = useGame2Sounds
     ? game2Media
     : useGame3Sounds
       ? game3Media
       : useGame5Sounds
         ? game5Media
         : originalMedia;
+  // Game 3 intentionally keeps the original View 1 reveal sound.
+  const media = useMemo(
+    () => ({
+      ...baseMedia,
+      ...(gameId === "korvonsaroi-karavan"
+        ? {
+            click: GAME1_BUTTON_CLICK_SRC,
+            buttonPress: GAME1_BUTTON_CLICK_SRC,
+            controlClick: GAME1_BUTTON_CLICK_SRC,
+            amount: GAME1_BUTTON_CLICK_SRC,
+            view2Win: GAME1_VIEW2_WIN_SRC,
+          }
+        : gameId === "egypt"
+          ? {
+              click: GAME4_BUTTON_CLICK_SRC,
+              buttonPress: GAME4_BUTTON_CLICK_SRC,
+              controlClick: GAME4_BUTTON_CLICK_SRC,
+              amount: GAME4_BUTTON_CLICK_SRC,
+              view2Win: GAME4_VIEW2_WIN_SRC,
+            }
+          : gameId === "khocha-afandi"
+            ? {
+                click: GAME6_BUTTON_CLICK_SRC,
+                buttonPress: GAME6_BUTTON_CLICK_SRC,
+                controlClick: GAME6_BUTTON_CLICK_SRC,
+                amount: GAME6_BUTTON_CLICK_SRC,
+                view2Win: GAME6_VIEW2_WIN_SRC,
+              }
+          : gameId === "babylon"
+            ? {
+                click: GAME7_BUTTON_CLICK_SRC,
+                buttonPress: GAME7_BUTTON_CLICK_SRC,
+                controlClick: GAME7_BUTTON_CLICK_SRC,
+                amount: GAME7_BUTTON_CLICK_SRC,
+                view2Win: GAME7_VIEW2_WIN_SRC,
+              }
+          : gameId === "fruits"
+            ? {
+                click: GAME8_BUTTON_CLICK_SRC,
+                buttonPress: GAME8_BUTTON_CLICK_SRC,
+                controlClick: GAME8_BUTTON_CLICK_SRC,
+                amount: GAME8_BUTTON_CLICK_SRC,
+                view2Win: GAME8_VIEW2_WIN_SRC,
+              }
+            : {}),
+      spin: VIEW1_SPIN_SOURCE_BY_GAME[gameId] ?? baseMedia.spin,
+      reveal: VIEW1_SPIN_SOURCE_BY_GAME[gameId] ?? baseMedia.reveal,
+      carpet:
+        gameId === "korvonsaroi-karavan"
+          ? "/media/game1-view2-carpet-combined.opus"
+          : gameId === "egypt"
+            ? "/media/game4-view2-carpet-v2.opus"
+          : gameId === "kadima-drevnii"
+            ? "/media/game5-view2-carpet.opus"
+          : gameId === "fruits"
+            ? "/media/game8-carpet.ogg"
+            : baseMedia.carpet,
+    }),
+    [baseMedia, gameId],
+  );
   const winSoundBySymbol = useGame2Sounds
     ? game2WinSoundBySymbol
     : useGame3Sounds
@@ -130,13 +218,10 @@ export function useGameAudio(gameId) {
       : useGame5Sounds
         ? game5WinSoundBySymbol
         : originalWinSoundBySymbol;
-  const effectSources = useGame2Sounds
-    ? game2EffectSources
-    : useGame3Sounds
-      ? game3EffectSources
-      : useGame5Sounds
-        ? game5EffectSources
-        : originalEffectSources;
+  const effectSources = useMemo(
+    () => [...new Set(Object.values(media))],
+    [media],
+  );
   const cacheRef = useRef(new Map());
   const backgroundRef = useRef(null);
   const activePlaybackRef = useRef(new Set());
@@ -145,6 +230,7 @@ export function useGameAudio(gameId) {
   const bufferPromiseRef = useRef(new Map());
   const normalizationGainRef = useRef(new Map());
   const revealPlaybackRef = useRef(null);
+  const carpetPlaybackRef = useRef(null);
   const masterGainRef = useRef(null);
   const mutedRef = useRef(false);
   const mountedRef = useRef(true);
@@ -162,8 +248,10 @@ export function useGameAudio(gameId) {
 
   const warmBuffer = useCallback(
     (src) => {
-      if (!src || bufferRef.current.has(src)) return Promise.resolve(bufferRef.current.get(src));
-      if (bufferPromiseRef.current.has(src)) return bufferPromiseRef.current.get(src);
+      if (!src || bufferRef.current.has(src))
+        return Promise.resolve(bufferRef.current.get(src));
+      if (bufferPromiseRef.current.has(src))
+        return bufferPromiseRef.current.get(src);
 
       const context = getAudioContext();
       if (!context) return Promise.resolve(null);
@@ -180,7 +268,11 @@ export function useGameAudio(gameId) {
             Math.floor((decoded.length * decoded.numberOfChannels) / 200000),
           );
 
-          for (let channel = 0; channel < decoded.numberOfChannels; channel += 1) {
+          for (
+            let channel = 0;
+            channel < decoded.numberOfChannels;
+            channel += 1
+          ) {
             const samples = decoded.getChannelData(channel);
             for (let index = 0; index < samples.length; index += sampleStride) {
               const absoluteSample = Math.abs(samples[index]);
@@ -231,7 +323,7 @@ export function useGameAudio(gameId) {
   }, []);
 
   const playBuffer = useCallback(
-    (src, { volume = 1, loop = false } = {}) => {
+    (src, { volume = 1, loop = false, playbackRate = 1, durationMs } = {}) => {
       const context = getAudioContext();
       const buffer = bufferRef.current.get(src);
       if (!context || !buffer) return null;
@@ -244,10 +336,16 @@ export function useGameAudio(gameId) {
       const gain = context.createGain();
       source.buffer = buffer;
       source.loop = loop;
+      source.playbackRate.value = playbackRate;
       const normalizationGain = normalizationGainRef.current.get(src) ?? 1;
       gain.gain.value = volume * 0.5 * normalizationGain;
-      source.connect(gain).connect(masterGainRef.current ?? context.destination);
+      source
+        .connect(gain)
+        .connect(masterGainRef.current ?? context.destination);
       source.start(0);
+      if (Number.isFinite(durationMs) && durationMs > 0) {
+        source.stop(context.currentTime + durationMs / 1000);
+      }
 
       const playback = {
         stop: () => {
@@ -267,10 +365,20 @@ export function useGameAudio(gameId) {
   );
 
   const playSrc = useCallback(
-    (src, { volume = 1, loop = false, restart = true, preferBuffer = true } = {}) => {
+    (
+      src,
+      {
+        volume = 1,
+        loop = false,
+        restart = true,
+        preferBuffer = true,
+        playbackRate = 1,
+        durationMs,
+      } = {},
+    ) => {
       if (!src) return;
       if (preferBuffer) {
-        const buffered = playBuffer(src, { volume, loop });
+        const buffered = playBuffer(src, { volume, loop, playbackRate, durationMs });
         if (buffered) return buffered;
 
         let cancelled = false;
@@ -285,7 +393,7 @@ export function useGameAudio(gameId) {
         warmBuffer(src).then((decoded) => {
           activePlaybackRef.current.delete(pendingPlayback);
           if (cancelled || !mountedRef.current || !decoded) return;
-          resolvedPlayback = playBuffer(src, { volume, loop });
+          resolvedPlayback = playBuffer(src, { volume, loop, playbackRate, durationMs });
         });
         return pendingPlayback;
       }
@@ -387,17 +495,19 @@ export function useGameAudio(gameId) {
     });
   }, []);
 
-
   useEffect(() => {
     effectSources.forEach((src) => {
       const audio = getAudio(src);
       audio.load();
       warmBuffer(src);
     });
-  }, [getAudio, warmBuffer]);
+  }, [effectSources, getAudio, warmBuffer]);
 
   useEffect(() => {
-    window.addEventListener("pointerdown", unlockAudio, { capture: true, passive: true });
+    window.addEventListener("pointerdown", unlockAudio, {
+      capture: true,
+      passive: true,
+    });
     window.addEventListener("keydown", unlockAudio, { capture: true });
 
     return () => {
@@ -422,11 +532,19 @@ export function useGameAudio(gameId) {
         playBackground("/media/eldorado-main-theme.39d363ed.mp3");
       if (event === "stopBackground") stopBackground();
       if (event === "click") playSrc(media.click, { volume: uiClickVolume });
-      if (event === "buttonPress") playSrc(media.buttonPress, { volume: uiClickVolume });
-      if (event === "controlClick") playSrc(media.controlClick, { volume: uiClickVolume });
+      if (event === "buttonPress")
+        playSrc(media.buttonPress, { volume: uiClickVolume });
+      if (event === "controlClick")
+        playSrc(media.controlClick, { volume: uiClickVolume });
       if (event === "amount") playSrc(media.amount, { volume: uiClickVolume });
       if (event === "spin") playSrc(media.spin, { volume: EFFECT_VOLUME });
-      if (event === "carpet") playSrc(media.carpet, { volume: EFFECT_VOLUME });
+      if (event === "carpet") {
+        carpetPlaybackRef.current?.pause?.();
+        carpetPlaybackRef.current?.stop?.();
+        carpetPlaybackRef.current = playSrc(media.carpet, {
+          volume: EFFECT_VOLUME,
+        });
+      }
       if (event === "stopReveal") {
         revealPlaybackRef.current?.pause?.();
         revealPlaybackRef.current?.stop?.();
@@ -439,17 +557,69 @@ export function useGameAudio(gameId) {
           volume: EFFECT_VOLUME,
         });
       }
-      if (event === "cashout") playSrc(media.cashout, { volume: EFFECT_VOLUME });
+      if (event === "cashout")
+        playSrc(media.cashout, { volume: EFFECT_VOLUME });
       if (event === "double") playSrc(media.double, { volume: EFFECT_VOLUME });
       if (event === "lose") playSrc(media.lose, { volume: EFFECT_VOLUME });
-      if (event === "freeTickets") playSrc(media.freeTickets, { volume: EFFECT_VOLUME });
-      if (event === "win") {
-        const firstSymbol = payload?.lineWins?.[0]?.symbol;
-        playSrc(winSoundBySymbol[firstSymbol] ?? media.receiptWin, {
+      if (event === "freeTickets")
+        playSrc(media.freeTickets, { volume: EFFECT_VOLUME });
+      if (
+        event === "winLine" &&
+        ["korvonsaroi-karavan", "marvorid-djemchug", "egypt", "kadima-drevnii"].includes(gameId)
+      ) {
+        const lineIndex = Math.max(0, Number(payload?.lineIndex) || 0);
+        const playbackRate = 2 **
+          ((lineIndex * VIEW2_WIN_LINE_PITCH_STEP_SEMITONES) / 12);
+        playSrc(media.view2Win, {
           volume: EFFECT_VOLUME,
+          playbackRate,
+          durationMs:
+            ["korvonsaroi-karavan", "marvorid-djemchug"].includes(gameId)
+              ? 1500
+              : VIEW2_WIN_LINE_SOUND_MS,
         });
       }
+      if (event === "win") {
+        const firstSymbol = payload?.lineWins?.[0]?.symbol;
+        const hasCustomView2Win =
+          payload?.visualMode &&
+          [
+            "korvonsaroi-karavan",
+            "marvorid-djemchug",
+            "khiradmandi-makor",
+            "egypt",
+            "kadima-drevnii",
+            "khocha-afandi",
+            "babylon",
+            "fruits",
+          ].includes(gameId);
+        if (hasCustomView2Win) {
+          carpetPlaybackRef.current?.pause?.();
+          carpetPlaybackRef.current?.stop?.();
+          carpetPlaybackRef.current = null;
+        }
+        const winSrc = hasCustomView2Win
+          ? media.view2Win
+          : winSoundBySymbol[firstSymbol] ?? media.receiptWin;
+        const usesPerLineView2Win =
+          payload?.visualMode &&
+          ["korvonsaroi-karavan", "marvorid-djemchug", "egypt", "kadima-drevnii"].includes(gameId);
+        if (!usesPerLineView2Win) {
+          playSrc(winSrc, { volume: EFFECT_VOLUME });
+        }
+      }
     },
-    [getAudio, playBackground, playSrc, setMuted, stopAllAudio, stopBackground, winSoundBySymbol],
+    [
+      gameId,
+      getAudio,
+      media,
+      playBackground,
+      playSrc,
+      setMuted,
+      stopAllAudio,
+      stopBackground,
+      uiClickVolume,
+      winSoundBySymbol,
+    ],
   );
 }

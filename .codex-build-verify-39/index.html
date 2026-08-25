@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <link rel="shortcut icon" href="/favicon.ico?v=6" />
+    <link rel="icon" type="image/png" href="/favicon.png?v=6" />
+    <link rel="apple-touch-icon" href="/favicon.png?v=6" />
+    <link
+      rel="preload"
+      as="image"
+      fetchpriority="high"
+      href="/assets/img/cover.webp"
+    />
+    <link
+      rel="preload"
+      as="image"
+      fetchpriority="high"
+      href="/assets/img/xiramandi-makor.webp"
+    />
+    <link
+      rel="preload"
+      as="image"
+      fetchpriority="high"
+      href="/assets/img/logo-frame.webp"
+    />
+    <link
+      rel="preload"
+      as="image"
+      fetchpriority="high"
+      href="/assets/img/double-scene-bg.png"
+    />    <link rel="preload" href="/assets/fonts/roboto-variable.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/assets/fonts/prosto-one-regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/assets/fonts/playfair-display-variable.woff2" as="font" type="font/woff2" crossorigin />
+    <style>
+      html,
+      body,
+      #root {
+        width: 100%;
+        min-width: 320px;
+        height: 100%;
+        margin: 0;
+        background: #050506;
+      }
+
+      .boot-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: grid;
+        place-items: center;
+        background: #050506;
+      }
+
+      .boot-loader__content {
+        width: min(360px, 84vw);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+      }.boot-loader__progress {
+        width: min(240px, 70vw);
+        display: grid;
+        justify-items: center;
+        gap: 9px;
+      }
+
+      .boot-loader__track {
+        width: 100%;
+        height: 6px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
+      }
+
+      .boot-loader__fill {
+        width: 0%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #8f7433 0%, #c7aa61 100%);
+      }
+
+      .boot-loader__percent {
+        color: #8d929b;
+        font-family: Roboto, Arial, sans-serif;
+        font-size: 11px;
+        font-weight: 500;
+        line-height: 1;
+        letter-spacing: 0.03em;
+      }
+</style>
+    <title>Khiradmandi Makor iframe</title>
+    <script type="module" crossorigin src="/assets/index-D6LQpDEQ.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-Dgp3fE77.css">
+  </head>
+  <body>
+    <div id="root">
+      <div class="boot-loader" role="status" aria-label="Loading game">
+        <div class="boot-loader__content">
+<div class="boot-loader__progress" aria-label="0% loaded">
+            <div class="boot-loader__track">
+              <div class="boot-loader__fill"></div>
+            </div>
+            <div class="boot-loader__percent">0%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
+

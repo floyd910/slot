@@ -169,6 +169,12 @@ export default function GameContent({ controller, game, runtimeState }) {
                 scatterCells={
                   state.visualMode ? state.spinResult?.scatterCells : []
                 }
+                onActiveWinGroupChange={actions.playView2WinLine}
+                winLineHighlightMs={
+                  ["egypt", "kadima-drevnii"].includes(game.id)
+                    ? 1000
+                    : undefined
+                }
                 doublingState={state.doublingState}
               />
             </div>

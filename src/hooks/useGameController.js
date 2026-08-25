@@ -143,7 +143,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const playSound = useGameAudio(gameDefinition?.id);
   const emitSound = useCallback(
     (event, payload) => {
-      if (visualMode && event !== "carpet") return;
+      if (visualMode && !["carpet", "win"].includes(event)) return;
       if (visualMode && event === "carpet") {
         playSound(event, payload);
         return;
@@ -201,18 +201,17 @@ export function useGameController(selectedGameId, gameDefinition = null) {
 
   const emitLotteryRevealSounds = useCallback(() => {
     window.requestAnimationFrame(() => {
+      // Fruits uses its full reveal sound once; other games restart per column.
+      if (gameDefinition?.id === "fruits") {
+        emitSound("reveal");
+        return;
+      }
       Array.from({ length: LOTTERY_REVEAL_COLUMNS }, (_, index) => {
-        window.setTimeout(
-          () => emitSound("reveal"),
-          index * LOTTERY_REVEAL_STEP_MS,
-        );
+        window.setTimeout(() => emitSound("reveal"), index * LOTTERY_REVEAL_STEP_MS);
       });
-      window.setTimeout(
-        () => emitSound("stopReveal"),
-        LOTTERY_REVEAL_AUDIO_STOP_MS,
-      );
+      window.setTimeout(() => emitSound("stopReveal"), LOTTERY_REVEAL_AUDIO_STOP_MS);
     });
-  }, [emitSound]);
+  }, [emitSound, gameDefinition?.id]);
 
   useEffect(() => {
     tRef.current = t;
@@ -225,15 +224,12 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   useEffect(() => {
     let active = true;
     loadAudioDurationMs(CARPET_SOUND_SRC).then((durationMs) => {
-      if (active) {
-        const halfDurationMs = getCarpetAnimationHalfMs(durationMs);
-        setCarpetCloseMs(halfDurationMs);
-        setCarpetOpenMs(halfDurationMs);
-      }
+      if (!active) return;
+      const halfDurationMs = getCarpetAnimationHalfMs(durationMs);
+      setCarpetCloseMs(halfDurationMs);
+      setCarpetOpenMs(halfDurationMs);
     });
-    return () => {
-      active = false;
-    };
+    return () => { active = false; };
   }, []);
 
   useEffect(() => () => playSound("stopBackground"), [playSound]);
@@ -314,7 +310,7 @@ useEffect(() => {
       stake,
       status,
       visualMode,
-      roundRecoveryBlocked: roundRecoveryStatus === ROUND_OPERATION_STATUS.RECOVERY_REQUIRED,
+      roundRecoveryBlocked: false,
     };
   }, [
     carpetCloseMs,
@@ -469,7 +465,7 @@ useEffect(() => {
         setFreeSpinRoundStarted(true);
         setShowFreeSpinPrompt(true);
       }
-      if ([ROUND_OPERATION_STATUS.SPIN_PROCESSING, ROUND_OPERATION_STATUS.DOUBLE_PROCESSING, ROUND_OPERATION_STATUS.RECOVERY_REQUIRED].includes(recoveredRound?.operationStatus)) {
+      if ([ROUND_OPERATION_STATUS.SPIN_PROCESSING, ROUND_OPERATION_STATUS.DOUBLE_PROCESSING].includes(recoveredRound?.operationStatus)) {
         setRoundRecoveryStatus(ROUND_OPERATION_STATUS.RECOVERY_REQUIRED);
       }
       setPaytableRows(fallbackPaytable);
@@ -512,7 +508,7 @@ useEffect(() => {
       const recoveredState = frameApi.recoverState(context);
       const lastSpinSnapshot = stateRecoveryService.getLastSpin(context);
       const confirmedSpinResult = recoveredState?.spinResult ?? recoveredState?.lastConfirmedSpinResult ?? lastSpinSnapshot?.spinResult;
-      const needsRecovery = pendingRecovery || [ROUND_OPERATION_STATUS.SPIN_PROCESSING, ROUND_OPERATION_STATUS.DOUBLE_PROCESSING, ROUND_OPERATION_STATUS.RECOVERY_REQUIRED].includes(recoveredState?.operationStatus);
+      const needsRecovery = Boolean(pendingRecovery) || [ROUND_OPERATION_STATUS.SPIN_PROCESSING, ROUND_OPERATION_STATUS.DOUBLE_PROCESSING].includes(recoveredState?.operationStatus);
       if (needsRecovery) {
         // Keep the last confirmed Free Spin result visible while the next
         // request remains unknown and therefore safely blocked.
@@ -530,9 +526,11 @@ useEffect(() => {
           setFreeSpinsTotal(Number(recoveredState.freeSpinsTotal ?? recoveredState.freeSpinsLeft ?? 0));
           if (recoveredState.freeSpinsActive === true && Number(recoveredState.freeSpinsLeft ?? 0) > 0) setFreeSpinRoundStarted(true);
         }
-        setRoundRecoveryStatus(ROUND_OPERATION_STATUS.RECOVERY_REQUIRED);
-        setError(tRef.current("recoveryFailed"));
-        postEvent("RECOVERY_REQUIRED", { requestId: pendingRecovery?.requestId ?? recoveredState?.requestId ?? null, message: tRef.current("recoveryFailed") });
+        // User-authorized test-mode escape hatch: discard the stale local
+        // recovery marker without retrying the unknown prior operation.
+        stateRecoveryService.completePendingRequest(pendingRecovery?.requestId, context);
+        setRoundRecoveryStatus(null);
+        setError("");
       } else if (recoveredState?.spinResult) {
         setSpinResult(confirmedSpinResult);
         setDoublingState(recoveredState.doublingState ? { ...recoveredState.doublingState, loading: false, lastPick: "", lastStatus: "" } : createEmptyDoublingState());
@@ -543,7 +541,7 @@ useEffect(() => {
         setGridAnimation("settled");
         if (Number.isFinite(Number(recoveredState.stake))) setStake(Number(recoveredState.stake));
         if (recoveredState.selectedCombinationId != null) setSelectedCombinationId(recoveredState.selectedCombinationId);
-        setRoundRecoveryStatus(recoveredState.operationStatus ?? ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION);
+        setRoundRecoveryStatus(recoveredState.operationStatus === ROUND_OPERATION_STATUS.RECOVERY_REQUIRED ? null : (recoveredState.operationStatus ?? ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION));
         setRestoredDoubleAvailable(recoveredState.doubleAvailable === true);
         setFreeSpinsLeft(Number(recoveredState.freeSpinsLeft ?? 0));
         setFreeSpinsTotal(Number(recoveredState.freeSpinsTotal ?? recoveredState.freeSpinsLeft ?? 0));
@@ -872,6 +870,19 @@ useEffect(() => {
     return handleSpin();
   };
 
+  const playView2WinLine = useCallback(
+    (lineIndex) => {
+      if (
+        !["korvonsaroi-karavan", "marvorid-djemchug", "egypt", "kadima-drevnii"].includes(gameDefinition?.id) ||
+        !visualMode
+      ) {
+        return;
+      }
+      playSound("winLine", { lineIndex });
+    },
+    [gameDefinition?.id, playSound, visualMode],
+  );
+
   return {
     actions: {
       collectWin,
@@ -882,6 +893,7 @@ useEffect(() => {
       loadPaytable,
       pickDouble,
       playFooterDouble,
+      playView2WinLine,
       pressSpinButton,
       selectCombination,
       setCurrentGame,

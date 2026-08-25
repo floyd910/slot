@@ -26,7 +26,7 @@ const retainedPreloadedAudio = new Map();
 let startupAssetsPromise = null;
 const gameAssetsPromises = new Map();
 const IMAGE_DECODE_TIMEOUT_MS = 8000;
-const GAME5_AXE_CLICK_SRC = "/media/game5-axe-click.mp3";
+const GAME5_BUTTON_CLICK_SRC = "/media/game5-button-click-v2.opus";
 export const toPreloadUrl = (src) => {
   if (!src || src.startsWith("data:") || src.startsWith("blob:")) return "";
   try {
@@ -452,7 +452,7 @@ const getGameAudioAssets = (game) =>
     : game?.id === "kadima-drevnii"
       ? [
           ...STARTUP_ASSETS.audio.filter((src) => !src.includes("/arabic-")),
-          GAME5_AXE_CLICK_SRC,
+          GAME5_BUTTON_CLICK_SRC,
         ]
       : STARTUP_ASSETS.audio.filter((src) => !src.includes("/arabic-"));
 
@@ -508,7 +508,7 @@ export const preloadGameAssets = (game, onProgress) => {
     ),
     fontReady(),
     ...(game.id === "kadima-drevnii"
-      ? [preloadAudioData(GAME5_AXE_CLICK_SRC)]
+      ? [preloadAudioData(GAME5_BUTTON_CLICK_SRC)]
       : []),
     ...STARTUP_ASSETS.videos.map(preloadVideo),
   ]).then(() => {

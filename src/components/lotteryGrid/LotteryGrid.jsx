@@ -17,6 +17,7 @@ export default function LotteryGrid({
   winningCells = [],
   winningGroups = [],
   onActiveWinGroupChange,
+  winLineHighlightMs,
   scatterCells = [],
   doublingState,
   carpetCloseMs = 1455,
@@ -35,6 +36,7 @@ export default function LotteryGrid({
     winningCells,
     winningGroups,
     onActiveWinGroupChange,
+    winLineHighlightMs,
   });
 
   if (model.isGridMissing) return null;
