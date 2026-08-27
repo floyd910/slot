@@ -58,6 +58,7 @@ export const createSpinActions = ({
   } = {}) => {
     const {
       carpetCloseMs,
+      carpetOpenMs,
       context,
       doubleState,
       doublingState,
@@ -187,9 +188,12 @@ export const createSpinActions = ({
         });
         emitLotteryRevealSounds();
       }
+      const revealSettleMs = visualMode
+        ? carpetOpenMs
+        : LOTTERY_REVEAL_SETTLE_MS;
       window.setTimeout(
         () => setGridAnimation("settled"),
-        LOTTERY_REVEAL_SETTLE_MS,
+        revealSettleMs,
       );
       const nextSpinResult = { ...result, creditedToBalance: shouldCreditWin };
       const nextDoublingState = isDigitWin && !shouldCreditWin
@@ -276,7 +280,7 @@ export const createSpinActions = ({
         if (persistedFreeSpinsLeft <= 0) stateRecoveryService.completeRound(context);
       }
 
-      await wait(LOTTERY_REVEAL_SETTLE_MS);
+      await wait(revealSettleMs);
       if (shouldCreditWin) {
 
         setPlayer((current) => {

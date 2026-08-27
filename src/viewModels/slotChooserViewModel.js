@@ -6,7 +6,7 @@ export function buildSlotChooserItems({ interactive, slots }) {
     const enabled = interactive && ready;
 
     return {
-      alt: ready ? `${slot.title} - Betproduct.com` : "Coming soon",
+      alt: ready ? slot.title : "Coming soon",
       enabled,
       fetchPriority: ready ? "high" : "low",
       id: slot.id,

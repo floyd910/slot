@@ -32,7 +32,7 @@ const originalMedia = {
   win8: "/media/eldorado-win-sound-8.131fcfc1.mp3",
 };
 
-const GAME3_VIEW2_WIN_SRC = "/media/game3-view2-win.opus";
+const GAME3_VIEW2_WIN_SRC = "/media/game3-view2-carpet-arabian-v2.opus";
 const game3Media = {
   ...originalMedia,
   click: "/media/arabic-ui-click.mp3",
@@ -69,16 +69,16 @@ const GAME8_VIEW2_WIN_SRC = "/media/game8-view2-win.opus";
 const VIEW1_SPIN_SOURCE_BY_GAME = Object.freeze({
   "korvonsaroi-karavan": "/media/game2-view1-spin.opus",
   "marvorid-djemchug": "/media/game2-view1-reveal.opus",
-  egypt: "/media/game4-view1-spin.opus",
+  egypt: "/media/game4-view1-reveal-v3.opus",
   "kadima-drevnii": "/media/game5-view1-reveal.opus",
-  "khocha-afandi": "/media/game6-view1-spin.ogg",
-  babylon: "/media/game7-view1-spin.ogg",
-  fruits: "/media/game8-view1-spin.ogg",
+  "khocha-afandi": "/media/game6-view1-reveal-v2.opus",
+  babylon: "/media/game7-view1-reveal-v2.opus",
+  fruits: "/media/game8-view1-reveal-v2.opus",
 });
 
-const GAME2_BUBBLE_CLICK_SRC = "/media/game2-bubble-click.mp3";
+const GAME2_BUBBLE_CLICK_SRC = "/media/game2-button-click-v2.opus";
 const GAME2_WATER_SPARKLE_SRC = "/media/game2-water-sparkle.mp3";
-const GAME2_CARPET_REVEAL_SRC = "/media/game2-view2-carpet-reveal.opus";
+const GAME2_CARPET_REVEAL_SRC = "/media/game2-view2-carpet-reveal-v2.opus";
 const GAME2_WIN_CHIME_SRC = "/media/game2-win-chime.mp3";
 const GAME2_VIEW2_WIN_SRC = "/media/game2-view2-win.opus";
 
@@ -142,8 +142,8 @@ export function useGameAudio(gameId) {
   const useGame2Sounds = gameId === "marvorid-djemchug";
   const useGame3Sounds = gameId === "khiradmandi-makor";
   const useGame5Sounds = gameId === "kadima-drevnii";
-  // Kadima keeps its existing click level; other games use a stronger UI gain.
-  const uiClickVolume = useGame5Sounds ? EFFECT_VOLUME : 1.35;
+  const uiClickVolume = EFFECT_VOLUME;
+  const carpetVolume = useGame2Sounds ? EFFECT_VOLUME * 2 : EFFECT_VOLUME;
   const baseMedia = useGame2Sounds
     ? game2Media
     : useGame3Sounds
@@ -200,13 +200,19 @@ export function useGameAudio(gameId) {
       reveal: VIEW1_SPIN_SOURCE_BY_GAME[gameId] ?? baseMedia.reveal,
       carpet:
         gameId === "korvonsaroi-karavan"
-          ? "/media/game1-view2-carpet-combined.opus"
+          ? "/media/game3-view2-win-magical-v2.opus"
+          : gameId === "khiradmandi-makor"
+            ? "/media/game3-view2-carpet-egyptian-v3.opus"
+          : gameId === "babylon"
+            ? "/media/game1-view2-carpet-second-v3.opus"
           : gameId === "egypt"
-            ? "/media/game4-view2-carpet-v2.opus"
+            ? "/media/game4-view2-carpet-second-v6.opus"
           : gameId === "kadima-drevnii"
-            ? "/media/game5-view2-carpet.opus"
+            ? "/media/game5-view2-carpet-second-v3.opus"
+          : gameId === "khocha-afandi"
+            ? "/media/game6-view2-carpet-cartoonish-v2.opus"
           : gameId === "fruits"
-            ? "/media/game8-carpet.ogg"
+            ? "/media/game8-view2-carpet-whimsical-v2.opus"
             : baseMedia.carpet,
     }),
     [baseMedia, gameId],
@@ -542,7 +548,7 @@ export function useGameAudio(gameId) {
         carpetPlaybackRef.current?.pause?.();
         carpetPlaybackRef.current?.stop?.();
         carpetPlaybackRef.current = playSrc(media.carpet, {
-          volume: EFFECT_VOLUME,
+          volume: carpetVolume,
         });
       }
       if (event === "stopReveal") {
@@ -565,7 +571,7 @@ export function useGameAudio(gameId) {
         playSrc(media.freeTickets, { volume: EFFECT_VOLUME });
       if (
         event === "winLine" &&
-        ["korvonsaroi-karavan", "marvorid-djemchug", "egypt", "kadima-drevnii"].includes(gameId)
+        ["egypt", "kadima-drevnii", "babylon"].includes(gameId)
       ) {
         const lineIndex = Math.max(0, Number(payload?.lineIndex) || 0);
         const playbackRate = 2 **
@@ -573,10 +579,7 @@ export function useGameAudio(gameId) {
         playSrc(media.view2Win, {
           volume: EFFECT_VOLUME,
           playbackRate,
-          durationMs:
-            ["korvonsaroi-karavan", "marvorid-djemchug"].includes(gameId)
-              ? 1500
-              : VIEW2_WIN_LINE_SOUND_MS,
+          durationMs: VIEW2_WIN_LINE_SOUND_MS,
         });
       }
       if (event === "win") {
@@ -603,13 +606,14 @@ export function useGameAudio(gameId) {
           : winSoundBySymbol[firstSymbol] ?? media.receiptWin;
         const usesPerLineView2Win =
           payload?.visualMode &&
-          ["korvonsaroi-karavan", "marvorid-djemchug", "egypt", "kadima-drevnii"].includes(gameId);
+          ["egypt", "kadima-drevnii", "babylon"].includes(gameId);
         if (!usesPerLineView2Win) {
           playSrc(winSrc, { volume: EFFECT_VOLUME });
         }
       }
     },
     [
+      carpetVolume,
       gameId,
       getAudio,
       media,

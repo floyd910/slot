@@ -19,9 +19,15 @@ export const IMAGE_PRELOAD_TIMEOUT_MS = 6000;
 export const CARPET_SOUND_SRC = "/media/carpet.ogg";
 export const CARPET_SOUND_FALLBACK_MS = 4910;
 export const CARPET_ANIMATION_TRIM_MS = 2000;
+export const CARPET_ANIMATION_SPEEDUP_MS = 500;
 
 export const getCarpetAnimationHalfMs = (durationMs) =>
-  Math.round(Math.max(0, durationMs - CARPET_ANIMATION_TRIM_MS) / 2);
+  Math.round(
+    Math.max(
+      0,
+      durationMs - CARPET_ANIMATION_TRIM_MS - CARPET_ANIMATION_SPEEDUP_MS,
+    ) / 2,
+  );
 
 export const CARPET_ANIMATION_HALF_MS = getCarpetAnimationHalfMs(
   CARPET_SOUND_FALLBACK_MS,

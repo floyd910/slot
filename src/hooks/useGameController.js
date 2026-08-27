@@ -127,6 +127,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const freeSpinRunRef = useRef(false);
   const liveSpinStateRef = useRef({
     carpetCloseMs,
+    carpetOpenMs,
     context,
     doubleState,
     doublingState,
@@ -201,17 +202,12 @@ export function useGameController(selectedGameId, gameDefinition = null) {
 
   const emitLotteryRevealSounds = useCallback(() => {
     window.requestAnimationFrame(() => {
-      // Fruits uses its full reveal sound once; other games restart per column.
-      if (gameDefinition?.id === "fruits") {
-        emitSound("reveal");
-        return;
-      }
       Array.from({ length: LOTTERY_REVEAL_COLUMNS }, (_, index) => {
         window.setTimeout(() => emitSound("reveal"), index * LOTTERY_REVEAL_STEP_MS);
       });
       window.setTimeout(() => emitSound("stopReveal"), LOTTERY_REVEAL_AUDIO_STOP_MS);
     });
-  }, [emitSound, gameDefinition?.id]);
+  }, [emitSound]);
 
   useEffect(() => {
     tRef.current = t;
@@ -297,6 +293,7 @@ useEffect(() => {
   useEffect(() => {
     liveSpinStateRef.current = {
       carpetCloseMs,
+      carpetOpenMs,
       context,
       doubleState,
       doublingState,
@@ -314,6 +311,7 @@ useEffect(() => {
     };
   }, [
     carpetCloseMs,
+    carpetOpenMs,
     context,
     doubleState,
     doublingState,
@@ -873,7 +871,7 @@ useEffect(() => {
   const playView2WinLine = useCallback(
     (lineIndex) => {
       if (
-        !["korvonsaroi-karavan", "marvorid-djemchug", "egypt", "kadima-drevnii"].includes(gameDefinition?.id) ||
+        !["egypt", "kadima-drevnii", "babylon"].includes(gameDefinition?.id) ||
         !visualMode
       ) {
         return;

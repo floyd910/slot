@@ -27,6 +27,54 @@ let startupAssetsPromise = null;
 const gameAssetsPromises = new Map();
 const IMAGE_DECODE_TIMEOUT_MS = 8000;
 const GAME5_BUTTON_CLICK_SRC = "/media/game5-button-click-v2.opus";
+const GAME_AUDIO_ASSETS_BY_ID = Object.freeze({
+  "korvonsaroi-karavan": [
+    "/media/game3-view2-win-magical-v2.opus",
+    "/media/game1-btn-click.opus",
+    "/media/game2-view1-spin.opus",
+    "/media/game1-view2-win.opus",
+  ],
+  "marvorid-djemchug": [
+    "/media/game2-view2-carpet-reveal-v2.opus",
+    "/media/game2-button-click-v2.opus",
+    "/media/game2-view1-reveal.opus",
+    "/media/game2-view2-win.opus",
+  ],
+  "khiradmandi-makor": [
+    "/media/game3-view2-carpet-egyptian-v3.opus",
+    "/media/game3-view2-carpet-arabian-v2.opus",
+  ],
+  egypt: [
+    "/media/game4-view2-carpet-second-v6.opus",
+    "/media/game4-button-click.opus",
+    "/media/game4-view1-reveal-v3.opus",
+    "/media/game4-view2-win.opus",
+  ],
+  "kadima-drevnii": [
+    "/media/game5-view2-carpet-second-v3.opus",
+    GAME5_BUTTON_CLICK_SRC,
+    "/media/game5-view1-reveal.opus",
+    "/media/game5-view2-win.opus",
+  ],
+  "khocha-afandi": [
+    "/media/game6-view2-carpet-cartoonish-v2.opus",
+    "/media/game6-button-click.opus",
+    "/media/game6-view1-reveal-v2.opus",
+    "/media/game6-view2-win.opus",
+  ],
+  babylon: [
+    "/media/game1-view2-carpet-second-v3.opus",
+    "/media/game7-button-click.opus",
+    "/media/game7-view1-reveal-v2.opus",
+    "/media/game7-view2-win.opus",
+  ],
+  fruits: [
+    "/media/game8-view2-carpet-whimsical-v2.opus",
+    "/media/game8-button-click.opus",
+    "/media/game8-view1-reveal-v2.opus",
+    "/media/game8-view2-win.opus",
+  ],
+});
 export const toPreloadUrl = (src) => {
   if (!src || src.startsWith("data:") || src.startsWith("blob:")) return "";
   try {
@@ -446,18 +494,20 @@ const collectAssetUrls = (value, urls = []) => {
   return urls;
 };
 
-const getGameAudioAssets = (game) =>
-  game?.id === "khiradmandi-makor"
-    ? STARTUP_ASSETS.audio
-    : game?.id === "kadima-drevnii"
-      ? [
-          ...STARTUP_ASSETS.audio.filter((src) => !src.includes("/arabic-")),
-          GAME5_BUTTON_CLICK_SRC,
-        ]
+const getGameAudioAssets = (game) => {
+  const customAssets = GAME_AUDIO_ASSETS_BY_ID[game?.id] ?? [];
+  const sharedAssets =
+    game?.id === "khiradmandi-makor"
+      ? STARTUP_ASSETS.audio
       : STARTUP_ASSETS.audio.filter((src) => !src.includes("/arabic-"));
+  return uniqueUrls([...customAssets, ...sharedAssets]);
+};
 
-export const preloadGameBackgroundAudio = (game) =>
-  runWithConcurrency(getGameAudioAssets(game), 2, preloadAudioData);
+export const preloadGameBackgroundAudio = async (game) => {
+  const [carpet, ...remainingAudio] = getGameAudioAssets(game);
+  if (carpet) await preloadAudioData(carpet);
+  await runWithConcurrency(remainingAudio, 2, preloadAudioData);
+};
 
 const loadDeferredStartupAssets = async (game) => {
   const criticalUrls = new Set(uniqueUrls(getRequiredGameMainScreenAssets(game)));
@@ -470,7 +520,7 @@ const loadDeferredStartupAssets = async (game) => {
   ]).filter((src) => !criticalUrls.has(src) && isAssetAllowedForGame(src, game));
 
   await preloadDeferredImages(deferredImages);
-  await runWithConcurrency(getGameAudioAssets(game), 2, preloadAudioData);
+  await preloadGameBackgroundAudio(game);
   await Promise.all(STARTUP_ASSETS.videos.map(preloadVideo));
 };
 
@@ -561,12 +611,12 @@ export const preloadDeferredStartupAssets = (game) => {
 };
 
 export const scheduleDeferredStartupAssets = (game) => {
-  // Background work begins as soon as the game mounts. Queue the View 2 grid
-  // first, then every Double-scene background/chest/remaining asset. None of
+  // Background work begins as soon as the game mounts. Queue that game's audio
+  // first (carpet before other sounds), then the deferred visual assets. None of
   // this work participates in the visible game-loader progress.
   window.setTimeout(() => {
-    preloadView2FirstPaintAssets(game)
-      .then(() => preloadGameBackgroundAudio(game))
+    preloadGameBackgroundAudio(game)
+      .then(() => preloadView2FirstPaintAssets(game))
       .then(() => preloadWinAnimations(game))
       .then(() => preloadDeferredStartupAssets(game))
       .catch((error) => console.error(error));
