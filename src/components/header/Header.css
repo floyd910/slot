@@ -453,3 +453,108 @@ header {
     min-width: 440px;
   }
 }
+/* Prominent visualization mode control */
+.header-btns > .view-changer {
+  position: relative;
+  padding-inline: 5px;
+  width: 52px;
+  min-width: 52px;
+  max-width: 52px;
+  height: 44px;
+  flex: 0 0 52px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.88);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+  cursor: pointer;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    transform 100ms ease;
+}
+
+.header-btns .view-changer__icon {
+  display: block;
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  pointer-events: none;
+}
+
+.header-btns > .view-changer.active {
+  border-color: var(--game-accent, #c7aa61);
+  background: color-mix(in srgb, var(--game-accent, #c7aa61) 24%, var(--game-panel-solid, #0d0d0d));
+  color: #fff7d7;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--game-accent, #c7aa61) 72%, transparent),
+    0 0 14px color-mix(in srgb, var(--game-accent, #c7aa61) 50%, transparent),
+    inset 0 0 10px color-mix(in srgb, var(--game-accent, #c7aa61) 18%, transparent);
+}
+
+.header-btns > .view-changer:active:not(:disabled) {
+  transform: scale(0.94);
+  background: color-mix(in srgb, var(--game-accent, #c7aa61) 30%, var(--game-panel-solid, #0d0d0d));
+}
+
+.header-btns > .view-changer:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.header-btns > .view-changer:disabled {
+  cursor: default;
+  opacity: 0.48;
+}
+
+.view-changer__tooltip {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  display: none;
+  padding: 7px 9px;
+  border: 1px solid var(--game-line, rgba(255, 255, 255, 0.18));
+  border-radius: 5px;
+  background: var(--game-panel-solid, #0d0d0d);
+  color: #fff;
+  font-family: Roboto, sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.34);
+  pointer-events: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .header-btns > .view-changer:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--game-accent, #c7aa61) 76%, #fff);
+    background: color-mix(in srgb, var(--game-accent, #c7aa61) 16%, var(--game-panel-solid, #0d0d0d));
+    color: #fff;
+    box-shadow: 0 0 10px color-mix(in srgb, var(--game-accent, #c7aa61) 32%, transparent);
+  }
+
+  .header-btns > .view-changer:hover .view-changer__tooltip,
+  .header-btns > .view-changer:focus-visible .view-changer__tooltip {
+    display: block;
+  }
+}
+
+@media (orientation: landscape) and (max-height: 620px), (max-width: 720px) {
+  .header-btns > .view-changer {
+    width: 52px;
+    min-width: 52px;
+    max-width: 52px;
+    height: 44px;
+    flex-basis: 52px;
+  }
+
+  .header-btns .view-changer__icon {
+    width: 30px;
+    height: 30px;
+    flex-basis: 30px;
+  }
+}
