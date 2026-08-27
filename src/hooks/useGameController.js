@@ -46,6 +46,36 @@ import {
 } from "./useFrameBridge.js";
 
 const initialContext = readFrameParams();
+const UI_PREFERENCES_KEY = "hiranmandi-frame:ui-preferences:v1";
+
+const readUiPreferences = (gameId) => {
+  try {
+    const allPreferences = JSON.parse(
+      window.localStorage.getItem(UI_PREFERENCES_KEY) ?? "{}",
+    );
+    return allPreferences?.[gameId] ?? {};
+  } catch {
+    return {};
+  }
+};
+
+const saveUiPreferences = (gameId, preferences) => {
+  if (!gameId) return;
+  try {
+    const allPreferences = JSON.parse(
+      window.localStorage.getItem(UI_PREFERENCES_KEY) ?? "{}",
+    );
+    window.localStorage.setItem(
+      UI_PREFERENCES_KEY,
+      JSON.stringify({
+        ...allPreferences,
+        [gameId]: { ...(allPreferences?.[gameId] ?? {}), ...preferences },
+      }),
+    );
+  } catch {
+    // Storage can be blocked in partner iframes.
+  }
+};
 
 const getSupportedCombinations = (gameId, sourceCombinations) =>
   gameId === "fruits"
@@ -70,7 +100,17 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     ...(bootGameId ? { gameId: bootGameId } : {}),
     recoveryGameId: gameDefinition?.id ?? bootGameId ?? initialContext.gameId,
   }));
+  const uiPreferences = useMemo(
+    () => readUiPreferences(gameDefinition?.id ?? bootGameId),
+    [bootGameId, gameDefinition?.id],
+  );
   const [status, setStatus] = useState("initial-loading");
+  const [recoveringRound] = useState(() =>
+    Boolean(
+      frameApi.recoverState(context) ||
+        frameApi.getPendingRequest(context),
+    ),
+  );
   const [error, setError] = useState("");
   const [lastKnownState, setLastKnownState] = useState(null);
   const [roundRecoveryStatus, setRoundRecoveryStatus] = useState(null);
@@ -79,16 +119,16 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const [games, setGames] = useState([]);
   const [currentGame, setCurrentGame] = useState(bootGameId);
   const [combinations, setCombinations] = useState([]);
-  const [selectedCombinationId, setSelectedCombinationId] = useState(1);
+  const [selectedCombinationId, setSelectedCombinationId] = useState(() => uiPreferences.selectedCombinationId ?? 1);
   const [grid, setGrid] = useState({ A: [], B: [], C: [], D: [] });
   const [gridRevealKey, setGridRevealKey] = useState(0);
   const [gridAnimation, setGridAnimation] = useState("idle");
   const [hasRecoveredGrid, setHasRecoveredGrid] = useState(false);
-  const [stake, setStake] = useState(0.1);
-  const [visualMode, setVisualMode] = useState(false);
+  const [stake, setStake] = useState(() => Number(uiPreferences.stake ?? 0.1));
+  const [visualMode, setVisualMode] = useState(() => uiPreferences.visualMode === true);
   const [carpetCloseMs, setCarpetCloseMs] = useState(CARPET_ANIMATION_HALF_MS);
   const [carpetOpenMs, setCarpetOpenMs] = useState(CARPET_ANIMATION_HALF_MS);
-  const [expandedBoard, setExpandedBoard] = useState(false);
+  const [expandedBoard, setExpandedBoard] = useState(() => uiPreferences.visualMode === true);
   const [spinResult, setSpinResult] = useState(null);
   const [freeSpinsTotal, setFreeSpinsTotal] = useState(0);
   const [freeSpinsLeft, setFreeSpinsLeft] = useState(0);
@@ -100,8 +140,8 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const [doubleState, setDoubleState] = useState(createDoubleState);
   const [doublingState, setDoublingState] = useState(createEmptyDoublingState);
   const [autoPlayOn, setAutoPlayOn] = useState(false);
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  const soundEnabledRef = useRef(true);
+  const [soundEnabled, setSoundEnabled] = useState(() => uiPreferences.soundEnabled !== false);
+  const soundEnabledRef = useRef(soundEnabled);
   const [showGameMenu, setShowGameMenu] = useState(false);
   const [spinHistory, setSpinHistory] = useState([]);
   const [spinFeedbackActive, setSpinFeedbackActive] = useState(false);
@@ -158,6 +198,22 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   useEffect(() => {
     playSound("setMuted", !soundEnabled);
   }, [playSound, soundEnabled]);
+
+  useEffect(() => {
+    saveUiPreferences(gameDefinition?.id ?? bootGameId, {
+      selectedCombinationId,
+      soundEnabled,
+      stake,
+      visualMode,
+    });
+  }, [
+    bootGameId,
+    gameDefinition?.id,
+    selectedCombinationId,
+    soundEnabled,
+    stake,
+    visualMode,
+  ]);
 
   useEffect(
     () => () => {
@@ -524,11 +580,10 @@ useEffect(() => {
           setFreeSpinsTotal(Number(recoveredState.freeSpinsTotal ?? recoveredState.freeSpinsLeft ?? 0));
           if (recoveredState.freeSpinsActive === true && Number(recoveredState.freeSpinsLeft ?? 0) > 0) setFreeSpinRoundStarted(true);
         }
-        // User-authorized test-mode escape hatch: discard the stale local
-        // recovery marker without retrying the unknown prior operation.
-        stateRecoveryService.completePendingRequest(pendingRecovery?.requestId, context);
-        setRoundRecoveryStatus(null);
-        setError("");
+        // The server result is unknown. Keep this round blocked until a
+        // recovery response resolves it; never clear or blindly retry it.
+        setRoundRecoveryStatus(ROUND_OPERATION_STATUS.RECOVERY_REQUIRED);
+        setError(tRef.current("operationPendingRecovery"));
       } else if (recoveredState?.spinResult) {
         setSpinResult(confirmedSpinResult);
         setDoublingState(recoveredState.doublingState ? { ...recoveredState.doublingState, loading: false, lastPick: "", lastStatus: "" } : createEmptyDoublingState());
@@ -623,9 +678,8 @@ useEffect(() => {
     };
     const disconnect = () => {
       if (lastKnownState === "spin-submitted") {
-        setError(
-          "Connection lost. The last operation may still finish on the server.",
-        );
+        setError(tRef.current("connectionLostRecovering"));
+        setRoundRecoveryStatus(ROUND_OPERATION_STATUS.RECOVERY_REQUIRED);
       }
       setStatus("ready");
       setLastKnownState("network-error");
@@ -924,6 +978,7 @@ useEffect(() => {
       hasRecoveredGrid,
       paytableRows,
       paytableStatus,
+      recoveringRound,
       player,
       selectedCombinationId: effectiveSelectedCombinationId,
       showFreeSpinPrompt,
@@ -945,6 +1000,7 @@ useEffect(() => {
       doubleOfferAvailable,
       isBusy,
       isDoublingLocked,
+      isRoundRecoveryBlocked,
       isVisualDoubling,
       pendingTicketWin,
       paytableControlsLocked,

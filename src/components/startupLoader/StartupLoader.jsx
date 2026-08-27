@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./StartupLoader.css";
 
-export default function StartupLoader({ ready, leaving, variant = "default", progress: measuredProgress, backgroundSrc, onExited }) {
+export default function StartupLoader({ ready, leaving, variant = "default", progress: measuredProgress, backgroundSrc, label, onExited }) {
   const [progress, setProgress] = useState(0);
   const isBrandLoader = variant === "brand";
   const hasMeasuredProgress = Number.isFinite(measuredProgress);
@@ -34,6 +34,7 @@ export default function StartupLoader({ ready, leaving, variant = "default", pro
 
   const progressBar = (
     <div className="startup-loader__progress" aria-label={`${progress}% loaded`}>
+      {label && <div className="startup-loader__label">{label}</div>}
       <div className="startup-loader__progress-track">
         <div
           className="startup-loader__progress-fill"

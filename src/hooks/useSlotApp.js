@@ -5,6 +5,7 @@ import {
 } from "../config/gameAssets.js";
 import { GAME_DEFINITIONS } from "../config/gameDefinitions.js";
 import { notifySlotChooserReady } from "../services/frameReadyNotifier.js";
+import { stateRecoveryService } from "../services/stateRecoveryService.js";
 import {
   preloadGameAssets,
   preloadRequiredImages,
@@ -147,6 +148,11 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
         );
   const [selectedSlotId, setSelectedSlotId] = useState(getInitialSlotId);
   const [pendingSlotId, setPendingSlotId] = useState(null);
+  const [activeRounds, setActiveRounds] = useState(() =>
+    stateRecoveryService.getActiveRounds(),
+  );
+  const [exitConfirmationOpen, setExitConfirmationOpen] = useState(false);
+  const navigationBypassRef = useRef(false);
   const chooserReadyNotifiedRef = useRef(false);
   const initialRouteSlotIdRef = useRef(getInitialSlotId());
   const openRequestRef = useRef(0);
@@ -231,11 +237,53 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
     scheduleDeferredStartupAssets(slot);
   };
 
-  const closeSlot = () => {
+  const refreshActiveRounds = () => {
+    setActiveRounds(stateRecoveryService.getActiveRounds());
+  };
+
+  useEffect(() => {
+    refreshActiveRounds();
+    window.addEventListener(
+      "hiranmandi:recovery-state-changed",
+      refreshActiveRounds,
+    );
+    return () =>
+      window.removeEventListener(
+        "hiranmandi:recovery-state-changed",
+        refreshActiveRounds,
+      );
+  }, []);
+
+  const performCloseSlot = () => {
     setHashRoute(SLOT_CHOOSER_ROUTE);
     openRequestRef.current += 1;
     setPendingSlotId(null);
     setSelectedSlotId(null);
+    refreshActiveRounds();
+  };
+
+  const closeSlot = () => {
+    if (
+      selectedSlotId &&
+      stateRecoveryService.hasActiveRound(selectedSlotId)
+    ) {
+      setExitConfirmationOpen(true);
+      return;
+    }
+    performCloseSlot();
+  };
+
+  const confirmCloseSlot = () => {
+    navigationBypassRef.current = true;
+    setExitConfirmationOpen(false);
+    performCloseSlot();
+  };
+
+  const cancelCloseSlot = () => {
+    setExitConfirmationOpen(false);
+    if (selectedSlotId) {
+      setHashRoute('/games/' + encodeURIComponent(selectedSlotId));
+    }
   };
 
   useEffect(() => {
@@ -249,7 +297,19 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
             `${window.location.pathname}${window.location.search}#${SLOT_CHOOSER_ROUTE}`,
           );
         }
-        if (selectedSlotId || pendingSlotId) closeSlot();
+        if (selectedSlotId || pendingSlotId) {
+          if (
+            selectedSlotId &&
+            stateRecoveryService.hasActiveRound(selectedSlotId) &&
+            !navigationBypassRef.current
+          ) {
+            setExitConfirmationOpen(true);
+            setHashRoute('/games/' + encodeURIComponent(selectedSlotId));
+            return;
+          }
+          navigationBypassRef.current = false;
+          performCloseSlot();
+        }
         return;
       }
 
@@ -260,6 +320,16 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
       }
       if (selectedSlotId === gameId || pendingSlotId === gameId) return;
       if (selectedSlotId || pendingSlotId) {
+        if (
+          selectedSlotId &&
+          stateRecoveryService.hasActiveRound(selectedSlotId) &&
+          !navigationBypassRef.current
+        ) {
+          setExitConfirmationOpen(true);
+          setHashRoute('/games/' + encodeURIComponent(selectedSlotId));
+          return;
+        }
+        navigationBypassRef.current = false;
         openRequestRef.current += 1;
         setPendingSlotId(null);
         setSelectedSlotId(null);
@@ -273,9 +343,13 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
     return () => window.removeEventListener("hashchange", applyHashRoute);
   }, [chooserAssetsReady, pendingSlotId, selectedSlotId]);
   return {
+    activeRounds,
+    cancelCloseSlot,
     chooserAssetsReady,
     chooserLoadProgress,
     closeSlot,
+    confirmCloseSlot,
+    exitConfirmationOpen,
     gameLoadProgress,
     isPlaying: Boolean(selectedSlotId),
     openSlot,

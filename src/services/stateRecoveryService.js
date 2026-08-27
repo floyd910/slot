@@ -43,29 +43,44 @@ const readStorage = (key) => {
   try {
     const value = safeJson(window.sessionStorage.getItem(key));
     if (value) memoryStore.set(key, value);
-    return value;
+    return value ?? memoryStore.get(key) ?? null;
   } catch {
-    return null;
+    return memoryStore.get(key) ?? null;
   }
+};
+
+const notifyRecoveryStateChanged = () => {
+  window.dispatchEvent(new CustomEvent("hiranmandi:recovery-state-changed"));
 };
 
 const writeStorage = (key, value) => {
   if (!key) return;
+  memoryStore.set(key, value);
   try {
     window.sessionStorage.setItem(key, JSON.stringify(value));
   } catch {
     // Storage can be blocked inside partner iframes.
   }
+  notifyRecoveryStateChanged();
 };
 
 const removeStorage = (key) => {
   if (!key) return;
+  memoryStore.delete(key);
   try {
     window.sessionStorage.removeItem(key);
   } catch {
     // Storage can be blocked inside partner iframes.
   }
+  notifyRecoveryStateChanged();
 };
+
+const isUnfinishedRound = (round) =>
+  Boolean(
+    round?.gameId &&
+      round.operationStatus &&
+      round.operationStatus !== ROUND_OPERATION_STATUS.ROUND_COMPLETED,
+  );
 
 export class StateRecoveryService {
   constructor() {
@@ -159,6 +174,31 @@ export class StateRecoveryService {
 
   clearLocalState(context = {}) {
     removeStorage(getScopedKey(GAME_STATE_KEY, context));
+  }
+
+  getActiveRounds() {
+    const recoveredByKey = new Map(memoryStore);
+    try {
+      for (let index = 0; index < window.sessionStorage.length; index += 1) {
+        const key = window.sessionStorage.key(index);
+        if (!key?.startsWith(GAME_STATE_KEY + ":")) continue;
+        const value = safeJson(window.sessionStorage.getItem(key));
+        if (value) recoveredByKey.set(key, value);
+      }
+    } catch {
+      // The in-memory snapshots remain available when iframe storage is blocked.
+    }
+
+    return [...recoveredByKey.values()]
+      .filter(isUnfinishedRound)
+      .sort(
+        (left, right) =>
+          Date.parse(right.savedAt ?? 0) - Date.parse(left.savedAt ?? 0),
+      );
+  }
+
+  hasActiveRound(gameId) {
+    return this.getActiveRounds().some((round) => round.gameId === gameId);
   }
 
   buildCorrelation(context = {}, operation = {}) {

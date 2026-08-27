@@ -98,6 +98,17 @@ const copy = {
     visualMode: "Визуализация",
     opening: "Открытие",
     gameStatus: "Статус игры",
+    unfinishedRoundMessage:
+      "У вас есть незавершённый игровой раунд. Вы можете вернуться к нему позже.",
+    goToGames: "Перейти в игры",
+    stay: "Остаться",
+    activeGame: "Активная игра",
+    continueGame: "Продолжить",
+    unfinishedGame: "У вас есть незавершённая игра",
+    restoringGame: "Восстанавливаем игру...",
+    operationPendingRecovery: "Операция обрабатывается. Восстанавливаем состояние...",
+    connectionLostRecovering: "Нет соединения. Восстанавливаем подключение...",
+    availableSlots: "Доступные игры",
   },
   tg: {
     takeMoney: "ГИРИФТАНИ ПУЛ",
@@ -188,14 +199,33 @@ const copy = {
     visualMode: "Реҷаи намоиш",
     opening: "Кушодан",
     gameStatus: "Ҳолати бозӣ",
+    unfinishedRoundMessage:
+      "Шумо даври нотамоми бозӣ доред. Метавонед баъдтар ба он баргардед.",
+    goToGames: "Ба бозиҳо гузаштан",
+    stay: "Мондан",
+    activeGame: "Бозии фаъол",
+    continueGame: "Идома додан",
+    unfinishedGame: "Шумо бозии нотамом доред",
+    restoringGame: "Бозӣ барқарор мешавад...",
+    operationPendingRecovery: "Амалиёт коркард мешавад. Ҳолат барқарор мешавад...",
+    connectionLostRecovering: "Пайваст нест. Пайвастшавӣ барқарор мешавад...",
+    availableSlots: "Бозиҳои дастрас",
   },
 };
 
 const LanguageContext = createContext(null);
 const LANGUAGE_TRANSITION_SILENCE_MS = 180;
+const LANGUAGE_STORAGE_KEY = "hiranmandi-frame:language:v1";
 
 export function LanguageProvider({ children }) {
-  const [language, setLanguage] = useState("ru");
+  const [language, setLanguage] = useState(() => {
+    try {
+      const storedLanguage = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+      return copy[storedLanguage] ? storedLanguage : "ru";
+    } catch {
+      return "ru";
+    }
+  });
   const [isLanguageChanging, setIsLanguageChanging] = useState(false);
 
   const selectLanguage = useCallback((nextLanguage) => {
@@ -207,6 +237,14 @@ export function LanguageProvider({ children }) {
   const toggleLanguage = useCallback(() => {
     selectLanguage(language === "ru" ? "tg" : "ru");
   }, [language, selectLanguage]);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
+    } catch {
+      // Storage can be blocked in partner iframes.
+    }
+  }, [language]);
 
   useEffect(() => {
     if (!isLanguageChanging) return undefined;

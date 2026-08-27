@@ -226,6 +226,18 @@ export default function GameShell({ controller, game, onBackToSlots }) {
         {state.showFreeSpinPrompt && (
           <FreeSpinsPrompt onStart={actions.startFreeSpinRun} />
         )}
+        {derived.isRoundRecoveryBlocked && !showStartupLoader && (
+          <section
+            className="round-recovery-notice"
+            role="alert"
+            aria-live="assertive"
+          >
+            <p>{state.error || t("operationPendingRecovery")}</p>
+            <button type="button" onClick={actions.init}>
+              {t("retry")}
+            </button>
+          </section>
+        )}
         {showStartupLoader && (
           <StartupLoader
             ready={
@@ -235,6 +247,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
               state.startupLoaderLeaving && layoutReady && backgroundPaintReady
             }
             backgroundSrc={SLOT_CHOOSER_BACKGROUND_SRC}
+            label={state.recoveringRound ? t("restoringGame") : undefined}
             onExited={() => setLoaderExitComplete(true)}
           />
         )}

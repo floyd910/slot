@@ -148,3 +148,13 @@
 }
 
 
+
+.startup-loader__label {
+  margin-bottom: 12px;
+  color: #fff;
+  font-family: Roboto, Arial, sans-serif;
+  font-size: clamp(14px, 2.2vw, 18px);
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+}
