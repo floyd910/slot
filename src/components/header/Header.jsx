@@ -218,7 +218,7 @@ const Header = ({
           onClick={onViewToggle}
           disabled={viewSwitchDisabled}
           aria-pressed={visualMode}
-          aria-label="Визуализация"
+          aria-label={t("visualMode")}
         >
           <svg
             className="view-changer__icon"
@@ -236,7 +236,7 @@ const Header = ({
             />
           </svg>
           <span className="view-changer__tooltip" role="tooltip">
-            Визуализация
+            {t("visualMode")}
           </span>
         </button>
         <button

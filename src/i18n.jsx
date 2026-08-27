@@ -95,7 +95,7 @@ const copy = {
     lotteryMode: "Режим лотереи",
     gameSelect: "Выбор игры",
     games: "Игры",
-    visualMode: "Режим визуализации",
+    visualMode: "Визуализация",
     opening: "Открытие",
     gameStatus: "Статус игры",
   },

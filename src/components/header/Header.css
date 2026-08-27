@@ -487,7 +487,7 @@ header {
 .header-btns > .view-changer.active {
   border-color: var(--game-accent, #c7aa61);
   background: color-mix(in srgb, var(--game-accent, #c7aa61) 24%, var(--game-panel-solid, #0d0d0d));
-  color: #fff7d7;
+  color: var(--game-accent, #c7aa61);
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--game-accent, #c7aa61) 72%, transparent),
     0 0 14px color-mix(in srgb, var(--game-accent, #c7aa61) 50%, transparent),
@@ -512,7 +512,8 @@ header {
 .view-changer__tooltip {
   position: absolute;
   top: calc(100% + 8px);
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 20;
   display: none;
   padding: 7px 9px;
