@@ -11,6 +11,7 @@ import { wait, withTimeout } from "../utils/async.js";
 import { getAwardedFreeSpinCount } from "../utils/freeSpins.js";
 import { getTicketWinAmount } from "../utils/gameResult.js";
 import { ROUND_OPERATION_STATUS, stateRecoveryService } from "../services/stateRecoveryService.js";
+import { partnerApi } from "../services/partnerApi.js";
 import { getNextSpinDelayMs } from "../utils/spinTiming.js";
 import { asNumber } from "../utils/number.js";
 
@@ -99,6 +100,7 @@ export const createSpinActions = ({
     const requestId = buildRequestId("spin");
     const spinStartBalance = Number(player?.balance ?? 0);
     let stakeDeducted = false;
+    let partnerRoundId = null;
 
     try {
       if (!isFreeSpin && spinStartBalance < totalStake) {
@@ -112,8 +114,41 @@ export const createSpinActions = ({
         return null;
       }
 
+      const betRegistration = isFreeSpin
+        ? null
+        : await partnerApi.registerBet({
+            requestId,
+            playerId: context.userId ?? context.idUser,
+            gameId: context.recoveryGameId ?? context.gameId,
+            stake,
+            lines: lineCount,
+            totalBet: totalStake,
+          });
+      if (betRegistration && betRegistration.allowed !== true) {
+        setError(
+          betRegistration.code === "INSUFFICIENT_FUNDS"
+            ? t("insufficientBalance")
+            : t("betRejected"),
+        );
+        setLastKnownState("bet-rejected");
+        setStatus("ready");
+        liveSpinStateRef.current = {
+          ...liveSpinStateRef.current,
+          status: "ready",
+        };
+        if (betRegistration.balance != null) {
+          setPlayer((current) =>
+            current
+              ? { ...current, balance: Number(betRegistration.balance) }
+              : current,
+          );
+        }
+        return null;
+      }
+      partnerRoundId = betRegistration?.partnerRoundId ?? null;
+
       stateRecoveryService.saveRound({
-        requestId, operationType: "SPIN", operationStatus: ROUND_OPERATION_STATUS.SPIN_PROCESSING,
+        requestId, partnerRoundId, operationType: "SPIN", operationStatus: ROUND_OPERATION_STATUS.SPIN_PROCESSING,
         WasDouble: 0, currentWinSum: 0, doubleAvailable: false,
         freeSpinsActive: isFreeSpin || freeSpinsLeft > 0,
         freeSpinsTotal,
@@ -141,7 +176,10 @@ export const createSpinActions = ({
           ? current
           : {
               ...current,
-              balance: Number((spinStartBalance - totalStake).toFixed(2)),
+              balance:
+                betRegistration?.balance == null
+                  ? Number((spinStartBalance - totalStake).toFixed(2))
+                  : Number(betRegistration.balance),
             },
       );
       const apiResult = await withTimeout(
@@ -195,7 +233,35 @@ export const createSpinActions = ({
         () => setGridAnimation("settled"),
         revealSettleMs,
       );
-      const nextSpinResult = { ...result, creditedToBalance: shouldCreditWin };
+      let nextSpinResult = {
+        ...result,
+        creditedToBalance: shouldCreditWin,
+        partnerRoundId,
+      };
+      if (
+        partnerRoundId &&
+        (!isDigitWin || shouldCreditWin)
+      ) {
+        const settlement = await partnerApi.settleRound({
+          requestId: buildRequestId("partner-settle"),
+          partnerRoundId,
+          gameRoundId: result.idCard,
+          finalWin: shouldCreditWin ? result.WinSum : 0,
+          doubleSteps: 0,
+        });
+        if (settlement?.balance != null) {
+          setPlayer((current) =>
+            current
+              ? { ...current, balance: Number(settlement.balance) }
+              : current,
+          );
+        }
+        nextSpinResult = {
+          ...nextSpinResult,
+          creditedToBalance: shouldCreditWin,
+          partnerSettled: true,
+        };
+      }
       const nextDoublingState = isDigitWin && !shouldCreditWin
         ? createWinningDoublingState(ticketWinAmount)
         : createEmptyDoublingState();
@@ -206,7 +272,7 @@ export const createSpinActions = ({
       stateRecoveryService.saveLastSpin({ grid: result.grid, spinResult: nextSpinResult }, context);
       if (isDigitWin && !shouldCreditWin) {
         stateRecoveryService.saveRound({
-          requestId, idCard: result.idCard, roundId: result.idCard, operationType: "SPIN",
+          requestId, partnerRoundId, idCard: result.idCard, roundId: result.idCard, operationType: "SPIN",
           operationStatus: ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION,
           currentWinSum: ticketWinAmount, WasDouble: 0, doubleAvailable: true,
           stake, selectedCombinationId: selectedCombination.id,
@@ -346,11 +412,22 @@ export const createSpinActions = ({
           message: "Spin result is unknown; blind retry is disabled.",
         });
       } else if (stakeDeducted) {
+        const cancellation = partnerRoundId
+          ? await partnerApi
+              .cancelBet({
+                requestId: buildRequestId("partner-cancel"),
+                partnerRoundId,
+              })
+              .catch(() => null)
+          : null;
         setPlayer((current) =>
           current
             ? {
                 ...current,
-                balance: Number((current.balance + totalStake).toFixed(2)),
+                balance:
+                  cancellation?.balance == null
+                    ? Number((current.balance + totalStake).toFixed(2))
+                    : Number(cancellation.balance),
               }
             : current,
         );
@@ -383,17 +460,30 @@ export const createSpinActions = ({
         frameApi.pay({ idCard: spinResult.idCard, requestId }),
         "Pay",
       ).catch(() => null);
+      const partnerSettlement =
+        spinResult.partnerRoundId && !spinResult.partnerSettled
+          ? await partnerApi.settleRound({
+              requestId: buildRequestId("partner-settle"),
+              partnerRoundId: spinResult.partnerRoundId,
+              gameRoundId: spinResult.idCard,
+              finalWin: payout,
+              doubleSteps: doublingState?.step ?? 0,
+            })
+          : null;
       postEvent("SPIN_RESULT", {
         idCard: spinResult.idCard,
         WinSum: payout,
         Double: doublingState?.step ?? 0,
       });
-      if (!alreadyCredited) {
+      if (!alreadyCredited || partnerSettlement?.balance != null) {
         setPlayer((current) => {
           if (!current) return current;
           const nextPlayer = {
             ...current,
-            balance: Number((Number(current.balance ?? 0) + payout).toFixed(2)),
+            balance:
+              partnerSettlement?.balance == null
+                ? Number((Number(current.balance ?? 0) + payout).toFixed(2))
+                : Number(partnerSettlement.balance),
           };
           liveSpinStateRef.current = {
             ...liveSpinStateRef.current,
@@ -419,9 +509,12 @@ export const createSpinActions = ({
       stateRecoveryService.completeRound(liveSpinStateRef.current.context);
       setLastKnownState("paid");
       emitSound("cashout");
-      if (!alreadyCredited)
+      if (!alreadyCredited || partnerSettlement?.balance != null)
         postEvent("UPDATE_BALANCE", {
-          balance: Number((Number(player?.balance ?? 0) + payout).toFixed(2)),
+          balance:
+            partnerSettlement?.balance == null
+              ? Number((Number(player?.balance ?? 0) + payout).toFixed(2))
+              : Number(partnerSettlement.balance),
         });
       return true;
     } catch {

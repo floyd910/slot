@@ -14,6 +14,7 @@ import {
 import { createDoubleActions } from "../controllers/doubleActions.js";
 import { createSpinActions } from "../controllers/spinActions.js";
 import { ROUND_OPERATION_STATUS, stateRecoveryService } from "../services/stateRecoveryService.js";
+import { partnerApi } from "../services/partnerApi.js";
 import {
   combinations as fallbackCombinations,
   games as fallbackGames,
@@ -552,6 +553,7 @@ useEffect(() => {
     try {
       setStatus("bootstrap-loading");
       setError("");
+      partnerApi.configure(context);
       persistInitContext(context);
       const session = await withTimeout(
         frameApi.initSession(context),
@@ -604,6 +606,14 @@ useEffect(() => {
         }
       }
       setPlayer(session.player);
+      partnerApi.getBalance().then((partnerBalance) => {
+        if (partnerBalance?.balance == null || cancelled) return;
+        setPlayer((current) =>
+          current
+            ? { ...current, balance: Number(partnerBalance.balance) }
+            : current,
+        );
+      }).catch(() => {});
       setGames(session.games);
       setSupportedCombinations(setCombinations, setSelectedCombinationId, gameDefinition?.id ?? context.gameId, session.combinations);
       const startupGrid = recoveredState?.lastConfirmedGrid ?? recoveredState?.grid ?? lastSpinSnapshot?.grid ?? confirmedSpinResult?.grid ?? session.grid;

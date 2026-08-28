@@ -9,6 +9,7 @@ import { buildRequestId } from "../hooks/useFrameBridge.js";
 import { withTimeout } from "../utils/async.js";
 import { getTicketWinAmount } from "../utils/gameResult.js";
 import { ROUND_OPERATION_STATUS, stateRecoveryService } from "../services/stateRecoveryService.js";
+import { partnerApi } from "../services/partnerApi.js";
 
 const CHEST_SIDES = new Set(["left", "right"]);
 
@@ -62,15 +63,18 @@ export const createDoubleActions = ({
     });
   };
 
-  const creditPayout = (payout) => {
-    if (payout <= 0) return;
+  const creditPayout = (payout, authoritativeBalance = null) => {
+    if (payout <= 0 && authoritativeBalance == null) return;
 
     setPlayer((current) => {
       if (!current) return current;
 
       const nextPlayer = {
         ...current,
-        balance: withMoney(Number(current.balance ?? 0) + payout),
+        balance:
+          authoritativeBalance == null
+            ? withMoney(Number(current.balance ?? 0) + payout)
+            : withMoney(authoritativeBalance),
       };
       syncLiveState({ player: nextPlayer });
       postEvent?.("UPDATE_BALANCE", { balance: nextPlayer.balance });
@@ -86,7 +90,25 @@ export const createDoubleActions = ({
     });
   };
 
+  const settlePartnerRound = async ({ spinResult, finalWin, doubleSteps }) => {
+    if (!spinResult?.partnerRoundId || spinResult.partnerSettled) return null;
+
+    return partnerApi.settleRound({
+      requestId: buildRequestId("partner-settle"),
+      partnerRoundId: spinResult.partnerRoundId,
+      gameRoundId: spinResult.idCard,
+      finalWin,
+      doubleSteps,
+    });
+  };
+
   const finishLostDouble = (idCard, revealKey, doubleSteps) => {
+    const currentSpinResult = liveSpinStateRef.current?.spinResult;
+    settlePartnerRound({ spinResult: currentSpinResult, finalWin: 0, doubleSteps })
+      .then((settlement) => {
+        if (settlement?.balance != null) creditPayout(0, settlement.balance);
+      })
+      .catch(() => {});
     reportFinalResult({ idCard, winSum: 0, doubleSteps });
     frameApi
       .pay({ idCard, requestId: buildRequestId("pay") })
@@ -98,11 +120,12 @@ export const createDoubleActions = ({
 
       clearCompletedTicket();
       setReadyStatus();
+      stateRecoveryService.completeRound(liveSpinStateRef.current.context);
     }, DOUBLE_LOSS_RESET_MS);
   };
 
   const finishMaxDoubleWin = ({ idCard, payout, revealKey, doubleSteps }) => {
-    window.setTimeout(() => {
+    window.setTimeout(async () => {
       if (liveSpinStateRef.current?.doublingState?.revealKey !== revealKey)
         return;
 
@@ -110,11 +133,17 @@ export const createDoubleActions = ({
         .pay({ idCard, requestId: buildRequestId("pay") })
         .catch(() => {});
       reportFinalResult({ idCard, winSum: payout, doubleSteps });
-      creditPayout(payout);
+      const settlement = await settlePartnerRound({
+        spinResult: liveSpinStateRef.current?.spinResult,
+        finalWin: payout,
+        doubleSteps,
+      }).catch(() => null);
+      creditPayout(payout, settlement?.balance);
       clearCompletedTicket();
       setReadyStatus();
       setLastKnownState("paid");
       emitSound("cashout");
+      stateRecoveryService.completeRound(liveSpinStateRef.current.context);
     }, DOUBLE_RESULT_REVEAL_MS);
   };
 
@@ -369,9 +398,24 @@ export const createDoubleActions = ({
       setLastKnownState(result.status === "win" ? "double-win" : "double-lose");
       emitSound(result.status === "win" ? "win" : "lose");
       if (result.WinSum <= 0) {
+        const settlement = await settlePartnerRound({
+          spinResult: nextSpinResult,
+          finalWin: 0,
+          doubleSteps: nextDoubleState.step,
+        }).catch(() => null);
+        if (settlement?.balance != null) creditPayout(0, settlement.balance);
+        reportFinalResult({
+          idCard: nextSpinResult.idCard,
+          winSum: 0,
+          doubleSteps: nextDoubleState.step,
+        });
         frameApi
           .pay({ idCard: spinResult.idCard, requestId: buildRequestId("pay") })
           .catch(() => {});
+        stateRecoveryService.completeRound(liveSpinStateRef.current.context);
+      } else {
+        const balance = await partnerApi.getBalance().catch(() => null);
+        if (balance?.balance != null) creditPayout(0, balance.balance);
       }
     } catch (doubleError) {
       const retryDoubleState = {

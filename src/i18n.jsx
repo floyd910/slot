@@ -109,6 +109,8 @@ const copy = {
     operationPendingRecovery: "Операция обрабатывается. Восстанавливаем состояние...",
     connectionLostRecovering: "Нет соединения. Восстанавливаем подключение...",
     availableSlots: "Доступные игры",
+    partnerUnavailable: "Сервис партнёра временно недоступен.",
+    betRejected: "Регистрация ставки отклонена.",
   },
   tg: {
     takeMoney: "ГИРИФТАНИ ПУЛ",
@@ -210,6 +212,8 @@ const copy = {
     operationPendingRecovery: "Амалиёт коркард мешавад. Ҳолат барқарор мешавад...",
     connectionLostRecovering: "Пайваст нест. Пайвастшавӣ барқарор мешавад...",
     availableSlots: "Бозиҳои дастрас",
+    partnerUnavailable: "Хидмати шарик муваққатан дастнорас аст.",
+    betRejected: "Сабти шарт рад карда шуд.",
   },
 };
 
