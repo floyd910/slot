@@ -68,7 +68,8 @@ const request = (type, payload = {}, requestId = makeRequestId("partner")) => {
 
 export const partnerApi = {
   configure(context = {}) {
-    const targetOrigin = getEmbeddingOrigin();
+    const targetOrigin =
+      getEmbeddingOrigin() || context.allowedOrigins?.[0] || "";
     partnerConfig = {
       enabled: context.mode === "embedded" && Boolean(targetOrigin),
       targetOrigin,
@@ -81,4 +82,5 @@ export const partnerApi = {
   registerBet: (payload) => request("PARTNER_REGISTER_BET", payload, payload.requestId),
   settleRound: (payload) => request("PARTNER_SETTLE_ROUND", payload, payload.requestId),
   cancelBet: (payload) => request("PARTNER_CANCEL_BET", payload, payload.requestId),
+  recoverSession: (payload = {}) => request("PARTNER_RECOVER_SESSION", payload, payload.requestId),
 };

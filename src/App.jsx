@@ -27,7 +27,7 @@ export default function App() {
 
   return (
     <div className="app-root" data-playing={slotApp.isPlaying ? "true" : "false"}>
-      {!isDirectGameRoute && (!slotApp.selectedSlotId || slotApp.pendingSlotId) && (
+      {!isDirectGameRoute && slotApp.chooserAssetsReady && (!slotApp.selectedSlotId || slotApp.pendingSlotId) && (
         <div className="app-slot-chooser">
           <Suspense fallback={null}>
             <SlotChooser

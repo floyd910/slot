@@ -101,6 +101,7 @@ export const createSpinActions = ({
     const spinStartBalance = Number(player?.balance ?? 0);
     let stakeDeducted = false;
     let partnerRoundId = null;
+    let authoritativePartnerBalance = null;
 
     try {
       if (!isFreeSpin && spinStartBalance < totalStake) {
@@ -114,16 +115,15 @@ export const createSpinActions = ({
         return null;
       }
 
-      const betRegistration = isFreeSpin
-        ? null
-        : await partnerApi.registerBet({
-            requestId,
-            playerId: context.userId ?? context.idUser,
-            gameId: context.recoveryGameId ?? context.gameId,
-            stake,
-            lines: lineCount,
-            totalBet: totalStake,
-          });
+      const betRegistration = await partnerApi.registerBet({
+        requestId,
+        playerId: context.userId ?? context.idUser,
+        gameId: context.recoveryGameId ?? context.gameId,
+        stake,
+        lines: lineCount,
+        totalBet: isFreeSpin ? 0 : totalStake,
+        isFreeSpin,
+      });
       if (betRegistration && betRegistration.allowed !== true) {
         setError(
           betRegistration.code === "INSUFFICIENT_FUNDS"
@@ -250,9 +250,10 @@ export const createSpinActions = ({
           doubleSteps: 0,
         });
         if (settlement?.balance != null) {
+          authoritativePartnerBalance = Number(settlement.balance);
           setPlayer((current) =>
             current
-              ? { ...current, balance: Number(settlement.balance) }
+              ? { ...current, balance: authoritativePartnerBalance }
               : current,
           );
         }
@@ -347,7 +348,7 @@ export const createSpinActions = ({
       }
 
       await wait(revealSettleMs);
-      if (shouldCreditWin) {
+      if (shouldCreditWin && authoritativePartnerBalance == null) {
 
         setPlayer((current) => {
           if (!current) return current;
@@ -411,7 +412,7 @@ export const createSpinActions = ({
           requestId,
           message: "Spin result is unknown; blind retry is disabled.",
         });
-      } else if (stakeDeducted) {
+      } else if (partnerRoundId || stakeDeducted) {
         const cancellation = partnerRoundId
           ? await partnerApi
               .cancelBet({

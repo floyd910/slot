@@ -21,11 +21,6 @@ const validateSessionContext = (params = {}) => {
     error.code = "INVALID_SESSION";
     throw error;
   }
-  if (import.meta.env.PROD && params.backendMode === "mock") {
-    const error = new Error("Mock backend is disabled in production");
-    error.code = "CONFIGURATION_ERROR";
-    throw error;
-  }
   if (useSoapBackend()) {
     const requiredSoapFields = [
       ["idPartner", params.idPartner ?? params.partnerId],

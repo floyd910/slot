@@ -606,7 +606,7 @@ useEffect(() => {
         }
       }
       setPlayer(session.player);
-      partnerApi.getBalance().then((partnerBalance) => {
+      partnerApi.recoverSession().then((partnerBalance) => {
         if (partnerBalance?.balance == null || cancelled) return;
         setPlayer((current) =>
           current
@@ -679,8 +679,9 @@ useEffect(() => {
       setError("Browser is missing required iframe APIs");
       return;
     }
+    if (context.isFramed && getMissingRequiredContext(context).length) return;
     init();
-  }, [init]);
+  }, [context, init]);
 
   useEffect(() => {
     const reconnect = () => {

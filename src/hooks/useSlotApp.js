@@ -170,6 +170,8 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
       loadSlotChooser(),
       // Cache the lazy game screen module before any card can be selected.
       loadSelectedSlotGame(),
+      // Wait for chooser typography before its first mount to avoid a layout swap.
+      document.fonts?.ready ?? Promise.resolve(),
     ])
       .then(async () => {
         // The lazy component stylesheet is now installed and every chooser
