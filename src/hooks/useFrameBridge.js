@@ -322,7 +322,11 @@ export function useFrameBridge({ context, diagnostics, onCommand, onInitContext 
   }, [isAllowedOrigin, onCommand, onInitContext]);
 
   useEffect(() => {
-    postEvent("READY", { canReceiveInitContext: true });
+    postEvent("READY", {
+      canReceiveInitContext: true,
+      needsInitContext:
+        getMissingRequiredContext(contextRef.current).length > 0,
+    });
   }, [postEvent]);
 
   useEffect(() => {
