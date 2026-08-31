@@ -36,7 +36,6 @@ export const GAME4_CHOOSER_TILE_SRC = "/assets/img/chooser/game4.webp";
 export const GAME4_VIEW1_CELL_BACKGROUND_SRC = "/assets/img/game4-view1-cell-background-optimized.webp";
 export const GAME4_VIEW1_HIGHLIGHT_BACKGROUND_SRC = "/assets/img/game4-view1-highlight-background-optimized.webp";
 export const GAME4_VIEW2_INFO_BACKGROUND_SRC = "/assets/img/game4-view2-symbol1-background-optimized.webp";
-export const GAME4_VIEW2_INFO_SMALL_BOX_BACKGROUND_SRC = "/assets/img/game4-view2-info-small-box-background-optimized.webp";
 export const GAME4_DOUBLE_SCENE_BACKGROUND_SRC = "/assets/img/game4-double-scene-bg.webp";
 export const GAME4_VIEW2_SYMBOL_0_STATIC_SRC = "/assets/img/game4-view2-symbol0-static-optimized.webp";
 export const GAME4_VIEW2_SYMBOL_7_STATIC_SRC = "/assets/img/game4-view2-symbol7-static-optimized.webp";

@@ -82,63 +82,6 @@ const uniqueUrls = (sources) => [
   ...new Set(sources.map(toPreloadUrl).filter(Boolean)),
 ];
 
-const preloadResponseBytes = async (sources, onProgress) => {
-  const urls = uniqueUrls(sources);
-  if (urls.length === 0) {
-    onProgress?.(99);
-    return;
-  }
-
-  onProgress?.(0);
-  const responses = await Promise.all(
-    urls.map(async (url) => {
-      try {
-        const response = await fetch(url, { cache: "force-cache" });
-        return response.ok ? response : null;
-      } catch {
-        return null;
-      }
-    }),
-  );
-  const lengths = responses.map((response) =>
-    Number(response?.headers.get("content-length") ?? 0),
-  );
-  const knownLengths = lengths.filter((length) => length > 0);
-  const fallbackLength = knownLengths.length
-    ? knownLengths.reduce((sum, length) => sum + length, 0) / knownLengths.length
-    : 1;
-  const weights = responses.map((response, index) =>
-    response ? lengths[index] || fallbackLength : fallbackLength,
-  );
-  const totalBytes = weights.reduce((sum, length) => sum + length, 0);
-  let loadedBytes = 0;
-  const report = () =>
-    onProgress?.(Math.min(99, Math.floor((loadedBytes / totalBytes) * 99)));
-
-  await Promise.all(
-    responses.map(async (response, index) => {
-      if (!response?.body) {
-        loadedBytes += weights[index];
-        report();
-        return;
-      }
-      const reader = response.body.getReader();
-      let responseBytes = 0;
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-        const chunkBytes = value?.byteLength ?? 0;
-        responseBytes += chunkBytes;
-        loadedBytes += chunkBytes;
-        report();
-      }
-      if (responseBytes < weights[index]) {
-        loadedBytes += weights[index] - responseBytes;
-        report();
-      }
-    }),
-  );
-};
 export const preloadImage = (
   src,
   {
@@ -501,10 +444,12 @@ export const preloadGameAssets = (game, onProgress) => {
 
   const requiredAssets = getRequiredGameMainScreenAssets(game);
   const promise = Promise.all([
-    // Stream required files first: percentage is weighted by their real bytes.
-    // Decode the cached responses before the game is allowed to open.
-    preloadResponseBytes(requiredAssets, onProgress).then(() =>
-      preloadRequiredImages(requiredAssets),
+    // Decode each required image once and report completion immediately.
+    // No all-request header barrier: production latency cannot pin progress at 0%.
+    preloadRequiredImages(
+      requiredAssets,
+      (progress) => onProgress?.(Math.max(1, Math.min(99, progress))),
+      { timeoutMs: 15000 },
     ),
     fontReady(),
     ...(game.id === "kadima-drevnii"

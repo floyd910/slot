@@ -55,15 +55,21 @@ const waitForControllerReady = () =>
   new Promise((resolve) => {
     const selector =
       '.app-selected-game .frame-app[data-startup-loading="false"]';
-    if (document.querySelector(selector)) {
+    let observer;
+    let timeoutId;
+    const finish = () => {
+      observer?.disconnect();
+      if (timeoutId) window.clearTimeout(timeoutId);
       resolve();
+    };
+
+    if (document.querySelector(selector)) {
+      finish();
       return;
     }
 
-    const observer = new MutationObserver(() => {
-      if (!document.querySelector(selector)) return;
-      observer.disconnect();
-      resolve();
+    observer = new MutationObserver(() => {
+      if (document.querySelector(selector)) finish();
     });
     observer.observe(document.body, {
       attributes: true,
@@ -71,6 +77,7 @@ const waitForControllerReady = () =>
       childList: true,
       subtree: true,
     });
+    timeoutId = window.setTimeout(finish, 8000);
   });
 const waitForMountedGamePaint = async () => {
   // At this point every loader-required asset, font, and module is ready.
