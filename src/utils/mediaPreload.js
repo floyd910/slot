@@ -392,6 +392,7 @@ const loadDeferredStartupAssets = async (game) => {
 
 const deferredStartupAssetsPromises = new Map();
 const scheduledGameAssetPromises = new Map();
+const spinReadyAssetPromises = new Map();
 
 // The shell and controller enter the same gate during startup. Share one load
 // so mobile devices do not repeat decode work or attach duplicate media waits.
@@ -466,25 +467,6 @@ export const preloadDeferredStartupAssets = (game) => {
   return deferredStartupAssetsPromises.get(cacheKey);
 };
 
-export const scheduleDeferredStartupAssets = (game) => {
-  const cacheKey = game?.id ?? "shared";
-  if (scheduledGameAssetPromises.has(cacheKey)) {
-    return scheduledGameAssetPromises.get(cacheKey);
-  }
-
-  const promise = new Promise((resolve) => window.setTimeout(resolve, 0))
-    .then(() => preloadGameBackgroundAudio(game))
-    .then(() => preloadWinAnimations(game))
-    .then(() => preloadDeferredStartupAssets(game))
-    .catch((error) => {
-      // Keep this settled promise cached. A missing optional asset must not
-      // create a request loop every time the game component remounts.
-      console.error(error);
-    });
-
-  scheduledGameAssetPromises.set(cacheKey, promise);
-  return promise;
-};
 export const preloadWinAnimations = (game) =>
   preloadImages(
     getGameView2Assets(game).filter((src) => src.includes("/assets/img/animations/")),
@@ -495,5 +477,34 @@ export const preloadWinAnimations = (game) =>
       timeoutMs: IMAGE_PRELOAD_TIMEOUT_MS,
     },
   );
+
+export const preloadSpinReadyAssets = (game) => {
+  const cacheKey = game?.id ?? "shared";
+  if (!spinReadyAssetPromises.has(cacheKey)) {
+    const promise = preloadGameBackgroundAudio(game)
+      .then(() => preloadWinAnimations(game));
+    spinReadyAssetPromises.set(cacheKey, promise);
+  }
+  return spinReadyAssetPromises.get(cacheKey);
+};
+
+export const scheduleDeferredStartupAssets = (game) => {
+  const cacheKey = game?.id ?? "shared";
+  if (scheduledGameAssetPromises.has(cacheKey)) {
+    return scheduledGameAssetPromises.get(cacheKey);
+  }
+
+  const promise = new Promise((resolve) => window.setTimeout(resolve, 0))
+    .then(() => preloadSpinReadyAssets(game))
+    .then(() => preloadDeferredStartupAssets(game))
+    .catch((error) => {
+      // Keep this settled promise cached. A missing optional asset must not
+      // create a request loop every time the game component remounts.
+      console.error(error);
+    });
+
+  scheduledGameAssetPromises.set(cacheKey, promise);
+  return promise;
+};
 
 

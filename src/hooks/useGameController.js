@@ -32,6 +32,7 @@ import {
 import {
   loadAudioDurationMs,
   preloadGameAssets,
+  preloadSpinReadyAssets,
   preloadStartupAssets,
 } from "../utils/mediaPreload.js";
 import { normalizeRuntimeStatus } from "../utils/runtimeStatus.js";
@@ -92,6 +93,28 @@ const setSupportedCombinations = (setCombinations, setSelectedCombinationId, gam
 };
 export function useGameController(selectedGameId, gameDefinition = null) {
   const { t } = useLanguage();
+  const [spinAssetsReady, setSpinAssetsReady] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    setSpinAssetsReady(false);
+    if (!gameDefinition) {
+      setSpinAssetsReady(true);
+      return () => {
+        active = false;
+      };
+    }
+
+    preloadSpinReadyAssets(gameDefinition)
+      .catch((error) => console.error(error))
+      .finally(() => {
+        if (active) setSpinAssetsReady(true);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [gameDefinition]);
   const tRef = useRef(t);
   const bootGameId = selectedGameId ?? initialContext.gameId ?? null;
   const [context, setContext] = useState(() => ({
@@ -906,6 +929,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
           (pendingTicketWin && doublingState.step > 0)),
     );
   const spinButtonDisabled =
+    !spinAssetsReady ||
     isRoundRecoveryBlocked ||
     status === "initial-loading" ||
     status === "bootstrap-loading" ||
@@ -917,6 +941,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const runtimeStateVisible = !["ready", "empty", "processing"].includes(status);
 
   const pressSpinButton = () => {
+    if (!spinAssetsReady) return;
     if (isVisualDoubling) return collectWin();
     if (showFreeSpinPrompt || hasFreeSpinsPending) return startFreeSpinRun();
     if (pendingTicketWin) return collectWin();
