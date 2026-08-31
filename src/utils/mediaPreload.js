@@ -14,8 +14,10 @@ import {
   IMAGE_PRELOAD_TIMEOUT_MS,
 } from "../config/gameSettings.js";
 
-const retainedPreloadedImages = new Map();
-const decodedPreloadedImages = new Set();
+// A URL owns one request for this app session. Failed entries are retained too,
+// preventing remounts from creating an endless missing-asset request loop.
+const imageLoadEntries = new Map();
+const imageDecodePromises = new Map();
 const retainedPreloadedAudio = new Map();
 let startupAssetsPromise = null;
 const gameAssetsPromises = new Map();
@@ -82,7 +84,45 @@ const uniqueUrls = (sources) => [
   ...new Set(sources.map(toPreloadUrl).filter(Boolean)),
 ];
 
-export const preloadImage = (
+const loadImageOnce = (src, fetchPriority, timeoutMs) => {
+  const cached = imageLoadEntries.get(src);
+  if (cached) return cached;
+  const image = new Image();
+  const entry = { image, promise: null };
+  entry.promise = new Promise((resolve) => {
+    let settled = false;
+    let timer;
+    const settle = (loaded, reason) => {
+      if (settled) return;
+      settled = true;
+      if (timer) window.clearTimeout(timer);
+      image.onload = null;
+      image.onerror = null;
+      resolve({ image, loaded, reason });
+    };
+    image.decoding = "async";
+    image.fetchPriority = fetchPriority;
+    image.onload = () => settle(image.naturalWidth > 0, "load");
+    image.onerror = () => settle(false, "error");
+    if (timeoutMs) timer = window.setTimeout(() => settle(false, "timeout"), timeoutMs);
+    image.src = src;
+  });
+  imageLoadEntries.set(src, entry);
+  return entry;
+};
+
+const decodeImageOnce = (src, image) => {
+  if (!image.decode) return Promise.resolve();
+  if (!imageDecodePromises.has(src)) {
+    imageDecodePromises.set(src, Promise.race([
+      image.decode().catch(() => {}),
+      new Promise((resolve) => window.setTimeout(resolve, IMAGE_DECODE_TIMEOUT_MS)),
+    ]));
+  }
+  return imageDecodePromises.get(src);
+};
+
+export const preloadImage = async (
   src,
   {
     decode = true,
@@ -90,92 +130,25 @@ export const preloadImage = (
     rejectOnError = false,
     timeoutMs = IMAGE_PRELOAD_TIMEOUT_MS,
   } = {},
-) =>
-  new Promise((resolve, reject) => {
-    const normalizedSrc = toPreloadUrl(src);
-    if (!normalizedSrc) {
-      resolve();
-      return;
+) => {
+  const normalizedSrc = toPreloadUrl(src);
+  if (!normalizedSrc) return undefined;
+  const { image, loaded, reason } = await loadImageOnce(
+    normalizedSrc,
+    fetchPriority,
+    timeoutMs,
+  ).promise;
+  if (!loaded) {
+    if (rejectOnError) {
+      const message =
+        reason === "timeout" ? "Timed out preloading" : "Failed to preload";
+      throw new Error(`${message} required image: ${normalizedSrc}`);
     }
-
-    const retainedImage = retainedPreloadedImages.get(normalizedSrc);
-    if (retainedImage?.complete && retainedImage.naturalWidth > 0) {
-      // A required image was already decoded for this session. Do not make the
-      // game loader decode the same pixels a second time.
-      if (!decode || decodedPreloadedImages.has(normalizedSrc)) {
-        resolve(normalizedSrc);
-      } else if (retainedImage.decode) {
-        retainedImage.decode().catch(() => {}).finally(() => {
-          decodedPreloadedImages.add(normalizedSrc);
-          resolve(normalizedSrc);
-        });
-      } else {
-        resolve(normalizedSrc);
-      }
-      return;
-    }
-
-    const image = retainedImage ?? new Image();
-    retainedPreloadedImages.set(normalizedSrc, image);
-    let settled = false;
-    let timeoutId = null;
-
-    const clearTimer = () => {
-      if (timeoutId) window.clearTimeout(timeoutId);
-      timeoutId = null;
-    };
-
-    const finish = async () => {
-      if (settled) return;
-      settled = true;
-      clearTimer();
-      if (decode && image.decode) {
-        try {
-          await Promise.race([
-            image.decode(),
-            new Promise((resolve) =>
-              window.setTimeout(resolve, IMAGE_DECODE_TIMEOUT_MS),
-            ),
-          ]);
-        } catch {
-          // Loaded images can still reject decode in some browsers.
-        }
-      }
-      if (decode) decodedPreloadedImages.add(normalizedSrc);
-      resolve(normalizedSrc);
-    };
-
-    const fail = () => {
-      if (settled) return;
-      settled = true;
-      clearTimer();
-      if (rejectOnError) {
-        reject(new Error(`Failed to preload required image: ${normalizedSrc}`));
-        return;
-      }
-      resolve(normalizedSrc);
-    };
-
-    image.decoding = "async";
-    image.fetchPriority = fetchPriority;
-    image.onload = finish;
-    image.onerror = fail;
-    if (timeoutMs) {
-      timeoutId = window.setTimeout(() => {
-        if (settled) return;
-        settled = true;
-        clearTimer();
-        if (rejectOnError) {
-          reject(
-            new Error(`Timed out preloading required image: ${normalizedSrc}`),
-          );
-        } else {
-          resolve(normalizedSrc);
-        }
-      }, timeoutMs);
-    }
-    image.src = normalizedSrc;
-  });
+    return normalizedSrc;
+  }
+  if (decode) await decodeImageOnce(normalizedSrc, image);
+  return normalizedSrc;
+};
 
 export const preloadImages = (sources, options = {}) =>
   Promise.all(uniqueUrls(sources).map((src) => preloadImage(src, options)));
@@ -418,6 +391,7 @@ const loadDeferredStartupAssets = async (game) => {
 };
 
 const deferredStartupAssetsPromises = new Map();
+const scheduledGameAssetPromises = new Map();
 
 // The shell and controller enter the same gate during startup. Share one load
 // so mobile devices do not repeat decode work or attach duplicate media waits.
@@ -493,15 +467,23 @@ export const preloadDeferredStartupAssets = (game) => {
 };
 
 export const scheduleDeferredStartupAssets = (game) => {
-  // Background work begins as soon as the game mounts. Queue that game's audio
-  // first (carpet before other sounds), then the deferred visual assets. None of
-  // this work participates in the visible game-loader progress.
-  window.setTimeout(() => {
-    preloadGameBackgroundAudio(game)
-      .then(() => preloadWinAnimations(game))
-      .then(() => preloadDeferredStartupAssets(game))
-      .catch((error) => console.error(error));
-  }, 0);
+  const cacheKey = game?.id ?? "shared";
+  if (scheduledGameAssetPromises.has(cacheKey)) {
+    return scheduledGameAssetPromises.get(cacheKey);
+  }
+
+  const promise = new Promise((resolve) => window.setTimeout(resolve, 0))
+    .then(() => preloadGameBackgroundAudio(game))
+    .then(() => preloadWinAnimations(game))
+    .then(() => preloadDeferredStartupAssets(game))
+    .catch((error) => {
+      // Keep this settled promise cached. A missing optional asset must not
+      // create a request loop every time the game component remounts.
+      console.error(error);
+    });
+
+  scheduledGameAssetPromises.set(cacheKey, promise);
+  return promise;
 };
 export const preloadWinAnimations = (game) =>
   preloadImages(

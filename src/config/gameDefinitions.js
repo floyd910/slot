@@ -140,12 +140,15 @@ const game7WinFrames = (symbol, skippedFrameIndexes = []) => {
     );
 };
 
-const fruitsWinFrames = (symbol) =>
-  Array.from(
+const fruitsWinFrames = (symbol) => {
+  // Symbol 0 is numbered 000-143; the exported sequences for 1-7 are 001-144.
+  const firstFrame = symbol === 0 ? 0 : 1;
+  return Array.from(
     { length: 144 },
     (_, index) =>
-      `/assets/img/animations/game8/${symbol}/frame_${String(index).padStart(3, "0")}_delay-0.04s.webp`,
+      `/assets/img/animations/game8/${symbol}/frame_${String(index + firstFrame).padStart(3, "0")}_delay-0.04s.webp`,
   );
+};
 
 const fruitsView2Symbol = (symbol, staticImage) =>
   Object.freeze({
