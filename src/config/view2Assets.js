@@ -25,6 +25,8 @@ const collectImageSources = (...values) =>
     return [];
   });
 
+export const VIEW2_DICE_SHINE_SRC = "/img/reference/dice-shine-video-sprite.png";
+
 export const SHARED_DICE_SYMBOL_ASSETS = [
   "/assets/img/view2-symbol-1-static.webp?v=20260711-1",
   "/assets/img/view2-symbol-2-static.webp?v=20260711-2",
@@ -40,6 +42,7 @@ export const SHARED_VIEW2_ASSETS = [
       COMBO_BORDERS,
       VIEW2_CARPET_ASSETS,
       SHARED_DICE_SYMBOL_ASSETS,
+      VIEW2_DICE_SHINE_SRC,
     ),
   ),
 ];

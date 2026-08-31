@@ -1,6 +1,6 @@
 import {
   GAME3_VIEW2_ASSETS,
-  SHARED_DICE_SYMBOL_ASSETS,
+  SHARED_VIEW2_ASSETS,
 } from "../config/view2Assets.js";
 import {
   DOUBLE_SCENE_ASSET_SOURCES,
@@ -170,7 +170,7 @@ export const preloadRequiredImages = async (
       await preloadImage(src, {
         decode: true,
         fetchPriority: "high",
-        rejectOnError: false,
+        rejectOnError: true,
         timeoutMs,
       });
       completed += 1;
@@ -353,9 +353,12 @@ export const getGameView2Assets = (game) => {
   return GAME3_VIEW2_ASSETS;
 };
 export const getGameView2GridAssets = (game) =>
-  getGameView2Assets(game).filter(
-    (src) => !src.includes("/assets/img/animations/"),
-  );
+  uniqueUrls([
+    ...SHARED_VIEW2_ASSETS,
+    ...getGameView2Assets(game).filter(
+      (src) => !src.includes("/assets/img/animations/"),
+    ),
+  ]);
 
 // The visible loader includes both View 1 and the static View 2 grid.
 export const getRequiredGameMainScreenAssets = (game) =>
@@ -424,7 +427,7 @@ export const preloadGameAssets = (game, onProgress) => {
     preloadRequiredImages(
       requiredAssets,
       (progress) => onProgress?.(Math.max(1, Math.min(99, progress))),
-      { timeoutMs: 15000 },
+      { timeoutMs: 30000 },
     ),
     fontReady(),
     ...(game.id === "kadima-drevnii"
