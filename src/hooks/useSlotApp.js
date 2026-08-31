@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
   SLOT_CHOOSER_BACKGROUND_SRC,
-  SLOT_CHOOSER_TILE_ASSETS,
 } from "../config/gameAssets.js";
 import { GAME_DEFINITIONS } from "../config/gameDefinitions.js";
 import { notifySlotChooserReady } from "../services/frameReadyNotifier.js";
@@ -14,8 +13,9 @@ import {
 
 const SLOT_CHOOSER_REQUIRED_ASSETS = [
   SLOT_CHOOSER_BACKGROUND_SRC,
-  ...SLOT_CHOOSER_TILE_ASSETS,
-  ...GAME_DEFINITIONS.map((game) => game.assets.chooserTile),
+  ...GAME_DEFINITIONS.filter((game) => game.id !== "double-bonus").map(
+    (game) => game.assets.chooserTile,
+  ),
 ];
 
 const waitForAnimationFrame = () =>
@@ -105,12 +105,22 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
     });
   };
 
-  const reportGameLoadProgress = (value) => {
+  const reportGameLoadProgress = (value, { immediate = false } = {}) => {
     const target = Math.max(
       gameLoadTargetRef.current,
       Math.max(0, Math.min(100, Math.round(value))),
     );
     gameLoadTargetRef.current = target;
+    if (immediate) {
+      if (gameLoadFrameRef.current) {
+        window.cancelAnimationFrame(gameLoadFrameRef.current);
+        gameLoadFrameRef.current = 0;
+      }
+      gameLoadProgressRef.current = target;
+      setGameLoadProgress(target);
+      resolveGameLoadWaiters();
+      return;
+    }
     if (gameLoadFrameRef.current) return;
 
     const tick = () => {
@@ -158,6 +168,8 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
   const openRequestRef = useRef(0);
 
   useEffect(() => {
+    if (selectedSlotId || pendingSlotId || chooserAssetsReady) return undefined;
+
     let active = true;
 
     Promise.all([
@@ -168,8 +180,6 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
       ),
       // Load the chooser JSX and its CSS before its first render.
       loadSlotChooser(),
-      // Cache the lazy game screen module before any card can be selected.
-      loadSelectedSlotGame(),
       // Wait for chooser typography before its first mount to avoid a layout swap.
       document.fonts?.ready ?? Promise.resolve(),
     ])
@@ -187,7 +197,7 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
     return () => {
       active = false;
     };
-  }, []);
+  }, [chooserAssetsReady, pendingSlotId, selectedSlotId]);
 
   useEffect(() => {
     if (!chooserAssetsReady || chooserReadyNotifiedRef.current)

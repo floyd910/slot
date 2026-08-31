@@ -156,17 +156,6 @@ export const GAME2_VIEW1_CELL_AND_VIEW2_SYMBOL_2_BACKGROUND_SRC =
 export const GAME2_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC =
   "/assets/img/game2-view1-highlight-and-view2-symbol5-background.webp";
 
-export const SLOT_CHOOSER_TILE_ASSETS = [
-  GAME1_CHOOSER_TILE_SRC,
-  GAME2_CHOOSER_TILE_SRC,
-  "/assets/img/chooser/game3.webp",
-  "/assets/img/chooser/gameframe.webp",
-  GAME4_CHOOSER_TILE_SRC,
-  GAME5_CHOOSER_TILE_SRC,
-  GAME6_CHOOSER_TILE_SRC,
-  GAME7_CHOOSER_TILE_SRC,
-  GAME8_CHOOSER_TILE_SRC,
-];
 export const GAME3_COVER_SRC = "/assets/img/game3-background-lossless.webp";
 export const GAME3_LOGO_SRC = "/assets/img/game3-logo-optimized.webp";
 export const GAME3_LOGO_ORNAMENT_SRC = "/assets/img/game3-logo-ornament.webp";
@@ -258,23 +247,8 @@ export const getGameFirstPaintAssets = (game) =>
   ];
 
 export const FIRST_PAINT_GAME_IMAGE_ASSETS = SHARED_FIRST_PAINT_ASSETS;
-export const DEFERRED_GAME_IMAGE_ASSETS = [
-  GAME3_LOGO_ORNAMENT_SRC,
-  ...DOUBLE_SCENE_ASSETS,
-  "/img/eldorado-winnings-table-bg.webp",
-  "/img/eldorado-winnings-title-bg.webp",
-];
-
-export const CRITICAL_GAME_IMAGE_ASSETS = FIRST_PAINT_GAME_IMAGE_ASSETS;
-
 export const STARTUP_ASSETS = {
-  images: [
-    SLOT_CHOOSER_BACKGROUND_SRC,
-    ...SLOT_CHOOSER_TILE_ASSETS,
-    ...FIRST_PAINT_GAME_IMAGE_ASSETS,
-    ...DEFERRED_GAME_IMAGE_ASSETS,
-  ],
-videos: [],
+  videos: [],
   audio: [
     "/media/eldorado-carpet-sound.a486c07e.mp3",
     "/media/carpet.ogg",

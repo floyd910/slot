@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { frameApi } from "../api/frameApi.js";
-import { GAME3_VIEW2_ASSETS, GAME4_VIEW2_ASSETS, GAME6_VIEW2_ASSETS } from "../config/view2Assets.js";
 import {
   CARPET_ANIMATION_HALF_MS,
   CARPET_SOUND_SRC,
@@ -32,7 +31,6 @@ import {
 } from "../utils/gameResult.js";
 import {
   loadAudioDurationMs,
-  preloadImage,
   preloadGameAssets,
   preloadStartupAssets,
 } from "../utils/mediaPreload.js";
@@ -320,14 +318,6 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       active = false;
     };
   }, []);
-useEffect(() => {
-    if (!visualMode) return;
-    const assets = gameDefinition?.id === "khocha-afandi" ? GAME6_VIEW2_ASSETS : gameDefinition?.id === "egypt" ? GAME4_VIEW2_ASSETS : GAME3_VIEW2_ASSETS;
-    assets.forEach((src) => {
-      preloadImage(src);
-    });
-  }, [gameDefinition, visualMode]);
-
   const diagnostics = useMemo(
     () => ({
       initSource: context.initSource,

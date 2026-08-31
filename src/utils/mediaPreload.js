@@ -1,13 +1,9 @@
 import {
   GAME3_VIEW2_ASSETS,
-  GAME4_VIEW2_ASSETS,
-  GAME5_VIEW2_ASSETS,
-  GAME6_VIEW2_ASSETS,
   SHARED_DICE_SYMBOL_ASSETS,
 } from "../config/view2Assets.js";
 import {
-  DOUBLE_SCENE_ASSETS,
-  DEFERRED_GAME_IMAGE_ASSETS,
+  DOUBLE_SCENE_ASSET_SOURCES,
   FIRST_PAINT_GAME_IMAGE_ASSETS,
   getGameFirstPaintAssets,
   STARTUP_ASSETS,
@@ -17,8 +13,6 @@ import {
   CARPET_SOUND_FALLBACK_MS,
   IMAGE_PRELOAD_TIMEOUT_MS,
 } from "../config/gameSettings.js";
-
-const CSS_URL_PATTERN = /url\(\s*(['"]?)(.*?)\1\s*\)/g;
 
 const retainedPreloadedImages = new Map();
 const decodedPreloadedImages = new Set();
@@ -145,39 +139,6 @@ const preloadResponseBytes = async (sources, onProgress) => {
     }),
   );
 };
-const collectCssImageUrlsFromText = (text, urls) => {
-  CSS_URL_PATTERN.lastIndex = 0;
-  let match = CSS_URL_PATTERN.exec(text);
-  while (match) {
-    const src = toPreloadUrl(match[2]);
-    if (src) urls.add(src);
-    match = CSS_URL_PATTERN.exec(text);
-  }
-};
-
-const collectCssRuleImageUrls = (rule, urls) => {
-  if (rule.cssText) collectCssImageUrlsFromText(rule.cssText, urls);
-  if (rule.cssRules) {
-    Array.from(rule.cssRules).forEach((nestedRule) =>
-      collectCssRuleImageUrls(nestedRule, urls),
-    );
-  }
-};
-
-const collectStylesheetImageUrls = () => {
-  const urls = new Set();
-  Array.from(document.styleSheets).forEach((sheet) => {
-    try {
-      Array.from(sheet.cssRules ?? []).forEach((rule) =>
-        collectCssRuleImageUrls(rule, urls),
-      );
-    } catch {
-      // Cross-origin stylesheets cannot expose cssRules; skip them safely.
-    }
-  });
-  return [...urls];
-};
-
 export const preloadImage = (
   src,
   {
@@ -475,32 +436,24 @@ export const getGameView2Assets = (game) => {
 
   return GAME3_VIEW2_ASSETS;
 };
-// The loader blocks only on View 1 artwork. Every View 2 image is deferred
-// until the game has opened, including the former shared dice assets.
+export const getGameView2GridAssets = (game) =>
+  getGameView2Assets(game).filter(
+    (src) => !src.includes("/assets/img/animations/"),
+  );
+
+// The visible loader includes both View 1 and the static View 2 grid.
 export const getRequiredGameMainScreenAssets = (game) =>
   uniqueUrls([
     game?.assets?.cover,
     game?.assets?.logo,
     ...getGameFirstPaintAssets(game),
+    ...getGameView2GridAssets(game),
   ]).filter((src) => isAssetAllowedForGame(src, game));
-const collectAssetUrls = (value, urls = []) => {
-  if (typeof value === "string") {
-    urls.push(value);
-  } else if (Array.isArray(value)) {
-    value.forEach((item) => collectAssetUrls(item, urls));
-  } else if (value && typeof value === "object") {
-    Object.values(value).forEach((item) => collectAssetUrls(item, urls));
-  }
-  return urls;
-};
-
 const getGameAudioAssets = (game) => {
   const customAssets = GAME_AUDIO_ASSETS_BY_ID[game?.id] ?? [];
-  const sharedAssets =
-    game?.id === "khiradmandi-makor"
-      ? STARTUP_ASSETS.audio
-      : STARTUP_ASSETS.audio.filter((src) => !src.includes("/arabic-"));
-  return uniqueUrls([...customAssets, ...sharedAssets]);
+  const baseAssets =
+    game?.id === "khiradmandi-makor" ? STARTUP_ASSETS.audio : [];
+  return uniqueUrls([...customAssets, ...baseAssets]);
 };
 
 export const preloadGameBackgroundAudio = async (game) => {
@@ -509,19 +462,16 @@ export const preloadGameBackgroundAudio = async (game) => {
   await runWithConcurrency(remainingAudio, 2, preloadAudioData);
 };
 
-const loadDeferredStartupAssets = async (game) => {
-  const criticalUrls = new Set(uniqueUrls(getRequiredGameMainScreenAssets(game)));
-  const deferredImages = uniqueUrls([
-    ...STARTUP_ASSETS.images,
-    ...DEFERRED_GAME_IMAGE_ASSETS,
-    game?.assets?.doubleSceneBackground,
-    ...getGameView2Assets(game),
-    ...collectStylesheetImageUrls(),
-  ]).filter((src) => !criticalUrls.has(src) && isAssetAllowedForGame(src, game));
+const getGameDoubleSceneAssets = (game) => {
+  const { background, ...sharedAssets } = DOUBLE_SCENE_ASSET_SOURCES;
+  return [
+    game?.assets?.doubleSceneBackground ?? background,
+    ...Object.values(sharedAssets),
+  ];
+};
 
-  await preloadDeferredImages(deferredImages);
-  await preloadGameBackgroundAudio(game);
-  await Promise.all(STARTUP_ASSETS.videos.map(preloadVideo));
+const loadDeferredStartupAssets = async (game) => {
+  await preloadDeferredImages(getGameDoubleSceneAssets(game));
 };
 
 const deferredStartupAssetsPromises = new Map();
@@ -545,7 +495,7 @@ export const preloadGameAssets = (game, onProgress) => {
   const cacheKey = game.id;
   const cached = gameAssetsPromises.get(cacheKey);
   if (cached) {
-    onProgress?.(99);
+    onProgress?.(99, { immediate: true });
     return cached;
   }
 
@@ -574,21 +524,8 @@ export const preloadGameAssets = (game, onProgress) => {
   gameAssetsPromises.set(cacheKey, promise);
   return promise;
 };
-export const preloadView2FirstPaintAssets = (game) =>
-  preloadImages(
-    getGameView2Assets(game).filter(
-      (src) => !src.includes("/assets/img/animations/"),
-    ),
-    {
-      decode: true,
-      fetchPriority: "high",
-      rejectOnError: false,
-      timeoutMs: 30000,
-    },
-  );
-
-export const preloadDoubleSceneAssets = () =>
-  preloadImages(DOUBLE_SCENE_ASSETS, {
+export const preloadDoubleSceneAssets = (game) =>
+  preloadImages(getGameDoubleSceneAssets(game), {
     decode: true,
     fetchPriority: "high",
     rejectOnError: false,
@@ -616,7 +553,6 @@ export const scheduleDeferredStartupAssets = (game) => {
   // this work participates in the visible game-loader progress.
   window.setTimeout(() => {
     preloadGameBackgroundAudio(game)
-      .then(() => preloadView2FirstPaintAssets(game))
       .then(() => preloadWinAnimations(game))
       .then(() => preloadDeferredStartupAssets(game))
       .catch((error) => console.error(error));
