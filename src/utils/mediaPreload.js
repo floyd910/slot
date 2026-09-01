@@ -427,7 +427,9 @@ export const preloadGameAssets = (game, onProgress) => {
     preloadRequiredImages(
       requiredAssets,
       (progress) => onProgress?.(Math.max(1, Math.min(99, progress))),
-      { timeoutMs: 30000 },
+      // Slow connections must never cancel navigation back to the chooser.
+      // Required game assets wait for load or a real network error.
+      { timeoutMs: 0 },
     ),
     fontReady(),
     ...(game.id === "kadima-drevnii"
