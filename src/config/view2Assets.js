@@ -36,13 +36,19 @@ export const SHARED_DICE_SYMBOL_ASSETS = [
   "/assets/img/view2-symbol-6-static.webp?v=20260711-1",
 ];
 
+// Dice are visible View 2 grid content in every game. Keep this as a distinct
+// required-preload group so game-specific asset filtering cannot defer them.
+export const VIEW2_DICE_PRELOAD_ASSETS = [
+  ...SHARED_DICE_SYMBOL_ASSETS,
+  VIEW2_DICE_SHINE_SRC,
+];
+
 export const SHARED_VIEW2_ASSETS = [
   ...new Set(
     collectImageSources(
       COMBO_BORDERS,
       VIEW2_CARPET_ASSETS,
-      SHARED_DICE_SYMBOL_ASSETS,
-      VIEW2_DICE_SHINE_SRC,
+      VIEW2_DICE_PRELOAD_ASSETS,
     ),
   ),
 ];

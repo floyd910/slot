@@ -361,13 +361,20 @@ export const getGameView2GridAssets = (game) =>
   ]);
 
 // The visible loader includes both View 1 and the static View 2 grid.
-export const getRequiredGameMainScreenAssets = (game) =>
-  uniqueUrls([
+export const getRequiredGameMainScreenAssets = (game) => {
+  const gameAssets = [
     game?.assets?.cover,
     game?.assets?.logo,
     ...getGameFirstPaintAssets(game),
     ...getGameView2GridAssets(game),
-  ]).filter((src) => isAssetAllowedForGame(src, game));
+  ].filter((src) => isAssetAllowedForGame(src, game));
+
+  // Append the common View 2 group after the per-game filter. The carpet,
+  // all six dice faces and the dice shine sprite are required by every game.
+  // uniqueUrls plus imageLoadEntries make the first game own the load Promise;
+  // later games reuse the same loaded and decoded image objects.
+  return uniqueUrls([...gameAssets, ...SHARED_VIEW2_ASSETS]);
+};
 const getGameAudioAssets = (game) => {
   const customAssets = GAME_AUDIO_ASSETS_BY_ID[game?.id] ?? [];
   const baseAssets =
