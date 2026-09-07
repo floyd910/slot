@@ -383,7 +383,7 @@ const GAME8_ASSETS = Object.freeze({
   }),
 });
 export const GAME_DEFINITIONS = Object.freeze([
-  createGameDefinition({ id: "korvonsaroi-karavan", title: "Korvonsaroi Karavan", subtitle: "Classic 5-reel slot", assets: GAME1_ASSETS }),
+  createGameDefinition({ id: "ganchina-sokrovishch", title: "Ганчина-Сокровищ", subtitle: "Classic 5-reel slot", assets: GAME1_ASSETS }),
   createGameDefinition({ id: "marvorid-djemchug", title: "Marvorid Djemchug", subtitle: "Classic slot", assets: GAME2_ASSETS }),
   createGameDefinition({ id: "khiradmandi-makor", title: "Khiradmandi Makor", subtitle: "Coordinate lottery slot" }),
   createGameDefinition({ id: "egypt", title: "Egypt", subtitle: "Table-style slot", assets: GAME4_ASSETS }),

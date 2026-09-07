@@ -40,7 +40,7 @@ const placeholderPalette = (accent, overrides = {}) =>
   Object.freeze({ ...GAME3_COLORS, accent, ...overrides });
 
 export const GAME_COLORS = Object.freeze({
-  "korvonsaroi-karavan": placeholderPalette("#d94776", {
+  "ganchina-sokrovishch": placeholderPalette("#d94776", {
     viewChangerActive: "#8b5cf6",
   }),
   "marvorid-djemchug": placeholderPalette("#e5a443", {

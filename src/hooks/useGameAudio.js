@@ -67,7 +67,7 @@ const GAME8_BUTTON_CLICK_SRC = "/media/game8-button-click.opus";
 const GAME8_VIEW2_WIN_SRC = "/media/game8-view2-win.opus";
 
 const VIEW1_SPIN_SOURCE_BY_GAME = Object.freeze({
-  "korvonsaroi-karavan": "/media/game2-view1-spin.opus",
+  "ganchina-sokrovishch": "/media/game2-view1-spin.opus",
   "marvorid-djemchug": "/media/game2-view1-reveal.opus",
   egypt: "/media/game4-view1-reveal-v3.opus",
   "kadima-drevnii": "/media/game5-view1-reveal.opus",
@@ -155,7 +155,7 @@ export function useGameAudio(gameId) {
   const media = useMemo(
     () => ({
       ...baseMedia,
-      ...(gameId === "korvonsaroi-karavan"
+      ...(gameId === "ganchina-sokrovishch"
         ? {
             click: GAME1_BUTTON_CLICK_SRC,
             buttonPress: GAME1_BUTTON_CLICK_SRC,
@@ -199,7 +199,7 @@ export function useGameAudio(gameId) {
       spin: VIEW1_SPIN_SOURCE_BY_GAME[gameId] ?? baseMedia.spin,
       reveal: VIEW1_SPIN_SOURCE_BY_GAME[gameId] ?? baseMedia.reveal,
       carpet:
-        gameId === "korvonsaroi-karavan"
+        gameId === "ganchina-sokrovishch"
           ? "/media/game3-view2-win-magical-v2.opus"
           : gameId === "khiradmandi-makor"
             ? "/media/game3-view2-carpet-egyptian-v3.opus"
@@ -587,7 +587,7 @@ export function useGameAudio(gameId) {
         const hasCustomView2Win =
           payload?.visualMode &&
           [
-            "korvonsaroi-karavan",
+            "ganchina-sokrovishch",
             "marvorid-djemchug",
             "khiradmandi-makor",
             "egypt",

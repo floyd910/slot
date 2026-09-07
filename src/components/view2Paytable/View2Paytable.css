@@ -127,7 +127,7 @@
   background: rgba(0, 0, 0, 0.34);
 }
 
-.configured-game[data-game-id="korvonsaroi-karavan"] .view2-info-paytable {
+.configured-game[data-game-id="ganchina-sokrovishch"] .view2-info-paytable {
   background: rgba(0, 0, 0, 0.44);
 }
 
@@ -173,10 +173,10 @@
     0 4.126px 6.188px 0 rgba(0, 0, 0, 0.1);
 }
 
-.configured-game[data-game-id="korvonsaroi-karavan"] .view2-info-card,
-.configured-game[data-game-id="korvonsaroi-karavan"] .view2-info-main-card,
-.configured-game[data-game-id="korvonsaroi-karavan"] .view2-coeff-card,
-.configured-game[data-game-id="korvonsaroi-karavan"] .view2-info-coeff-card {
+.configured-game[data-game-id="ganchina-sokrovishch"] .view2-info-card,
+.configured-game[data-game-id="ganchina-sokrovishch"] .view2-info-main-card,
+.configured-game[data-game-id="ganchina-sokrovishch"] .view2-coeff-card,
+.configured-game[data-game-id="ganchina-sokrovishch"] .view2-info-coeff-card {
   background:
     linear-gradient(
       145deg,

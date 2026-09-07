@@ -645,9 +645,9 @@
     rgba(255, 255, 255, 1) !important;
 }
 
-/* Korvonsaroi Karavan View 1 info screen. */
-.info-modal[data-game-id="korvonsaroi-karavan"]:not(.--view2),
-.info-modal[data-game-id="korvonsaroi-karavan"]:not(.--view2) .info-paytable {
+/* Ганчина-Сокровищ View 1 info screen. */
+.info-modal[data-game-id="ganchina-sokrovishch"]:not(.--view2),
+.info-modal[data-game-id="ganchina-sokrovishch"]:not(.--view2) .info-paytable {
   background: linear-gradient(
     145deg,
     rgb(146, 0, 159) 0%,

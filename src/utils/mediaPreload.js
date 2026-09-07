@@ -24,7 +24,7 @@ const gameAssetsPromises = new Map();
 const IMAGE_DECODE_TIMEOUT_MS = 8000;
 const GAME5_BUTTON_CLICK_SRC = "/media/game5-button-click-v2.opus";
 const GAME_AUDIO_ASSETS_BY_ID = Object.freeze({
-  "korvonsaroi-karavan": [
+  "ganchina-sokrovishch": [
     "/media/game3-view2-win-magical-v2.opus",
     "/media/game1-btn-click.opus",
     "/media/game2-view1-spin.opus",

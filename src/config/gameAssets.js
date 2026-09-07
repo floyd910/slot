@@ -1,7 +1,7 @@
 export const SLOT_CHOOSER_BACKGROUND_SRC = "/assets/img/chooser/background.webp";
 export const GAME1_CHOOSER_TILE_SRC =
-  "/assets/img/chooser/game1-korvonsaroi-karavan.webp";
-export const GAME1_LOGO_SRC = "/assets/img/game1-korvonsaroi-karavan-header.webp";
+  "/assets/img/chooser/game1-ganchina-sokrovishch.webp";
+export const GAME1_LOGO_SRC = "/assets/img/game1-ganchina-sokrovishch-header.webp";
 export const GAME1_DOUBLE_SCENE_BACKGROUND_SRC =
   "/assets/img/game1-double-scene-background-lossless.webp";
 export const GAME1_COVER_SRC =
@@ -206,7 +206,7 @@ const GAME2_VIEW1_ASSETS = [
 const GAME_FIRST_PAINT_ASSETS_BY_ID = Object.freeze({
   // Every game follows the same first-screen contract as Game 3: its own
   // background, logo, and board skins must decode before the loader clears.
-  "korvonsaroi-karavan": [...SHARED_FIRST_PAINT_ASSETS, ...GAME1_SHELL_ASSETS],
+  "ganchina-sokrovishch": [...SHARED_FIRST_PAINT_ASSETS, ...GAME1_SHELL_ASSETS],
   "babylon": [...SHARED_FIRST_PAINT_ASSETS, ...GAME7_SHELL_ASSETS],
   fruits: [...SHARED_FIRST_PAINT_ASSETS, GAME8_COVER_SRC, GAME8_LOGO_SRC],
   "marvorid-djemchug": [

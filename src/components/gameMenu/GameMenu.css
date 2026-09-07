@@ -400,8 +400,8 @@
     rgb(0, 74, 159) 100%
   ) !important;
 }
-/* Korvonsaroi Karavan rules page: the same purple gradient, fully opaque. */
-.game-rules-screen[data-game-id="korvonsaroi-karavan"],
+/* Ганчина-Сокровищ rules page: the same purple gradient, fully opaque. */
+.game-rules-screen[data-game-id="ganchina-sokrovishch"],
 .game-rules-screen[data-game-id="fruits"] {
   background: linear-gradient(
     145deg,
