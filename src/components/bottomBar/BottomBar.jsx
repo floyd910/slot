@@ -16,6 +16,8 @@ export default function BottomBar(props) {
   const doubleRightLabel = language === "tg" ? t("right") : "\u041f\u0440\u0430\u0432\u044b\u0439";
   const controls = buildBottomBarControls({
     ...props,
+    primaryActionCollectsWin:
+      props.primaryActionCollectsWin && props.revealComplete !== false,
     toggleLanguage,
   });
   const balance = formatMoney(props.player?.balance);

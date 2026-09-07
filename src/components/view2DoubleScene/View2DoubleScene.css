@@ -418,7 +418,7 @@
   display: block;
   content: "";
   background: #000
-    var(--double-scene-background, url("/assets/img/double-scene-bg.png"))
+    var(--double-scene-background, url("/assets/img/double-scene-bg-lossless.webp"))
     var(--double-scene-background-position, 50% 50%) / cover no-repeat;
   pointer-events: none;
 }

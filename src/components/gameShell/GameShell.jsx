@@ -168,8 +168,10 @@ export default function GameShell({ controller, game, onBackToSlots }) {
                   spinResult={state.spinResult}
                   revealComplete={state.gridAnimation === "settled"}
                   disabled={derived.isBusy}
+                  spinAssetsLoading={derived.spinAssetsLoading}
                   spinDisabled={derived.spinButtonDisabled}
                   spinFeedbackActive={state.spinFeedbackActive}
+                  primaryActionCollectsWin={derived.primaryActionCollectsWin}
                   doubleOfferAvailable={derived.doubleOfferAvailable}
                   doublingState={state.doublingState}
                   visualMode={state.visualMode}

@@ -36,14 +36,23 @@ const GAME3_COLORS = Object.freeze({
 
 // Each game owns a separate palette object. Until its colors arrive, it uses
 // the Game 3 values so the shared layout remains visually complete.
-const placeholderPalette = (accent) => Object.freeze({ ...GAME3_COLORS, accent });
+const placeholderPalette = (accent, overrides = {}) =>
+  Object.freeze({ ...GAME3_COLORS, accent, ...overrides });
 
 export const GAME_COLORS = Object.freeze({
-  "korvonsaroi-karavan": placeholderPalette("#d94776"),
-  "marvorid-djemchug": placeholderPalette("#e5a443"),
+  "korvonsaroi-karavan": placeholderPalette("#d94776", {
+    viewChangerActive: "#8b5cf6",
+  }),
+  "marvorid-djemchug": placeholderPalette("#e5a443", {
+    viewChangerActive: "#58d5c9",
+  }),
   "khiradmandi-makor": GAME3_COLORS,
-  "egypt": placeholderPalette("#8bd36f"),
-  "kadima-drevnii": placeholderPalette("#58d5c9"),
+  "egypt": placeholderPalette("#8bd36f", {
+    viewChangerActive: "#f4c953",
+  }),
+  "kadima-drevnii": placeholderPalette("#58d5c9", {
+    viewChangerActive: "#e5a443",
+  }),
   "khocha-afandi": placeholderPalette("#8fb3ff"),
   "babylon": placeholderPalette("#b58cff"),
   fruits: placeholderPalette("#de3bd3"),

@@ -3,7 +3,7 @@ export const GAME1_CHOOSER_TILE_SRC =
   "/assets/img/chooser/game1-korvonsaroi-karavan.webp";
 export const GAME1_LOGO_SRC = "/assets/img/game1-korvonsaroi-karavan-header.webp";
 export const GAME1_DOUBLE_SCENE_BACKGROUND_SRC =
-  "/assets/img/game1-double-scene-background.png";
+  "/assets/img/game1-double-scene-background-lossless.webp";
 export const GAME1_COVER_SRC =
   "/assets/img/game1-korvonsaroi-karavan-background.webp?v=20260814-purple";
 export const GAME1_VIEW1_CELL_AND_VIEW2_SYMBOL_2_BACKGROUND_SRC =
@@ -36,7 +36,7 @@ export const GAME4_CHOOSER_TILE_SRC = "/assets/img/chooser/game4.webp";
 export const GAME4_VIEW1_CELL_BACKGROUND_SRC = "/assets/img/game4-view1-cell-background-optimized.webp";
 export const GAME4_VIEW1_HIGHLIGHT_BACKGROUND_SRC = "/assets/img/game4-view1-highlight-background-optimized.webp";
 export const GAME4_VIEW2_INFO_BACKGROUND_SRC = "/assets/img/game4-view2-symbol1-background-optimized.webp";
-export const GAME4_DOUBLE_SCENE_BACKGROUND_SRC = "/assets/img/game4-double-scene-bg.webp";
+export const GAME4_DOUBLE_SCENE_BACKGROUND_SRC = "/assets/img/game4-double-scene-bg-lossless.webp";
 export const GAME4_VIEW2_SYMBOL_0_STATIC_SRC = "/assets/img/game4-view2-symbol0-static-optimized.webp";
 export const GAME4_VIEW2_SYMBOL_7_STATIC_SRC = "/assets/img/game4-view2-symbol7-static-optimized.webp";
 export const GAME4_VIEW2_SYMBOL_8_STATIC_SRC = "/assets/img/game4-view2-symbol8-static-optimized.webp";
@@ -56,7 +56,7 @@ export const GAME6_COVER_SRC = "/assets/img/game6-background-lossless.webp";
 export const GAME6_LOGO_SRC = "/assets/img/game6-header-optimized.webp";
 export const GAME6_CHOOSER_TILE_SRC = "/assets/img/chooser/game6.webp";
 export const GAME6_DOUBLE_SCENE_BACKGROUND_SRC =
-  "/assets/img/game6-double-scene-background.png";
+  "/assets/img/game6-double-scene-background-lossless.webp";
 export const GAME7_CHOOSER_TILE_SRC = "/assets/img/chooser/game7-babylon.webp";
 export const GAME8_CHOOSER_TILE_SRC = "/assets/img/chooser/game8-frukty.webp";
 export const GAME8_LOGO_SRC = "/assets/img/game8-frukty-header.webp";
@@ -70,7 +70,7 @@ export const GAME8_VIEW2_SYMBOL_5_STATIC_SRC = "/assets/img/game8-frukty-view2-s
 export const GAME8_VIEW2_SYMBOL_6_STATIC_SRC = "/assets/img/game8-frukty-view2-symbol6-static.webp";
 export const GAME8_VIEW2_SYMBOL_7_STATIC_SRC = "/assets/img/game8-frukty-view2-symbol7-static.webp";
 export const GAME7_DOUBLE_SCENE_BACKGROUND_SRC =
-  "/assets/img/game7-babylon-double-scene-background.png";
+  "/assets/img/game7-babylon-double-scene-background-lossless.webp";
 export const GAME7_COVER_SRC =
   "/assets/img/game7-babylon-background.webp";
 export const GAME7_LOGO_SRC = "/assets/img/game7-babylon-header.webp";
@@ -97,7 +97,7 @@ export const GAME7_VIEW2_SYMBOL_8_STATIC_SRC =
 export const GAME5_CHOOSER_TILE_SRC = "/assets/img/chooser/game5.webp";
 export const GAME5_COVER_SRC = "/assets/img/game5-background-lossless.webp";
 export const GAME5_DOUBLE_SCENE_BACKGROUND_SRC =
-  "/assets/img/game5-kadima-drevnii-double-scene-background.png";
+  "/assets/img/game5-kadima-drevnii-double-scene-background-lossless.webp";
 export const GAME5_LOGO_SRC = "/assets/img/game5-header-optimized.webp";
 export const GAME5_VIEW1_CELL_BACKGROUND_SRC = "/assets/img/game5-view1-cell-background-optimized.webp";
 export const GAME5_VIEW1_HIGHLIGHT_BACKGROUND_SRC = "/assets/img/game5-view1-highlight-background-optimized.webp";
@@ -137,7 +137,7 @@ export const GAME6_VIEW2_CELL_BACKGROUND_ASSETS = [
 export const GAME2_CHOOSER_TILE_SRC = "/assets/img/chooser/game2.webp";
 export const GAME2_COVER_SRC = "/assets/img/game2-background-lossless.webp";
 export const GAME2_DOUBLE_SCENE_BACKGROUND_SRC =
-  "/assets/img/game2-double-scene-background.png";
+  "/assets/img/game2-double-scene-background-lossless.webp";
 export const GAME2_LOGO_SRC = "/assets/img/game2-header-logo.webp";
 export const GAME2_VIEW2_SYMBOL_1_BACKGROUND_SRC = "/assets/img/game2-view2-symbol1-background.webp";
 export const GAME2_VIEW2_SYMBOL_4_BACKGROUND_SRC = "/assets/img/game2-view2-symbol4-background.webp";
@@ -182,11 +182,11 @@ export const LANGUAGE_CHOOSER_ASSETS = [
 ];
 
 export const DOUBLE_SCENE_ASSET_SOURCES = Object.freeze({
-  background: "/assets/img/double-scene-bg.png",
-  emptyChest: "/assets/img/double-empty-chest.png",
-  leftClosedChest: "/assets/img/double-left-chest.png",
-  rightClosedChest: "/assets/img/double-right-chest.png",
-  winningChest: "/assets/img/double-winning-chest.png",
+  background: "/assets/img/double-scene-bg-lossless.webp",
+  emptyChest: "/assets/img/double-empty-chest-lossless.webp",
+  leftClosedChest: "/assets/img/double-left-chest-lossless.webp",
+  rightClosedChest: "/assets/img/double-right-chest-lossless.webp",
+  winningChest: "/assets/img/double-winning-chest-lossless.webp",
 });
 
 export const DOUBLE_SCENE_ASSETS = Object.values(DOUBLE_SCENE_ASSET_SOURCES);

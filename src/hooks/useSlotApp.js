@@ -3,6 +3,7 @@ import {
   SLOT_CHOOSER_BACKGROUND_SRC,
 } from "../config/gameAssets.js";
 import { GAME_DEFINITIONS } from "../config/gameDefinitions.js";
+import { VIEW2_DICE_PRELOAD_ASSETS } from "../config/view2Assets.js";
 import { notifySlotChooserReady } from "../services/frameReadyNotifier.js";
 import { stateRecoveryService } from "../services/stateRecoveryService.js";
 import {
@@ -13,6 +14,7 @@ import {
 
 const SLOT_CHOOSER_REQUIRED_ASSETS = [
   SLOT_CHOOSER_BACKGROUND_SRC,
+  ...VIEW2_DICE_PRELOAD_ASSETS,
   ...GAME_DEFINITIONS.filter((game) => game.id !== "double-bonus").map(
     (game) => game.assets.chooserTile,
   ),

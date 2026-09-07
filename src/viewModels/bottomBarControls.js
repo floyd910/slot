@@ -14,8 +14,10 @@ export function buildBottomBarControls({
   onPickRight,
   onSpin,
   paytableControlsLocked,
+  spinAssetsLoading,
   spinDisabled,
   spinFeedbackActive,
+  primaryActionCollectsWin,
   toggleLanguage,
   viewSwitchDisabled,
   visualMode,
@@ -91,9 +93,9 @@ export function buildBottomBarControls({
     {
       active: spinFeedbackActive,
       disabled: disabled || spinDisabled,
-      extraClass: "spin-draw-button",
+      extraClass: `spin-draw-button${spinAssetsLoading ? " --loading" : ""}`,
       onClick: onSpin,
-      type: "spinDraw",
+      type: primaryActionCollectsWin ? "takeWin" : "spinDraw",
     },
   ];
 }
@@ -113,6 +115,7 @@ export function getBottomBarLabel(type, { language, t }) {
     menu: t("menu"),
     right: t("right"),
     spinDraw: splitMultiline(t("participate")),
+    takeWin: t("takeWin"),
     takeMoney: t("takeMoney"),
     visualization: splitMultiline(t("visualization")),
   };

@@ -10,6 +10,7 @@ import {
 const copy = {
   ru: {
     takeMoney: "ЗАБРАТЬ ДЕНЬГИ",
+    takeWin: "\u0417\u0410\u0411\u0420\u0410\u0422\u042c \u0412\u042b\u0418\u0413\u0420\u042b\u0428",
     info: "ИНФО",
     language: "РУССКИЙ",
     menu: "МЕНЮ",
@@ -114,6 +115,7 @@ const copy = {
   },
   tg: {
     takeMoney: "ГИРИФТАНИ ПУЛ",
+    takeWin: "\u0411\u0423\u0420\u0414\u0420\u041e \u0413\u0418\u0420\u0418\u0424\u0422\u0410\u041d",
     info: "МАЪЛУМОТ",
     language: "ТОҶИКӢ",
     menu: "МЕНЮ",

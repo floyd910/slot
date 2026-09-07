@@ -47,6 +47,24 @@ import {
 
 const initialContext = readFrameParams();
 const UI_PREFERENCES_KEY = "hiranmandi-frame:ui-preferences:v1";
+const SOUND_PREFERENCE_KEY = "hiranmandi-frame:sound-enabled:v1";
+
+const readSoundPreference = () => {
+  try {
+    const storedValue = window.localStorage.getItem(SOUND_PREFERENCE_KEY);
+    return storedValue === null ? null : storedValue === "true";
+  } catch {
+    return null;
+  }
+};
+
+const saveSoundPreference = (soundEnabled) => {
+  try {
+    window.localStorage.setItem(SOUND_PREFERENCE_KEY, String(soundEnabled));
+  } catch {
+    // Storage can be blocked in partner iframes.
+  }
+};
 
 const readUiPreferences = (gameId) => {
   try {
@@ -162,7 +180,9 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const [doubleState, setDoubleState] = useState(createDoubleState);
   const [doublingState, setDoublingState] = useState(createEmptyDoublingState);
   const [autoPlayOn, setAutoPlayOn] = useState(false);
-  const [soundEnabled, setSoundEnabled] = useState(() => uiPreferences.soundEnabled !== false);
+  const [soundEnabled, setSoundEnabled] = useState(
+    () => readSoundPreference() ?? uiPreferences.soundEnabled !== false,
+  );
   const soundEnabledRef = useRef(soundEnabled);
   const [showGameMenu, setShowGameMenu] = useState(false);
   const [spinHistory, setSpinHistory] = useState([]);
@@ -220,6 +240,10 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   useEffect(() => {
     playSound("setMuted", !soundEnabled);
   }, [playSound, soundEnabled]);
+
+  useEffect(() => {
+    saveSoundPreference(soundEnabled);
+  }, [soundEnabled]);
 
   useEffect(() => {
     saveUiPreferences(gameDefinition?.id ?? bootGameId, {
@@ -937,6 +961,9 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     (!pendingTicketWin && !canAffordSpin);
   const hideHeader =
     context.mode === "embedded" && context.featureFlags?.hiddenHeader !== false;
+  const primaryActionCollectsWin =
+    isVisualDoubling ||
+    (!showFreeSpinPrompt && !hasFreeSpinsPending && pendingTicketWin);
   const shellClass = `frame-app mode-${context.mode} theme-${context.theme}${hideHeader ? " headerless" : ""}${expandedBoard || visualMode ? " expanded-board" : ""}${visualMode ? " view-2" : " view-1"}${isVisualDoubling ? " doubling-active" : ""}`;
   const runtimeStateVisible = !["ready", "empty", "processing"].includes(status);
 
@@ -1029,10 +1056,12 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       isRoundRecoveryBlocked,
       isVisualDoubling,
       pendingTicketWin,
+      primaryActionCollectsWin,
       paytableControlsLocked,
       runtimeStateVisible,
       selectedCombination,
       shellClass,
+      spinAssetsLoading: !spinAssetsReady,
       spinButtonDisabled,
       testMode,
       ticketWinAmount,
