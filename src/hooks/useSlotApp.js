@@ -165,7 +165,10 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
       : new Promise((resolve) =>
           gameLoadWaitersRef.current.push({ target, resolve }),
         );
-  const [selectedSlotId, setSelectedSlotId] = useState(getInitialSlotId);
+  // Direct production routes must use the same pre-mount asset gate as a
+  // chooser click. Mounting immediately here bypassed preloadGameAssets and
+  // allowed View 2 dice/background requests to begin only after entering View 2.
+  const [selectedSlotId, setSelectedSlotId] = useState(null);
   const [pendingSlotId, setPendingSlotId] = useState(null);
   const [activeRounds, setActiveRounds] = useState(() =>
     stateRecoveryService.getActiveRounds(),
@@ -177,7 +180,12 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
   const openRequestRef = useRef(0);
 
   useEffect(() => {
-    if (selectedSlotId || pendingSlotId || chooserAssetsReady) return undefined;
+    if (
+      initialRouteSlotIdRef.current ||
+      selectedSlotId ||
+      pendingSlotId ||
+      chooserAssetsReady
+    ) return undefined;
 
     let active = true;
 
@@ -257,6 +265,15 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
     // paint. Begin them only after the game is already visible.
     scheduleDeferredStartupAssets(slot);
   };
+
+  useEffect(() => {
+    const initialSlotId = initialRouteSlotIdRef.current;
+    if (!initialSlotId) return;
+    initialRouteSlotIdRef.current = null;
+
+    const slot = GAME_DEFINITIONS.find((game) => game.id === initialSlotId);
+    if (slot) openSlot(slot);
+  }, []);
 
   const refreshActiveRounds = () => {
     setActiveRounds(stateRecoveryService.getActiveRounds());
