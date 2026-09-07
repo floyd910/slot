@@ -46,10 +46,10 @@ export const GAME4_VIEW2_SYMBOL_11_STATIC_SRC = "/assets/img/game4-view2-symbol1
 export const GAME4_VIEW2_SYMBOL_12_STATIC_SRC = "/assets/img/game4-view2-symbol12-static-optimized.webp";
 export const GAME4_VIEW2_CELL_BACKGROUND_ASSETS = [
   "/assets/img/game4-view2-symbol1-background-optimized.webp",
-  "/assets/img/game4-view2-symbol2-background-optimized.webp",
+  GAME4_VIEW1_CELL_BACKGROUND_SRC,
   "/assets/img/game4-view2-symbol3-background-optimized.webp",
   "/assets/img/game4-view2-symbol4-background-optimized.webp",
-  "/assets/img/game4-view2-symbol5-background-optimized.webp",
+  GAME4_VIEW1_HIGHLIGHT_BACKGROUND_SRC,
   "/assets/img/game4-view2-symbol6-background-optimized.webp",
 ];
 export const GAME6_COVER_SRC = "/assets/img/game6-background-lossless.webp";

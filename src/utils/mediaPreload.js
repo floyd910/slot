@@ -111,21 +111,24 @@ const loadImageOnce = (src, fetchPriority, timeoutMs) => {
   return entry;
 };
 
-const decodeImageOnce = (src, image) => {
+const decodeImageOnce = (src, image, timeoutMs = IMAGE_DECODE_TIMEOUT_MS) => {
   if (!image.decode) return Promise.resolve();
   if (!imageDecodePromises.has(src)) {
-    imageDecodePromises.set(src, Promise.race([
-      image.decode().catch(() => {}),
-      new Promise((resolve) => window.setTimeout(resolve, IMAGE_DECODE_TIMEOUT_MS)),
-    ]));
+    imageDecodePromises.set(src, image.decode().catch(() => {}));
   }
-  return imageDecodePromises.get(src);
+  const decodePromise = imageDecodePromises.get(src);
+  if (!timeoutMs) return decodePromise;
+  return Promise.race([
+    decodePromise,
+    new Promise((resolve) => window.setTimeout(resolve, timeoutMs)),
+  ]);
 };
 
 export const preloadImage = async (
   src,
   {
     decode = true,
+    decodeTimeoutMs = IMAGE_DECODE_TIMEOUT_MS,
     fetchPriority = "high",
     rejectOnError = false,
     timeoutMs = IMAGE_PRELOAD_TIMEOUT_MS,
@@ -146,7 +149,7 @@ export const preloadImage = async (
     }
     return normalizedSrc;
   }
-  if (decode) await decodeImageOnce(normalizedSrc, image);
+  if (decode) await decodeImageOnce(normalizedSrc, image, decodeTimeoutMs);
   return normalizedSrc;
 };
 
@@ -169,6 +172,7 @@ export const preloadRequiredImages = async (
     urls.map(async (src) => {
       await preloadImage(src, {
         decode: true,
+        decodeTimeoutMs: 0,
         fetchPriority: "high",
         rejectOnError: true,
         timeoutMs,
