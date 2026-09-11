@@ -157,6 +157,7 @@ const fruitsView2Symbol = (symbol, staticImage) =>
     // Fruits uses its own numbered WebP sequence instead.
     animatedImage: null,
     // Fruits artwork already contains each complete cell background.
+    fillCell: true,
     isDice: false,
     winFrames: fruitsWinFrames(symbol),
     forwardLoop: true,

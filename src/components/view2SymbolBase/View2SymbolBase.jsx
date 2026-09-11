@@ -50,6 +50,7 @@ export function View2SymbolBase({
   winFrames = [],
   shine = null,
   isDice = false,
+  fillCell = false,
   forwardLoop = false,
   frameMs = null,
   cycleMs = null,
@@ -115,6 +116,10 @@ export function View2SymbolBase({
         : getPingPongFrameIndex(animationFrameTick, activeWinFrames.length)
       : 0;
 
+  const fullCellStyle = fillCell ? {
+    inset: 0, width: "100%", height: "100%", maxWidth: "none", maxHeight: "none",
+    objectFit: "fill", transform: "none", display: "block",
+  } : undefined;
   const rootClass = `lottery-grid-view2-cell lottery-grid-view2-cell--symbol-${symbol}${isDice ? " lottery-grid-view2-cell--dice" : ""}${highlighted ? " lottery-grid-view2-cell--highlighted" : ""}${scatterHighlighted ? " lottery-grid-view2-cell--scatter-highlighted" : ""}${winLineDimmed ? " lottery-grid-view2-cell--win-dimmed" : ""}`;
 
   return (
@@ -136,14 +141,16 @@ export function View2SymbolBase({
             aria-hidden="true"
             src={activeAnimatedImage}
             className="lottery-grid-view2-cell__image"
+            style={fullCellStyle}
           />
         ) : activeWinFrames?.length > 1 ? (
-          <span className="lottery-grid-view2-cell__animation" aria-label="image">
+          <span className="lottery-grid-view2-cell__animation" style={fullCellStyle} aria-label="image">
             <img
               alt=""
               aria-hidden="true"
               src={activeWinFrames[frameIndex]}
               className="lottery-grid-view2-cell__image"
+            style={fullCellStyle}
             />
           </span>
         ) : staticImage ? (
@@ -151,6 +158,7 @@ export function View2SymbolBase({
             alt="image"
             src={staticImage}
             className="lottery-grid-view2-cell__image"
+            style={fullCellStyle}
           />
         ) : (
           <span className="lottery-grid-view2-cell__fallback">

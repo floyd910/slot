@@ -1,12 +1,10 @@
+import { resolveParentOrigin } from "../api/frameLaunch.js";
+import { getFrontendEnvConfig } from "../api/runtimeConfig.js";
 export const notifySlotChooserReady = () => {
   if (window.parent === window) return;
 
-  let targetOrigin;
-  try {
-    targetOrigin = document.referrer ? new URL(document.referrer).origin : "";
-  } catch {
-    targetOrigin = "";
-  }
+  const allowedOrigins = (getFrontendEnvConfig().parentOrigins ?? "").split(",").map(v => v.trim());
+  const targetOrigin = resolveParentOrigin(allowedOrigins, document.referrer, true);
   if (!targetOrigin) return;
 
   window.parent.postMessage(

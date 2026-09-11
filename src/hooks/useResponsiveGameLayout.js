@@ -32,6 +32,10 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
   useLayoutEffect(() => {
     const root = rootRef.current;
     if (!root) return undefined;
+    // Refit a mounted board before revealing a newly selected view.
+    if (root.querySelector(".main-container__center") && !root.classList.contains("doubling-active")) {
+      setLayoutReady(false);
+    }
     let frame = 0;
     let readyFrame = 0;
     let initialFitStarted = false;
@@ -137,7 +141,7 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
     });
     mountObserver.observe(root, { childList: true, subtree: true });
     const observer = new ResizeObserver(fit);
-    [root, root.parentElement?.querySelector("header"), root.querySelector(".game_area"), root.querySelector(".bottom-bar")]
+    [root, root.parentElement?.querySelector("header"), root.querySelector(".game_area"), ...root.querySelectorAll(".bottom-bar, .footer-block")]
       .filter(Boolean).forEach((element) => observer.observe(element));
     window.addEventListener("resize", fit, { passive: true });
     document.addEventListener("fullscreenchange", fit);

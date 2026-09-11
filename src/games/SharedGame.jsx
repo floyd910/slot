@@ -13,7 +13,7 @@ export default function SharedGame({ game, onBack }) {
       data-game-id={game.id}
       style={toGameColorVariables(game.colors)}
     >
-      <div hidden={controller.state.startupLoaderVisible}>
+      <div style={{ visibility: controller.state.startupLoaderVisible ? "hidden" : "visible" }}>
         <Header
         menuOpen={controller.state.showGameMenu}
         onMenuOpen={() => controller.actions.setShowGameMenu(true)}

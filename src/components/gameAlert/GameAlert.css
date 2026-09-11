@@ -2,7 +2,7 @@
   position: absolute;
   top: clamp(8px, 1.4vh, 18px);
   left: 50%;
-  z-index: 30;
+  z-index: 2147483647;
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: center;

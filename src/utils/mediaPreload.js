@@ -14,8 +14,7 @@ import {
   IMAGE_PRELOAD_TIMEOUT_MS,
 } from "../config/gameSettings.js";
 
-// A URL owns one request for this app session. Failed entries are retained too,
-// preventing remounts from creating an endless missing-asset request loop.
+// Share successful requests; evict failures so a later explicit retry can reload.
 const imageLoadEntries = new Map();
 const imageDecodePromises = new Map();
 const retainedPreloadedAudio = new Map();
@@ -114,7 +113,11 @@ const loadImageOnce = (src, fetchPriority, timeoutMs) => {
 const decodeImageOnce = (src, image, timeoutMs = IMAGE_DECODE_TIMEOUT_MS) => {
   if (!image.decode) return Promise.resolve();
   if (!imageDecodePromises.has(src)) {
-    imageDecodePromises.set(src, image.decode().catch(() => {}));
+    imageDecodePromises.set(src, image.decode().catch((error) => {
+      imageDecodePromises.delete(src);
+      imageLoadEntries.delete(src);
+      throw error;
+    }));
   }
   const decodePromise = imageDecodePromises.get(src);
   if (!timeoutMs) return decodePromise;
@@ -142,6 +145,7 @@ export const preloadImage = async (
     timeoutMs,
   ).promise;
   if (!loaded) {
+    imageLoadEntries.delete(normalizedSrc);
     if (rejectOnError) {
       const message =
         reason === "timeout" ? "Timed out preloading" : "Failed to preload";
@@ -149,7 +153,13 @@ export const preloadImage = async (
     }
     return normalizedSrc;
   }
-  if (decode) await decodeImageOnce(normalizedSrc, image, decodeTimeoutMs);
+  if (decode) {
+    try {
+      await decodeImageOnce(normalizedSrc, image, decodeTimeoutMs);
+    } catch (error) {
+      if (rejectOnError) throw error;
+    }
+  }
   return normalizedSrc;
 };
 

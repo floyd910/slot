@@ -3,6 +3,7 @@ import "./RuntimeState.css";
 import { useLanguage } from "../../i18n.jsx";
 
 const stateKeys = {
+  "waiting-host": "waitingHost",
   "initial-loading": "preparing", "bootstrap-loading": "validating", ready: "ready",
   processing: "processing", empty: "noGames", error: "somethingWrong",
   "network-error": "networkError", "session-expired": "sessionExpired",

@@ -24,6 +24,16 @@ const waitForAnimationFrame = () =>
   new Promise((resolve) => window.requestAnimationFrame(resolve));
 
 const SLOT_CHOOSER_ROUTE = "/slots";
+const GAME_ROUTE_IDS_BY_API_ID = Object.freeze({
+  "1": "ganchina-sokrovishch",
+  "2": "marvorid-djemchug",
+  "3": "khiradmandi-makor",
+  "4": "egypt",
+  "5": "kadima-drevnii",
+  "6": "khocha-afandi",
+  "7": "babylon",
+  "8": "fruits",
+});
 const readHashGameId = () => {
   const match = window.location.hash.match(/^#\/games\/([^/?#]+)$/);
   return match ? decodeURIComponent(match[1]) : null;
@@ -44,7 +54,8 @@ const readInitialGameId = () => {
 };
 
 const getInitialSlotId = () => {
-  const gameId = readInitialGameId();
+  const launchGameId = readInitialGameId();
+  const gameId = GAME_ROUTE_IDS_BY_API_ID[launchGameId] ?? launchGameId;
   return GAME_DEFINITIONS.some((game) => game.id === gameId) ? gameId : null;
 };
 
@@ -251,7 +262,10 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
       await waitForDisplayedGameProgress(100);
     } catch (assetError) {
       console.error(assetError);
-      if (openRequestRef.current === requestId) setPendingSlotId(null);
+      if (openRequestRef.current === requestId) {
+        setPendingSlotId(null);
+        setHashRoute(SLOT_CHOOSER_ROUTE);
+      }
       return;
     }
 

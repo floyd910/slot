@@ -1,5 +1,6 @@
 import "./GameShell.css";
 import { useLayoutEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import BottomBar from "../bottomBar/BottomBar.jsx";
 import GameMenu from "../gameMenu/GameMenu.jsx";
 import Paytable from "../paytable/Paytable.jsx";
@@ -17,23 +18,32 @@ export default function GameShell({ controller, game, onBackToSlots }) {
   const shellRef = useRef(null);
   const backgroundRef = useRef(null);
   const [backgroundPaintReady, setBackgroundPaintReady] = useState(false);
+  const [backgroundLoadFailed, setBackgroundLoadFailed] = useState(false);
+  const [backgroundAttempt, setBackgroundAttempt] = useState(0);
   const [loaderExitComplete, setLoaderExitComplete] = useState(false);
   const { actions, derived, state } = controller;
   const showInlineView2Paytable = state.showPaytable && state.visualMode;
   const layoutReady = useResponsiveGameLayout(
     shellRef,
-    `${state.visualMode ? "view2" : "view1"}:${derived.isVisualDoubling}:${showInlineView2Paytable}:${state.startupLoaderVisible}:${state.startupAssetsReady}`,
+    `${state.visualMode ? "view2" : "view1"}:${derived.isVisualDoubling}:${showInlineView2Paytable}:${state.startupAssetsReady}`,
   );
   useLayoutEffect(() => {
     let active = true;
     const image = backgroundRef.current;
     if (!image) return undefined;
 
+    const markFailed = () => {
+      if (active) {
+        setBackgroundPaintReady(false);
+        setBackgroundLoadFailed(true);
+      }
+    };
     const markPaintReady = async () => {
       try {
         await image.decode?.();
       } catch {
-        // Browsers may reject redundant decode calls for a cached image.
+        markFailed();
+        return;
       }
       requestAnimationFrame(() => {
         if (active) setBackgroundPaintReady(true);
@@ -41,23 +51,26 @@ export default function GameShell({ controller, game, onBackToSlots }) {
     };
 
     setBackgroundPaintReady(false);
-    if (image.complete && image.naturalWidth > 0) {
-      markPaintReady();
+    setBackgroundLoadFailed(false);
+    if (image.complete) {
+      if (image.naturalWidth > 0) markPaintReady();
+      else markFailed();
     } else {
       image.addEventListener("load", markPaintReady, { once: true });
-      image.addEventListener("error", markPaintReady, { once: true });
+      image.addEventListener("error", markFailed, { once: true });
     }
 
     return () => {
       active = false;
       image.removeEventListener("load", markPaintReady);
-      image.removeEventListener("error", markPaintReady);
+      image.removeEventListener("error", markFailed);
     };
-  }, [game.assets.cover]);
+  }, [game.assets.cover, backgroundAttempt]);
   const { isLanguageChanging, language, t } = useLanguage();
+  const checkingSession = ["initial-loading", "bootstrap-loading"].includes(state.status);
   const showStartupLoader =
     !loaderExitComplete &&
-    (state.startupLoaderVisible ||
+    ((!state.player && checkingSession) || state.startupLoaderVisible ||
       state.startupLoaderLeaving ||
       !layoutReady ||
       !backgroundPaintReady) &&
@@ -101,6 +114,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
         data-view2-info={showInlineView2Paytable ? "true" : "false"}
       >
         <img
+          key={backgroundAttempt}
           ref={backgroundRef}
           className="game_area__background"
           src={game.assets.cover}
@@ -239,14 +253,31 @@ export default function GameShell({ controller, game, onBackToSlots }) {
               {t("retry")}
             </button>
           </section>
+        )}        {derived.loginRequired &&
+          !showStartupLoader &&
+          typeof document !== "undefined" &&
+          createPortal(
+            <div className="login-required-message" role="status">
+              {t("loginRequired")}
+            </div>,
+            document.body,
+          )}
+
+      {backgroundLoadFailed && (
+          <div className="startup-loader game-background-error" role="alert">
+            <p>{language === "tg" ? "Тасвири бозӣ бор нашуд." : "Не удалось загрузить изображение игры."}</p>
+            <button type="button" onClick={() => setBackgroundAttempt((attempt) => attempt + 1)}>
+              {t("retry")}
+            </button>
+          </div>
         )}
-        {showStartupLoader && (
+      {showStartupLoader && !backgroundLoadFailed && (
           <StartupLoader
             ready={
-              state.startupAssetsReady && layoutReady && backgroundPaintReady
+              !checkingSession && state.startupAssetsReady && layoutReady && backgroundPaintReady
             }
             leaving={
-              state.startupLoaderLeaving && layoutReady && backgroundPaintReady
+              !checkingSession && state.startupLoaderLeaving && layoutReady && backgroundPaintReady
             }
             backgroundSrc={SLOT_CHOOSER_BACKGROUND_SRC}
             label={state.recoveringRound ? t("restoringGame") : undefined}

@@ -5,3 +5,13 @@ dist
 .env.local
 .DS_Store
 .edge-profile-9222/
+
+# Local browser test profiles and generated verification builds
+/tmp/grey-browser/
+/tmp/postmessage-browser/
+/tmp/api-cdp-final/
+/tmp/api-cdp-profile/
+/tmp/api-handshake-edge/
+/tmp/vite-tests/
+/tmp/vite-image-tests/
+/.codex-*-build/

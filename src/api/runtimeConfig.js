@@ -1,6 +1,7 @@
 import { isEnabled } from "../utils/featureFlags.js";
 
 const DEFAULT_SOAP_ENDPOINT = "/soap-hiranmandi";
+const DEFAULT_SESSION_API_BASE_URL = "https://api.raxshloto.online";
 const env = import.meta.env ?? {};
 
 let runtimeConfig = {};
@@ -9,6 +10,8 @@ const readEnvValue = (...names) =>
   names.map((name) => env[name]).find((value) => value != null && value !== "");
 
 export const getFrontendEnvConfig = () => ({
+  parentOrigins: readEnvValue("VITE_PARENT_ORIGINS"),
+  sessionApiBaseUrl: readEnvValue("VITE_SESSION_API_BASE_URL"),
   backendMode: readEnvValue("VITE_HIRANMANDI_BACKEND_MODE"),
   demoMode: readEnvValue("VITE_HIRANMANDI_DEMO_MODE"),
   gameId: readEnvValue("VITE_HIRANMANDI_GAME_ID"),
@@ -19,6 +22,12 @@ export const getFrontendEnvConfig = () => ({
   soapEndpoint: readEnvValue("VITE_HIRANMANDI_SOAP_ENDPOINT"),
   testMode: readEnvValue("VITE_HIRANMANDI_TEST_MODE"),
 });
+
+export const getSessionApiBaseUrl = () =>
+  runtimeConfig.sessionApiBaseUrl ??
+  window.HIRANMANDI_FRAME_CONFIG?.sessionApiBaseUrl ??
+  getFrontendEnvConfig().sessionApiBaseUrl ??
+  DEFAULT_SESSION_API_BASE_URL;
 
 export const getBackendTestParams = () => ({});
 

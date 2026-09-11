@@ -1,4 +1,7 @@
 .runtime-state {
+  position: fixed;
+  z-index: 2147483647;
+  inset: 0;
   display: grid;
   min-height: 100%;
   place-items: center;

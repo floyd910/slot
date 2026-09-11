@@ -15,10 +15,9 @@ import { createSpinActions } from "../controllers/spinActions.js";
 import { ROUND_OPERATION_STATUS, stateRecoveryService } from "../services/stateRecoveryService.js";
 import { partnerApi } from "../services/partnerApi.js";
 import {
-  combinations as fallbackCombinations,
-  games as fallbackGames,
+  games as displayGames,
+  combinations as displayCombinations,
   initialGrid,
-  paytable as fallbackPaytable,
   stakeOptions,
 } from "../data/mockData.js";
 import { useLanguage } from "../i18n.jsx";
@@ -134,6 +133,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     };
   }, [gameDefinition]);
   const tRef = useRef(t);
+  const initializedSessionIdRef = useRef(null);
   const bootGameId = selectedGameId ?? initialContext.gameId ?? null;
   const [context, setContext] = useState(() => ({
     ...initialContext,
@@ -165,10 +165,10 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const [gridAnimation, setGridAnimation] = useState("idle");
   const [hasRecoveredGrid, setHasRecoveredGrid] = useState(false);
   const [stake, setStake] = useState(() => Number(uiPreferences.stake ?? 0.1));
-  const [visualMode, setVisualMode] = useState(() => uiPreferences.visualMode === true);
+  const [visualMode, setVisualMode] = useState(false);
   const [carpetCloseMs, setCarpetCloseMs] = useState(CARPET_ANIMATION_HALF_MS);
   const [carpetOpenMs, setCarpetOpenMs] = useState(CARPET_ANIMATION_HALF_MS);
-  const [expandedBoard, setExpandedBoard] = useState(() => uiPreferences.visualMode === true);
+  const [expandedBoard, setExpandedBoard] = useState(false);
   const [spinResult, setSpinResult] = useState(null);
   const [freeSpinsTotal, setFreeSpinsTotal] = useState(0);
   const [freeSpinsLeft, setFreeSpinsLeft] = useState(0);
@@ -259,6 +259,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     soundEnabled,
     stake,
     visualMode,
+    roundRecoveryStatus,
   ]);
 
   useEffect(
@@ -401,7 +402,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       stake,
       status,
       visualMode,
-      roundRecoveryBlocked: false,
+      roundRecoveryBlocked: status !== "ready" || roundRecoveryStatus === ROUND_OPERATION_STATUS.RECOVERY_REQUIRED,
     };
   }, [
     carpetCloseMs,
@@ -421,14 +422,20 @@ export function useGameController(selectedGameId, gameDefinition = null) {
 
   const mergeInitContext = useCallback((nextContext) => {
     setContext((current) => {
+      if (current.token === nextContext.token && current.playerId === nextContext.playerId && current.initSource === "postMessage") return current;
+      initializedSessionIdRef.current = null;
       const nextOrigins = Array.isArray(nextContext.allowedOrigins)
         ? nextContext.allowedOrigins
         : nextContext.allowedOrigins
           ? [nextContext.allowedOrigins]
           : [];
+      const startsNewSession =
+        Boolean(nextContext.token) &&
+        !Object.prototype.hasOwnProperty.call(nextContext, "sessionId");
       const merged = {
         ...current,
         ...nextContext,
+        ...(startsNewSession ? { sessionId: null } : {}),
         featureFlags: {
           ...(current.featureFlags ?? {}),
           ...(nextContext.featureFlags ?? {}),
@@ -509,7 +516,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       setError(message);
       setStatus("ready");
       setLastKnownState(nextStatus);
-      postEvent("ERROR", {
+      postEvent(nextStatus === "access-denied" ? "AUTH_REQUIRED" : "ERROR", {
         code: runtimeError?.code ?? "UNKNOWN",
         message,
       });
@@ -517,73 +524,15 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     [postEvent],
   );
 
-  const recoverStartupToGameShell = useCallback(
-    (runtimeError) => {
-      const nextStatus = normalizeRuntimeStatus(runtimeError);
-      const fallbackBalance = Number(
-        context.balance ?? context.testBalance ?? 0,
-      );
-
-      setPlayer(
-        (current) =>
-          current ?? {
-            id: context.userId ?? "demo-player",
-            name: "Demo Player",
-            balance: Number.isFinite(fallbackBalance) ? fallbackBalance : 0,
-            currency: context.currency ?? "GEL",
-          },
-      );
-      setGames(fallbackGames);
-      setSupportedCombinations(setCombinations, setSelectedCombinationId, gameDefinition?.id ?? context.gameId, fallbackCombinations);
-      setGrid(initialGrid);
-      const recoveredRound = frameApi.recoverState(context);
-      const lastSpinSnapshot = stateRecoveryService.getLastSpin(context);
-      const restoredSpinResult = recoveredRound?.spinResult ?? recoveredRound?.lastConfirmedSpinResult ?? lastSpinSnapshot?.spinResult;
-      if (restoredSpinResult) {
-        setSpinResult(restoredSpinResult);
-        setDoublingState(recoveredRound.doublingState ? { ...recoveredRound.doublingState, loading: false, lastPick: "", lastStatus: "" } : createEmptyDoublingState());
-        setDoubleState(recoveredRound.doubleState ? { ...recoveredRound.doubleState, loading: false } : createDoubleState());
-        setGrid(recoveredRound.lastConfirmedGrid ?? recoveredRound.grid ?? lastSpinSnapshot?.grid ?? restoredSpinResult.grid ?? initialGrid);
-        setHasRecoveredGrid(true);
-        setGridRevealKey((key) => key + 1);
-        setGridAnimation("settled");
-        if (Number.isFinite(Number(recoveredRound.stake))) setStake(Number(recoveredRound.stake));
-        if (recoveredRound.selectedCombinationId != null) setSelectedCombinationId(recoveredRound.selectedCombinationId);
-      }
-      const restoredFreeSpinsLeft = Number(recoveredRound?.freeSpinsLeft ?? 0);
-      if (recoveredRound?.freeSpinsActive === true && restoredFreeSpinsLeft > 0) {
-        setFreeSpinsLeft(restoredFreeSpinsLeft);
-        setFreeSpinsTotal(Number(recoveredRound.freeSpinsTotal ?? restoredFreeSpinsLeft));
-        setFreeSpinRoundStarted(true);
-        setShowFreeSpinPrompt(true);
-      }
-      if ([ROUND_OPERATION_STATUS.SPIN_PROCESSING, ROUND_OPERATION_STATUS.DOUBLE_PROCESSING].includes(recoveredRound?.operationStatus)) {
-        setRoundRecoveryStatus(ROUND_OPERATION_STATUS.RECOVERY_REQUIRED);
-      }
-      setPaytableRows(fallbackPaytable);
-      setPaytableStatus("ready");
-      setCurrentGame(
-        (current) => current ?? context.gameId ?? fallbackGames[0]?.id ?? null,
-      );
-      setError("");
-      setStatus("ready");
-      setLastKnownState(nextStatus);
-    },
-    [context],
-  );
-
   const init = useCallback(async () => {
+    if (initializedSessionIdRef.current && context.sessionId === initializedSessionIdRef.current) return;
     const missing = getMissingRequiredContext(context);
     if (missing.length) {
-      const configError = new Error(
-        `Missing required init context: ${missing.join(", ")}`,
-      );
-      configError.code = missing.includes("token")
-        ? "ACCESS_DENIED"
-        : missing.includes("sessionId")
-          ? "INVALID_SESSION"
-          : "CONFIGURATION_ERROR";
-      recoverStartupToGameShell(configError);
+      setGames(displayGames);
+      setSupportedCombinations(setCombinations, setSelectedCombinationId, gameDefinition?.id ?? context.gameId, displayCombinations);
+      setGrid(initialGrid);
+      setStatus("guest");
+      setError("");
       return;
     }
 
@@ -596,6 +545,22 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         frameApi.initSession(context),
         "Session bootstrap",
       );
+      if (session.sessionId && session.sessionId !== context.sessionId) {
+        const initializedContext = {
+          ...context,
+          sessionId: session.sessionId,
+          backendGameId: session.backendGameId ?? context.backendGameId,
+          unfinishedRound: session.unfinishedRound ?? null,
+          userId: session.player?.id ?? context.userId,
+          idUser: session.player?.id ?? context.idUser,
+          balance: session.player?.balance ?? context.balance,
+          currency: session.player?.currency ?? context.currency,
+        };
+        initializedSessionIdRef.current = session.sessionId;
+        partnerApi.configure(initializedContext);
+        persistInitContext(initializedContext);
+        setContext(initializedContext);
+      }
       const paymentRows = await withTimeout(frameApi.getPaytable(), "Paytable");
       const pendingRecovery = frameApi.getPendingRequest(context);
       const recoveredState = frameApi.recoverState(context);
@@ -643,14 +608,6 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         }
       }
       setPlayer(session.player);
-      partnerApi.recoverSession().then((partnerBalance) => {
-        if (partnerBalance?.balance == null || cancelled) return;
-        setPlayer((current) =>
-          current
-            ? { ...current, balance: Number(partnerBalance.balance) }
-            : current,
-        );
-      }).catch(() => {});
       setGames(session.games);
       setSupportedCombinations(setCombinations, setSelectedCombinationId, gameDefinition?.id ?? context.gameId, session.combinations);
       const startupGrid = recoveredState?.lastConfirmedGrid ?? recoveredState?.grid ?? lastSpinSnapshot?.grid ?? confirmedSpinResult?.grid ?? session.grid;
@@ -671,19 +628,15 @@ export function useGameController(selectedGameId, gameDefinition = null) {
           setGridRevealKey((key) => key + 1);
         });
       }
+      postEvent("UPDATE_BALANCE", { balance: session.player.balance, currency: session.player.currency });
       postEvent("LOADED", {
         gameId: context.gameId,
         userId: session.player.id,
       });
     } catch (initError) {
-      const nextStatus = normalizeRuntimeStatus(initError);
-      if (nextStatus === "network-error" || nextStatus === "error") {
-        recoverStartupToGameShell(initError);
-        return;
-      }
       reportError(initError, tRef.current("initError"));
     }
-  }, [context, postEvent, recoverStartupToGameShell, reportError]);
+  }, [context, postEvent, reportError]);
 
   useEffect(() => {
     if (roundRecoveryStatus !== ROUND_OPERATION_STATUS.RECOVERY_REQUIRED) return undefined;
@@ -716,7 +669,6 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       setError("Browser is missing required iframe APIs");
       return;
     }
-    if (context.isFramed && getMissingRequiredContext(context).length) return;
     init();
   }, [context, init]);
 
@@ -903,6 +855,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   );
   const isRoundRecoveryBlocked = roundRecoveryStatus === ROUND_OPERATION_STATUS.RECOVERY_REQUIRED;
   const isBusy =
+    !["ready", "guest"].includes(status) ||
     isRoundRecoveryBlocked ||
     status === "initial-loading" ||
     status === "bootstrap-loading" ||
@@ -952,7 +905,10 @@ export function useGameController(selectedGameId, gameDefinition = null) {
           doublingState.lastStatus ||
           (pendingTicketWin && doublingState.step > 0)),
     );
+  const hasPlayableSession = Boolean(context.token && context.sessionId);
   const spinButtonDisabled =
+    status !== "ready" ||
+    !hasPlayableSession ||
     !spinAssetsReady ||
     isRoundRecoveryBlocked ||
     status === "initial-loading" ||
@@ -965,7 +921,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     isVisualDoubling ||
     (!showFreeSpinPrompt && !hasFreeSpinsPending && pendingTicketWin);
   const shellClass = `frame-app mode-${context.mode} theme-${context.theme}${hideHeader ? " headerless" : ""}${expandedBoard || visualMode ? " expanded-board" : ""}${visualMode ? " view-2" : " view-1"}${isVisualDoubling ? " doubling-active" : ""}`;
-  const runtimeStateVisible = !["ready", "empty", "processing"].includes(status);
+  const runtimeStateVisible = !["guest", "ready", "empty", "processing", "initial-loading", "bootstrap-loading"].includes(status);
 
   const pressSpinButton = () => {
     if (!spinAssetsReady) return;
@@ -1055,6 +1011,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       isDoublingLocked,
       isRoundRecoveryBlocked,
       isVisualDoubling,
+      loginRequired: !hasPlayableSession,
       pendingTicketWin,
       primaryActionCollectsWin,
       paytableControlsLocked,

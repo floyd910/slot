@@ -129,6 +129,20 @@ export const createDoubleActions = ({
       if (liveSpinStateRef.current?.doublingState?.revealKey !== revealKey)
         return;
 
+      // API-owned winnings remain pending until the collection endpoint exists.
+      if (liveSpinStateRef.current?.spinResult?.backendManagedWallet) {
+        const pendingDouble = { ...liveSpinStateRef.current.doublingState, loading: false, active: false };
+        setDoublingState(pendingDouble);
+        syncLiveState({ doublingState: pendingDouble });
+        stateRecoveryService.saveRound({
+          idCard, roundId: idCard, operationType: "DOUBLE",
+          operationStatus: ROUND_OPERATION_STATUS.WAITING_FOR_COLLECT,
+          currentWinSum: payout, WasDouble: doubleSteps, doubleAvailable: false,
+          spinResult: liveSpinStateRef.current.spinResult, doublingState: pendingDouble,
+        }, liveSpinStateRef.current.context);
+        setReadyStatus();
+        return;
+      }
       frameApi
         .pay({ idCard, requestId: buildRequestId("pay") })
         .catch(() => {});

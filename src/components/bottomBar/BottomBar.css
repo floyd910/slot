@@ -704,7 +704,7 @@
 
 
 
-@media (orientation: landscape) and (max-height: 620px) {
+@media (min-width: 652px) and (orientation: landscape) and (max-height: 620px) {
   .bottom-bar {
     display: block;
     left: 0;
@@ -838,4 +838,17 @@
   .bottom-bar {
     bottom: 41px;
   }
+}
+
+/* Narrow frames choose their footer by width, independent of landscape overrides. */
+@media (max-width: 651px) {
+  .bottom-bar > .footer-block-desktop { display: none; }
+}
+@media (max-width: 639px) {
+  .bottom-bar > .footer-block-tablet { display: none; }
+  .bottom-bar > .footer-block-mobile { display: flex; }
+}
+@media (min-width: 640px) and (max-width: 651px) {
+  .bottom-bar > .footer-block-tablet { display: flex; }
+  .bottom-bar > .footer-block-mobile { display: none; }
 }

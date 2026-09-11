@@ -171,7 +171,32 @@ export const mapSpinPayload = (document, params) => {
     C: readLineValues(document, attrs, "Line3"),
     D: buildBonusRow(attrs.Gold),
   });
-  const backendKoffs = readKoffValues(document, attrs);
+  return mapSpinValues(attrs, grid, readKoffValues(document, attrs), params);
+};
+
+export const mapJsonSpinPayload = (payload, params = {}) => {
+  const fail = () => { throw Object.assign(new Error("Invalid spin JSON response"), { code: "BACKEND_RESPONSE_ERROR" }); };
+  const numeric = value => (typeof value === "number" || typeof value === "string") && String(value).trim() !== "" && Number.isFinite(Number(value));
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) fail();
+  for (const key of ["WinSum", "FreeSpin", "Gold"]) {
+    if (!numeric(payload[key]) || Number(payload[key]) < 0) fail();
+  }
+  if (payload.idCard == null || String(payload.idCard).trim() === "") fail();
+  const rows = ["Line1", "Line2", "Line3"].map(key => Array.from({ length: 5 }, (_, i) => {
+    const value = payload[key]?.["Slot" + (i + 1)];
+    if (!numeric(value) || !Number.isInteger(Number(value)) || Number(value) < 0 || Number(value) > 12) fail();
+    return Number(value);
+  }));
+  const koffs = Array.from({ length: 10 }, (_, i) => {
+    const value = payload["LineWinKoff" + (i + 1)]?.Koff;
+    if (!numeric(value) || Number(value) < 0) fail();
+    return Number(value);
+  });
+  if (payload.updatedBallance != null && (!numeric(payload.updatedBallance) || Number(payload.updatedBallance) < 0)) fail();
+  return mapSpinValues(payload, { A: rows[0], B: rows[1], C: rows[2], D: buildBonusRow(payload.Gold) }, koffs, params);
+};
+
+const mapSpinValues = (attrs, grid, backendKoffs, params) => {
   const backendWinSum = asNumber(attrs.WinSum, 0);
   const backendLineWins = mapBackendLineWins(backendKoffs, grid);
 const freeSpin = asNumber(attrs.FreeSpin);
@@ -184,6 +209,7 @@ const freeSpin = asNumber(attrs.FreeSpin);
   ];
 
   return {
+    ...(attrs.updatedBallance != null ? { balance: Number(attrs.updatedBallance) } : {}),
     idCard: attrs.idCard ?? attrs.IdCard ?? attrs.IDCard,
     Number: attrs.Number ?? attrs.number ?? null,
     requestId: params.requestId,

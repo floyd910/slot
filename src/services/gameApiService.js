@@ -1,3 +1,5 @@
+import { buildSpinForm, sendSpinRequest } from "../api/spinApiClient.js";
+import { mapJsonSpinPayload } from "../api/slotPayloadMappers.js";
 import {
   double as mockDouble,
   pay as mockPay,
@@ -7,12 +9,9 @@ import { getRuntimeConfig, useSoapBackend } from "../api/runtimeConfig.js";
 import {
   buildDoubleRequest,
   buildPayRequest,
-  buildSpinRequest,
 } from "../api/soapRequestBuilder.js";
 import {
   parseDoubleResponse,
-  parsePayResponse,
-  parseSpinResponse,
 } from "../api/soapResponseParser.js";
 import { sendSoapRequest } from "../api/soapClient.js";
 import { normalizeDoubleResult } from "../models/doubleResult.js";
@@ -49,11 +48,11 @@ export class GameApiService {
       return normalizeSpinResult(result);
     }
 
-    const request = buildSpinRequest(params);
+    const body = buildSpinForm(params, getContext());
     const operation = {
-      methodName: request.methodName,
+      methodName: "/spin",
       requestId: params.requestId,
-      stake: request.stake,
+      stake: params.stake,
       lines: params.lines,
       isDemo: params.isDemo,
       isFreeSpin: params.isFreeSpin,
@@ -61,19 +60,8 @@ export class GameApiService {
     remember(operation);
 
     try {
-      const { payloadDocument } = await sendSoapRequest(request.methodName, request.xml, {
-        requestId: params.requestId,
-        retryAttempts: 1,
-        meta: stateRecoveryService.buildCorrelation(getContext(), operation),
-      });
-      const result = parseSpinResponse(payloadDocument, {
-        stake: request.stake,
-        lines: params.lines,
-        isDemo: params.isDemo,
-        isFreeSpin: params.isFreeSpin,
-        selectedCombination: params.selectedCombination,
-        requestId: params.requestId,
-      });
+      const payload = await sendSpinRequest(body, { requestId: params.requestId });
+      const result = normalizeSpinResult({ ...mapJsonSpinPayload(payload, params), backendManagedWallet: true });
       stateRecoveryService.saveGameState({
         lastIdCard: result.idCard,
         currentMode: params.isFreeSpin ? "free-spin" : "spin",
@@ -138,6 +126,9 @@ export class GameApiService {
   }
 
   async pay(params = {}) {
+    if (useSoapBackend()) {
+      throw Object.assign(new Error("Collection is not available until the backend collection method is connected."), { code: "COLLECTION_UNAVAILABLE" });
+    }
     // Current backend contract for this game settles pay locally/mock-side.
     // Keep the builder available so a real Pay method can be enabled without UI changes.
     const request = buildPayRequest(params);
