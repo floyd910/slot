@@ -144,7 +144,7 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
     const observed = new Set();
     const observeLayout = () => {
       const elements = [root, root.parentElement?.querySelector("header"),
-        ...root.querySelectorAll(".game_area, .header_img, .bottom-bar, .footer-block, .main-container__left, .main-container__center, .main-container__right, .grid-bottom-panel")];
+        ...root.querySelectorAll(".game_area, .header_img, .bottom-bar, .footer-block, .main-container__left, .main-container__center, .main-container__right")];
       const current = new Set(elements.filter(Boolean));
       for (const element of observed) {
         if (!current.has(element)) {
@@ -161,7 +161,13 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
     };
     observeLayout();
     fit();
-    mountObserver = new MutationObserver(() => {
+    mountObserver = new MutationObserver((records) => {
+      // Ticket details are an overlay, not a change to the board layout.
+      // Keep observing board insertion after init, but ignore receipt contents.
+      if (records.every(({ target }) => {
+        const element = target.nodeType === 1 ? target : target.parentElement;
+        return element?.closest(".grid-bottom-panel");
+      })) return;
       observeLayout();
       scheduleFit();
     });
