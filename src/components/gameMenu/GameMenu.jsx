@@ -5,6 +5,7 @@ import "./GameMenu.css";
 const RULES_COPY = {
   ru: {
     title: "ПРАВИЛА ИГРЫ",
+    fruitsDescription: "В игре используется 5 выигрышных линий. Каждая схема показывает позиции символов, участвующие в соответствующей выигрышной линии.",
     description:
       "В игре используется 9 выигрышных линий. Выигрыш выплачивается только по тем линиям, которые активны в текущей ставке. Каждая схема показывает, какие позиции участвуют в соответствующей линии.",
     lineNames: [
@@ -28,6 +29,7 @@ const RULES_COPY = {
   },
   tg: {
     title: "ҚОИДАҲОИ БОЗӢ",
+    fruitsDescription: "Дар бозӣ 5 хатти бурднок истифода мешавад. Ҳар як схема мавқеъҳои рамзҳоеро нишон медиҳад, ки дар хатти бурдноки мувофиқ иштирок мекунанд.",
     description:
       "Дар бозӣ 9 хатти бурднок истифода мешавад. Бурд танҳо аз рӯи он хатҳое пардохт карда мешавад, ки дар шарти ҷорӣ фаъол мебошанд. Ҳар як схема нишон медиҳад, ки кадом мавқеъҳо ба хатти мувофиқ дохил мешаванд.",
     lineNames: [
@@ -145,7 +147,7 @@ export default function GameMenu({ gameId, onClose }) {
         <div className="game-rules-screen__content">
           <div className="game-rules-screen__intro">
             <h1>{rulesCopy.title}</h1>
-            <p>{rulesCopy.description}</p>
+            <p>{gameId === "fruits" ? rulesCopy.fruitsDescription : rulesCopy.description}</p>
           </div>
           <div className="game-rules-screen__boxes">
             {ruleLines.map((line, lineIndex) => (
