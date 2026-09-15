@@ -402,7 +402,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       stake,
       status,
       visualMode,
-      roundRecoveryBlocked: status !== "ready" || roundRecoveryStatus === ROUND_OPERATION_STATUS.RECOVERY_REQUIRED,
+      roundRecoveryBlocked: roundRecoveryStatus === ROUND_OPERATION_STATUS.RECOVERY_REQUIRED,
     };
   }, [
     carpetCloseMs,
@@ -719,9 +719,11 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     freeSpinsLeft > 0 || showFreeSpinPrompt || freeSpinRunRef.current;
   const paytableControlsLocked = showPaytable || autoPlayOn || freeSpinsActive;
 
-  const { collectWin, handleSpin, onAutoPlay, startFreeSpinRun } =
+  const { collectWin, handleSpin, onAutoPlay, startFreeSpinRun, refreshBalance } =
     createSpinActions({
+      onRecoveryRequired: () => setRoundRecoveryStatus(ROUND_OPERATION_STATUS.RECOVERY_REQUIRED),
       autoPlayOnRef,
+      setAutoPlayOn,
       emitLotteryRevealSounds,
       emitSound,
       freeSpinRunRef,
@@ -778,6 +780,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   useEffect(() => {
     if (
       !autoPlayOn ||
+      showFreeSpinPrompt ||
       status !== "ready" ||
       freeSpinsLeft <= 0 ||
       freeSpinRunRef.current
@@ -786,7 +789,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     }
 
     void startFreeSpinRun();
-  }, [autoPlayOn, freeSpinsLeft, status]);
+  }, [autoPlayOn, freeSpinsLeft, status, showFreeSpinPrompt]);
 
 
   useEffect(() => {
@@ -946,6 +949,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
 
   return {
     actions: {
+      refreshBalance,
       collectWin,
       cycleCombination,
       cycleStake,

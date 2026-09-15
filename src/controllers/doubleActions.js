@@ -111,7 +111,7 @@ export const createDoubleActions = ({
       .catch(() => {});
     reportFinalResult({ idCard, winSum: 0, doubleSteps });
     frameApi
-      .pay({ idCard, requestId: buildRequestId("pay") })
+      .pay({ idCard, idPartnerCard: currentSpinResult?.idPartnerCard ?? liveSpinStateRef.current.spinResult?.idPartnerCard, requestId: buildRequestId("pay") })
       .catch(() => {});
 
     window.setTimeout(() => {
@@ -144,7 +144,7 @@ export const createDoubleActions = ({
         return;
       }
       frameApi
-        .pay({ idCard, requestId: buildRequestId("pay") })
+        .pay({ idCard, idPartnerCard: liveSpinStateRef.current.spinResult?.idPartnerCard, requestId: buildRequestId("pay") })
         .catch(() => {});
       reportFinalResult({ idCard, winSum: payout, doubleSteps });
       const settlement = await settlePartnerRound({

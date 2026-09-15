@@ -23,9 +23,10 @@ export default function GameShell({ controller, game, onBackToSlots }) {
   const [loaderExitComplete, setLoaderExitComplete] = useState(false);
   const { actions, derived, state } = controller;
   const showInlineView2Paytable = state.showPaytable && state.visualMode;
+  const gridMounted = Boolean(state.grid?.A?.length && state.grid?.B?.length && state.grid?.C?.length);
   const layoutReady = useResponsiveGameLayout(
     shellRef,
-    `${state.visualMode ? "view2" : "view1"}:${derived.isVisualDoubling}:${showInlineView2Paytable}:${state.startupAssetsReady}`,
+    `${state.visualMode ? "view2" : "view1"}:${derived.isVisualDoubling}:${showInlineView2Paytable}:${state.startupAssetsReady}:${gridMounted}:${state.combinations.length}`,
   );
   useLayoutEffect(() => {
     let active = true;

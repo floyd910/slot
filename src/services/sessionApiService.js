@@ -1,3 +1,5 @@
+import { requestBalance } from "../api/balanceApiClient.js";
+import { isDevTestLaunch } from "../api/devTestLaunch.js";
 import { games, combinations, initialGrid } from "../data/mockData.js";
 import {
   getGames as getMockGames,
@@ -38,7 +40,7 @@ const requestRemoteSession = async (params) => {
 };
 
 const validateSessionContext = (params = {}) => {
-  if (params.initSource !== "postMessage") {
+  if (params.initSource !== "postMessage" && !isDevTestLaunch(params)) {
     throw Object.assign(new Error("Parent initialization is required"), { code: "ACCESS_DENIED" });
   }
   if (params.maintenance) {
@@ -69,15 +71,12 @@ export class SessionApiService {
     validateSessionContext(params);
 
     const remote = await requestRemoteSession(params);
-    const balance = remote.balance;
-    if ((typeof balance !== "number" && typeof balance !== "string") || String(balance).trim() === "" || !Number.isFinite(Number(balance)) || Number(balance) < 0 || typeof remote.currency !== "string" || !remote.currency.trim()) {
-      throw Object.assign(new Error("Session response is missing a valid balance or currency"), { code: "BACKEND_RESPONSE_ERROR" });
-    }
-    const playerId = remote.playerId ?? params.playerId ?? params.userId ?? params.idUser;
+    const playerId = params.playerId ?? params.userId ?? params.idUser;
+    const wallet = await requestBalance({ token: params.token, playerId });
     mergeRuntimeConfig({ ...params, sessionId: remote.sessionId, playerId, userId: playerId, idUser: playerId });
     return {
       sessionId: remote.sessionId,
-      player: { id: playerId, balance: Number(balance), currency: remote.currency },
+      player: { id: playerId, balance: wallet.balance, currency: wallet.currency },
       games, combinations, grid: initialGrid,
       backendGameId: remote.backendGameId ?? null,
       unfinishedRound: remote.unfinishedRound ?? null,

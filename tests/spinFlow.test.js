@@ -4,6 +4,8 @@ import { createServer } from 'vite';
 import { webcrypto } from 'node:crypto';
 
 test('remote spins avoid partner mutations and retain unpaid wins',async()=>{
+  const originalFetch=globalThis.fetch;
+  globalThis.fetch=async()=>new Response(JSON.stringify({error_code:400,error:"fixture rejected"}),{status:400});
   const store=new Map();
   globalThis.window={ crypto:webcrypto, addEventListener(){},dispatchEvent(){},
     sessionStorage:{getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v),removeItem:k=>store.delete(k)},
@@ -22,10 +24,11 @@ test('remote spins avoid partner mutations and retain unpaid wins',async()=>{
     partnerApi.cancelBet=async()=>{throw new Error('Duplicate partner cancellation');};
     for(const balance of [undefined,0,95]) {
       for(const free of [false,true]) {
-        const context={gameId:'khiradmandi-makor',sessionId:'test-'+balance+'-'+free,userId:7};
+        const context={token:'fixture',gameId:'khiradmandi-makor',sessionId:'test-'+balance+'-'+free,userId:7};
+        mergeRuntimeConfig({...context,playerId:7});
         const live={current:{context,carpetCloseMs:0,carpetOpenMs:0,doubleState:{},doublingState:{},freeSpinsLeft:free?1:0,freeSpinsTotal:free?1:0,player:{balance:100},selectedCombination:{groups:[{}],id:'one'},stake:1,status:'ready',visualMode:true}};
         let calls=0;const events=[];const errors=[];
-        frameApi.spin=async()=>{calls++;return {backendManagedWallet:true,balance,idCard:'round',WinSum:5,FreeSpin:0,Gold:0,grid:{A:[0,0,0,0,0],B:[],C:[]}};};
+        frameApi.spin=async()=>{calls++;return {backendManagedWallet:true,balance,idCard:'round',idPartnerCard:'partner-0001',WinSum:5,FreeSpin:0,Gold:0,grid:{A:[0,0,0,0,0],B:[],C:[]}};};
         const options={liveSpinStateRef:live,autoPlayOnRef:{current:false},freeSpinRunRef:{current:false},t:k=>k,postEvent:(type,payload)=>events.push({type,payload}),reportOperationError:e=>errors.push(e)};
         for(const name of ['emitLotteryRevealSounds','emitSound','playSpinFeedback','setError','setHasRecoveredGrid','setShowFreeSpinPrompt','setLastKnownState','onRecoveryRequired']) options[name]=()=>{};
         for(const key of ['DoubleState','DoublingState','Player','FreeSpinsLeft','FreeSpinsTotal','FreeSpinRoundStarted','Grid','GridAnimation','GridRevealKey','SpinHistory','SpinResult','Status']) {
@@ -38,14 +41,49 @@ test('remote spins avoid partner mutations and retain unpaid wins',async()=>{
         assert.equal(live.current.spinResult.creditedToBalance,false);
         assert.equal(live.current.player.balance,balance??100);
         assert.equal(events.filter(e=>e.type==='UPDATE_BALANCE').length,balance==null?0:1);
+        globalThis.fetch=async(url)=>url.endsWith('/balance')
+          ? new Response(JSON.stringify({balance:73,currency:'GEL',playerId:'7'}))
+          : new Response(JSON.stringify({error_code:400,error:'fixture rejected'}),{status:400});
+        const originalPay=frameApi.pay;
+        frameApi.pay=params=>{assert.equal(params.idPartnerCard,'partner-0001');return originalPay(params);};
         assert.equal(await actions.collectWin(),false);
-        assert.equal(errors.at(-1).code,'COLLECTION_UNAVAILABLE');
-        assert.equal(live.current.player.balance,balance??100);
+        frameApi.pay=originalPay;
+        assert.equal(errors.at(-1).code,'BAD_REQUEST');
+        assert.equal(live.current.player.balance,73);
         assert.equal(live.current.spinResult.idCard,'round');
         assert.ok(stateRecoveryService.getLocalState(context));
         assert.equal(await actions.handleSpin(),null);assert.equal(calls,1);
+        if(free){live.current.freeSpinsLeft=2;live.current.freeSpinsTotal=3;}
+        globalThis.fetch=async()=>new Response(JSON.stringify({idCard:'round',PayDate:'9/15/2026 5:44:20 PM',ballance:1820}));
+        assert.equal(await actions.collectWin(),true);
+        assert.equal(live.current.player.balance,1820);
+        assert.equal(live.current.spinResult,null);
+        assert.equal(events.filter(e=>e.type==='UPDATE_BALANCE').at(-1).payload.balance,1820);
+        globalThis.fetch=async()=>new Response(JSON.stringify({balance:0,currency:'GEL',playerId:'7'}));
+        await actions.refreshBalance();
+        assert.equal(live.current.player.balance,0);
+        assert.equal(events.at(-1).payload.balance,0);
+        let resolveBalance;
+        globalThis.fetch=()=>new Promise(resolve=>{resolveBalance=resolve;});
+        const staleRefresh=actions.refreshBalance();
+        live.current={...live.current,balanceVersion:(live.current.balanceVersion??0)+1,player:{...live.current.player,balance:500}};
+        resolveBalance(new Response(JSON.stringify({balance:10,currency:'GEL',playerId:'7'})));
+        assert.equal(await staleRefresh,null);
+        assert.equal(live.current.player.balance,500);
+        if(free)assert.equal(stateRecoveryService.getLocalState(context).freeSpinsLeft,2);
+        else assert.equal(stateRecoveryService.getLocalState(context),null);
+        globalThis.fetch=async()=>new Response(JSON.stringify({error_code:400,error:'fixture rejected'}),{status:400});
       }
     }
+    const {gameApiService}=await server.ssrLoadModule('/src/services/gameApiService.js');
+    const unknownContext={token:'fixture',sessionId:'unknown-pay',gameId:'fruits',playerId:7,backendMode:'soap',sessionApiBaseUrl:'https://example.invalid'};
+    mergeRuntimeConfig(unknownContext);
+    let attempts=0;globalThis.fetch=async()=>{attempts++;throw new TypeError('network lost');};
+    await assert.rejects(gameApiService.pay({idCard:'unknown',idPartnerCard:'partner',requestId:'same-pay'}),{code:'NETWORK_ERROR'});
+    assert.equal(stateRecoveryService.getPendingRequest(unknownContext).requestId,'same-pay');
+    assert.equal(stateRecoveryService.getPendingRequest(unknownContext).status,'recovery-required');
+    await assert.rejects(gameApiService.pay({idCard:'unknown',idPartnerCard:'partner',requestId:'another-pay'}),{code:'RECOVERY_REQUIRED'});
+    assert.equal(attempts,1);
     const {createDoubleActions}=await server.ssrLoadModule('/src/controllers/doubleActions.js');
     const {DOUBLE_MAX_STEPS,createEmptyDoublingState}=await server.ssrLoadModule('/src/config/gameSettings.js');
     const context={gameId:'khiradmandi-makor',sessionId:'double-limit',userId:7};
@@ -64,5 +102,5 @@ test('remote spins avoid partner mutations and retain unpaid wins',async()=>{
     assert.equal(live.current.doublingState.loading,false);
     assert.equal(live.current.spinResult.WinSum,20);
     assert.equal(stateRecoveryService.getLocalState(context).currentWinSum,20);
-  } finally {await server.close();delete globalThis.window;}
+  } finally {globalThis.fetch=originalFetch;await server.close();delete globalThis.window;}
 });

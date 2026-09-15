@@ -15,14 +15,14 @@ const fixture = () => ({
 
 test('exact form fields, bet amount, token escaping and free-spin flags', () => {
   const form=buildSpinForm(params,context);
-  assert.deepEqual(Object.fromEntries(form), {token:context.token,gameId:'3',playerId:'7',requestId:params.requestId,sum:'56.35',lines:'5',demoSpin:'1',freeSpin:'0'});
+  assert.deepEqual(Object.fromEntries(form), {token:context.token,gameId:'36',playerId:'7',requestId:params.requestId,sum:'56.35',lines:'5',demoSpin:'1',freeSpin:'0'});
   assert.equal(new URLSearchParams(form.toString()).get('token'),context.token);
   const free=buildSpinForm({...params,isFreeSpin:true},context);
   assert.equal(free.get('freeSpin'),'1'); assert.equal(free.get('demoSpin'),'0');
   assert.equal(buildSpinForm({...params,isDemo:false},context).get('demoSpin'),'0');
   assert.throws(()=>buildSpinForm(params,{...context,token:null}),{code:'CONFIGURATION_ERROR'});
   assert.throws(()=>buildSpinForm({...params,stake:NaN},context),{code:'CONFIGURATION_ERROR'});
-  assert.equal(resolveApiGameId({gameId:'fruits'}),'8');
+  assert.equal(resolveApiGameId({gameId:'fruits'}),'42');
 });
 test('provided response preserves backend win even with zero coefficients',()=>{
   const result=mapJsonSpinPayload(fixture(),params);
@@ -71,4 +71,19 @@ test('documented error_code/error responses are definitive client errors',async(
       }
     }
   } finally {globalThis.fetch=original;}
+});
+
+test('all supplied backend game IDs are used in spin forms',()=>{
+ const mapping={"ganchina-sokrovishch":"37","marvorid-djemchug":"38","khiradmandi-makor":"36","egypt":"39","kadima-drevnii":"40","khocha-afandi":"41","babylon":"43","fruits":"42"};
+ for(const [slug,id] of Object.entries(mapping)) {
+  assert.equal(resolveApiGameId({gameId:'hiranmandi',recoveryGameId:slug}),id);
+  assert.equal(buildSpinForm(params,{...context,gameId:slug}).get('gameId'),id);
+ }
+});
+
+test('partner card ID is preserved exactly in the spin result',()=>{
+ for(const idPartnerCard of ['000123','partner-card-abc',123]) {
+  assert.equal(mapJsonSpinPayload({...fixture(),idPartnerCard},params).idPartnerCard,idPartnerCard);
+ }
+ assert.equal(mapJsonSpinPayload(fixture(),params).idPartnerCard,null);
 });

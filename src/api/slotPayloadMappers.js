@@ -211,6 +211,7 @@ const freeSpin = asNumber(attrs.FreeSpin);
   return {
     ...(attrs.updatedBallance != null ? { balance: Number(attrs.updatedBallance) } : {}),
     idCard: attrs.idCard ?? attrs.IdCard ?? attrs.IDCard,
+    idPartnerCard: attrs.idPartnerCard ?? null,
     Number: attrs.Number ?? attrs.number ?? null,
     requestId: params.requestId,
     WinSum: backendWinSum,

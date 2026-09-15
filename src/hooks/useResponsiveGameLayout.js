@@ -40,6 +40,7 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
     let readyFrame = 0;
     let initialFitStarted = false;
     let mountObserver;
+    let disposed = false;
 
     const fit = () => {
       frame = 0;
@@ -74,9 +75,12 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
         root.style.setProperty("--game-footer-reserve", `${footerReserve}px`);
       }
       if (!area || !logo || !center || root.classList.contains("doubling-active")) return;
+      // Init can mount the center before it supplies a playable grid.
+      if (!center.querySelector(".preloaded-grid-view--active .lottery-grid")) return;
 
       const areaRect = area.getBoundingClientRect();
-      const footerTop = footer?.getBoundingClientRect().top ?? areaRect.bottom;
+      if (areaRect.width <= 0 || areaRect.height <= 0 || !footer) return;
+      const footerTop = footer.getBoundingClientRect().top;
       const compactLandscape = areaRect.width > areaRect.height && areaRect.width <= 1280;
       const logoWidth = compactLandscape
         ? Math.min(260, areaRect.width * 0.4)
@@ -124,7 +128,6 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
         readyFrame = requestAnimationFrame(() => {
           readyFrame = requestAnimationFrame(() => {
             fit();
-            mountObserver?.disconnect();
             setLayoutReady(true);
           });
         });
@@ -135,18 +138,43 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       frame = requestAnimationFrame(fit);
     };
 
+    // Observe the geometry used by fit, including content mounted after the shell.
+    // Transforms do not change ResizeObserver's layout boxes, avoiding a scale loop.
+    const observer = new ResizeObserver(scheduleFit);
+    const observed = new Set();
+    const observeLayout = () => {
+      const elements = [root, root.parentElement?.querySelector("header"),
+        ...root.querySelectorAll(".game_area, .header_img, .bottom-bar, .footer-block, .main-container__left, .main-container__center, .main-container__right, .grid-bottom-panel")];
+      const current = new Set(elements.filter(Boolean));
+      for (const element of observed) {
+        if (!current.has(element)) {
+          observer.unobserve(element);
+          observed.delete(element);
+        }
+      }
+      for (const element of current) {
+        if (!observed.has(element)) {
+          observer.observe(element);
+          observed.add(element);
+        }
+      }
+    };
+    observeLayout();
     fit();
     mountObserver = new MutationObserver(() => {
-      if (!initialFitStarted) scheduleFit();
+      observeLayout();
+      scheduleFit();
     });
     mountObserver.observe(root, { childList: true, subtree: true });
-    const observer = new ResizeObserver(fit);
-    [root, root.parentElement?.querySelector("header"), root.querySelector(".game_area"), ...root.querySelectorAll(".bottom-bar, .footer-block")]
-      .filter(Boolean).forEach((element) => observer.observe(element));
+    const fontsReady = () => { if (!disposed) scheduleFit(); };
+    document.fonts?.ready.then(fontsReady);
+    document.fonts?.addEventListener("loadingdone", fontsReady);
     window.addEventListener("resize", fit, { passive: true });
     document.addEventListener("fullscreenchange", fit);
 
     return () => {
+      disposed = true;
+      document.fonts?.removeEventListener("loadingdone", fontsReady);
       if (frame) cancelAnimationFrame(frame);
       if (readyFrame) cancelAnimationFrame(readyFrame);
       observer.disconnect();

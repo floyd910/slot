@@ -22,11 +22,8 @@ Errors support HTTP status and JSON {error_code, error}. 400 is BAD_REQUEST, 401
 ACCESS_DENIED, 404 GAME_NOT_FOUND. Invalid authentication emits AUTH_REQUIRED to the host.
 No client token expiry timer or refresh credentials are added; the partner owns token renewal.
 
-Collection is not implemented by the backend yet. Remote pay now fails explicitly instead
-of reporting a local mock payment as success. Winnings remain pending and block subsequent
-spins until collection can be completed. Auto/free-spin sequences also pause on an unpaid win.
-At the double limit a remote win remains pending instead of being automatically credited.
-Double transport still uses the existing SOAP method; mock mode retains local behavior.
+Collection uses POST /pay with form fields token, gameId, playerId, requestId, cardId, idPartnerCard. The response must contain matching idCard, PayDate, and ballance (number or numeric string). The frontend uses ballance as authoritative and does not additionally credit the win or settle with the partner. Unknown payment results remain pending and block blind retries. Successful collection preserves remaining free spins.
+Double transport still uses the existing SOAP method; mock mode retains local behavior. Automatic Double settlement on browser exit remains pending a backend recovery/exit contract.
 
 Existing behavior needing confirmation:
 - Demo mode comes from trusted parent launch data; the permitted dev partner sends demoMode=true. Free spins send demoSpin=0.
@@ -34,7 +31,7 @@ Existing behavior needing confirmation:
 - Gold uses the existing bonus-row mapping.
 - Line 10 has no confirmed highlight coordinates.
 
-Still needed: collection endpoint request/response, balance field or balance endpoint,
+Still needed: confirmation of free-spin series settlement policy,
 free-spin/Gold semantics, line 10 coordinates, and a recovery contract.
 Live check: one demo spin (gameId=3, playerId=7, sum=1, lines=1, demoSpin=1, freeSpin=0)
 returned HTTP 200 and a valid result (idCard 66983543). It did not include balance.
@@ -42,3 +39,9 @@ This shell check does not verify browser CORS.
 
 Validation: node --test tests/spinApi.test.js tests/spinFlow.test.js;
 npm run build -- --outDir .codex-spin-build.
+
+Game IDs supplied on 2026-09-14: Hiranmandi 36, Ganchina 37, Mavrodir 38, Egipt2 39, Kadimi 40, Hocha 41, Fruct 42, Babilon 43. These replace the earlier provisional 1–8 API mapping for /init and /spin. The gameId=3 live check above is historical.
+
+Optional idPartnerCard from /spin is preserved unchanged in the spin result and passed to the internal pay call. The HTTP /pay transport sends this identifier unchanged.
+
+Local testing: ignored .env.local may provide VITE_DEV_TEST_TOKEN. Only development builds accept that token as a dev-test launch; a trusted parent INIT_CONTEXT replaces it. Production builds still require postMessage initialization.

@@ -1,3 +1,4 @@
+import { buildPayForm, sendPayRequest, mapPayResponse } from "../api/payApiClient.js";
 import { buildSpinForm, sendSpinRequest } from "../api/spinApiClient.js";
 import { mapJsonSpinPayload } from "../api/slotPayloadMappers.js";
 import {
@@ -127,7 +128,24 @@ export class GameApiService {
 
   async pay(params = {}) {
     if (useSoapBackend()) {
-      throw Object.assign(new Error("Collection is not available until the backend collection method is connected."), { code: "COLLECTION_UNAVAILABLE" });
+      const context = getContext();
+      if (stateRecoveryService.getPendingRequest(context)) {
+        throw Object.assign(new Error("Resolve the pending operation before collection."), {code:"RECOVERY_REQUIRED"});
+      }
+      const body = buildPayForm(params, context);
+      const operation = {methodName:"/pay", requestId:params.requestId, idCard:params.idCard, idPartnerCard:params.idPartnerCard, roundId:params.idCard};
+      stateRecoveryService.rememberPendingRequest(operation, context);
+      try {
+        const result = mapPayResponse(await sendPayRequest(body, {requestId:params.requestId}), params);
+        stateRecoveryService.completePendingRequest(params.requestId, context);
+        return result;
+      } catch(error) {
+        if (["TIMEOUT","NETWORK_ERROR","SERVER_ERROR","BACKEND_RESPONSE_ERROR"].includes(error.code)) {
+          stateRecoveryService.markRecoveryRequired(error, operation, context);
+          stateRecoveryService.markRoundRecoveryRequired(error, {operationType:"COLLECT"}, context);
+        } else stateRecoveryService.completePendingRequest(params.requestId, context);
+        throw error;
+      }
     }
     // Current backend contract for this game settles pay locally/mock-side.
     // Keep the builder available so a real Pay method can be enabled without UI changes.
