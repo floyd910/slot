@@ -2,7 +2,7 @@
 export const getDevTestLaunch = () => {
   if (!import.meta.env?.DEV) return null;
   const token = import.meta.env.VITE_DEV_TEST_TOKEN;
-  return token ? {token, playerId:"7", userId:"7", idUser:"7", demoMode:true, initSource:"dev-test"} : null;
+  return token ? {token, playerId:"7", userId:"7", idUser:"7", demoMode:false, initSource:"dev-test"} : null;
 };
 export const isDevTestLaunch = context => {
   const fallback=getDevTestLaunch();
