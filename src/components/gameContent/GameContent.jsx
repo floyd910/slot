@@ -40,6 +40,10 @@ export default function GameContent({ controller, game, runtimeState }) {
   const [lastTicket, setLastTicket] = useState(null);
   const { actions, derived, state } = controller;
   const view = buildGameContentViewModel({ derived, state });
+  // Babylon and Fruits require at least three zeros for a scatter highlight.
+  const scatterCells = ["babylon", "fruits"].includes(game.id) && (state.spinResult?.scatterCells?.length ?? 0) < 3
+    ? []
+    : state.spinResult?.scatterCells;
   useEffect(() => {
     if (!state.spinResult?.idCard) return;
     setLastTicket({
@@ -139,7 +143,7 @@ export default function GameContent({ controller, game, runtimeState }) {
                   state.visualMode ? [] : state.spinResult?.lineWins
                 }
                 scatterCells={
-                  state.visualMode ? [] : state.spinResult?.scatterCells
+                  state.visualMode ? [] : scatterCells
                 }
                 doublingState={state.doublingState}
               />
@@ -167,7 +171,7 @@ export default function GameContent({ controller, game, runtimeState }) {
                   state.visualMode ? state.spinResult?.lineWins : []
                 }
                 scatterCells={
-                  state.visualMode ? state.spinResult?.scatterCells : []
+                  state.visualMode ? scatterCells : []
                 }
                 onActiveWinGroupChange={actions.playView2WinLine}
                 winLineHighlightMs={
