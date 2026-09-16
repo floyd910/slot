@@ -40,43 +40,49 @@
       }
 
       .boot-loader__content {
-        width: min(360px, 84vw);
+        width: min(420px, calc(100vw - 48px));
+        font-family: Roboto, Arial, sans-serif;
+      }
+      .boot-loader__progress {
         display: flex;
         flex-direction: column;
-        align-items: center;
-        gap: 14px;
-      }.boot-loader__progress {
-        width: min(240px, 70vw);
-        display: grid;
-        justify-items: center;
-        gap: 9px;
-      }
-
-      .boot-loader__track {
         width: 100%;
-        height: 6px;
-        overflow: hidden;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.12);
-        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
       }
-
+      .boot-loader__track {
+        position: relative;
+        box-sizing: border-box;
+        width: 100%;
+        height: 12px;
+        padding: 3px;
+        overflow: hidden;
+        border: 1px solid #c6b4dd25;
+        border-radius: 4px;
+        background: #0a0b12;
+        box-shadow: 0 4px 20px #0005;
+      }
+      .boot-loader__track::after {
+        content: "";
+        position: absolute;
+        inset: 3px;
+        background: repeating-linear-gradient(90deg, transparent 0, transparent 17px, #0a0b1260 17px, #0a0b1260 19px);
+        pointer-events: none;
+      }
       .boot-loader__fill {
         width: 0%;
         height: 100%;
-        border-radius: inherit;
-        background: linear-gradient(90deg, #8f7433 0%, #c7aa61 100%);
+        border-radius: 1px;
+        background: linear-gradient(90deg, #936137, #dfad58 55%, #ffe6a5);
+        box-shadow: 0 0 15px #ffd37650;
       }
-
       .boot-loader__percent {
-        color: #8d929b;
-        font-family: Roboto, Arial, sans-serif;
-        font-size: 11px;
-        font-weight: 500;
-        line-height: 1;
-        letter-spacing: 0.03em;
+        margin-top: 12px;
+        color: #f6d89a;
+        font-size: 20px;
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        text-align: center;
       }
-</style>
+    </style>
     <title>Khiradmandi Makor iframe</title>
   </head>
   <body>

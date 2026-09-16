@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import "./StartupLoader.css";
+import { useLanguage } from "../../i18n.jsx";
 
 export default function StartupLoader({ ready, leaving, variant = "default", progress: measuredProgress, backgroundSrc, label, onExited }) {
+  const { t } = useLanguage();
   const [progress, setProgress] = useState(0);
   const exitReportedRef = useRef(false);
   const isBrandLoader = variant === "brand";
@@ -52,13 +54,14 @@ export default function StartupLoader({ ready, leaving, variant = "default", pro
 
   const progressBar = (
     <div className="startup-loader__progress" aria-label={`${progress}% loaded`}>
-      {label && <div className="startup-loader__label">{label}</div>}
-      <div className="startup-loader__progress-track">
+      {isBrandLoader && <div className="startup-loader__percentage">{progressText}</div>}
+      {!isBrandLoader && label && <div className="startup-loader__label">{label}</div>}
+      <div className="startup-loader__progress-track" role="progressbar" aria-label={t("loadingGames")} aria-valuemin={0} aria-valuemax={100} aria-valuenow={progress}>
         <div
           className="startup-loader__progress-fill"
           style={{ width: `${progress}%` }}
         />
-        <span className="startup-loader__progress-value">{progressText}</span>
+        {!isBrandLoader && <span className="startup-loader__progress-value">{progressText}</span>}
       </div>
     </div>
   );

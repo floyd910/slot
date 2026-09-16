@@ -1,0 +1,4 @@
+import fs from 'node:fs';import React from 'react';import {renderToStaticMarkup} from 'react-dom/server';import {createServer} from 'vite';
+const server=await createServer({configFile:false,esbuild:{jsx:"automatic"},optimizeDeps:{noDiscovery:true,include:[]},server:{middlewareMode:true,watch:null,hmr:false},appType:'custom'});
+try{const {default:Loader}=await server.ssrLoadModule('/src/components/startupLoader/StartupLoader.jsx');const {LanguageProvider}=await server.ssrLoadModule('/src/i18n.jsx');let markup=renderToStaticMarkup(React.createElement(LanguageProvider,null,React.createElement(Loader,{variant:'brand',progress:68})));markup=markup.replaceAll('0%','68%').replace('aria-valuenow="0"','aria-valuenow="68"');fs.writeFileSync('tmp/loader-preview.html','<!doctype html><meta charset="utf-8"><style>'+fs.readFileSync('src/components/startupLoader/StartupLoader.css','utf8')+'</style>'+markup);console.log('Rendered loader preview.');}finally{await server.close();}
+
