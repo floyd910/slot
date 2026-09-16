@@ -15,3 +15,9 @@ dist
 /tmp/vite-tests/
 /tmp/vite-image-tests/
 /.codex-*-build/
+
+# Generated symbol exports
+/output/symbol-assets.html
+/output/symbol-assets.md
+/tmp/export-symbol-assets.mjs
+/symbols/
