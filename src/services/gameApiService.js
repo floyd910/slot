@@ -62,7 +62,7 @@ export class GameApiService {
 
     try {
       const payload = await sendSpinRequest(body, { requestId: params.requestId });
-      const result = normalizeSpinResult({ ...mapJsonSpinPayload(payload, params), backendManagedWallet: true });
+      const result = normalizeSpinResult({ ...mapJsonSpinPayload(payload, { ...getContext(), ...params }), backendManagedWallet: true });
       stateRecoveryService.saveGameState({
         lastIdCard: result.idCard,
         currentMode: params.isFreeSpin ? "free-spin" : "spin",

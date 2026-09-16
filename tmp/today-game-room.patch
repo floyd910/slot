@@ -1,0 +1,362 @@
+diff --git a/src/api/mockSlotBackend.js b/src/api/mockSlotBackend.js
+index 3bd3c439..198f6afd 100644
+--- a/src/api/mockSlotBackend.js
++++ b/src/api/mockSlotBackend.js
+@@ -1,7 +1,7 @@
+ import {
+   combinations,
+   games,
+-  initialGrid,
++  getInitialGrid,
+   paytable,
+   symbolMap,
+ } from "../data/mockData.js";
+@@ -48,7 +48,7 @@ export const createSession = async (params) => {
+     },
+     games: clone(games),
+     combinations: clone(combinations),
+-    grid: clone(initialGrid),
++    grid: getInitialGrid(params.recoveryGameId ?? params.gameId),
+   };
+ };
+ 
+diff --git a/src/components/bottomBar/BottomBar.jsx b/src/components/bottomBar/BottomBar.jsx
+index ca772362..79b31e98 100644
+--- a/src/components/bottomBar/BottomBar.jsx
++++ b/src/components/bottomBar/BottomBar.jsx
+@@ -9,7 +9,9 @@ import {
+   getBottomBarLabel,
+ } from "../../viewModels/bottomBarControls.js";
+ 
+-export default function BottomBar(props) {
++export default function BottomBar(inputProps) {
++  const freeSpinControlsLocked = Boolean(inputProps.freeSpinRoundStarted);
++  const props = { ...inputProps, disabled: inputProps.disabled || freeSpinControlsLocked };
+   const shortLandscape = useShortLandscape();
+   const { language, t, toggleLanguage } = useLanguage();
+   const doubleLeftLabel = language === "tg" ? t("left") : "\u041b\u0435\u0432\u044b\u0439";
+@@ -19,7 +21,7 @@ export default function BottomBar(props) {
+     primaryActionCollectsWin:
+       props.primaryActionCollectsWin && props.revealComplete !== false,
+     toggleLanguage,
+-  });
++  }).map(control => freeSpinControlsLocked ? { ...control, disabled: true } : control);
+   const balance = formatMoney(props.player?.balance);
+   const totalPurchase = formatMoney(props.totalPurchase);
+   const ticketWinAmount = getTicketWinAmount(
+diff --git a/src/components/gameContent/GameContent.jsx b/src/components/gameContent/GameContent.jsx
+index acd11c0f..7ba8e033 100644
+--- a/src/components/gameContent/GameContent.jsx
++++ b/src/components/gameContent/GameContent.jsx
+@@ -40,6 +40,10 @@ export default function GameContent({ controller, game, runtimeState }) {
+   const [lastTicket, setLastTicket] = useState(null);
+   const { actions, derived, state } = controller;
+   const view = buildGameContentViewModel({ derived, state });
++  // Babylon and Fruits require at least three zeros for a scatter highlight.
++  const scatterCells = ["babylon", "fruits"].includes(game.id) && (state.spinResult?.scatterCells?.length ?? 0) < 3
++    ? []
++    : state.spinResult?.scatterCells;
+   useEffect(() => {
+     if (!state.spinResult?.idCard) return;
+     setLastTicket({
+@@ -139,7 +143,7 @@ export default function GameContent({ controller, game, runtimeState }) {
+                   state.visualMode ? [] : state.spinResult?.lineWins
+                 }
+                 scatterCells={
+-                  state.visualMode ? [] : state.spinResult?.scatterCells
++                  state.visualMode ? [] : scatterCells
+                 }
+                 doublingState={state.doublingState}
+               />
+@@ -167,7 +171,7 @@ export default function GameContent({ controller, game, runtimeState }) {
+                   state.visualMode ? state.spinResult?.lineWins : []
+                 }
+                 scatterCells={
+-                  state.visualMode ? state.spinResult?.scatterCells : []
++                  state.visualMode ? scatterCells : []
+                 }
+                 onActiveWinGroupChange={actions.playView2WinLine}
+                 winLineHighlightMs={
+diff --git a/src/components/gameMenu/GameMenu.jsx b/src/components/gameMenu/GameMenu.jsx
+index 3dbccc83..74bdf13c 100644
+--- a/src/components/gameMenu/GameMenu.jsx
++++ b/src/components/gameMenu/GameMenu.jsx
+@@ -5,6 +5,7 @@ import "./GameMenu.css";
+ const RULES_COPY = {
+   ru: {
+     title: "ПРАВИЛА ИГРЫ",
++    fruitsDescription: "В игре используется 5 выигрышных линий. Каждая схема показывает позиции символов, участвующие в соответствующей выигрышной линии.",
+     description:
+       "В игре используется 9 выигрышных линий. Выигрыш выплачивается только по тем линиям, которые активны в текущей ставке. Каждая схема показывает, какие позиции участвуют в соответствующей линии.",
+     lineNames: [
+@@ -28,6 +29,7 @@ const RULES_COPY = {
+   },
+   tg: {
+     title: "ҚОИДАҲОИ БОЗӢ",
++    fruitsDescription: "Дар бозӣ 5 хатти бурднок истифода мешавад. Ҳар як схема мавқеъҳои рамзҳоеро нишон медиҳад, ки дар хатти бурдноки мувофиқ иштирок мекунанд.",
+     description:
+       "Дар бозӣ 9 хатти бурднок истифода мешавад. Бурд танҳо аз рӯи он хатҳое пардохт карда мешавад, ки дар шарти ҷорӣ фаъол мебошанд. Ҳар як схема нишон медиҳад, ки кадом мавқеъҳо ба хатти мувофиқ дохил мешаванд.",
+     lineNames: [
+@@ -145,7 +147,7 @@ export default function GameMenu({ gameId, onClose }) {
+         <div className="game-rules-screen__content">
+           <div className="game-rules-screen__intro">
+             <h1>{rulesCopy.title}</h1>
+-            <p>{rulesCopy.description}</p>
++            <p>{gameId === "fruits" ? rulesCopy.fruitsDescription : rulesCopy.description}</p>
+           </div>
+           <div className="game-rules-screen__boxes">
+             {ruleLines.map((line, lineIndex) => (
+diff --git a/src/components/gameShell/GameShell.css b/src/components/gameShell/GameShell.css
+index 0c473bcf..281c4fff 100644
+--- a/src/components/gameShell/GameShell.css
++++ b/src/components/gameShell/GameShell.css
+@@ -52,6 +52,7 @@
+   position: absolute;
+   inset: 0;
+   z-index: 1;
++  opacity: 0.4;
+   background: rgba(0, 0, 0, 0.9);
+   pointer-events: none;
+ }
+diff --git a/src/components/slotChooser/SlotChooser.css b/src/components/slotChooser/SlotChooser.css
+index ee0a497d..9a07739a 100644
+--- a/src/components/slotChooser/SlotChooser.css
++++ b/src/components/slotChooser/SlotChooser.css
+@@ -30,7 +30,7 @@
+   user-select: none;
+ }
+ 
+-.bg-overlay {
++.slot-chooser > .bg-overlay {
+   position: absolute;
+   inset: 0;
+   z-index: 0;
+diff --git a/src/controllers/spinActions.js b/src/controllers/spinActions.js
+index cca04b9d..a92c0bf8 100644
+--- a/src/controllers/spinActions.js
++++ b/src/controllers/spinActions.js
+@@ -34,6 +34,7 @@ export const createSpinActions = ({
+   emitLotteryRevealSounds,
+   emitSound,
+   freeSpinRunRef,
++  resumeAutoPlayAfterFreeSpinsRef = { current: false },
+   liveSpinStateRef,
+   playSpinFeedback,
+   postEvent,
+@@ -378,6 +379,8 @@ export const createSpinActions = ({
+           freeSpinsLeft: awardedFreeSpins,
+           freeSpinsTotal: awardedFreeSpins,
+         };
++        // Remember autoplay across the award prompt and the complete bonus series.
++        resumeAutoPlayAfterFreeSpinsRef.current = autoExpressSpin || autoPlayOnRef.current;
+         // Pause paid autoplay until the player acknowledges the awarded series.
+         shouldShowFreeSpinPrompt = true;
+         autoPlayOnRef.current = false;
+@@ -562,13 +565,14 @@ export const createSpinActions = ({
+ 
+     setFreeSpinRoundStarted(true);
+     freeSpinRunRef.current = true;
++    let completed = false;
+     try {
+       while (
+         freeSpinRunRef.current &&
+         liveSpinStateRef.current.freeSpinsLeft > 0
+       ) {
+         const result = await handleSpin({ freeSpinAuto: true });
+-        if (!result) break;
++        if (!result) return;
+ 
+         await wait(
+           getNextSpinDelayMs(result, {
+@@ -579,14 +583,21 @@ export const createSpinActions = ({
+         // Free Spin winnings are credited by the Spin response itself. Calling
+         // Collect here would incorrectly finish the whole active Free Spin round.
+         if (getTicketWinAmount(result) > 0 && result.creditedToBalance !== true) {
+-          if (!(await collectWin())) break;
++          if (!(await collectWin())) return;
+         }
+       }
++      completed = liveSpinStateRef.current.freeSpinsLeft <= 0;
+     } finally {
+       freeSpinRunRef.current = false;
+       if (liveSpinStateRef.current.freeSpinsLeft <= 0) {
+         setFreeSpinRoundStarted(false);
+       }
++      const resume = completed && resumeAutoPlayAfterFreeSpinsRef.current;
++      resumeAutoPlayAfterFreeSpinsRef.current = false;
++      if (resume) {
++        autoPlayOnRef.current = true;
++        setAutoPlayOn?.(true);
++      }
+     }
+   };
+ 
+diff --git a/src/data/mockData.js b/src/data/mockData.js
+index bd83fad9..c7f78edb 100644
+--- a/src/data/mockData.js
++++ b/src/data/mockData.js
+@@ -131,3 +131,14 @@ export const initialGrid = {
+   C: [2, 1, 1, 1, 6],
+   D: ["", "", "SCATTER", "", ""],
+ };
++
++// Startup display only; server spin results are never remapped.
++export const getInitialGrid = (gameId) => {
++  const maxSymbol = { babylon: 9, fruits: 7, "43": 9, "42": 7 }[gameId] ?? 12;
++  return {
++    A: initialGrid.A.map(value => Math.min(value, maxSymbol)),
++    B: initialGrid.B.map(value => Math.min(value, maxSymbol)),
++    C: initialGrid.C.map(value => Math.min(value, maxSymbol)),
++    D: [...initialGrid.D],
++  };
++};
+diff --git a/src/games/game3/Game3.css b/src/games/game3/Game3.css
+index 0a54aac2..98942699 100644
+--- a/src/games/game3/Game3.css
++++ b/src/games/game3/Game3.css
+@@ -52,6 +52,7 @@
+   position: absolute;
+   inset: 0;
+   z-index: 1;
++  opacity: 0.4;
+   background: var(--game-overlay, rgba(0, 0, 0, 0.4));
+   pointer-events: none;
+ }
+diff --git a/src/hooks/useGameController.js b/src/hooks/useGameController.js
+index d5b0a80e..d7db7d1f 100644
+--- a/src/hooks/useGameController.js
++++ b/src/hooks/useGameController.js
+@@ -17,7 +17,7 @@ import { partnerApi } from "../services/partnerApi.js";
+ import {
+   games as displayGames,
+   combinations as displayCombinations,
+-  initialGrid,
++  getInitialGrid,
+   stakeOptions,
+ } from "../data/mockData.js";
+ import { useLanguage } from "../i18n.jsx";
+@@ -207,6 +207,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
+   const spinFeedbackTimerRef = useRef(null);
+   const autoPlayOnRef = useRef(autoPlayOn);
+   const freeSpinRunRef = useRef(false);
++  const resumeAutoPlayAfterFreeSpinsRef = useRef(false);
+   const liveSpinStateRef = useRef({
+     carpetCloseMs,
+     carpetOpenMs,
+@@ -266,6 +267,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
+     () => () => {
+       autoPlayOnRef.current = false;
+       freeSpinRunRef.current = false;
++      resumeAutoPlayAfterFreeSpinsRef.current = false;
+       if (spinFeedbackTimerRef.current) {
+         window.clearTimeout(spinFeedbackTimerRef.current);
+         spinFeedbackTimerRef.current = null;
+@@ -530,7 +532,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
+     if (missing.length) {
+       setGames(displayGames);
+       setSupportedCombinations(setCombinations, setSelectedCombinationId, gameDefinition?.id ?? context.gameId, displayCombinations);
+-      setGrid(initialGrid);
++      setGrid(getInitialGrid(gameDefinition?.id ?? context.recoveryGameId ?? context.gameId));
+       setStatus("guest");
+       setError("");
+       return;
+@@ -647,7 +649,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
+       setSpinResult(recovered.spinResult);
+       setDoublingState(recovered.doublingState ? { ...recovered.doublingState, loading: false, lastPick: "", lastStatus: "" } : createEmptyDoublingState());
+       setDoubleState(recovered.doubleState ? { ...recovered.doubleState, loading: false } : createDoubleState());
+-      setGrid(recovered.lastConfirmedGrid ?? recovered.grid ?? recovered.spinResult.grid ?? initialGrid);
++      setGrid(recovered.lastConfirmedGrid ?? recovered.grid ?? recovered.spinResult.grid ?? getInitialGrid(gameDefinition?.id ?? context.recoveryGameId ?? context.gameId));
+       setHasRecoveredGrid(true);
+       setGridRevealKey((key) => key + 1);
+       setGridAnimation("settled");
+@@ -727,6 +729,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
+       emitLotteryRevealSounds,
+       emitSound,
+       freeSpinRunRef,
++      resumeAutoPlayAfterFreeSpinsRef,
+       liveSpinStateRef,
+       playSpinFeedback,
+       postEvent,
+@@ -812,6 +815,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
+   }, [autoPlayOn]);
+ 
+   const toggleAutoPlay = () => {
++    resumeAutoPlayAfterFreeSpinsRef.current = false;
+     setAutoPlayOn((current) => !current);
+   };
+ 
+diff --git a/src/hooks/useResponsiveGameLayout.js b/src/hooks/useResponsiveGameLayout.js
+index 1345ffa7..d29e794d 100644
+--- a/src/hooks/useResponsiveGameLayout.js
++++ b/src/hooks/useResponsiveGameLayout.js
+@@ -144,7 +144,7 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
+     const observed = new Set();
+     const observeLayout = () => {
+       const elements = [root, root.parentElement?.querySelector("header"),
+-        ...root.querySelectorAll(".game_area, .header_img, .bottom-bar, .footer-block, .main-container__left, .main-container__center, .main-container__right, .grid-bottom-panel")];
++        ...root.querySelectorAll(".game_area, .header_img, .bottom-bar, .footer-block, .main-container__left, .main-container__center, .main-container__right")];
+       const current = new Set(elements.filter(Boolean));
+       for (const element of observed) {
+         if (!current.has(element)) {
+@@ -161,7 +161,13 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
+     };
+     observeLayout();
+     fit();
+-    mountObserver = new MutationObserver(() => {
++    mountObserver = new MutationObserver((records) => {
++      // Ticket details are an overlay, not a change to the board layout.
++      // Keep observing board insertion after init, but ignore receipt contents.
++      if (records.every(({ target }) => {
++        const element = target.nodeType === 1 ? target : target.parentElement;
++        return element?.closest(".grid-bottom-panel");
++      })) return;
+       observeLayout();
+       scheduleFit();
+     });
+diff --git a/src/services/sessionApiService.js b/src/services/sessionApiService.js
+index cbf28caf..e9fac480 100644
+--- a/src/services/sessionApiService.js
++++ b/src/services/sessionApiService.js
+@@ -1,6 +1,6 @@
+ import { requestBalance } from "../api/balanceApiClient.js";
+ import { isDevTestLaunch } from "../api/devTestLaunch.js";
+-import { games, combinations, initialGrid } from "../data/mockData.js";
++import { games, combinations, getInitialGrid } from "../data/mockData.js";
+ import {
+   getGames as getMockGames,
+   getPaytable as getMockPaytable,
+@@ -77,7 +77,7 @@ export class SessionApiService {
+     return {
+       sessionId: remote.sessionId,
+       player: { id: playerId, balance: wallet.balance, currency: wallet.currency },
+-      games, combinations, grid: initialGrid,
++      games, combinations, grid: getInitialGrid(params.recoveryGameId ?? params.gameId),
+       backendGameId: remote.backendGameId ?? null,
+       unfinishedRound: remote.unfinishedRound ?? null,
+     };
+diff --git a/src/viewModels/bottomBarControls.js b/src/viewModels/bottomBarControls.js
+index d385ea71..636a66e3 100644
+--- a/src/viewModels/bottomBarControls.js
++++ b/src/viewModels/bottomBarControls.js
+@@ -92,7 +92,7 @@ export function buildBottomBarControls({
+     },
+     {
+       active: spinFeedbackActive,
+-      disabled: disabled || spinDisabled,
++      disabled: disabled || spinDisabled || autoPlayOn,
+       extraClass: `spin-draw-button${spinAssetsLoading ? " --loading" : ""}`,
+       onClick: onSpin,
+       type: primaryActionCollectsWin ? "takeWin" : "spinDraw",
+diff --git a/tests/freeSpinFlow.test.js b/tests/freeSpinFlow.test.js
+index 32634805..780e9bc0 100644
+--- a/tests/freeSpinFlow.test.js
++++ b/tests/freeSpinFlow.test.js
+@@ -55,6 +55,8 @@ test('all eight games show autoplay awards and extend an active free-spin series
+           await actions.startFreeSpinRun();
+           assert.deepEqual(order,['pay','spin'],'Modal must collect before the first free spin');
+           assert.equal(live.current.freeSpinsLeft,0);
++          assert.equal(autoplay,true,gameId+" resumes Auto Express after bonus");
++          assert.equal(options.autoPlayOnRef.current,true);
+           assert.equal(errors.length,0);
+         }
+       }

@@ -1,0 +1,191 @@
+import { useLayoutEffect, useState } from "react";
+
+const LOGO_RATIO = 61 / 258;
+const GAP = 10;
+
+const isVisible = (element) =>
+  element && element.getClientRects().length > 0 && getComputedStyle(element).display !== "none";
+
+const getFooter = (root) =>
+  Array.from(root.querySelectorAll(".footer-block")).find(isVisible) ??
+  Array.from(root.querySelectorAll(".bottom-bar")).find(isVisible);
+
+const getBounds = (root, center) => {
+  const ticket = center.querySelector(".grid-bottom-panel:not(.grid-bottom-panel--expanded)");
+  const elements = [
+    root.querySelector(".main-container__left"), center,
+    root.querySelector(".main-container__right"), ticket,
+  ].filter(isVisible);
+  if (!elements.length) return null;
+  const rects = elements.map((element) => element.getBoundingClientRect());
+  return {
+    top: Math.min(...rects.map((rect) => rect.top)),
+    left: Math.min(...rects.map((rect) => rect.left)),
+    right: Math.max(...rects.map((rect) => rect.right)),
+    bottom: Math.max(...rects.map((rect) => rect.bottom)),
+  };
+};
+
+export function useResponsiveGameLayout(rootRef, layoutMode) {
+  const [layoutReady, setLayoutReady] = useState(false);
+
+  useLayoutEffect(() => {
+    const root = rootRef.current;
+    if (!root) return undefined;
+    let frame = 0;
+    let readyFrame = 0;
+    let initialFitStarted = false;
+    let mountObserver;
+
+    const fit = () => {
+      frame = 0;
+      const area = root.querySelector(".game_area");
+      const logo = root.querySelector(".header_img");
+      const center = root.querySelector(".main-container__center");
+      const footer = getFooter(root);
+      const header = root.parentElement?.querySelector("header");
+      const headerHeight = header?.getBoundingClientRect().height || 48;
+      root.style.setProperty("--game-header-height", `${headerHeight}px`);
+      const areaBounds = area?.getBoundingClientRect();
+      const footerTopForReserve = footer?.getBoundingClientRect().top ?? areaBounds?.bottom;
+      const footerReserve = areaBounds
+        ? Math.max(0, areaBounds.bottom - footerTopForReserve)
+        : 0;
+      const fixedFooterBottom = footer
+        ? Math.max(0, window.innerHeight - footer.getBoundingClientRect().top)
+        : 0;
+      const shortFrame = root.getBoundingClientRect().height <= 620;
+      const mobilePortrait = window.matchMedia("(max-width: 639px) and (orientation: portrait)").matches;
+      const doubleChestBottom = mobilePortrait && footer?.classList.contains("footer-block-mobile")
+        ? fixedFooterBottom
+        : footer?.classList.contains("footer-block-mobile")
+          ? 200
+          : footer?.classList.contains("footer-block-tablet")
+            ? 150
+            : shortFrame
+              ? 50
+              : 150;
+      root.style.setProperty("--double-chest-bottom", `${doubleChestBottom}px`);
+      if (areaBounds) {
+        root.style.setProperty("--game-footer-reserve", `${footerReserve}px`);
+      }
+      if (!area || !logo || !center || root.classList.contains("doubling-active")) return;
+
+      const areaRect = area.getBoundingClientRect();
+      const footerTop = footer?.getBoundingClientRect().top ?? areaRect.bottom;
+      const compactLandscape = areaRect.width > areaRect.height && areaRect.width <= 1280;
+      const logoWidth = compactLandscape
+        ? Math.min(260, areaRect.width * 0.4)
+        : areaRect.width <= 440
+          ? areaRect.width * 0.8
+          : Math.min(440, areaRect.width - GAP * 2);
+      const logoHeight = logoWidth * LOGO_RATIO;
+      const contentTop = compactLandscape
+        ? Math.max(GAP, logoHeight - headerHeight + GAP)
+        : logoHeight + GAP;
+      root.dataset.fluidFit = "true";
+      root.style.setProperty("--fluid-logo-width", `${logoWidth}px`);
+      root.style.setProperty("--fluid-logo-height", `${logoHeight}px`);
+      root.style.setProperty("--fluid-footer-reserve", `${Math.max(GAP, areaRect.bottom - footerTop + GAP)}px`);
+      root.style.setProperty("--fluid-content-scale", "1");
+
+      let resolvedContentTop = contentTop;
+      root.style.setProperty("--fluid-content-top", `${resolvedContentTop}px`);
+      root.style.setProperty("--header-content-start", `${resolvedContentTop}px`);
+
+      // Use rendered geometry, not only the nominal logo ratio. This catches
+      // compact breakpoint transforms that would otherwise pull the grid into
+      // the logo layer before the proportional grid fit is calculated.
+      let bounds = getBounds(root, center);
+      const requiredGridTop = logo.getBoundingClientRect().bottom + GAP;
+      if (bounds && bounds.top < requiredGridTop) {
+        resolvedContentTop += Math.ceil(requiredGridTop - bounds.top);
+        root.style.setProperty("--fluid-content-top", `${resolvedContentTop}px`);
+        root.style.setProperty("--header-content-start", `${resolvedContentTop}px`);
+        bounds = getBounds(root, center);
+      }
+      if (!bounds) return;
+      const scale = Math.max(0.1, Math.min(
+        compactLandscape ? Number.POSITIVE_INFINITY : 1,
+        (areaRect.width - GAP * 2) / Math.max(1, bounds.right - bounds.left),
+        (footerTop - GAP - (areaRect.top + resolvedContentTop)) / Math.max(1, bounds.bottom - bounds.top),
+      ) * 0.995);
+      root.style.setProperty("--fluid-content-scale", String(scale));
+
+
+
+      if (!initialFitStarted) {
+        initialFitStarted = true;
+        // The loader remains opaque while CSS commits, then this final pass reads committed geometry.
+        readyFrame = requestAnimationFrame(() => {
+          readyFrame = requestAnimationFrame(() => {
+            fit();
+            mountObserver?.disconnect();
+            setLayoutReady(true);
+          });
+        });
+      }
+    };
+    const scheduleFit = () => {
+      if (frame) cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(fit);
+    };
+
+<<<<<<< tmp/game-room-sync/src/hooks/useResponsiveGameLayout.js.ours
+    fit();
+    mountObserver = new MutationObserver(() => {
+      if (!initialFitStarted) scheduleFit();
+=======
+    // Observe the geometry used by fit, including content mounted after the shell.
+    // Transforms do not change ResizeObserver's layout boxes, avoiding a scale loop.
+    const observer = new ResizeObserver(scheduleFit);
+    const observed = new Set();
+    const observeLayout = () => {
+      const elements = [root, root.parentElement?.querySelector("header"),
+        ...root.querySelectorAll(".game_area, .header_img, .bottom-bar, .footer-block, .main-container__left, .main-container__center, .main-container__right")];
+      const current = new Set(elements.filter(Boolean));
+      for (const element of observed) {
+        if (!current.has(element)) {
+          observer.unobserve(element);
+          observed.delete(element);
+        }
+      }
+      for (const element of current) {
+        if (!observed.has(element)) {
+          observer.observe(element);
+          observed.add(element);
+        }
+      }
+    };
+    observeLayout();
+    fit();
+    mountObserver = new MutationObserver((records) => {
+      // Ticket details are an overlay, not a change to the board layout.
+      // Keep observing board insertion after init, but ignore receipt contents.
+      if (records.every(({ target }) => {
+        const element = target.nodeType === 1 ? target : target.parentElement;
+        return element?.closest(".grid-bottom-panel");
+      })) return;
+      observeLayout();
+      scheduleFit();
+>>>>>>> tmp/game-room-sync/src/hooks/useResponsiveGameLayout.js.theirs
+    });
+    mountObserver.observe(root, { childList: true, subtree: true });
+    const observer = new ResizeObserver(fit);
+    [root, root.parentElement?.querySelector("header"), root.querySelector(".game_area"), root.querySelector(".bottom-bar")]
+      .filter(Boolean).forEach((element) => observer.observe(element));
+    window.addEventListener("resize", fit, { passive: true });
+    document.addEventListener("fullscreenchange", fit);
+
+    return () => {
+      if (frame) cancelAnimationFrame(frame);
+      if (readyFrame) cancelAnimationFrame(readyFrame);
+      observer.disconnect();
+      mountObserver?.disconnect();
+      window.removeEventListener("resize", fit);
+      document.removeEventListener("fullscreenchange", fit);
+    };
+  }, [rootRef, layoutMode]);
+
+  return layoutReady;
+}

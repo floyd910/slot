@@ -34,7 +34,6 @@ export const createSpinActions = ({
   emitLotteryRevealSounds,
   emitSound,
   freeSpinRunRef,
-  resumeAutoPlayAfterFreeSpinsRef = { current: false },
   liveSpinStateRef,
   playSpinFeedback,
   postEvent,
@@ -379,8 +378,6 @@ export const createSpinActions = ({
           freeSpinsLeft: awardedFreeSpins,
           freeSpinsTotal: awardedFreeSpins,
         };
-        // Remember autoplay across the award prompt and the complete bonus series.
-        resumeAutoPlayAfterFreeSpinsRef.current = autoExpressSpin || autoPlayOnRef.current;
         // Pause paid autoplay until the player acknowledges the awarded series.
         shouldShowFreeSpinPrompt = true;
         autoPlayOnRef.current = false;
@@ -565,14 +562,13 @@ export const createSpinActions = ({
 
     setFreeSpinRoundStarted(true);
     freeSpinRunRef.current = true;
-    let completed = false;
     try {
       while (
         freeSpinRunRef.current &&
         liveSpinStateRef.current.freeSpinsLeft > 0
       ) {
         const result = await handleSpin({ freeSpinAuto: true });
-        if (!result) return;
+        if (!result) break;
 
         await wait(
           getNextSpinDelayMs(result, {
@@ -583,20 +579,13 @@ export const createSpinActions = ({
         // Free Spin winnings are credited by the Spin response itself. Calling
         // Collect here would incorrectly finish the whole active Free Spin round.
         if (getTicketWinAmount(result) > 0 && result.creditedToBalance !== true) {
-          if (!(await collectWin())) return;
+          if (!(await collectWin())) break;
         }
       }
-      completed = liveSpinStateRef.current.freeSpinsLeft <= 0;
     } finally {
       freeSpinRunRef.current = false;
       if (liveSpinStateRef.current.freeSpinsLeft <= 0) {
         setFreeSpinRoundStarted(false);
-      }
-      const resume = completed && resumeAutoPlayAfterFreeSpinsRef.current;
-      resumeAutoPlayAfterFreeSpinsRef.current = false;
-      if (resume) {
-        autoPlayOnRef.current = true;
-        setAutoPlayOn?.(true);
       }
     }
   };
@@ -607,9 +596,11 @@ export const createSpinActions = ({
     if (!result) return;
 
     if (getAwardedFreeSpinCount(result) > 0) {
-      // Auto Express acknowledges the award and runs the bonus automatically.
-      // startFreeSpinRun collects any pending win before its first spin.
-      await startFreeSpinRun();
+      // The award pauses autoplay for the prompt, but its cash win still needs Pay.
+      const pending = liveSpinStateRef.current.spinResult;
+      if (pending && !pending.creditedToBalance && getTicketWinAmount(pending) > 0) {
+        await collectWin();
+      }
       return;
     }
 

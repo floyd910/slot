@@ -87,3 +87,19 @@ test('partner card ID is preserved exactly in the spin result',()=>{
  }
  assert.equal(mapJsonSpinPayload(fixture(),params).idPartnerCard,null);
 });
+
+test('Babylon highlights backend wins with wild 9 while other games retain wild 12',()=>{
+  for(const [gameId,wild] of [['babylon',9],['43',9],['egypt',12]]) {
+    for(const row of [[wild,7,wild,7,8],[7,wild,7,8,8],[wild,wild,wild,wild,wild]]) {
+      const payload=fixture();
+      payload.Line2=Object.fromEntries(row.map((v,i)=>['Slot'+(i+1),String(v)]));
+      payload.LineWinKoff1={Koff:'10'};
+      const result=mapJsonSpinPayload(payload,{...params,gameId});
+      const count=row.every(v=>v===wild)?5:row[0]===wild?4:3;
+      assert.deepEqual(result.lineWins[0].winningCells,Array.from({length:count},(_,i)=>'B'+(i+1)));
+      assert.equal(result.lineWins[0].coefficient,10);
+      payload.LineWinKoff1={Koff:'0'};
+      assert.deepEqual(mapJsonSpinPayload(payload,{...params,gameId}).lineWins,[]);
+    }
+  }
+});

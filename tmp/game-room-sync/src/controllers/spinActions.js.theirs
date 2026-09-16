@@ -607,9 +607,11 @@ export const createSpinActions = ({
     if (!result) return;
 
     if (getAwardedFreeSpinCount(result) > 0) {
-      // Auto Express acknowledges the award and runs the bonus automatically.
-      // startFreeSpinRun collects any pending win before its first spin.
-      await startFreeSpinRun();
+      // The award pauses autoplay for the prompt, but its cash win still needs Pay.
+      const pending = liveSpinStateRef.current.spinResult;
+      if (pending && !pending.creditedToBalance && getTicketWinAmount(pending) > 0) {
+        await collectWin();
+      }
       return;
     }
 

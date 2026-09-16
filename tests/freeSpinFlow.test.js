@@ -7,9 +7,9 @@ test('all eight games show autoplay awards and extend an active free-spin series
   const store=new Map();
   globalThis.window={ crypto:webcrypto, addEventListener(){},dispatchEvent(){},
     sessionStorage:{getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v),removeItem:k=>store.delete(k)},
-    setTimeout:(fn,ms)=>{const id=setTimeout(fn,ms);id.unref();return id;},clearTimeout,
+    setTimeout:(fn,ms)=>{const id=setTimeout(fn,ms >= 9000 ? ms : 0);id.unref();return id;},clearTimeout,
   };
-  const server=await createServer({configFile:false,cacheDir:'tmp/vite-tests',server:{middlewareMode:true,watch:null},appType:'custom'});
+  const server=await createServer({configFile:false,optimizeDeps:{noDiscovery:true,include:[]},cacheDir:'tmp/vite-tests',server:{middlewareMode:true,watch:null,hmr:false},appType:'custom'});
   try {
     const {createSpinActions}=await server.ssrLoadModule('/src/controllers/spinActions.js');
     const {frameApi}=await server.ssrLoadModule('/src/api/frameApi.js');
@@ -26,7 +26,7 @@ test('all eight games show autoplay awards and extend an active free-spin series
         const context={gameId,recoveryGameId:gameId,sessionId:'award-'+gameId+'-'+free,userId:7};
         const live={current:{context,carpetCloseMs:0,carpetOpenMs:0,doubleState:{},doublingState:{},freeSpinsLeft:free?1:0,freeSpinsTotal:free?1:0,player:{balance:100},selectedCombination:{groups:[{}],id:'one'},stake:1,status:'ready',visualMode:true}};
         let calls=0,paid=0,prompt=false,autoplay=true;const events=[];const errors=[];
-        frameApi.spin=async()=>{calls++;return {backendManagedWallet:true,balance,idCard:'round',WinSum:free?0:5,FreeSpin:1,Gold:0,grid:{A:[0,0,0,0,0],B:[],C:[]}};};
+        frameApi.spin=async(params)=>{calls++;return {backendManagedWallet:true,balance,idCard:'round',WinSum:free || params.isFreeSpin ? 0 : 5,FreeSpin:free || !params.isFreeSpin ? 1 : 0,Gold:0,grid:{A:[0,0,0,0,0],B:[],C:[]}};};
         frameApi.pay=async()=>{paid++;return {balance:105};};
         const options={liveSpinStateRef:live,autoPlayOnRef:{current:!free},setAutoPlayOn:v=>autoplay=v,freeSpinRunRef:{current:false},t:k=>k,postEvent:(type,payload)=>events.push({type,payload}),reportOperationError:e=>errors.push(e)};
         for(const name of ['emitLotteryRevealSounds','emitSound','playSpinFeedback','setError','setHasRecoveredGrid','setShowFreeSpinPrompt','setLastKnownState','onRecoveryRequired']) options[name]=()=>{};
@@ -38,12 +38,12 @@ test('all eight games show autoplay awards and extend an active free-spin series
         const actions=createSpinActions(options);
         if(free) await actions.handleSpin({freeSpinAuto:true});
         else await actions.onAutoPlay();
-        assert.equal(calls,1,gameId+' should make one request');
-        assert.equal(live.current.freeSpinsLeft,15,gameId+' remaining');
+        assert.equal(calls,free?1:16,gameId+' automatic bonus requests');
+        assert.equal(live.current.freeSpinsLeft,free?15:0,gameId+' remaining');
         assert.equal(live.current.freeSpinsTotal,free?16:15,gameId+' total');
-        assert.equal(prompt,!free,gameId+' award prompt');
+        assert.equal(prompt,false,gameId+' no modal click required');
         assert.equal(paid,free?0:1,'Award cash win is collected automatically');
-        if(!free){assert.equal(live.current.player.balance,105);assert.equal(live.current.spinResult,null);assert.equal(autoplay,false);assert.equal(options.autoPlayOnRef.current,false);}
+        if(!free){assert.equal(live.current.player.balance,100);assert.equal(live.current.spinResult.WinSum,0);assert.equal(autoplay,true);assert.equal(options.autoPlayOnRef.current,true);}
         assert.equal(errors.length,0,gameId+' errors');
         if (!free) {
           live.current.spinResult={idCard:'modal-win',idPartnerCard:'partner',WinSum:5,backendManagedWallet:true,creditedToBalance:false};
@@ -57,6 +57,15 @@ test('all eight games show autoplay awards and extend an active free-spin series
           assert.equal(live.current.freeSpinsLeft,0);
           assert.equal(autoplay,true,gameId+" resumes Auto Express after bonus");
           assert.equal(options.autoPlayOnRef.current,true);
+          options.autoPlayOnRef.current=false;
+          live.current.spinResult=null;
+          live.current.doublingState={};
+          let manualCalls=0;
+          frameApi.spin=async()=>{manualCalls++;return {backendManagedWallet:true,balance:110,idCard:'manual',WinSum:0,FreeSpin:1,Gold:0,grid:{A:[0,0,0,0,0],B:[],C:[]}};};
+          await actions.handleSpin();
+          assert.equal(manualCalls,1);
+          assert.equal(prompt,true,'Manual play still waits for the modal button');
+          assert.equal(live.current.freeSpinsLeft,15);
           assert.equal(errors.length,0);
         }
       }

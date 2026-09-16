@@ -60,53 +60,53 @@ const getCoordinateValue = (grid, coordinate) => {
   return asNumber(grid?.[row]?.[column], null);
 };
 
-const getWinningSymbolsForBackendLine = (grid, coordinates) => {
+const getWinningSymbolsForBackendLine = (grid, coordinates, wildSymbol) => {
   const cells = coordinates.map((coordinate) => ({
     coordinate,
     value: getCoordinateValue(grid, coordinate),
   }));
   const targetSymbol = cells.find(
-    (cell) => cell.value > 0 && cell.value !== 12,
+    (cell) => cell.value > 0 && cell.value !== wildSymbol,
   )?.value;
 
   if (targetSymbol == null) {
     const wildOnlyCells = cells
-      .filter((cell) => cell.value === 12)
+      .filter((cell) => cell.value === wildSymbol)
       .map((cell) => cell.coordinate);
     return wildOnlyCells.length >= 2 ? wildOnlyCells : [];
   }
 
   const winningCells = [];
   for (const cell of cells) {
-    if (cell.value !== targetSymbol && cell.value !== 12) break;
+    if (cell.value !== targetSymbol && cell.value !== wildSymbol) break;
     winningCells.push(cell.coordinate);
   }
 
   return winningCells.length >= 2 ? winningCells : [];
 };
 
-const getLineWinSymbol = (grid, winningCells) => {
+const getLineWinSymbol = (grid, winningCells, wildSymbol) => {
   const symbol = winningCells
     .map((coordinate) => getCoordinateValue(grid, coordinate))
-    .find((value) => value > 0 && value !== 12);
+    .find((value) => value > 0 && value !== wildSymbol);
   return symbol ?? null;
 };
 
-const mapBackendLineWins = (koffs, grid) =>
+const mapBackendLineWins = (koffs, grid, wildSymbol) =>
   koffs.flatMap((value, index) => {
     const coefficient = asNumber(value, 0);
     if (coefficient <= 0) return [];
 
     const lineId = index + 1;
     const lineCoordinates = BACKEND_LINE_COORDINATES[index] ?? [];
-    const winningCells = getWinningSymbolsForBackendLine(grid, lineCoordinates);
+    const winningCells = getWinningSymbolsForBackendLine(grid, lineCoordinates, wildSymbol);
 
     return [
       {
         lineId,
         groupIndex: index,
         group: lineCoordinates,
-        symbol: getLineWinSymbol(grid, winningCells),
+        symbol: getLineWinSymbol(grid, winningCells, wildSymbol),
         count: winningCells.length,
         backendValue: coefficient,
         coefficient,
@@ -198,7 +198,9 @@ export const mapJsonSpinPayload = (payload, params = {}) => {
 
 const mapSpinValues = (attrs, grid, backendKoffs, params) => {
   const backendWinSum = asNumber(attrs.WinSum, 0);
-  const backendLineWins = mapBackendLineWins(backendKoffs, grid);
+  const gameId = params.recoveryGameId ?? params.gameId;
+  const wildSymbol = gameId === "babylon" || String(gameId) === "43" ? 9 : 12;
+  const backendLineWins = mapBackendLineWins(backendKoffs, grid, wildSymbol);
 const freeSpin = asNumber(attrs.FreeSpin);
   const gold = asNumber(attrs.Gold);
   const detectedScatterCells = getScatterCells(grid);
