@@ -17,7 +17,7 @@ import { partnerApi } from "../services/partnerApi.js";
 import {
   games as displayGames,
   combinations as displayCombinations,
-  initialGrid,
+  getInitialGrid,
   stakeOptions,
 } from "../data/mockData.js";
 import { useLanguage } from "../i18n.jsx";
@@ -207,6 +207,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const spinFeedbackTimerRef = useRef(null);
   const autoPlayOnRef = useRef(autoPlayOn);
   const freeSpinRunRef = useRef(false);
+  const resumeAutoPlayAfterFreeSpinsRef = useRef(false);
   const liveSpinStateRef = useRef({
     carpetCloseMs,
     carpetOpenMs,
@@ -266,6 +267,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     () => () => {
       autoPlayOnRef.current = false;
       freeSpinRunRef.current = false;
+      resumeAutoPlayAfterFreeSpinsRef.current = false;
       if (spinFeedbackTimerRef.current) {
         window.clearTimeout(spinFeedbackTimerRef.current);
         spinFeedbackTimerRef.current = null;
@@ -530,7 +532,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     if (missing.length) {
       setGames(displayGames);
       setSupportedCombinations(setCombinations, setSelectedCombinationId, gameDefinition?.id ?? context.gameId, displayCombinations);
-      setGrid(initialGrid);
+      setGrid(getInitialGrid(gameDefinition?.id ?? context.recoveryGameId ?? context.gameId));
       setStatus("guest");
       setError("");
       return;
@@ -647,7 +649,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       setSpinResult(recovered.spinResult);
       setDoublingState(recovered.doublingState ? { ...recovered.doublingState, loading: false, lastPick: "", lastStatus: "" } : createEmptyDoublingState());
       setDoubleState(recovered.doubleState ? { ...recovered.doubleState, loading: false } : createDoubleState());
-      setGrid(recovered.lastConfirmedGrid ?? recovered.grid ?? recovered.spinResult.grid ?? initialGrid);
+      setGrid(recovered.lastConfirmedGrid ?? recovered.grid ?? recovered.spinResult.grid ?? getInitialGrid(gameDefinition?.id ?? context.recoveryGameId ?? context.gameId));
       setHasRecoveredGrid(true);
       setGridRevealKey((key) => key + 1);
       setGridAnimation("settled");
@@ -727,6 +729,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       emitLotteryRevealSounds,
       emitSound,
       freeSpinRunRef,
+      resumeAutoPlayAfterFreeSpinsRef,
       liveSpinStateRef,
       playSpinFeedback,
       postEvent,
@@ -812,6 +815,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   }, [autoPlayOn]);
 
   const toggleAutoPlay = () => {
+    resumeAutoPlayAfterFreeSpinsRef.current = false;
     setAutoPlayOn((current) => !current);
   };
 

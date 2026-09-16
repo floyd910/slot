@@ -9,7 +9,9 @@ import {
   getBottomBarLabel,
 } from "../../viewModels/bottomBarControls.js";
 
-export default function BottomBar(props) {
+export default function BottomBar(inputProps) {
+  const freeSpinControlsLocked = Boolean(inputProps.freeSpinRoundStarted);
+  const props = { ...inputProps, disabled: inputProps.disabled || freeSpinControlsLocked };
   const shortLandscape = useShortLandscape();
   const { language, t, toggleLanguage } = useLanguage();
   const doubleLeftLabel = language === "tg" ? t("left") : "\u041b\u0435\u0432\u044b\u0439";
@@ -19,7 +21,7 @@ export default function BottomBar(props) {
     primaryActionCollectsWin:
       props.primaryActionCollectsWin && props.revealComplete !== false,
     toggleLanguage,
-  });
+  }).map(control => freeSpinControlsLocked ? { ...control, disabled: true } : control);
   const balance = formatMoney(props.player?.balance);
   const totalPurchase = formatMoney(props.totalPurchase);
   const ticketWinAmount = getTicketWinAmount(

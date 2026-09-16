@@ -1,7 +1,7 @@
 import {
   combinations,
   games,
-  initialGrid,
+  getInitialGrid,
   paytable,
   symbolMap,
 } from "../data/mockData.js";
@@ -48,7 +48,7 @@ export const createSession = async (params) => {
     },
     games: clone(games),
     combinations: clone(combinations),
-    grid: clone(initialGrid),
+    grid: getInitialGrid(params.recoveryGameId ?? params.gameId),
   };
 };
 

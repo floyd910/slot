@@ -131,3 +131,14 @@ export const initialGrid = {
   C: [2, 1, 1, 1, 6],
   D: ["", "", "SCATTER", "", ""],
 };
+
+// Startup display only; server spin results are never remapped.
+export const getInitialGrid = (gameId) => {
+  const maxSymbol = { babylon: 9, fruits: 7, "43": 9, "42": 7 }[gameId] ?? 12;
+  return {
+    A: initialGrid.A.map(value => Math.min(value, maxSymbol)),
+    B: initialGrid.B.map(value => Math.min(value, maxSymbol)),
+    C: initialGrid.C.map(value => Math.min(value, maxSymbol)),
+    D: [...initialGrid.D],
+  };
+};

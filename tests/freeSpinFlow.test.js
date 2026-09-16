@@ -55,6 +55,8 @@ test('all eight games show autoplay awards and extend an active free-spin series
           await actions.startFreeSpinRun();
           assert.deepEqual(order,['pay','spin'],'Modal must collect before the first free spin');
           assert.equal(live.current.freeSpinsLeft,0);
+          assert.equal(autoplay,true,gameId+" resumes Auto Express after bonus");
+          assert.equal(options.autoPlayOnRef.current,true);
           assert.equal(errors.length,0);
         }
       }

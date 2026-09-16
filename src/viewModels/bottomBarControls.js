@@ -92,7 +92,7 @@ export function buildBottomBarControls({
     },
     {
       active: spinFeedbackActive,
-      disabled: disabled || spinDisabled,
+      disabled: disabled || spinDisabled || autoPlayOn,
       extraClass: `spin-draw-button${spinAssetsLoading ? " --loading" : ""}`,
       onClick: onSpin,
       type: primaryActionCollectsWin ? "takeWin" : "spinDraw",

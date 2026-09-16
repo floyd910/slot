@@ -1,6 +1,6 @@
 import { requestBalance } from "../api/balanceApiClient.js";
 import { isDevTestLaunch } from "../api/devTestLaunch.js";
-import { games, combinations, initialGrid } from "../data/mockData.js";
+import { games, combinations, getInitialGrid } from "../data/mockData.js";
 import {
   getGames as getMockGames,
   getPaytable as getMockPaytable,
@@ -77,7 +77,7 @@ export class SessionApiService {
     return {
       sessionId: remote.sessionId,
       player: { id: playerId, balance: wallet.balance, currency: wallet.currency },
-      games, combinations, grid: initialGrid,
+      games, combinations, grid: getInitialGrid(params.recoveryGameId ?? params.gameId),
       backendGameId: remote.backendGameId ?? null,
       unfinishedRound: remote.unfinishedRound ?? null,
     };
