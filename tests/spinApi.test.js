@@ -13,10 +13,10 @@ const fixture = () => ({
   WinSum:'563.5', FreeSpin:'0', Gold:'1', idCard:'66982076', Number:'37417586'
 });
 
-test('exact form fields, bet amount, token escaping and free-spin flags', () => {
+test('exact form fields, bet amount, Bearer token separation and free-spin flags', () => {
   const form=buildSpinForm(params,context);
-  assert.deepEqual(Object.fromEntries(form), {token:context.token,gameId:'36',playerId:'7',requestId:params.requestId,sum:'56.35',lines:'5',demoSpin:'1',freeSpin:'0'});
-  assert.equal(new URLSearchParams(form.toString()).get('token'),context.token);
+  assert.deepEqual(Object.fromEntries(form), {gameId:'36',playerId:'7',requestId:params.requestId,sum:'56.35',lines:'5',demoSpin:'1',freeSpin:'0'});
+  assert.equal(form.has('token'),false);
   const free=buildSpinForm({...params,isFreeSpin:true},context);
   assert.equal(free.get('freeSpin'),'1'); assert.equal(free.get('demoSpin'),'0');
   assert.equal(buildSpinForm({...params,isDemo:false},context).get('demoSpin'),'0');
@@ -43,14 +43,14 @@ test('transport posts once, handles JSON, HTTP errors and aborts without retries
   mergeRuntimeConfig({sessionApiBaseUrl:'https://example.invalid/api/'});
   const original=globalThis.fetch;let calls=0;
   try {
-    globalThis.fetch=async(url,options)=>{calls++;assert.equal(url,'https://example.invalid/api/spin');assert.equal(options.method,'POST');assert.match(options.headers['Content-Type'],/application\/x-www-form-urlencoded/);return new Response(JSON.stringify(fixture()));};
-    assert.equal((await sendSpinRequest(buildSpinForm(params,context))).idCard,'66982076');assert.equal(calls,1);
+    globalThis.fetch=async(url,options)=>{calls++;assert.equal(url,'https://example.invalid/api/spin');assert.equal(options.headers.Authorization,'Bearer '+context.token);assert.equal(options.body.has('token'),false);assert.equal(options.method,'POST');assert.match(options.headers['Content-Type'],/application\/x-www-form-urlencoded/);return new Response(JSON.stringify(fixture()));};
+    assert.equal((await sendSpinRequest(buildSpinForm(params,context),{token:context.token})).idCard,'66982076');assert.equal(calls,1);
     globalThis.fetch=async()=>new Response('{}',{status:401});
-    await assert.rejects(sendSpinRequest(buildSpinForm(params,context)),{code:'ACCESS_DENIED'});
+    await assert.rejects(sendSpinRequest(buildSpinForm(params,context),{token:context.token}),{code:'ACCESS_DENIED'});
     globalThis.fetch=async()=>new Response('not json');
-    await assert.rejects(sendSpinRequest(buildSpinForm(params,context)),{code:'BACKEND_RESPONSE_ERROR'});
+    await assert.rejects(sendSpinRequest(buildSpinForm(params,context),{token:context.token}),{code:'BACKEND_RESPONSE_ERROR'});
     calls=0;globalThis.fetch=async(_,options)=>{calls++;return new Promise((resolve,reject)=>options.signal.addEventListener('abort',()=>reject(new DOMException('Aborted','AbortError'))));};
-    await assert.rejects(sendSpinRequest(buildSpinForm(params,context),{requestId:params.requestId,timeoutMs:10}),{code:'TIMEOUT',requestId:params.requestId}); assert.equal(calls,1);
+    await assert.rejects(sendSpinRequest(buildSpinForm(params,context),{token:context.token,requestId:params.requestId,timeoutMs:10}),{code:'TIMEOUT',requestId:params.requestId}); assert.equal(calls,1);
   } finally {globalThis.fetch=original;}
 });
 
@@ -67,7 +67,7 @@ test('documented error_code/error responses are definitive client errors',async(
     for(const [status,code,message] of [[400,'BAD_REQUEST','Some fields are empty: idRequest, idUser, Sum'],[401,'ACCESS_DENIED','Invalid token'],[404,'GAME_NOT_FOUND','Game not found']]) {
       for(const httpStatus of [status,200]) {
         globalThis.fetch=async()=>new Response(JSON.stringify({error_code:status,error:message}),{status:httpStatus});
-        await assert.rejects(sendSpinRequest(buildSpinForm(params,context)),{code});
+        await assert.rejects(sendSpinRequest(buildSpinForm(params,context),{token:context.token}),{code});
       }
     }
   } finally {globalThis.fetch=original;}

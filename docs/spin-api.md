@@ -2,7 +2,7 @@
 
 Non-mock spins POST to the configured sessionApiBaseUrl + /spin (the same base as /init).
 Confirmed URL: https://api.raxshloto.online/spin.
-Request: application/x-www-form-urlencoded with token, gameId, playerId, requestId,
+Request: application/x-www-form-urlencoded with gameId, playerId, requestId,
 sum, lines, demoSpin, freeSpin. sum is the selected stake, never totalStake.
 Game codes are shared with /init in src/api/gameApiIds.js. No SOAP credentials or sessionId
 are sent to /spin. The supplied test token is not stored in source files.
@@ -22,7 +22,7 @@ Errors support HTTP status and JSON {error_code, error}. 400 is BAD_REQUEST, 401
 ACCESS_DENIED, 404 GAME_NOT_FOUND. Invalid authentication emits AUTH_REQUIRED to the host.
 No client token expiry timer or refresh credentials are added; the partner owns token renewal.
 
-Collection uses POST /pay with form fields token, gameId, playerId, requestId, cardId, idPartnerCard. The response must contain matching idCard, PayDate, and ballance (number or numeric string). The frontend uses ballance as authoritative and does not additionally credit the win or settle with the partner. Unknown payment results remain pending and block blind retries. Successful collection preserves remaining free spins.
+Collection uses POST /pay with form fields gameId, playerId, requestId, cardId. The response must contain matching idCard, PayDate, and ballance (number or numeric string). The frontend uses ballance as authoritative and does not additionally credit the win or settle with the partner. Unknown payment results remain pending and block blind retries. Successful collection preserves remaining free spins.
 Double transport still uses the existing SOAP method; mock mode retains local behavior. Automatic Double settlement on browser exit remains pending a backend recovery/exit contract.
 
 Existing behavior needing confirmation:
@@ -42,6 +42,10 @@ npm run build -- --outDir .codex-spin-build.
 
 Game IDs supplied on 2026-09-14: Hiranmandi 36, Ganchina 37, Mavrodir 38, Egipt2 39, Kadimi 40, Hocha 41, Fruct 42, Babilon 43. These replace the earlier provisional 1–8 API mapping for /init and /spin. The gameId=3 live check above is historical.
 
-Optional idPartnerCard from /spin is preserved unchanged in the spin result and passed to the internal pay call. The HTTP /pay transport sends this identifier unchanged.
+The revised /pay contract does not accept idPartnerCard; /spin no longer needs to return it. Legacy saved rounds may still contain it, but it is not sent.
 
 Local testing: ignored .env.local may provide VITE_DEV_TEST_TOKEN. Only development builds accept that token as a dev-test launch; a trusted parent INIT_CONTEXT replaces it. Production builds still require postMessage initialization.
+
+/init gameState now provides the authoritative startup grid through Line1.Slot11–Slot15, Line2.Slot21–Slot25 and Line3.Slot31–Slot35. LinesKoff maps Koff1–Koff10. Raw state is retained. CountFreeSpin is the exact remaining free-spin count and restores the bonus counter (zero clears it). CardSum is the total bet; SpinResult.LineSum is the per-line stake and SpinResult.Lines is the selected line count. These do not represent unpaid winnings. SumPay is the unpaid win amount and restores the collectible win when PayDate is empty; paid cards do not restore a collectible win. Pending-operation reconciliation still needs a backend contract; a last-card snapshot alone does not settle a pending request.
+
+Authentication: /init, /balance, /spin and /pay send Authorization: Bearer <token>. The token is never included in their form bodies. The backend must allow Authorization in CORS preflight responses and handle OPTIONS. There is no HTTP /double contract yet; the existing SOAP Double flow is unchanged.

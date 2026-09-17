@@ -1,3 +1,5 @@
+import { buildAuthHeaders } from "../api/authHeaders.js";
+import { mapInitGameState } from "../api/initGameState.js";
 import { requestBalance } from "../api/balanceApiClient.js";
 import { isDevTestLaunch } from "../api/devTestLaunch.js";
 import { games, combinations, getInitialGrid } from "../data/mockData.js";
@@ -20,8 +22,8 @@ const requestRemoteSession = async (params) => {
   const gameId = resolveApiGameId(params);
   const response = await fetch(buildApiUrl("/init"), {
     method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-    body: new URLSearchParams({ token: params.token, gameId, playerId }),
+    headers: buildAuthHeaders(params.token),
+    body: new URLSearchParams({ gameId, playerId }),
   });
 
   if (!response.ok) {
@@ -72,12 +74,14 @@ export class SessionApiService {
 
     const remote = await requestRemoteSession(params);
     const playerId = params.playerId ?? params.userId ?? params.idUser;
+    const gameState = mapInitGameState(remote.gameState, params);
     const wallet = await requestBalance({ token: params.token, playerId });
     mergeRuntimeConfig({ ...params, sessionId: remote.sessionId, playerId, userId: playerId, idUser: playerId });
     return {
       sessionId: remote.sessionId,
       player: { id: playerId, balance: wallet.balance, currency: wallet.currency },
-      games, combinations, grid: getInitialGrid(params.recoveryGameId ?? params.gameId),
+      games, combinations, grid: gameState?.grid ?? getInitialGrid(params.recoveryGameId ?? params.gameId),
+      gameState,
       backendGameId: remote.backendGameId ?? null,
       unfinishedRound: remote.unfinishedRound ?? null,
     };

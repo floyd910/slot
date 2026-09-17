@@ -372,7 +372,8 @@ export const createDoubleActions = ({
       const loadingDoubleState = {
         ...doubleState,
         loading: true,
-        status: `${t("opening")} ${t(side)}...`,
+        status: "opening",
+        side,
       };
       setDoubleState(loadingDoubleState);
       syncLiveState({ doubleState: loadingDoubleState, status: "processing" });
@@ -398,8 +399,9 @@ export const createDoubleActions = ({
         step: doubleState.step + 1,
         status:
           result.status === "win"
-            ? `${t(result.side)} ${t("doubleWon")}`
-            : `${t(result.side)} ${t("doubleLost")}`,
+            ? "doubleWon"
+            : "doubleLost",
+        side: result.side,
       };
 
       setSpinResult(nextSpinResult);
@@ -435,7 +437,7 @@ export const createDoubleActions = ({
       const retryDoubleState = {
         ...liveSpinStateRef.current.doubleState,
         loading: false,
-        status: t("retryDouble"),
+        status: "retryDouble",
       };
       setDoubleState(retryDoubleState);
       syncLiveState({ doubleState: retryDoubleState });

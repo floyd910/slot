@@ -1,10 +1,11 @@
+import { buildAuthHeaders } from "./authHeaders.js";
 import { getSessionApiBaseUrl } from "./runtimeConfig.js";
 
 export async function requestBalance({ token, playerId }) {
   const response = await fetch(getSessionApiBaseUrl().replace(/\/$/, "") + "/balance", {
     method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-    body: new URLSearchParams({ token, playerId }),
+    headers: buildAuthHeaders(token),
+    body: new URLSearchParams({ playerId }),
     signal: AbortSignal.timeout(9000),
   });
   if (!response.ok) {

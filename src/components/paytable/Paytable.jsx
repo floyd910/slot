@@ -77,7 +77,7 @@ export default function Paytable({
         className="info-modal__close"
         onClick={onClose}
         type="button"
-        aria-label="Close info"
+        aria-label={t("close")}
       >
         X
       </button>

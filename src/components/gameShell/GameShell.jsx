@@ -266,7 +266,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
 
       {backgroundLoadFailed && (
           <div className="startup-loader game-background-error" role="alert">
-            <p>{language === "tg" ? "Тасвири бозӣ бор нашуд." : "Не удалось загрузить изображение игры."}</p>
+            <p>{t("backgroundLoadError")}</p>
             <button type="button" onClick={() => setBackgroundAttempt((attempt) => attempt + 1)}>
               {t("retry")}
             </button>

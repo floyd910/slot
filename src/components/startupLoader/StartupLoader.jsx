@@ -72,7 +72,7 @@ export default function StartupLoader({ ready, leaving, variant = "default", pro
       style={backgroundSrc ? { "--startup-loader-background": `url("${backgroundSrc}")` } : undefined}
       role="status"
       aria-live="polite"
-      aria-label="Loading game"
+      aria-label={t("loading")}
       onTransitionEnd={(event) => {
         if (event.target === event.currentTarget && event.propertyName === "opacity" && leaving) reportExited();
       }}

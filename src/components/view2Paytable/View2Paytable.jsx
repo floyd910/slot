@@ -1,3 +1,4 @@
+import { useLanguage } from "../../i18n.jsx";
 import { createContext, useContext } from "react";
 import { VIEW2_SYMBOL_CONFIGS } from "../view2Symbols/index.jsx";
 import "./View2Paytable.css";
@@ -125,6 +126,7 @@ export default function View2Paytable({
   hiddenSymbolTiles = [],
   onClose,
 }) {
+  const { t } = useLanguage();
   const copy = VIEW2_COPY[language] ?? VIEW2_COPY.ru;
   const isFruits = gameId === "fruits";
   const payoutSymbols = isFruits
@@ -154,7 +156,7 @@ export default function View2Paytable({
               className="info-modal__close view2-info-inline__close"
               onClick={onClose}
               type="button"
-              aria-label="Close info"
+              aria-label={t("close")}
             >
               X
             </button>

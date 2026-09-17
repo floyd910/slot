@@ -39,7 +39,7 @@ export default function GameContent({ controller, game, runtimeState }) {
   const [drawDetailsExpanded, setDrawDetailsExpanded] = useState(false);
   const [lastTicket, setLastTicket] = useState(null);
   const { actions, derived, state } = controller;
-  const view = buildGameContentViewModel({ derived, state });
+  const view = buildGameContentViewModel({ derived, state, t });
   // Babylon and Fruits require at least three zeros for a scatter highlight.
   const scatterCells = ["babylon", "fruits"].includes(game.id) && (state.spinResult?.scatterCells?.length ?? 0) < 3
     ? []
@@ -79,6 +79,7 @@ export default function GameContent({ controller, game, runtimeState }) {
         winSum={state.spinResult?.WinSum ?? 0}
         step={state.doubleState.step}
         status={state.doubleState.status}
+        side={state.doubleState.side}
         loading={state.doubleState.loading}
         onPick={actions.pickDouble}
         onCollect={actions.collectWin}
@@ -159,7 +160,7 @@ export default function GameContent({ controller, game, runtimeState }) {
                 symbolAssets={game.assets.view2Symbols}
                 grid={state.grid}
                 revealKey={state.gridRevealKey}
-                animationState={state.visualMode ? state.gridAnimation : "idle"}
+                animationState={state.visualMode ? (state.hasRecoveredGrid ? "settled" : state.gridAnimation) : "idle"}
                 visualMode={true}
                 autoSequence={state.autoPlayOn || state.freeSpinRoundStarted}
                 carpetCloseMs={state.carpetCloseMs}

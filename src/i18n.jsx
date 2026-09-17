@@ -1,3 +1,4 @@
+import { notificationKey } from "./utils/notificationKeys.js";
 import {
   createContext,
   useCallback,
@@ -9,6 +10,29 @@ import {
 
 const copy = {
   ru: {
+    freeSpinsMultiplierText: "МНОЖИТЕЛЬ X3",
+    freeSpinsRewardText: "ВЫ ПОЛУЧИЛИ 15 ФРИСПИНОВ",
+    startFreeSpinRound: "НАЧАТЬ РАУНД ФРИСПИНОВ",
+    bonusRoundTitle: "БОНУСНЫЙ РАУНД",
+    collectBeforeSpin: "Заберите текущий выигрыш перед началом следующего спина.",
+    invalidLineCount: "Недопустимое количество линий.",
+    resolveBeforeCollect: "Дождитесь подтверждения текущей операции перед получением выигрыша.",
+    assetsLoadError: "Не удалось загрузить ресурсы игры. Попробуйте ещё раз.",
+    hostClosed: "Игра закрыта на странице партнёра.",
+    gridOutOfSync: "Состояние игрового поля рассинхронизировано. Перезагрузите игру.",
+    gameNotFound: "Запрошенная игра не найдена.",
+    collectionUnavailable: "Получение выигрыша временно недоступно. Ваш выигрыш ещё не зачислен.",
+    authenticationFailed: "Токен недействителен или доступ запрещён. Откройте игру с сайта партнёра.",
+    requestFailed: "Не удалось выполнить запрос. Попробуйте позже.",
+    serverTimeout: "Сервер не ответил вовремя.",
+    serverUnavailable: "Сервер временно недоступен.",
+    invalidBackendResponse: "Сервер вернул некорректные данные.",
+    paymentUnknown: "Результат выплаты неизвестен. Дождитесь подтверждения операции.",
+    backgroundLoadError: "Не удалось загрузить изображение игры.",
+    enterFullscreen: "На весь экран",
+    exitFullscreen: "Выйти из полноэкранного режима",
+    disableSound: "Выключить звук",
+    enableSound: "Включить звук",
     takeMoney: "ЗАБРАТЬ ДЕНЬГИ",
     takeWin: "\u0417\u0410\u0411\u0420\u0410\u0422\u042c \u0412\u042b\u0418\u0413\u0420\u042b\u0428",
     info: "ИНФО",
@@ -115,6 +139,29 @@ const copy = {
     betRejected: "Регистрация ставки отклонена.",
   },
   tg: {
+    freeSpinsMultiplierText: "ЗАРБКУНАНДА X3",
+    freeSpinsRewardText: "ШУМО 15 ТИРАЖИ РОЙГОН ГИРИФТЕД",
+    startFreeSpinRound: "ОҒОЗИ ДАВРИ ТИРАЖҲОИ РОЙГОН",
+    bonusRoundTitle: "ДАВРИ БОНУСӢ",
+    collectBeforeSpin: "Пеш аз оғози чархиши нав бурди ҷориро гиред.",
+    invalidLineCount: "Шумораи хатҳо нодуруст аст.",
+    resolveBeforeCollect: "Пеш аз гирифтани бурд тасдиқи амалиёти ҷориро интизор шавед.",
+    assetsLoadError: "Захираҳои бозӣ бор нашуданд. Бори дигар кӯшиш кунед.",
+    hostClosed: "Бозӣ дар саҳифаи шарик баста шуд.",
+    gridOutOfSync: "Ҳолати майдони бозӣ ҳамоҳанг нест. Бозиро аз нав бор кунед.",
+    gameNotFound: "Бозии дархостшуда ёфт нашуд.",
+    collectionUnavailable: "Гирифтани бурд муваққатан дастнорас аст. Бурди шумо ҳанӯз ба тавозун ворид нашудааст.",
+    authenticationFailed: "Токен беэътибор аст ё дастрасӣ манъ шудааст. Бозиро аз сомонаи шарик кушоед.",
+    requestFailed: "Дархост иҷро нашуд. Баъдтар кӯшиш кунед.",
+    serverTimeout: "Сервер сари вақт ҷавоб надод.",
+    serverUnavailable: "Сервер муваққатан дастнорас аст.",
+    invalidBackendResponse: "Сервер маълумоти нодуруст баргардонд.",
+    paymentUnknown: "Натиҷаи пардохт номаълум аст. Тасдиқи амалиётро интизор шавед.",
+    backgroundLoadError: "Тасвири бозӣ бор нашуд.",
+    enterFullscreen: "Ба экрани пурра",
+    exitFullscreen: "Аз экрани пурра баромадан",
+    disableSound: "Хомӯш кардани садо",
+    enableSound: "Фаъол кардани садо",
     takeMoney: "ГИРИФТАНИ ПУЛ",
     takeWin: "\u0411\u0423\u0420\u0414\u0420\u041e \u0413\u0418\u0420\u0418\u0424\u0422\u0410\u041d",
     info: "МАЪЛУМОТ",
@@ -220,6 +267,8 @@ const copy = {
     betRejected: "Сабти шарт рад карда шуд.",
   },
 };
+
+export const getNotificationKey = (value, fallback) => notificationKey(value, copy, fallback);
 
 const LanguageContext = createContext(null);
 const LANGUAGE_TRANSITION_SILENCE_MS = 180;

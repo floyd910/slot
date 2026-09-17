@@ -112,7 +112,7 @@ export const createSpinActions = ({
     const backendManagedWallet = useSoapBackend();
     const previousResult = liveSpinStateRef.current.spinResult;
     if (previousResult?.backendManagedWallet && !previousResult.creditedToBalance && getTicketWinAmount(previousResult, doublingState) > 0) {
-      setError("Collect the current win before starting another spin.");
+      setError(t("collectBeforeSpin"));
       return null;
     }
     const isFreeSpin = freeSpinsLeft > 0;
@@ -122,7 +122,7 @@ export const createSpinActions = ({
     const lineCount = selectedCombination.groups.length;
     const totalStake = Number((stake * lineCount).toFixed(2));
     if (!VALID_FRAME_LINE_COUNTS.has(lineCount)) {
-      setError("Invalid line count");
+      setError(t("invalidLineCount"));
       setLastKnownState("invalid-lines");
       setStatus("ready");
       liveSpinStateRef.current = {
@@ -500,7 +500,7 @@ export const createSpinActions = ({
     const { doublingState, player, spinResult, status, context } = liveSpinStateRef.current;
     if (!spinResult?.idCard || getTicketWinAmount(spinResult, doublingState) <= 0 || status !== "ready") return false;
     if (liveSpinStateRef.current.roundRecoveryBlocked || stateRecoveryService.getPendingRequest(context)) {
-      setError("Resolve the pending operation before collecting the win.");
+      setError(t("resolveBeforeCollect"));
       return false;
     }
     liveSpinStateRef.current = { ...liveSpinStateRef.current, balanceVersion: (liveSpinStateRef.current.balanceVersion ?? 0) + 1 };

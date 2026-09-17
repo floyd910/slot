@@ -18,7 +18,7 @@ test('trusted parent requires configured origin, parent window, and contract ver
   assert.equal(readHostMessage({...event,data:{...event.data,contractVersion:'9'}},parent,origin,true),null);
 });
 test('host init accepts only launch fields, never fake session or endpoint overrides',()=>{
-  const init=normalizeHostInit({token:'fixture',playerId:7,sessionId:'fake',password:'secret',sessionApiBaseUrl:'https://evil.example',allowedOrigins:['*'],backendMode:'mock',demoMode:true},'khiradmandi-makor');
+  const init=normalizeHostInit({token:"fixture",playerId:7,sessionId:'fake',password:'secret',sessionApiBaseUrl:'https://evil.example',allowedOrigins:['*'],backendMode:'mock',demoMode:true},'khiradmandi-makor');
   assert.equal(init.sessionId,null);assert.equal(init.playerId,'7');assert.equal(init.demoMode,true);
   assert.equal(init.password,undefined);assert.equal(init.sessionApiBaseUrl,undefined);assert.equal(init.allowedOrigins,undefined);assert.equal(init.backendMode,'soap');
   assert.equal(normalizeHostInit({playerId:7},'game'),null);
@@ -27,9 +27,9 @@ test('real init is required even with supplied session; zero balance is retained
   mergeRuntimeConfig({sessionApiBaseUrl:'https://example.invalid'});
   const original=globalThis.fetch;let calls=0;
   const service=new SessionApiService();
-  const params={token:'fixture',playerId:7,gameId:'khiradmandi-makor',initSource:'postMessage',sessionId:'fake'};
+  const params={token:"fixture",playerId:7,gameId:'khiradmandi-makor',initSource:'postMessage',sessionId:'fake'};
   try {
-    globalThis.fetch=async(url,options)=>{calls++;if(url.endsWith('/balance')){assert.deepEqual(Object.fromEntries(options.body),{token:'fixture',playerId:'7'});return new Response(JSON.stringify({balance:0,currency:'GEL',playerId:'7'}));}assert.equal(url,'https://example.invalid/init');assert.deepEqual(Object.fromEntries(options.body),{token:'fixture',gameId:'36',playerId:'7'});return new Response(JSON.stringify({sessionId:'real',balance:999,currency:'USD',playerId:7}));};
+    globalThis.fetch=async(url,options)=>{calls++;assert.equal(options.headers.Authorization,"Bearer fixture");if(url.endsWith('/balance')){assert.deepEqual(Object.fromEntries(options.body),{playerId:'7'});return new Response(JSON.stringify({balance:0,currency:'GEL',playerId:'7'}));}assert.equal(url,'https://example.invalid/init');assert.deepEqual(Object.fromEntries(options.body),{gameId:'36',playerId:'7'});return new Response(JSON.stringify({sessionId:'real',balance:999,currency:'USD',playerId:7}));};
     const result=await service.initSession(params);assert.equal(calls,2);assert.equal(result.sessionId,'real');assert.equal(result.player.balance,0);
     await assert.rejects(service.initSession({...params,initSource:'query'}),{code:'ACCESS_DENIED'});assert.equal(calls,2);
     globalThis.fetch=async()=>new Response(JSON.stringify({sessionId:'real',currency:'GEL'}));

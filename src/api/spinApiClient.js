@@ -1,3 +1,4 @@
+import { buildAuthHeaders } from "./authHeaders.js";
 import { REQUEST_TIMEOUT_MS } from "../config/gameSettings.js";
 import { resolveApiGameId } from "./gameApiIds.js";
 import { getSessionApiBaseUrl } from "./runtimeConfig.js";
@@ -19,8 +20,8 @@ export const getSpinErrorCode = (status, payload) => {
 };
 
 export const buildSpinForm = (params, context) => {
+  buildAuthHeaders(context.token);
   const fields = {
-    token: context.token,
     gameId: resolveApiGameId(context),
     playerId: context.playerId ?? context.userId ?? context.idUser,
     requestId: params.requestId,
@@ -29,7 +30,7 @@ export const buildSpinForm = (params, context) => {
     demoSpin: params.isFreeSpin ? 0 : params.isDemo ? 1 : 0,
     freeSpin: params.isFreeSpin ? 1 : 0,
   };
-  for (const key of ["token", "gameId", "playerId", "requestId", "sum", "lines"]) {
+  for (const key of ["gameId", "playerId", "requestId", "sum", "lines"]) {
     if (fields[key] == null || String(fields[key]).trim() === "") throw error("Missing spin field: " + key, "CONFIGURATION_ERROR");
   }
   if (!Number.isFinite(Number(fields.sum)) || Number(fields.sum) < 0 || !Number.isInteger(Number(fields.lines)) || Number(fields.lines) <= 0) {
@@ -38,7 +39,8 @@ export const buildSpinForm = (params, context) => {
   return new URLSearchParams(fields);
 };
 
-export const sendSpinRequest = async (body, { requestId, timeoutMs = REQUEST_TIMEOUT_MS } = {}) => {
+export const sendSpinRequest = async (body, { token, requestId, timeoutMs = REQUEST_TIMEOUT_MS } = {}) => {
+  const headers = buildAuthHeaders(token);
   const endpoint = getSessionApiBaseUrl().replace(/\/$/, "") + "/spin";
   if (import.meta.env?.PROD && new URL(endpoint, window.location.origin).protocol !== "https:") {
     throw error("Production spin endpoint must use HTTPS", "CONFIGURATION_ERROR", { requestId });
@@ -48,7 +50,7 @@ export const sendSpinRequest = async (body, { requestId, timeoutMs = REQUEST_TIM
   try {
     const response = await fetch(endpoint, {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+      headers,
       body,
       signal: controller.signal,
     });

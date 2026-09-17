@@ -20,7 +20,7 @@ import {
   getInitialGrid,
   stakeOptions,
 } from "../data/mockData.js";
-import { useLanguage } from "../i18n.jsx";
+import { getNotificationKey, useLanguage } from "../i18n.jsx";
 import { wait, withTimeout } from "../utils/async.js";
 import { isEnabled } from "../utils/featureFlags.js";
 import {
@@ -151,7 +151,9 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         frameApi.getPendingRequest(context),
     ),
   );
-  const [error, setError] = useState("");
+  const [errorKey, setErrorKey] = useState("");
+  const setError = useCallback((value) => setErrorKey(getNotificationKey(value)), []);
+  const error = errorKey ? t(errorKey) : "";
   const [lastKnownState, setLastKnownState] = useState(null);
   const [roundRecoveryStatus, setRoundRecoveryStatus] = useState(null);
   const [restoredDoubleAvailable, setRestoredDoubleAvailable] = useState(null);
@@ -362,7 +364,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       })
       .catch((assetError) => {
         console.error(assetError);
-        if (active) setError(assetError?.message || "Required game assets failed to load");
+        if (active) setError("assetsLoadError");
       });
     return () => {
       active = false;
@@ -476,7 +478,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         setShowPaytable(true);
       if (command === "CLOSE_MODULE") {
         setStatus("session-expired");
-        setError("Module was closed by the host page");
+        setError("hostClosed");
       }
     },
     [mergeInitContext],
@@ -493,7 +495,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     (runtimeError, fallbackMessage = "Request failed") => {
       const nextStatus = normalizeRuntimeStatus(runtimeError);
       const message = runtimeError?.message || fallbackMessage;
-      setError(message);
+      setError(getNotificationKey(runtimeError, getNotificationKey(fallbackMessage)));
       setStatus(nextStatus);
       setLastKnownState(nextStatus);
       postEvent(
@@ -515,7 +517,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     (runtimeError, fallbackMessage = "Request failed") => {
       const nextStatus = normalizeRuntimeStatus(runtimeError);
       const message = runtimeError?.message || fallbackMessage;
-      setError(message);
+      setError(getNotificationKey(runtimeError, getNotificationKey(fallbackMessage)));
       setStatus("ready");
       setLastKnownState(nextStatus);
       postEvent(nextStatus === "access-denied" ? "AUTH_REQUIRED" : "ERROR", {
@@ -565,14 +567,14 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       }
       const paymentRows = await withTimeout(frameApi.getPaytable(), "Paytable");
       const pendingRecovery = frameApi.getPendingRequest(context);
-      const recoveredState = frameApi.recoverState(context);
-      const lastSpinSnapshot = stateRecoveryService.getLastSpin(context);
+      const recoveredState = session.gameState ? null : frameApi.recoverState(context);
+      const lastSpinSnapshot = session.gameState ?? stateRecoveryService.getLastSpin(context);
       const confirmedSpinResult = recoveredState?.spinResult ?? recoveredState?.lastConfirmedSpinResult ?? lastSpinSnapshot?.spinResult;
-      const needsRecovery = Boolean(pendingRecovery) || [ROUND_OPERATION_STATUS.SPIN_PROCESSING, ROUND_OPERATION_STATUS.DOUBLE_PROCESSING].includes(recoveredState?.operationStatus);
+      const needsRecovery = Boolean(pendingRecovery) || session.gameState?.requiresReconciliation || [ROUND_OPERATION_STATUS.SPIN_PROCESSING, ROUND_OPERATION_STATUS.DOUBLE_PROCESSING].includes(recoveredState?.operationStatus);
       if (needsRecovery) {
         // Keep the last confirmed Free Spin result visible while the next
         // request remains unknown and therefore safely blocked.
-        if (confirmedSpinResult) {
+        if (confirmedSpinResult && recoveredState) {
           setSpinResult(confirmedSpinResult);
           setDoublingState(recoveredState.doublingState ? { ...recoveredState.doublingState, loading: false, lastPick: "", lastStatus: "" } : createEmptyDoublingState());
           setDoubleState(recoveredState.doubleState ? { ...recoveredState.doubleState, loading: false } : createDoubleState());
@@ -609,9 +611,33 @@ export function useGameController(selectedGameId, gameDefinition = null) {
           setShowFreeSpinPrompt(true);
         }
       }
+      if (session.gameState) {
+        // Show the confirmed result while any separate pending request remains blocked.
+        setSpinResult(session.gameState.spinResult);
+        setGridAnimation("settled");
+        const remaining = session.gameState.freeSpinsLeft;
+        setFreeSpinsLeft(remaining);
+        // The server supplies remaining spins, not the original award total.
+        setFreeSpinsTotal(remaining);
+        setFreeSpinRoundStarted(false);
+        setShowFreeSpinPrompt(remaining > 0 && !needsRecovery);
+        if (!needsRecovery) {
+          setSpinResult(session.gameState.spinResult);
+          setDoublingState(createEmptyDoublingState());
+          setDoubleState(createDoubleState());
+          setRoundRecoveryStatus(null);
+        }
+      }
       setPlayer(session.player);
       setGames(session.games);
       setSupportedCombinations(setCombinations, setSelectedCombinationId, gameDefinition?.id ?? context.gameId, session.combinations);
+      if (session.gameState) {
+        // Zero is used in empty/test snapshots; keep the playable stake in that case.
+        if (session.gameState.stake > 0) setStake(session.gameState.stake);
+        const restoredCombination = getSupportedCombinations(gameDefinition?.id ?? context.gameId, session.combinations)
+          .find(item => item.groups.length === session.gameState.lines);
+        if (restoredCombination) setSelectedCombinationId(restoredCombination.id);
+      }
       const startupGrid = recoveredState?.lastConfirmedGrid ?? recoveredState?.grid ?? lastSpinSnapshot?.grid ?? confirmedSpinResult?.grid ?? session.grid;
       setGrid(startupGrid);
       setHasRecoveredGrid(Boolean(recoveredState?.spinResult || recoveredState?.lastConfirmedSpinResult || lastSpinSnapshot?.grid));
@@ -668,7 +694,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   useEffect(() => {
     if (!window.ResizeObserver || !window.Promise) {
       setStatus("unsupported-environment");
-      setError("Browser is missing required iframe APIs");
+      setError("unsupported");
       return;
     }
     init();

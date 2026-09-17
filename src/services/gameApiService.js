@@ -61,7 +61,7 @@ export class GameApiService {
     remember(operation);
 
     try {
-      const payload = await sendSpinRequest(body, { requestId: params.requestId });
+      const payload = await sendSpinRequest(body, { token: getContext().token, requestId: params.requestId });
       const result = normalizeSpinResult({ ...mapJsonSpinPayload(payload, { ...getContext(), ...params }), backendManagedWallet: true });
       stateRecoveryService.saveGameState({
         lastIdCard: result.idCard,
@@ -136,7 +136,7 @@ export class GameApiService {
       const operation = {methodName:"/pay", requestId:params.requestId, idCard:params.idCard, idPartnerCard:params.idPartnerCard, roundId:params.idCard};
       stateRecoveryService.rememberPendingRequest(operation, context);
       try {
-        const result = mapPayResponse(await sendPayRequest(body, {requestId:params.requestId}), params);
+        const result = mapPayResponse(await sendPayRequest(body, {token:context.token, requestId:params.requestId}), params);
         stateRecoveryService.completePendingRequest(params.requestId, context);
         return result;
       } catch(error) {

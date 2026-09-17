@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import vm from 'node:vm';
+import {notificationKey,notificationErrorKeys} from '../src/utils/notificationKeys.js';
+const source=fs.readFileSync(new URL('../src/i18n.jsx',import.meta.url),'utf8');
+const start=source.indexOf('const copy = ')+13;
+const end=source.indexOf('export const getNotificationKey');
+const dictionaries=vm.runInNewContext('('+source.slice(start,end).trim().replace(/;$/, '')+')');
+test('every notification code has distinct Russian and Tajik copy',()=>{for(const key of [...Object.values(notificationErrorKeys),'collectBeforeSpin','invalidLineCount','resolveBeforeCollect','assetsLoadError','hostClosed','gridOutOfSync']){assert.ok(dictionaries.ru[key],key);assert.ok(dictionaries.tg[key],key);assert.notEqual(dictionaries.ru[key],dictionaries.tg[key]);assert.doesNotMatch(dictionaries.ru[key],/[A-Za-z]/);assert.doesNotMatch(dictionaries.tg[key],/[A-Za-z]/);}});
+test('an existing notification changes language without recreating it',()=>{const key=notificationKey(dictionaries.ru.collectBeforeSpin,dictionaries);assert.equal(key,'collectBeforeSpin');assert.equal(dictionaries.ru[key],'Заберите текущий выигрыш перед началом следующего спина.');assert.equal(dictionaries.tg[key],'Пеш аз оғози чархиши нав бурди ҷориро гиред.');assert.equal(notificationKey(dictionaries.tg[key],dictionaries),key);});
+test('raw server messages never become visible notification text',()=>{assert.equal(notificationKey({code:'GAME_NOT_FOUND',message:'English backend message'},dictionaries),'gameNotFound');assert.equal(notificationKey({status:401,message:'Invalid token'},dictionaries),'authenticationFailed');assert.equal(notificationKey('Unknown backend text',dictionaries),'requestFailed');assert.equal(notificationKey('',dictionaries),'');});
+test('shared controller stores localization keys and spin guards use translations',()=>{const controller=fs.readFileSync(new URL('../src/hooks/useGameController.js',import.meta.url),'utf8');assert.match(controller,/const error = errorKey \? t\(errorKey\)/);assert.doesNotMatch(controller,/setError\(runtimeError\?\.message/);const actions=fs.readFileSync(new URL('../src/controllers/spinActions.js',import.meta.url),'utf8');assert.doesNotMatch(actions,/Collect the current win|Invalid line count|Resolve the pending operation before collecting/);});

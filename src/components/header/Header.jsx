@@ -256,7 +256,7 @@ const Header = ({
           className={`fullscreen-changer${fullscreenActive ? " active" : ""}`}
           onClick={toggleFullscreen}
           aria-pressed={fullscreenActive}
-          aria-label={fullscreenActive ? "Exit fullscreen" : "Enter fullscreen"}
+          aria-label={fullscreenActive ? t("exitFullscreen") : t("enterFullscreen")}
         >
           {fullscreenActive ? <CollapseIcon /> : <ExpandIcon />}
         </button>
@@ -266,7 +266,7 @@ const Header = ({
           className={`sound-changer${soundEnabled ? "" : " muted"}`}
           onClick={onSoundToggle}
           aria-pressed={!soundEnabled}
-          aria-label={soundEnabled ? "Disable sound" : "Enable sound"}
+          aria-label={soundEnabled ? t("disableSound") : t("enableSound")}
         >
           {soundEnabled ? <SoundOnIcon /> : <SoundOffIcon />}
         </button>
@@ -274,7 +274,7 @@ const Header = ({
           className="burger-menu"
           type="button"
           onClick={onMenuOpen}
-          aria-label="Open menu"
+          aria-label={t("gameMenu")}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

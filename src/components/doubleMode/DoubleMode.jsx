@@ -1,10 +1,11 @@
 import "./DoubleMode.css";
-import { useLanguage } from "../../i18n.jsx";
+import { getNotificationKey, useLanguage } from "../../i18n.jsx";
 
 export default function DoubleMode({
   winSum,
   step,
   status,
+  side,
   onPick,
   onCollect,
   loading,
@@ -17,7 +18,7 @@ export default function DoubleMode({
       : t("loading")
     : status === "Choose left or right"
       ? t("chooseSide")
-      : status;
+      : status ? `${side ? t(side) + " " : ""}${t(getNotificationKey(status))}` : "";
 
   return (
     <section className="double-stage">

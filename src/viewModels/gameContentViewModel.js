@@ -1,10 +1,10 @@
-export function buildGameContentViewModel({ derived, state }) {
+export function buildGameContentViewModel({ derived, state, t = (key) => key }) {
   const gridMissing = !derived.isVisualDoubling && !hasPlayableGrid(state.grid);
 
   return {
     alertMessage:
       state.error ||
-      (gridMissing ? "Game session out of sync. Disconnecting board..." : ""),
+      (gridMissing ? t("gridOutOfSync") : ""),
     gridMissing,
     showLobby: !state.currentGame,
     showRightPanel: !derived.isVisualDoubling,
