@@ -18,7 +18,7 @@ export const mapPayResponse = (payload, params) => {
  if(payload?.idCard==null || String(payload.idCard)!==String(params.idCard) || typeof payload.PayDate!=='string' || !payload.PayDate.trim() || !['number','string'].includes(typeof value) || String(value).trim()==='' || !Number.isFinite(Number(value)) || Number(value)<0) throw error('Invalid pay response','BACKEND_RESPONSE_ERROR');
  return {idCard:payload.idCard, requestId:params.requestId, paidAt:payload.PayDate, balance:Number(value), backendManagedWallet:true};
 };
-export const sendPayRequest = async (body, { token, requestId, timeoutMs = REQUEST_TIMEOUT_MS } = {}) => {
+export const sendPayRequest = async (body, { token, requestId, keepalive = false, timeoutMs = REQUEST_TIMEOUT_MS } = {}) => {
   const headers = buildAuthHeaders(token);
   const endpoint = getSessionApiBaseUrl().replace(/\/$/, "") + "/pay";
   if (import.meta.env?.PROD && new URL(endpoint, window.location.origin).protocol !== "https:") {
@@ -31,6 +31,7 @@ export const sendPayRequest = async (body, { token, requestId, timeoutMs = REQUE
       method: "POST",
       headers,
       body,
+      keepalive,
       signal: controller.signal,
     });
     let payload;

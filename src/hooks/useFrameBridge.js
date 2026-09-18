@@ -1,4 +1,4 @@
-import { getDevTestLaunch, isDevTestLaunch } from "../api/devTestLaunch.js";
+import { isDemoContext } from "../api/demoLaunch.js";
 import { useCallback, useEffect, useRef } from "react";
 import { getFrontendEnvConfig } from "../api/runtimeConfig.js";
 import { normalizeHostInit, readHostMessage, resolveParentOrigin } from "../api/frameLaunch.js";
@@ -27,13 +27,12 @@ export function readFrameParams() {
     mode: isFramed ? "embedded" : "standalone", isFramed, parentOrigin, allowedOrigins,
     initSource: "missing", backendMode: "soap", sessionApiBaseUrl: config.sessionApiBaseUrl,
   };
-  Object.assign(context, getDevTestLaunch() ?? {});
   persistInitContext(context);
   return context;
 }
 export function getMissingRequiredContext(context) {
   const missing = [];
-  if (!isDevTestLaunch(context) && (!context.isFramed || !context.parentOrigin || context.initSource !== "postMessage")) missing.push("parentInitialization");
+  if (!isDemoContext(context) && (!context.isFramed || !context.parentOrigin || context.initSource !== "postMessage")) missing.push("parentInitialization");
   if (!context.token) missing.push("token");
   if (!(context.playerId ?? context.userId ?? context.idUser)) missing.push("playerId");
   if (!context.gameId) missing.push("gameId");

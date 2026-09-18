@@ -31,7 +31,7 @@ test('real init is required even with supplied session; zero balance is retained
   try {
     globalThis.fetch=async(url,options)=>{calls++;assert.equal(options.headers.Authorization,"Bearer fixture");if(url.endsWith('/balance')){assert.deepEqual(Object.fromEntries(options.body),{playerId:'7'});return new Response(JSON.stringify({balance:0,currency:'GEL',playerId:'7'}));}assert.equal(url,'https://example.invalid/init');assert.deepEqual(Object.fromEntries(options.body),{gameId:'36',playerId:'7'});return new Response(JSON.stringify({sessionId:'real',balance:999,currency:'USD',playerId:7}));};
     const result=await service.initSession(params);assert.equal(calls,2);assert.equal(result.sessionId,'real');assert.equal(result.player.balance,0);
-    await assert.rejects(service.initSession({...params,initSource:'query'}),{code:'ACCESS_DENIED'});assert.equal(calls,2);
+    for(const initSource of ['query','dev-test','missing']) await assert.rejects(service.initSession({...params,initSource}),{code:'ACCESS_DENIED'});assert.equal(calls,2);
     globalThis.fetch=async()=>new Response(JSON.stringify({sessionId:'real',currency:'GEL'}));
     await assert.rejects(service.initSession(params),{code:'BACKEND_RESPONSE_ERROR'});
   } finally {globalThis.fetch=original;}

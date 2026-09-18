@@ -1,3 +1,4 @@
+import { buildDoubleForm, sendDoubleRequest, mapDoubleResponse } from "../api/doubleApiClient.js";
 import { buildPayForm, sendPayRequest, mapPayResponse } from "../api/payApiClient.js";
 import { buildSpinForm, sendSpinRequest } from "../api/spinApiClient.js";
 import { mapJsonSpinPayload } from "../api/slotPayloadMappers.js";
@@ -8,13 +9,8 @@ import {
 } from "../api/mockSlotBackend.js";
 import { getRuntimeConfig, useSoapBackend } from "../api/runtimeConfig.js";
 import {
-  buildDoubleRequest,
   buildPayRequest,
 } from "../api/soapRequestBuilder.js";
-import {
-  parseDoubleResponse,
-} from "../api/soapResponseParser.js";
-import { sendSoapRequest } from "../api/soapClient.js";
 import { normalizeDoubleResult } from "../models/doubleResult.js";
 import { normalizePayResult } from "../models/payResult.js";
 import { normalizeSpinResult } from "../models/spinResult.js";
@@ -85,9 +81,11 @@ export class GameApiService {
       return normalizeDoubleResult({ ...result, requestId: params.requestId });
     }
 
-    const request = buildDoubleRequest(params);
+    const context = getContext();
+    if (stateRecoveryService.getPendingRequest(context)) throw Object.assign(new Error("Pending operation"), {code:"RECOVERY_REQUIRED"});
+    const body = buildDoubleForm(params, context);
     const operation = {
-      methodName: request.methodName,
+      methodName: "/double",
       requestId: params.requestId,
       idCard: params.idCard,
       roundId: params.idCard,
@@ -97,21 +95,8 @@ export class GameApiService {
     remember(operation);
 
     try {
-      const { payloadDocument } = await sendSoapRequest(request.methodName, request.xml, {
-        requestId: params.requestId,
-        idCard: params.idCard,
-        roundId: params.idCard,
-        retryAttempts: 1,
-        timeoutMs: 10000,
-        meta: stateRecoveryService.buildCorrelation(getContext(), operation),
-      });
-      const result = parseDoubleResponse(payloadDocument, {
-        idCard: params.idCard,
-        requestId: params.requestId,
-        roundId: params.idCard,
-        wasDouble: params.wasDouble,
-        side: params.side,
-      });
+      const payload = await sendDoubleRequest(body, {token:context.token, requestId:params.requestId});
+      const result = mapDoubleResponse(payload, params);
       stateRecoveryService.saveGameState({
         lastIdCard: result.idCard,
         currentMode: "double",
@@ -121,7 +106,10 @@ export class GameApiService {
       complete(params.requestId);
       return result;
     } catch (error) {
-      trackTimeout(error, operation);
+      if (["TIMEOUT", "NETWORK_ERROR", "SERVER_ERROR", "BACKEND_RESPONSE_ERROR"].includes(error.code)) {
+        stateRecoveryService.markRecoveryRequired(error, operation, context);
+        stateRecoveryService.markRoundRecoveryRequired(error, {operationType:"DOUBLE"}, context);
+      } else complete(params.requestId);
       throw error;
     }
   }
@@ -136,7 +124,7 @@ export class GameApiService {
       const operation = {methodName:"/pay", requestId:params.requestId, idCard:params.idCard, idPartnerCard:params.idPartnerCard, roundId:params.idCard};
       stateRecoveryService.rememberPendingRequest(operation, context);
       try {
-        const result = mapPayResponse(await sendPayRequest(body, {token:context.token, requestId:params.requestId}), params);
+        const result = mapPayResponse(await sendPayRequest(body, {token:context.token, requestId:params.requestId, keepalive:params.keepalive === true}), params);
         stateRecoveryService.completePendingRequest(params.requestId, context);
         return result;
       } catch(error) {

@@ -1,3 +1,4 @@
+import { requestDoubleExit } from "../services/doubleExitService.js";
 import { useEffect, useRef, useState } from "react";
 import {
   SLOT_CHOOSER_BACKGROUND_SRC,
@@ -314,7 +315,9 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
     refreshActiveRounds();
   };
 
-  const closeSlot = () => {
+  const closeSlot = async () => {
+    const exit = await requestDoubleExit();
+    if (exit.handled) { if(exit.allowExit) performCloseSlot(); return; }
     if (
       selectedSlotId &&
       stateRecoveryService.hasActiveRound(selectedSlotId)
@@ -339,8 +342,13 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
   };
 
   useEffect(() => {
-    const applyHashRoute = () => {
+    const applyHashRoute = async () => {
       const gameId = readHashGameId();
+      if (selectedSlotId && gameId !== selectedSlotId) {
+        const exit = await requestDoubleExit();
+        if (exit.handled && !exit.allowExit) { setHashRoute('/games/' + encodeURIComponent(selectedSlotId)); return; }
+        if (exit.handled) navigationBypassRef.current = true;
+      }
       if (!gameId) {
         if (window.location.hash !== `#${SLOT_CHOOSER_ROUTE}`) {
           window.history.replaceState(

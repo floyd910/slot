@@ -1,6 +1,6 @@
+import { getStartupPresentation } from "../../viewModels/startupPresentation.js";
 import "./GameShell.css";
 import { useLayoutEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import BottomBar from "../bottomBar/BottomBar.jsx";
 import GameMenu from "../gameMenu/GameMenu.jsx";
 import Paytable from "../paytable/Paytable.jsx";
@@ -69,13 +69,14 @@ export default function GameShell({ controller, game, onBackToSlots }) {
   }, [game.assets.cover, backgroundAttempt]);
   const { isLanguageChanging, language, t } = useLanguage();
   const checkingSession = ["initial-loading", "bootstrap-loading"].includes(state.status);
-  const showStartupLoader =
-    !loaderExitComplete &&
-    ((!state.player && checkingSession) || state.startupLoaderVisible ||
-      state.startupLoaderLeaving ||
-      !layoutReady ||
-      !backgroundPaintReady) &&
-    !isLanguageChanging;
+  const {guest, showStartupLoader} = getStartupPresentation({
+    status:state.status, loaderExitComplete, checkingSession, hasPlayer:Boolean(state.player),
+    startupLoaderVisible:state.startupLoaderVisible, startupLoaderLeaving:state.startupLoaderLeaving,
+    layoutReady, backgroundPaintReady, isLanguageChanging,
+  });
+  useLayoutEffect(() => {
+    if (guest) setLoaderExitComplete(true);
+  }, [guest]);
   const paytableView = buildStandardPaytableViewModel({
     stake: state.stake,
     selectedCombination: derived.selectedCombination,
@@ -107,6 +108,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
       }
       data-fluid-fit="true"
       data-layout-ready={layoutReady ? "true" : "false"}
+      data-guest={guest ? "true" : "false"}
       data-module-mode={state.context.mode}
       data-startup-loading={showStartupLoader ? "true" : "false"}
     >
@@ -254,15 +256,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
               {t("retry")}
             </button>
           </section>
-        )}        {derived.loginRequired &&
-          !showStartupLoader &&
-          typeof document !== "undefined" &&
-          createPortal(
-            <div className="login-required-message" role="status">
-              {t("loginRequired")}
-            </div>,
-            document.body,
-          )}
+        )}
 
       {backgroundLoadFailed && (
           <div className="startup-loader game-background-error" role="alert">

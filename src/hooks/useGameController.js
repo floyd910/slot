@@ -1,3 +1,5 @@
+import { createDoubleExitHandler, registerDoubleExit, requestDoubleExit } from "../services/doubleExitService.js";
+import { isStandaloneDemo, requestDemoLaunch } from "../api/demoLaunch.js";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { frameApi } from "../api/frameApi.js";
 import {
@@ -134,7 +136,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   }, [gameDefinition]);
   const tRef = useRef(t);
   const initializedSessionIdRef = useRef(null);
-  const bootGameId = selectedGameId ?? initialContext.gameId ?? null;
+  const bootGameId = gameDefinition?.id ?? selectedGameId ?? initialContext.gameId ?? null;
   const [context, setContext] = useState(() => ({
     ...initialContext,
     ...(bootGameId ? { gameId: bootGameId } : {}),
@@ -160,9 +162,9 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const [player, setPlayer] = useState(null);
   const [games, setGames] = useState([]);
   const [currentGame, setCurrentGame] = useState(bootGameId);
-  const [combinations, setCombinations] = useState([]);
+  const [combinations, setCombinations] = useState(() => getSupportedCombinations(gameDefinition?.id ?? bootGameId, displayCombinations));
   const [selectedCombinationId, setSelectedCombinationId] = useState(() => uiPreferences.selectedCombinationId ?? 1);
-  const [grid, setGrid] = useState({ A: [], B: [], C: [], D: [] });
+  const [grid, setGrid] = useState(() => getInitialGrid(gameDefinition?.id ?? bootGameId));
   const [gridRevealKey, setGridRevealKey] = useState(0);
   const [gridAnimation, setGridAnimation] = useState("idle");
   const [hasRecoveredGrid, setHasRecoveredGrid] = useState(false);
@@ -455,8 +457,8 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   }, []);
 
   const handleCommand = useCallback(
-    (command, payload) => {
-      if (command === "FORCE_RELOAD") window.location.reload();
+    async (command, payload) => {
+      if (command === "FORCE_RELOAD") { const exit = await requestDoubleExit(); if(exit.allowExit) window.location.reload(); return; }
       if (command === "UPDATE_THEME")
         mergeInitContext({
           theme: payload.theme ?? "dark",
@@ -477,6 +479,8 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       if (command === "OPEN_MODAL" && payload.modal === "paytable")
         setShowPaytable(true);
       if (command === "CLOSE_MODULE") {
+        const exit = await requestDoubleExit();
+        if (!exit.allowExit) return;
         setStatus("session-expired");
         setError("hostClosed");
       }
@@ -528,6 +532,41 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     [postEvent],
   );
 
+  useEffect(() => {
+    if (context.initSource !== 'missing' || !isStandaloneDemo()) return;
+    let active = true;
+    requestDemoLaunch().then(launch => {
+      if (active && isStandaloneDemo()) mergeInitContext(launch);
+    }).catch(error => { if (active) reportError(error); });
+    return () => { active = false; };
+  }, [context.initSource, mergeInitContext, reportError]);
+
+  useEffect(() => {
+    const exit = createDoubleExitHandler({
+      getState:()=>liveSpinStateRef.current, recovery:stateRecoveryService, pay:params=>frameApi.pay(params),
+      requestId:()=>buildRequestId('exit-pay'),
+      onStart:()=>{liveSpinStateRef.current={...liveSpinStateRef.current,status:'processing'};setStatus('processing');},
+      onPaid:(result, snapshot)=>{
+        const nextPlayer=snapshot.player ? {...snapshot.player,balance:result.balance} : null;
+        liveSpinStateRef.current={...liveSpinStateRef.current,spinResult:null,doublingState:createEmptyDoublingState(),doubleState:createDoubleState(),player:nextPlayer,status:"ready"};
+        setStatus("ready");
+        setSpinResult(null);setDoublingState(createEmptyDoublingState());setDoubleState(createDoubleState());
+        if(nextPlayer)setPlayer(nextPlayer);
+        postEvent('UPDATE_BALANCE',{balance:result.balance,currency:snapshot.player?.currency});
+      },
+      onError:error=>{
+        const pending=stateRecoveryService.getPendingRequest(liveSpinStateRef.current.context);
+        liveSpinStateRef.current={...liveSpinStateRef.current,status:'ready',roundRecoveryBlocked:Boolean(pending)};
+        if(pending)setRoundRecoveryStatus(ROUND_OPERATION_STATUS.RECOVERY_REQUIRED);
+        reportOperationError(error,tRef.current('paymentUnknown'));
+      },
+    });
+    const unregister=registerDoubleExit(exit);
+    const pageHide=()=>{void exit({keepalive:true});};
+    window.addEventListener('pagehide',pageHide);
+    return ()=>{unregister();window.removeEventListener('pagehide',pageHide);};
+  }, [postEvent, reportOperationError]);
+
   const init = useCallback(async () => {
     if (initializedSessionIdRef.current && context.sessionId === initializedSessionIdRef.current) return;
     const missing = getMissingRequiredContext(context);
@@ -535,6 +574,8 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       setGames(displayGames);
       setSupportedCombinations(setCombinations, setSelectedCombinationId, gameDefinition?.id ?? context.gameId, displayCombinations);
       setGrid(getInitialGrid(gameDefinition?.id ?? context.recoveryGameId ?? context.gameId));
+      setCurrentGame(gameDefinition?.id ?? context.gameId);
+      setGridAnimation("settled");
       setStatus("guest");
       setError("");
       return;

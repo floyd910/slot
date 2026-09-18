@@ -1325,7 +1325,7 @@ button:disabled {
   transform-origin: top center;
 }
 
-.frame-app[data-layout-ready="false"] .game-main-layout > .frame-content {
+.frame-app[data-layout-ready="false"]:not([data-guest="true"]) .game-main-layout > .frame-content {
   visibility: hidden;
 }
 

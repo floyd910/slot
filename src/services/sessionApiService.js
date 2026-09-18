@@ -1,7 +1,7 @@
+import { isDemoContext } from "../api/demoLaunch.js";
 import { buildAuthHeaders } from "../api/authHeaders.js";
 import { mapInitGameState } from "../api/initGameState.js";
 import { requestBalance } from "../api/balanceApiClient.js";
-import { isDevTestLaunch } from "../api/devTestLaunch.js";
 import { games, combinations, getInitialGrid } from "../data/mockData.js";
 import {
   getGames as getMockGames,
@@ -42,7 +42,7 @@ const requestRemoteSession = async (params) => {
 };
 
 const validateSessionContext = (params = {}) => {
-  if (params.initSource !== "postMessage" && !isDevTestLaunch(params)) {
+  if (params.initSource !== "postMessage" && !isDemoContext(params)) {
     throw Object.assign(new Error("Parent initialization is required"), { code: "ACCESS_DENIED" });
   }
   if (params.maintenance) {
