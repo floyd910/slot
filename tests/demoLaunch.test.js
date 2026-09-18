@@ -1,9 +1,29 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {demoLaunch} from '../server/demoLaunch.js';
-import {isStandaloneDemo,isDemoContext,requestDemoLaunch} from '../src/api/demoLaunch.js';
+import {isStandaloneDemo,isDemoContext,requestDemoLaunch,buildDemoLaunch} from '../src/api/demoLaunch.js';
 const standalone=(origin='https://raxshloto.online',hash='#/slots')=>{const runtime={location:{origin,hash}};runtime.parent=runtime;return runtime;};
-test('demo is restricted to standalone stand routes',()=>{assert.equal(isStandaloneDemo(standalone()),true);assert.equal(isStandaloneDemo(standalone(undefined,'#/games/babylon')),true);assert.equal(isStandaloneDemo(standalone('https://casino.example')),false);assert.equal(isStandaloneDemo(standalone(undefined,'#/other')),false);for(const origin of ['https://raxshloto.online','https://casino.example']){const framed=standalone(origin);framed.parent={};assert.equal(isStandaloneDemo(framed),false);}});
-test('embedded guests, expired partner sessions and forged demo contexts never fetch demo credentials',async()=>{const previous=globalThis.window,original=globalThis.fetch;let calls=0;globalThis.fetch=()=>{calls++;throw Error('must not fetch');};try{globalThis.window=standalone();globalThis.window.parent={};for(const context of [{initSource:'missing'},{initSource:'postMessage',token:'expired',playerId:7},{initSource:'demo-stand',token:'forged',playerId:7}]){assert.equal(isDemoContext(context),false);await assert.rejects(requestDemoLaunch(),{code:'ACCESS_DENIED'});}assert.equal(calls,0);}finally{globalThis.window=previous;globalThis.fetch=original;}});
-test('server endpoint requires explicit demo configuration and correct origin',()=>{const env={DEMO_ENABLED:'true',DEMO_ORIGIN:'https://raxshloto.online',DEMO_TOKEN:'server-test-token',DEMO_PLAYER_ID:'7'};const req={method:'POST',origin:env.DEMO_ORIGIN};const result=demoLaunch(req,env);assert.equal(result.status,200);assert.equal(result.headers['Cache-Control'],'no-store');assert.deepEqual(JSON.parse(result.body),{token:'server-test-token',playerId:'7',demoMode:false});assert.equal(demoLaunch(req,{...env,DEMO_ENABLED:'false'}).status,404);assert.equal(demoLaunch(req,{...env,DEMO_TOKEN:''}).status,503);assert.equal(demoLaunch({...req,origin:'https://casino.example'},env).status,403);assert.equal(demoLaunch({...req,method:'GET'},env).status,405);});
-test('standalone obtains real launch data and keeps only an in-memory shared request',async()=>{const previous=globalThis.window,original=globalThis.fetch;let calls=0;try{globalThis.window=standalone();globalThis.fetch=async(url,options)=>{calls++;assert.equal(url,'/api/demo-launch');assert.equal(options.method,'POST');return new Response(JSON.stringify({token:'demo-fixture',playerId:7,demoMode:false}));};const [a,b]=await Promise.all([requestDemoLaunch(),requestDemoLaunch()]);assert.equal(calls,1);assert.equal(a.token,'demo-fixture');assert.equal(a,b);assert.equal(isDemoContext(a),true);globalThis.window.parent={};await assert.rejects(requestDemoLaunch(),{code:'ACCESS_DENIED'});assert.equal(calls,1);}finally{globalThis.window=previous;globalThis.fetch=original;}});
+test('demo is restricted to standalone stand routes',()=>{
+ assert.equal(isStandaloneDemo(standalone()),true);
+ assert.equal(isStandaloneDemo(standalone(undefined,'#/games/babylon')),true);
+ assert.equal(isStandaloneDemo(standalone('https://casino.example')),false);
+ assert.equal(isStandaloneDemo(standalone(undefined,'#/other')),false);
+ for(const origin of ['https://raxshloto.online','https://casino.example']){const framed=standalone(origin);framed.parent={};assert.equal(isStandaloneDemo(framed),false);}
+});
+test('embedded sessions cannot use standalone credentials',async()=>{
+ const previous=globalThis.window;
+ try{globalThis.window=standalone();globalThis.window.parent={};
+ for(const context of [{initSource:'missing'},{initSource:'postMessage',token:'expired',playerId:7},{initSource:'demo-stand',token:'fixture',playerId:7}]){
+ assert.equal(isDemoContext(context),false);await assert.rejects(requestDemoLaunch(),{code:'ACCESS_DENIED'});
+ }}finally{globalThis.window=previous;}
+});
+test('provided demo credentials preserve real backend gameplay',()=>{
+ assert.deepEqual(buildDemoLaunch('real-demo-fixture',7),{token:'real-demo-fixture',playerId:'7',userId:'7',idUser:'7',demoMode:false,initSource:'demo-stand'});
+ for(const [token,id] of [['',7],[undefined,7],['fixture','']])assert.throws(()=>buildDemoLaunch(token,id),{code:'CONFIGURATION_ERROR'});
+});
+test('standalone initialization never calls a demo server endpoint',async()=>{
+ const previous=globalThis.window,original=globalThis.fetch;let calls=0;
+ try{globalThis.window=standalone();globalThis.fetch=()=>{calls++;throw Error('unexpected network');};
+ // Node has no Vite build configuration; missing credentials must fail locally.
+ await assert.rejects(requestDemoLaunch(),{code:'CONFIGURATION_ERROR'});assert.equal(calls,0);
+ }finally{globalThis.window=previous;globalThis.fetch=original;}
+});
