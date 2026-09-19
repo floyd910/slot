@@ -158,7 +158,7 @@
   line-height: 1.25;
   text-align: center;
 }
-/* Pre-chooser loading screen only. */
+/* Shared chooser and in-game loading screen. */
 .startup-loader--brand {
   background: radial-gradient(ellipse at 50% 30%, #33234680 0, transparent 55%),
     radial-gradient(ellipse at 50% 95%, #74522324 0, transparent 55%), #090b12;
@@ -184,19 +184,27 @@
 .startup-loader__progress-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
 .startup-loader__progress-heading span { color: #bcb8c9; font-size: 11px; font-weight: 500; letter-spacing: .04em; }
 .startup-loader__progress-heading strong { color: #f6d89a; font-size: 20px; font-variant-numeric: tabular-nums; letter-spacing: -.04em; }
-.startup-loader--brand .startup-loader__progress-track { height: 12px; padding: 3px; border: 1px solid #c6b4dd25; border-radius: 4px; background: #0a0b12; overflow: hidden; box-shadow: 0 4px 20px #0005; }
+.startup-loader--brand .startup-loader__progress-track { height: 12px; padding: 3px; border: 1px solid #c6b4dd25; border-radius: 4px; background: transparent; overflow: hidden; box-shadow: none; }
 .startup-loader--brand .startup-loader__progress-fill { border-radius: 1px; background: linear-gradient(90deg, #936137, #dfad58 55%, #ffe6a5); box-shadow: 0 0 15px #ffd37650; }
-.startup-loader--brand .startup-loader__progress-track::after { content: ""; position: absolute; inset: 3px; pointer-events: none; background: repeating-linear-gradient(90deg, transparent 0, transparent 17px, #0a0b1260 17px, #0a0b1260 19px); }
+.startup-loader--brand .startup-loader__progress-fill::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(90deg, transparent 0, transparent 17px, #0a0b1260 17px, #0a0b1260 19px); }
 .startup-loader__status { display: flex; align-items: center; gap: 8px; color: #898599; font-size: 10px; letter-spacing: .08em; }
 .startup-loader__status i { width: 4px; height: 4px; border-radius: 50%; background: #d9b46c; box-shadow: 0 0 8px #d9b46c70; }
 @keyframes loader-orbit { to { transform: rotate(360deg); } }
 @media (max-height: 480px) { .startup-loader--brand .startup-loader__brand { gap: 14px; } .startup-loader__emblem { width: 84px; height: 84px; } .startup-loader__gem { width: 48px; height: 48px; border-radius: 14px; } .startup-loader__gem span { font-size: 32px; } .startup-loader__intro h1 { font-size: 28px; margin: 8px 0; } }
 @media (prefers-reduced-motion: reduce) { .startup-loader__orbit::before { animation: none; } .startup-loader--brand .startup-loader__progress-fill { transition: none; } }
 
-/* Keep the pre-chooser screen dark and free of visible copy. */
+/* Keep loading screens dark and free of visible copy. */
 .startup-loader--brand { background: #050506; }
 .startup-loader--brand::before { display: none; }
 
 .startup-loader__percentage { order: 1; margin-top: 12px; color: #f6d89a; font-size: 20px; font-weight: 600; font-variant-numeric: tabular-nums; text-align: center; }
 
 .startup-loader--brand .startup-loader__progress { display: flex; flex-direction: column; }
+
+/* Game loading keeps the mountains behind the shared gold progress bar. */
+.startup-loader.startup-loader--background {
+  background-image: var(--startup-loader-background);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}

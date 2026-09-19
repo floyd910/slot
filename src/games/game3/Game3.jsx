@@ -1,3 +1,4 @@
+import { SLOT_CHOOSER_BACKGROUND_SRC } from "../../config/gameAssets.js";
 import GameShell from "../../components/gameShell/GameShell.jsx";
 import Header from "../../components/header/Header.jsx";
 import StartupLoader from "../../components/startupLoader/StartupLoader.jsx";
@@ -7,7 +8,7 @@ import "./Game3.css";
 export default function Game3({ slotId, onBack }) {
   const { assetsReady, controller } = useGame3(slotId);
 
-  if (!assetsReady) return <StartupLoader ready={false} leaving={false} />;
+  if (!assetsReady) return <StartupLoader backgroundSrc={SLOT_CHOOSER_BACKGROUND_SRC} ready={false} leaving={false} />;
 
   return (
     <>

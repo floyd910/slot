@@ -1,3 +1,4 @@
+import { SLOT_CHOOSER_BACKGROUND_SRC } from "../../config/gameAssets.js";
 import { getStartupPresentation } from "../../viewModels/startupPresentation.js";
 import "./GameShell.css";
 import { useLayoutEffect, useRef, useState } from "react";
@@ -7,7 +8,6 @@ import Paytable from "../paytable/Paytable.jsx";
 import RuntimeState from "../runtimeState/RuntimeState.jsx";
 import StartupLoader from "../startupLoader/StartupLoader.jsx";
 import View2Paytable from "../view2Paytable/View2Paytable.jsx";
-import { SLOT_CHOOSER_BACKGROUND_SRC } from "../../config/gameAssets.js";
 import { useLanguage } from "../../i18n.jsx";
 import { buildStandardPaytableViewModel } from "../../viewModels/paytableViewModel.js";
 import FreeSpinsPrompt from "../freeSpinsPrompt/FreeSpinsPrompt.jsx";
@@ -89,7 +89,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
         status={state.status}
         error={state.error}
         mode={state.context.mode}
-        onRetry={actions.init}
+        onRetry={actions.retryInitialization}
       />
     ) : null;
 
@@ -252,7 +252,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
             aria-live="assertive"
           >
             <p>{state.error || t("operationPendingRecovery")}</p>
-            <button type="button" onClick={actions.init}>
+            <button type="button" onClick={actions.retryInitialization}>
               {t("retry")}
             </button>
           </section>
@@ -267,14 +267,13 @@ export default function GameShell({ controller, game, onBackToSlots }) {
           </div>
         )}
       {showStartupLoader && !backgroundLoadFailed && (
-          <StartupLoader
+          <StartupLoader backgroundSrc={SLOT_CHOOSER_BACKGROUND_SRC}
             ready={
               !checkingSession && state.startupAssetsReady && layoutReady && backgroundPaintReady
             }
             leaving={
               !checkingSession && state.startupLoaderLeaving && layoutReady && backgroundPaintReady
             }
-            backgroundSrc={SLOT_CHOOSER_BACKGROUND_SRC}
             label={state.recoveringRound ? t("restoringGame") : undefined}
             onExited={() => setLoaderExitComplete(true)}
           />

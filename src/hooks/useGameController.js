@@ -136,6 +136,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   }, [gameDefinition]);
   const tRef = useRef(t);
   const initializedSessionIdRef = useRef(null);
+  const initializationInFlightRef = useRef(false);
   const bootGameId = gameDefinition?.id ?? selectedGameId ?? initialContext.gameId ?? null;
   const [context, setContext] = useState(() => ({
     ...initialContext,
@@ -567,8 +568,9 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     return ()=>{unregister();window.removeEventListener('pagehide',pageHide);};
   }, [postEvent, reportOperationError]);
 
-  const init = useCallback(async () => {
-    if (initializedSessionIdRef.current && context.sessionId === initializedSessionIdRef.current) return;
+  const init = useCallback(async ({ force = false } = {}) => {
+    if (initializationInFlightRef.current) return;
+    if (!force && initializedSessionIdRef.current && context.sessionId === initializedSessionIdRef.current) return;
     const missing = getMissingRequiredContext(context);
     if (missing.length) {
       setGames(displayGames);
@@ -581,6 +583,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       return;
     }
 
+    initializationInFlightRef.current = true;
     try {
       setStatus("bootstrap-loading");
       setError("");
@@ -703,9 +706,14 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         userId: session.player.id,
       });
     } catch (initError) {
+      initializedSessionIdRef.current = null;
       reportError(initError, tRef.current("initError"));
+    } finally {
+      initializationInFlightRef.current = false;
     }
   }, [context, postEvent, reportError]);
+
+  const retryInitialization = useCallback(() => init({ force: true }), [init]);
 
   useEffect(() => {
     if (roundRecoveryStatus !== ROUND_OPERATION_STATUS.RECOVERY_REQUIRED) return undefined;
@@ -743,7 +751,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
 
   useEffect(() => {
     const reconnect = () => {
-      if (status === "network-error") init();
+      if (status === "network-error" || lastKnownState === "network-error") retryInitialization();
     };
     const disconnect = () => {
       if (lastKnownState === "spin-submitted") {
@@ -759,7 +767,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       window.removeEventListener("online", reconnect);
       window.removeEventListener("offline", disconnect);
     };
-  }, [init, lastKnownState, status]);
+  }, [retryInitialization, lastKnownState, status]);
 
   useEffect(() => {
     if (
@@ -1026,6 +1034,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       cycleStake,
       handleSpin,
       init,
+      retryInitialization,
       loadPaytable,
       pickDouble,
       playFooterDouble,

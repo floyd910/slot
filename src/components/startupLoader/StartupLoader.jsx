@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import "./StartupLoader.css";
 import { useLanguage } from "../../i18n.jsx";
 
-export default function StartupLoader({ ready, leaving, variant = "default", progress: measuredProgress, backgroundSrc, label, onExited }) {
+export default function StartupLoader({ ready, leaving, variant = "brand", progress: measuredProgress, backgroundSrc, label, onExited }) {
   const { t } = useLanguage();
   const [progress, setProgress] = useState(0);
   const exitReportedRef = useRef(false);
@@ -68,7 +68,7 @@ export default function StartupLoader({ ready, leaving, variant = "default", pro
 
   return (
     <div
-      className={`startup-loader startup-loader--${variant}${ready ? " --ready" : ""}${leaving ? " --leaving" : ""}`}
+      className={`startup-loader startup-loader--${variant}${backgroundSrc ? " startup-loader--background" : ""}${ready ? " --ready" : ""}${leaving ? " --leaving" : ""}`}
       style={backgroundSrc ? { "--startup-loader-background": `url("${backgroundSrc}")` } : undefined}
       role="status"
       aria-live="polite"

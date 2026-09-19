@@ -1,6 +1,6 @@
+import { SLOT_CHOOSER_BACKGROUND_SRC } from "./config/gameAssets.js";
 import { Suspense, lazy } from "react";
 import StartupLoader from "./components/startupLoader/StartupLoader.jsx";
-import { SLOT_CHOOSER_BACKGROUND_SRC } from "./config/gameAssets.js";
 import { useSlotApp } from "./hooks/useSlotApp.js";
 import { useLanguage } from "./i18n.jsx";
 
@@ -45,7 +45,7 @@ export default function App() {
         <StartupLoader
           ready={false}
           leaving={false}
-          variant={showChooserLoader ? "brand" : "default"}
+          variant="brand"
           backgroundSrc={showGameLoader ? SLOT_CHOOSER_BACKGROUND_SRC : undefined}
           progress={showChooserLoader ? slotApp.chooserLoadProgress : slotApp.gameLoadProgress}
         />
