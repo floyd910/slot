@@ -529,8 +529,9 @@ export const createSpinActions = ({
       setGridAnimation("idle");
       setStatus("ready");
       liveSpinStateRef.current = {...liveSpinStateRef.current, player:nextPlayer, doubleState:nextDoubleState, doublingState:nextDoublingState, spinResult:null, status:"ready"};
+      const paidResult = {...spinResult, creditedToBalance:true, WinSum:0, winningCells:[], lineWins:[], scatterCells:[]};
+      stateRecoveryService.saveLastSpin({grid:spinResult.grid ?? liveSpinStateRef.current.grid, spinResult:paidResult}, context);
       if (liveSpinStateRef.current.freeSpinsLeft > 0) {
-        const paidResult = {...spinResult, creditedToBalance:true};
         stateRecoveryService.saveRound({operationType:"FREE_SPIN", operationStatus:ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION, currentWinSum:0, WasDouble:0, doubleAvailable:false, freeSpinsActive:true, freeSpinsLeft:liveSpinStateRef.current.freeSpinsLeft, freeSpinsTotal:liveSpinStateRef.current.freeSpinsTotal, spinResult:paidResult, lastConfirmedSpinResult:paidResult, doublingState:nextDoublingState},context);
       } else stateRecoveryService.completeRound(context);
       setLastKnownState("paid");

@@ -16,3 +16,11 @@ test('restores total bet, per-line stake and selected line count independently',
 test('SumPay restores unpaid winnings including after Double without changing wallet',()=>{for(const wasDouble of ['0','1']){const raw={...fixture(),SumPay:'200',CardSum:'5',SpinResult:{...fixture().SpinResult,WasDouble:wasDouble}};const mapped=mapInitGameState(raw,context);assert.equal(mapped.spinResult.WinSum,200);assert.equal(mapped.spinResult.creditedToBalance,false);assert.equal(mapped.requiresReconciliation,false);const paid=mapInitGameState({...raw,PayDate:'paid'},context);assert.equal(paid.spinResult.WinSum,0);assert.equal(paid.spinResult.creditedToBalance,true);}assert.throws(()=>mapInitGameState({...fixture(),SumPay:'bad'},context),{code:'BACKEND_RESPONSE_ERROR'});});
 
 test('restored win retains backend line coefficients and highlight cells',()=>{const raw=fixture();raw.SumPay='20';raw.Line2={Slot21:'3',Slot22:'3',Slot23:'3',Slot24:'6',Slot25:'7'};raw.LinesKoff.Koff1='10';const result=mapInitGameState(raw,context).spinResult;assert.equal(result.LineWinKoff[0],10);assert.equal(result.lineWins[0].lineId,1);assert.deepEqual(result.winningCells,["B1","B2","B3"]);assert.deepEqual(result.winningCells,result.lineWins[0].winningCells);});
+
+test('paid server snapshot preserves symbols but clears historical win effects',()=>{
+ const raw=fixture();raw.SumPay='20';raw.PayDate='2026-09-21';raw.Line2={Slot21:'3',Slot22:'3',Slot23:'3',Slot24:'6',Slot25:'7'};raw.LinesKoff.Koff1='10';
+ const result=mapInitGameState(raw,context).spinResult;
+ assert.deepEqual(result.grid.B,[3,3,3,6,7]);
+ assert.equal(result.creditedToBalance,true);
+ for(const key of ['winningCells','lineWins','scatterCells'])assert.deepEqual(result[key],[]);
+});

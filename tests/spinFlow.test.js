@@ -28,7 +28,7 @@ test('remote spins avoid partner mutations and retain unpaid wins',async()=>{
         mergeRuntimeConfig({...context,playerId:7});
         const live={current:{context,carpetCloseMs:0,carpetOpenMs:0,doubleState:{},doublingState:{},freeSpinsLeft:free?1:0,freeSpinsTotal:free?1:0,player:{balance:100},selectedCombination:{groups:[{}],id:'one'},stake:1,status:'ready',visualMode:true}};
         let calls=0;const events=[];const errors=[];
-        frameApi.spin=async()=>{calls++;return {backendManagedWallet:true,balance,idCard:'round',idPartnerCard:'partner-0001',WinSum:5,FreeSpin:0,Gold:0,grid:{A:[0,0,0,0,0],B:[],C:[]}};};
+        frameApi.spin=async()=>{calls++;return {backendManagedWallet:true,balance,idCard:'round',idPartnerCard:'partner-0001',WinSum:5,FreeSpin:0,Gold:0,grid:{A:[0,0,0,0,0],B:[1,1,1,1,1],C:[2,2,2,2,2]}};};
         const options={liveSpinStateRef:live,autoPlayOnRef:{current:false},freeSpinRunRef:{current:false},t:k=>k,postEvent:(type,payload)=>events.push({type,payload}),reportOperationError:e=>errors.push(e)};
         for(const name of ['emitLotteryRevealSounds','emitSound','playSpinFeedback','setError','setHasRecoveredGrid','setShowFreeSpinPrompt','setLastKnownState','onRecoveryRequired']) options[name]=()=>{};
         for(const key of ['DoubleState','DoublingState','Player','FreeSpinsLeft','FreeSpinsTotal','FreeSpinRoundStarted','Grid','GridAnimation','GridRevealKey','SpinHistory','SpinResult','Status']) {
@@ -56,6 +56,12 @@ test('remote spins avoid partner mutations and retain unpaid wins',async()=>{
         if(free){live.current.freeSpinsLeft=2;live.current.freeSpinsTotal=3;}
         globalThis.fetch=async()=>new Response(JSON.stringify({idCard:'round',PayDate:'9/15/2026 5:44:20 PM',ballance:1820}));
         assert.equal(await actions.collectWin(),true);
+        const paidSnapshot=stateRecoveryService.getLastSpin(context);
+        assert.equal(paidSnapshot.spinResult.creditedToBalance,true);
+        assert.equal(paidSnapshot.spinResult.WinSum,0);
+        assert.deepEqual(paidSnapshot.spinResult.winningCells,[]);
+        assert.deepEqual(paidSnapshot.spinResult.lineWins,[]);
+        assert.deepEqual(paidSnapshot.spinResult.scatterCells,[]);
         assert.equal(live.current.player.balance,1820);
         assert.equal(live.current.spinResult,null);
         assert.equal(events.filter(e=>e.type==='UPDATE_BALANCE').at(-1).payload.balance,1820);

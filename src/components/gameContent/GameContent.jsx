@@ -41,9 +41,9 @@ export default function GameContent({ controller, game, runtimeState }) {
   const { actions, derived, state } = controller;
   const view = buildGameContentViewModel({ derived, state, t });
   // Babylon and Fruits require at least three zeros for a scatter highlight.
-  const scatterCells = ["babylon", "fruits"].includes(game.id) && (state.spinResult?.scatterCells?.length ?? 0) < 3
+  const scatterCells = ["babylon", "fruits"].includes(game.id) && (view.highlightResult?.scatterCells?.length ?? 0) < 3
     ? []
-    : state.spinResult?.scatterCells;
+    : view.highlightResult?.scatterCells;
   useEffect(() => {
     if (!state.spinResult?.idCard) return;
     setLastTicket({
@@ -138,10 +138,10 @@ export default function GameContent({ controller, game, runtimeState }) {
                 carpetCloseMs={state.carpetCloseMs}
                 carpetOpenMs={state.carpetOpenMs}
                 winningCells={
-                  state.visualMode ? [] : state.spinResult?.winningCells
+                  state.visualMode ? [] : view.highlightResult?.winningCells
                 }
                 winningGroups={
-                  state.visualMode ? [] : state.spinResult?.lineWins
+                  state.visualMode ? [] : view.highlightResult?.lineWins
                 }
                 scatterCells={
                   state.visualMode ? [] : scatterCells
@@ -166,10 +166,10 @@ export default function GameContent({ controller, game, runtimeState }) {
                 carpetCloseMs={state.carpetCloseMs}
                 carpetOpenMs={state.carpetOpenMs}
                 winningCells={
-                  state.visualMode ? state.spinResult?.winningCells : []
+                  state.visualMode ? view.highlightResult?.winningCells : []
                 }
                 winningGroups={
-                  state.visualMode ? state.spinResult?.lineWins : []
+                  state.visualMode ? view.highlightResult?.lineWins : []
                 }
                 scatterCells={
                   state.visualMode ? scatterCells : []

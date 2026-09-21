@@ -18,6 +18,6 @@ export function mapInitGameState(state, context) {
 
   // CardSum is the total bet and LineSum is the per-line stake, never a payout.
   // SumPay is the unpaid win. A last-card snapshot cannot resolve an in-flight request.
-  return {raw:state,totalStake:Number(state.CardSum),stake:Number(state.SpinResult.LineSum),lines:Number(state.SpinResult.Lines),freeSpinsLeft:Number(state.CountFreeSpin),grid:spinResult.grid,spinResult:{...spinResult,backendManagedWallet:true,creditedToBalance:paid},
+  return {raw:state,totalStake:Number(state.CardSum),stake:Number(state.SpinResult.LineSum),lines:Number(state.SpinResult.Lines),freeSpinsLeft:Number(state.CountFreeSpin),grid:spinResult.grid,spinResult:{...spinResult,backendManagedWallet:true,creditedToBalance:paid,...(paid ? {winningCells:[],lineWins:[],scatterCells:[]} : {})},
     requiresReconciliation: false};
 }

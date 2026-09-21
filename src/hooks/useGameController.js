@@ -1,3 +1,4 @@
+import { getPrimaryGameAction } from "../viewModels/primaryGameAction.js";
 import { createDoubleExitHandler, registerDoubleExit, requestDoubleExit } from "../services/doubleExitService.js";
 import { isStandaloneDemo, requestDemoLaunch } from "../api/demoLaunch.js";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -573,6 +574,11 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     if (!force && initializedSessionIdRef.current && context.sessionId === initializedSessionIdRef.current) return;
     const missing = getMissingRequiredContext(context);
     if (missing.length) {
+      // The standalone launch is still resolving; do not expose a guest grid.
+      if (context.initSource === "missing" && isStandaloneDemo()) {
+        setStatus("initial-loading");
+        return;
+      }
       setGames(displayGames);
       setSupportedCombinations(setCombinations, setSelectedCombinationId, gameDefinition?.id ?? context.gameId, displayCombinations);
       setGrid(getInitialGrid(gameDefinition?.id ?? context.recoveryGameId ?? context.gameId));
@@ -651,7 +657,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         setFreeSpinsLeft(Number(recoveredState.freeSpinsLeft ?? 0));
         setFreeSpinsTotal(Number(recoveredState.freeSpinsTotal ?? recoveredState.freeSpinsLeft ?? 0));
         if (recoveredState.freeSpinsActive === true && Number(recoveredState.freeSpinsLeft ?? 0) > 0) {
-          setFreeSpinRoundStarted(true);
+          setFreeSpinRoundStarted(false);
           setShowFreeSpinPrompt(true);
         }
       }
@@ -999,17 +1005,15 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     (!pendingTicketWin && !canAffordSpin);
   const hideHeader =
     context.mode === "embedded" && context.featureFlags?.hiddenHeader !== false;
-  const primaryActionCollectsWin =
-    isVisualDoubling ||
-    (!showFreeSpinPrompt && !hasFreeSpinsPending && pendingTicketWin);
+  const primaryGameAction = getPrimaryGameAction({isVisualDoubling, pendingTicketWin, hasRecoveredGrid, showFreeSpinPrompt, hasFreeSpinsPending});
+  const primaryActionCollectsWin = primaryGameAction === 'collect';
   const shellClass = `frame-app mode-${context.mode} theme-${context.theme}${hideHeader ? " headerless" : ""}${expandedBoard || visualMode ? " expanded-board" : ""}${visualMode ? " view-2" : " view-1"}${isVisualDoubling ? " doubling-active" : ""}`;
   const runtimeStateVisible = !["guest", "ready", "empty", "processing", "initial-loading", "bootstrap-loading"].includes(status);
 
   const pressSpinButton = () => {
     if (!spinAssetsReady) return;
-    if (isVisualDoubling) return collectWin();
-    if (showFreeSpinPrompt || hasFreeSpinsPending) return startFreeSpinRun();
-    if (pendingTicketWin) return collectWin();
+    if (primaryGameAction === 'collect') return collectWin();
+    if (primaryGameAction === 'free-spins') return startFreeSpinRun();
     return handleSpin();
   };
 

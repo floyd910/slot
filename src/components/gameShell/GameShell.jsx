@@ -22,11 +22,12 @@ export default function GameShell({ controller, game, onBackToSlots }) {
   const [backgroundAttempt, setBackgroundAttempt] = useState(0);
   const [loaderExitComplete, setLoaderExitComplete] = useState(false);
   const { actions, derived, state } = controller;
+  const checkingSession = ["initial-loading", "bootstrap-loading"].includes(state.status);
   const showInlineView2Paytable = state.showPaytable && state.visualMode;
   const gridMounted = Boolean(state.grid?.A?.length && state.grid?.B?.length && state.grid?.C?.length);
   const layoutReady = useResponsiveGameLayout(
     shellRef,
-    `${state.visualMode ? "view2" : "view1"}:${derived.isVisualDoubling}:${showInlineView2Paytable}:${state.startupAssetsReady}:${gridMounted}:${state.combinations.length}`,
+    `${state.visualMode ? "view2" : "view1"}:${derived.isVisualDoubling}:${showInlineView2Paytable}:${state.startupAssetsReady}:${gridMounted}:${state.combinations.length}:${checkingSession}`,
   );
   useLayoutEffect(() => {
     let active = true;
@@ -68,15 +69,16 @@ export default function GameShell({ controller, game, onBackToSlots }) {
     };
   }, [game.assets.cover, backgroundAttempt]);
   const { isLanguageChanging, language, t } = useLanguage();
-  const checkingSession = ["initial-loading", "bootstrap-loading"].includes(state.status);
+
   const {guest, showStartupLoader} = getStartupPresentation({
     status:state.status, loaderExitComplete, checkingSession, hasPlayer:Boolean(state.player),
     startupLoaderVisible:state.startupLoaderVisible, startupLoaderLeaving:state.startupLoaderLeaving,
     layoutReady, backgroundPaintReady, isLanguageChanging,
   });
   useLayoutEffect(() => {
-    if (guest) setLoaderExitComplete(true);
-  }, [guest]);
+    if (checkingSession) setLoaderExitComplete(false);
+    else if (guest) setLoaderExitComplete(true);
+  }, [guest, checkingSession]);
   const paytableView = buildStandardPaytableViewModel({
     stake: state.stake,
     selectedCombination: derived.selectedCombination,
@@ -183,7 +185,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
                   selectedCombination={derived.selectedCombination}
                   totalPurchase={derived.totalPurchase}
                   spinResult={state.spinResult}
-                  revealComplete={state.gridAnimation === "settled"}
+                  revealComplete={state.hasRecoveredGrid || state.gridAnimation === "settled"}
                   disabled={derived.isBusy}
                   spinAssetsLoading={derived.spinAssetsLoading}
                   spinDisabled={derived.spinButtonDisabled}
@@ -242,7 +244,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
             onClose={() => actions.setShowGameMenu(false)}
           />
         )}
-        {state.showFreeSpinPrompt && (
+        {state.showFreeSpinPrompt && !(state.hasRecoveredGrid && derived.pendingTicketWin) && (
           <FreeSpinsPrompt onStart={actions.startFreeSpinRun} />
         )}
         {derived.isRoundRecoveryBlocked && !showStartupLoader && (
