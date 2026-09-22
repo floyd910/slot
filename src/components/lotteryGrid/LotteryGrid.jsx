@@ -181,7 +181,7 @@ function View1Cell({
 
   return (
     <div
-      className={`lottery-grid-view1-cell${size === "small" ? " lottery-grid-view1-cell--small" : ""}${isDoublingMark ? " lottery-grid-view1-cell--doubling-revealed" : ""}${!concealed && !eraser ? " lottery-grid-view1-cell--value-visible" : ""}${lineWinHighlighted ? " lottery-grid-view1-cell--win-highlight" : ""}${eraser ? " lottery-grid-view1-cell--revealing" : ""}${winLineDimmed ? " lottery-grid-view1-cell--win-dimmed" : ""}`}
+      className={`lottery-grid-view1-cell${size === "small" ? " lottery-grid-view1-cell--small" : ""}${isDoublingMark ? " lottery-grid-view1-cell--doubling-revealed" : ""}${!concealed && !eraser && digit !== "" && digit != null ? " lottery-grid-view1-cell--value-visible" : ""}${lineWinHighlighted ? " lottery-grid-view1-cell--win-highlight" : ""}${eraser ? " lottery-grid-view1-cell--revealing" : ""}${winLineDimmed ? " lottery-grid-view1-cell--win-dimmed" : ""}`}
       style={
         eraser
           ? {

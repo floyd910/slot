@@ -662,6 +662,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         }
       }
       if (session.gameState) {
+        if (!needsRecovery) stateRecoveryService.registerRestoredUnpaidWin(session.gameState, {...context, sessionId:session.sessionId ?? context.sessionId});
         // Show the confirmed result while any separate pending request remains blocked.
         setSpinResult(session.gameState.spinResult);
         setGridAnimation("settled");

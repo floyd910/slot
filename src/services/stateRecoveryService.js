@@ -197,6 +197,27 @@ export class StateRecoveryService {
       );
   }
 
+  registerRestoredUnpaidWin(gameState, context = {}) {
+    const result = gameState?.spinResult;
+    if (!result?.idCard || result.creditedToBalance === true || !(Number(result.WinSum) > 0) || this.getPendingRequest(context)) return null;
+    return this.saveRound({
+      idCard: result.idCard,
+      operationType: 'SPIN',
+      operationStatus: ROUND_OPERATION_STATUS.WAITING_FOR_COLLECT,
+      currentWinSum: Number(result.WinSum),
+      spinResult: result,
+      lastConfirmedSpinResult: result,
+      grid: gameState.grid ?? result.grid,
+      lastConfirmedGrid: gameState.grid ?? result.grid,
+      stake: gameState.stake,
+      freeSpinsLeft: gameState.freeSpinsLeft ?? 0,
+      freeSpinsActive: Number(gameState.freeSpinsLeft) > 0,
+      doubleAvailable: false,
+      doubleState: null,
+      doublingState: null,
+    }, context);
+  }
+
   hasActiveRound(gameId) {
     return this.getActiveRounds().some((round) => round.gameId === gameId);
   }

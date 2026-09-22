@@ -5,10 +5,9 @@ export default defineConfig(({ mode }) => {
   const env = {...loadEnv(mode, process.cwd(), ""), ...process.env};
   return {
   plugins: [react()],
-  // Public demo account only. These two values are intentionally included in the client build.
+  // Public demo account only. The token is intentionally included in the client build.
   define: {
     'import.meta.env.VITE_DEMO_TOKEN': JSON.stringify(env.DEMO_TOKEN || ''),
-    'import.meta.env.VITE_DEMO_PLAYER_ID': JSON.stringify(env.DEMO_PLAYER_ID || ''),
   },
   build: { sourcemap: false, minify: "esbuild" },
   esbuild: { drop: process.env.NODE_ENV === "production" ? ["console", "debugger"] : [] },

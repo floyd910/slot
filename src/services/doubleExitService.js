@@ -6,6 +6,7 @@ export function createDoubleExitHandler({getState,recovery,pay,onPaid,onError,on
   return function exit({keepalive=false}={}) {
     if(inFlight)return inFlight;
     const state=getState(), context=state.context;
+    // Collect on exit for ordinary wins with Double available as well as entered Double.
     const inDouble=Boolean(state.doublingState?.entered || state.doublingState?.active || state.doubleState?.active || state.doublingState?.step>0);
     if(!inDouble)return Promise.resolve({handled:false,allowExit:true});
     if(recovery.getPendingRequest(context) || state.roundRecoveryBlocked || recovery.getLocalState(context)?.operationStatus==='RECOVERY_REQUIRED') return Promise.resolve({handled:true,allowExit:true,pending:true});

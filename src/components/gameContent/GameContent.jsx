@@ -130,7 +130,7 @@ export default function GameContent({ controller, game, runtimeState }) {
             >
               <LotteryGrid
                 symbolAssets={game.assets.view2Symbols}
-                grid={state.grid}
+                grid={view.view1Grid}
                 revealKey={state.gridRevealKey}
                 animationState={state.visualMode ? "idle" : (state.hasRecoveredGrid ? "settled" : state.gridAnimation)}
                 visualMode={false}

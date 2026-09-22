@@ -1,9 +1,14 @@
 export function buildGameContentViewModel({ derived, state, t = (key) => key }) {
   const gridMissing = !derived.isVisualDoubling && !hasPlayableGrid(state.grid);
 
+  const restoredPaid = state.hasRecoveredGrid && state.spinResult?.creditedToBalance === true;
+
   return {
+    view1Grid: restoredPaid
+      ? Object.fromEntries(Object.entries(state.grid ?? {}).map(([row, cells]) => [row, Array.isArray(cells) ? cells.map(() => "") : cells]))
+      : state.grid,
     // Paid history keeps its symbols and receipt, but must not replay win effects.
-    highlightResult: state.hasRecoveredGrid && state.spinResult?.creditedToBalance === true
+    highlightResult: restoredPaid
       ? null
       : state.spinResult,
     alertMessage:

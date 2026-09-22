@@ -14,3 +14,13 @@ test('unpaid restored win keeps its highlights',()=>{
 test('fresh spins keep win effects even when automatically credited',()=>{
  assert.equal(view(result,false).highlightResult,result);
 });
+
+test('paid restored View 1 has empty cells while source symbols remain intact',()=>{
+ const grid={A:[1,2,3,4,5],B:[2,3,4,5,6],C:[3,4,5,6,7],D:['x2','','','','']};
+ const state={currentGame:'babylon',grid,spinResult:result,hasRecoveredGrid:true};
+ const mapped=buildGameContentViewModel({derived:{},state});
+ for(const row of ['A','B','C','D'])assert.deepEqual(mapped.view1Grid[row],['','','','','']);
+ assert.deepEqual(state.grid.A,[1,2,3,4,5]);
+ assert.equal(buildGameContentViewModel({derived:{},state:{...state,hasRecoveredGrid:false}}).view1Grid,grid);
+ assert.equal(buildGameContentViewModel({derived:{},state:{...state,spinResult:{...result,creditedToBalance:false}}}).view1Grid,grid);
+});
