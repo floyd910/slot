@@ -35,8 +35,9 @@ export default function BottomBar(inputProps) {
   const isFreeSpinResult =
     props.spinResult?.isFreeSpin === true ||
     Number(props.spinResult?.FreeSpin ?? 0) > 0;
+  const hasFreeSpins = Number(props.freeSpinsLeft ?? 0) > 0;
   const showDoubleOffer =
-    props.revealComplete !== false &&
+    !hasFreeSpins && props.revealComplete !== false &&
     (props.doubleOfferAvailable ||
       (!props.autoPlayOn &&
         !isFreeSpinResult &&
@@ -44,7 +45,7 @@ export default function BottomBar(inputProps) {
         normalSpinWinAmount > 0));
   const chooserDisabled = props.disabled || props.paytableControlsLocked;
   const showFreeSpinCounter =
-    props.freeSpinRoundStarted && Number(props.freeSpinsLeft ?? 0) > 0;
+    hasFreeSpins;
 
   return (
     <footer className="bottom-bar">

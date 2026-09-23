@@ -1,3 +1,4 @@
+import { requestFreeSpins } from "../api/freeSpinsApiClient.js";
 import { isDemoContext } from "../api/demoLaunch.js";
 import { buildAuthHeaders } from "../api/authHeaders.js";
 import { mapInitGameState } from "../api/initGameState.js";
@@ -76,12 +77,16 @@ export class SessionApiService {
     const playerId = params.playerId ?? params.userId ?? params.idUser;
     const gameState = mapInitGameState(remote.gameState, params);
     const wallet = await requestBalance({ token: params.token, playerId });
+    // No last-spin snapshot means there is no spin history to refresh yet.
+    const freeSpinsLeft = gameState ? await requestFreeSpins(params) : 0;
+    if (gameState) gameState.freeSpinsLeft = freeSpinsLeft;
     mergeRuntimeConfig({ ...params, sessionId: remote.sessionId, playerId, userId: playerId, idUser: playerId });
     return {
       sessionId: remote.sessionId,
       player: { id: playerId, balance: wallet.balance, currency: wallet.currency },
       games, combinations, grid: gameState?.grid ?? getInitialGrid(params.recoveryGameId ?? params.gameId),
       gameState,
+      freeSpinsLeft,
       backendGameId: remote.backendGameId ?? null,
       unfinishedRound: remote.unfinishedRound ?? null,
     };

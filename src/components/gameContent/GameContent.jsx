@@ -138,15 +138,15 @@ export default function GameContent({ controller, game, runtimeState }) {
                 carpetCloseMs={state.carpetCloseMs}
                 carpetOpenMs={state.carpetOpenMs}
                 winningCells={
-                  state.visualMode ? [] : view.highlightResult?.winningCells
+                  (state.visualMode || view.hideView1Symbols) ? [] : view.highlightResult?.winningCells
                 }
                 winningGroups={
-                  state.visualMode ? [] : view.highlightResult?.lineWins
+                  (state.visualMode || view.hideView1Symbols) ? [] : view.highlightResult?.lineWins
                 }
                 scatterCells={
-                  state.visualMode ? [] : scatterCells
+                  (state.visualMode || view.hideView1Symbols) ? [] : scatterCells
                 }
-                doublingState={state.doublingState}
+                doublingState={view.hideView1Symbols ? undefined : state.doublingState}
               />
             </div>
             <div
@@ -180,7 +180,7 @@ export default function GameContent({ controller, game, runtimeState }) {
                     ? 1000
                     : undefined
                 }
-                doublingState={state.doublingState}
+                doublingState={view.hideView1Symbols ? undefined : state.doublingState}
               />
             </div>
             {SHOW_TICKET_PANEL && (

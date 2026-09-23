@@ -245,7 +245,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
           />
         )}
         {state.showFreeSpinPrompt && !(state.hasRecoveredGrid && derived.pendingTicketWin) && (
-          <FreeSpinsPrompt onStart={actions.startFreeSpinRun} />
+          <FreeSpinsPrompt onStart={actions.startFreeSpinRun} count={state.freeSpinsLeft} />
         )}
         {derived.isRoundRecoveryBlocked && !showStartupLoader && (
           <section
@@ -270,6 +270,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
         )}
       {showStartupLoader && !backgroundLoadFailed && (
           <StartupLoader backgroundSrc={SLOT_CHOOSER_BACKGROUND_SRC}
+            preserveBackground={Boolean(state.player) && backgroundPaintReady}
             ready={
               !checkingSession && state.startupAssetsReady && layoutReady && backgroundPaintReady
             }

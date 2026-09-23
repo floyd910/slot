@@ -1,3 +1,4 @@
+import { requestFreeSpins } from "../api/freeSpinsApiClient.js";
 import { requestBalance } from "../api/balanceApiClient.js";
 import { useSoapBackend } from "../api/runtimeConfig.js";
 import { flushSync } from "react-dom";
@@ -49,6 +50,7 @@ export const createSpinActions = ({
   setGridAnimation,
   setGridRevealKey,
   setHasRecoveredGrid,
+  setHasSessionSpin,
   setLastKnownState,
   setPlayer,
   setShowFreeSpinPrompt,
@@ -110,11 +112,25 @@ export const createSpinActions = ({
       return null;
     }
     const backendManagedWallet = useSoapBackend();
+    if (backendManagedWallet && liveSpinStateRef.current.freeSpinCountUnknown) {
+      try {
+        const remaining = await requestFreeSpins(context);
+        if (liveSpinStateRef.current.context !== context) return null;
+        setFreeSpinsLeft(remaining);
+        liveSpinStateRef.current = {...liveSpinStateRef.current, freeSpinsLeft:remaining, freeSpinCountUnknown:false};
+        setShowFreeSpinPrompt(remaining > 0);
+        setError("");
+      } catch (error) {
+        reportOperationError(error, "Unable to refresh free spins. Try again before spinning.");
+      }
+      return null; // This attempt only refreshes the counter, never repeats the completed spin.
+    }
     const previousResult = liveSpinStateRef.current.spinResult;
     if (previousResult?.backendManagedWallet && !previousResult.creditedToBalance && getTicketWinAmount(previousResult, doublingState) > 0) {
       setError(t("collectBeforeSpin"));
       return null;
     }
+    // The remaining CountFreeSpin determines the request flag.
     const isFreeSpin = freeSpinsLeft > 0;
     const creditWinOnReveal =
       isFreeSpin || freeSpinAuto || autoExpressSpin || autoPlayOnRef.current;
@@ -253,12 +269,13 @@ export const createSpinActions = ({
         if (carpetCloseMs > 0) await wait(carpetCloseMs);
       }
       const hasBackendWin = result.hasBackendWin ?? result.WinSum > 0;
-      const awardedFreeSpins = getAwardedFreeSpinCount(result);
+      const awardedFreeSpins = backendManagedWallet ? 0 : getAwardedFreeSpinCount(result);
       const ticketWinAmount = getTicketWinAmount(result);
       const isDigitWin = ticketWinAmount > 0;
       const shouldCreditWin =
         !backendManagedWallet && result.WinSum > 0 && (creditWinOnReveal || awardedFreeSpins > 0);
       if (visualMode) {
+        setHasSessionSpin?.(true);
         setGrid(result.grid);
         liveSpinStateRef.current = { ...liveSpinStateRef.current, grid: result.grid };
         setGridRevealKey((key) => key + 1);
@@ -266,7 +283,8 @@ export const createSpinActions = ({
         emitLotteryRevealSounds();
       } else {
         flushSync(() => {
-          setGrid(result.grid);
+          setHasSessionSpin?.(true);
+        setGrid(result.grid);
           liveSpinStateRef.current = { ...liveSpinStateRef.current, grid: result.grid };
           setGridRevealKey((key) => key + 1);
           setGridAnimation("revealing");
@@ -351,7 +369,30 @@ export const createSpinActions = ({
       );
 
       let shouldShowFreeSpinPrompt = false;
-      if (isFreeSpin) {
+      let countRefreshError = null;
+      if (backendManagedWallet) {
+        try {
+          const remaining = await requestFreeSpins(context);
+          if (liveSpinStateRef.current.context !== context) return null;
+          setFreeSpinsLeft(remaining);
+          setFreeSpinsTotal(0); // Do not invent an original award total.
+          liveSpinStateRef.current = {...liveSpinStateRef.current, freeSpinsLeft:remaining, freeSpinsTotal:0, freeSpinCountUnknown:false};
+          if (!isFreeSpin && remaining > 0) {
+            setFreeSpinRoundStarted(false);
+            resumeAutoPlayAfterFreeSpinsRef.current = autoExpressSpin || autoPlayOnRef.current;
+            shouldShowFreeSpinPrompt = true;
+            autoPlayOnRef.current = false;
+            setAutoPlayOn?.(false);
+            if (visualMode) emitSound("freeTickets");
+          }
+        } catch (error) {
+          countRefreshError = error;
+          liveSpinStateRef.current = {...liveSpinStateRef.current, freeSpinCountUnknown:true};
+          autoPlayOnRef.current = false;
+          setAutoPlayOn?.(false);
+          resumeAutoPlayAfterFreeSpinsRef.current = false;
+        }
+      } else if (isFreeSpin) {
         const currentFreeSpinsLeft = Number(
           liveSpinStateRef.current.freeSpinsLeft ?? freeSpinsLeft,
         );
@@ -389,7 +430,7 @@ export const createSpinActions = ({
         if (visualMode) emitSound("freeTickets");
       }
 
-      if (isFreeSpin || awardedFreeSpins > 0) {
+      if (isFreeSpin || awardedFreeSpins > 0 || (backendManagedWallet && liveSpinStateRef.current.freeSpinsLeft > 0)) {
         const persistedFreeSpinsLeft = Number(liveSpinStateRef.current.freeSpinsLeft ?? 0);
         const persistedFreeSpinsTotal = Number(liveSpinStateRef.current.freeSpinsTotal ?? 0);
         stateRecoveryService.saveRound({ idCard: result.idCard, roundId: result.idCard, requestId, operationType: "FREE_SPIN", operationStatus: (persistedFreeSpinsLeft > 0 || (backendManagedWallet && isDigitWin)) ? ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION : ROUND_OPERATION_STATUS.ROUND_COMPLETED, currentWinSum: getTicketWinAmount(nextSpinResult, nextDoublingState), WasDouble: 0, doubleAvailable: false, freeSpinsActive: persistedFreeSpinsLeft > 0, freeSpinsTotal: persistedFreeSpinsTotal, freeSpinsLeft: persistedFreeSpinsLeft, freeSpinsPlayed: Math.max(0, persistedFreeSpinsTotal - persistedFreeSpinsLeft), spinResult: nextSpinResult, lastConfirmedSpinResult: nextSpinResult, lastConfirmedGrid: liveSpinStateRef.current.grid ?? result.grid, grid: result.grid, doublingState: nextDoublingState }, context);
@@ -439,6 +480,10 @@ export const createSpinActions = ({
         frameApi
           .pay({ idCard: result.idCard, idPartnerCard: result.idPartnerCard, requestId: buildRequestId("pay") })
           .catch(() => {});
+      }
+      if (countRefreshError) {
+        reportOperationError(countRefreshError, "Spin completed, but the free-spin count could not be refreshed. Retry the counter before spinning.");
+        return null;
       }
       return result;
     } catch (spinError) {
@@ -555,6 +600,10 @@ export const createSpinActions = ({
   };
 
   const startFreeSpinRun = async () => {
+    if (liveSpinStateRef.current.freeSpinCountUnknown) {
+      await handleSpin({freeSpinAuto:true});
+      return;
+    }
     if (freeSpinRunRef.current || liveSpinStateRef.current.freeSpinsLeft <= 0 ||
         liveSpinStateRef.current.status === "processing") return;
     const pending = liveSpinStateRef.current.spinResult;
@@ -590,9 +639,8 @@ export const createSpinActions = ({
       completed = liveSpinStateRef.current.freeSpinsLeft <= 0;
     } finally {
       freeSpinRunRef.current = false;
-      if (liveSpinStateRef.current.freeSpinsLeft <= 0) {
-        setFreeSpinRoundStarted(false);
-      }
+      // A stopped run must unlock controls even when bonus spins remain.
+      setFreeSpinRoundStarted(false);
       const resume = completed && resumeAutoPlayAfterFreeSpinsRef.current;
       resumeAutoPlayAfterFreeSpinsRef.current = false;
       if (resume) {
@@ -607,7 +655,7 @@ export const createSpinActions = ({
     const result = await handleSpin({ autoExpressSpin: true });
     if (!result) return;
 
-    if (getAwardedFreeSpinCount(result) > 0) {
+    if (!useSoapBackend() && getAwardedFreeSpinCount(result) > 0) {
       // Auto Express acknowledges the award and runs the bonus automatically.
       // startFreeSpinRun collects any pending win before its first spin.
       await startFreeSpinRun();

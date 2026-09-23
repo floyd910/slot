@@ -29,10 +29,43 @@ test('real init is required even with supplied session; zero balance is retained
   const service=new SessionApiService();
   const params={token:"fixture",playerId:7,gameId:'khiradmandi-makor',initSource:'postMessage',sessionId:'fake'};
   try {
-    globalThis.fetch=async(url,options)=>{calls++;assert.equal(options.headers.Authorization,"Bearer fixture");if(url.endsWith('/balance')){assert.deepEqual(Object.fromEntries(options.body),{playerId:'7'});return new Response(JSON.stringify({balance:0,currency:'GEL',playerId:'7'}));}assert.equal(url,'https://example.invalid/init');assert.deepEqual(Object.fromEntries(options.body),{gameId:'36',playerId:'7'});return new Response(JSON.stringify({sessionId:'real',balance:999,currency:'USD',playerId:7}));};
-    const result=await service.initSession(params);assert.equal(calls,2);assert.equal(result.sessionId,'real');assert.equal(result.player.balance,0);
+    globalThis.fetch=async(url,options)=>{calls++;assert.equal(options.headers.Authorization,"Bearer fixture");if(url.endsWith('/freespins')){assert.deepEqual(Object.fromEntries(options.body),{gameId:'36',playerId:'7'});return new Response(JSON.stringify({CountFreeSpin:'9'}));}if(url.endsWith('/balance')){assert.deepEqual(Object.fromEntries(options.body),{playerId:'7'});return new Response(JSON.stringify({balance:0,currency:'GEL',playerId:'7'}));}assert.equal(url,'https://example.invalid/init');assert.deepEqual(Object.fromEntries(options.body),{gameId:'36',playerId:'7'});return new Response(JSON.stringify({sessionId:'real',balance:999,currency:'USD',playerId:7}));};
+    const result=await service.initSession(params);assert.equal(calls,2);assert.equal(result.sessionId,'real');assert.equal(result.player.balance,0);assert.equal(result.freeSpinsLeft,0);
     for(const initSource of ['query','dev-test','missing']) await assert.rejects(service.initSession({...params,initSource}),{code:'ACCESS_DENIED'});assert.equal(calls,2);
     globalThis.fetch=async()=>new Response(JSON.stringify({sessionId:'real',currency:'GEL'}));
     await assert.rejects(service.initSession(params),{code:'BACKEND_RESPONSE_ERROR'});
+  } finally {globalThis.fetch=original;}
+});
+
+test('startup skips freespins before the first spin and refreshes returning players',async()=>{
+  mergeRuntimeConfig({sessionApiBaseUrl:'https://example.invalid'});
+  const original=globalThis.fetch;
+  const service=new SessionApiService();
+  const params={token:'fixture',playerId:7,gameId:'khiradmandi-makor',initSource:'postMessage'};
+  const previousSpin={
+    SpinResult:{idCard:'123',LineSum:'1',Lines:'5',WasDouble:'0',Number:'63455094'},
+    ...Object.fromEntries([[9,9,9,10,11],[5,9,12,12,7],[12,9,3,1,6]].map((row,r)=>['Line'+(r+1),Object.fromEntries(row.map((v,c)=>['Slot'+(r+1)+(c+1),String(v)]))])),
+    LinesKoff:Object.fromEntries(Array.from({length:10},(_,i)=>['Koff'+(i+1),'0'])),
+    idCard:'123',CardSum:'5',SumPay:'0',PayDate:'paid',idGameType:'36',SlotFreeSpin:'False',SlotDemoSpin:'False',CountFreeSpin:'8',
+  };
+  try {
+    for(const gameState of [null,undefined,previousSpin]) {
+      for(const count of [0,3]) {
+        const calls=[];
+        globalThis.fetch=async(url)=>{
+          const path=new URL(url).pathname;
+          calls.push(path);
+          if(path==='/init')return new Response(JSON.stringify({sessionId:'real',gameState}));
+          if(path==='/balance')return new Response(JSON.stringify({balance:100,currency:'GEL',playerId:7}));
+          assert.equal(path,'/freespins');
+          assert.ok(gameState,'must not request freespins before the first spin');
+          return new Response(JSON.stringify({CountFreeSpin:String(count)}));
+        };
+        const result=await service.initSession(params);
+        assert.deepEqual(calls,gameState ? ['/init','/balance','/freespins'] : ['/init','/balance']);
+        assert.equal(result.freeSpinsLeft,gameState ? count : 0);
+        if(gameState)assert.equal(result.gameState.freeSpinsLeft,count);
+      }
+    }
   } finally {globalThis.fetch=original;}
 });

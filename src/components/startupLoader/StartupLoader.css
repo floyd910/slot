@@ -208,3 +208,8 @@
   background-repeat: no-repeat;
   background-size: cover;
 }
+
+/* Reconnect keeps the mounted game and its loaded artwork visible. */
+.startup-loader.startup-loader--reconnect {
+  background: rgba(0, 0, 0, 0.35);
+}

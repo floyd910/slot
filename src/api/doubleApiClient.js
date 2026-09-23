@@ -1,5 +1,5 @@
 import { buildAuthHeaders } from './authHeaders.js';
-import { REQUEST_TIMEOUT_MS } from '../config/gameSettings.js';
+import { DOUBLE_MAX_STEPS, REQUEST_TIMEOUT_MS } from '../config/gameSettings.js';
 import { resolveApiGameId } from './gameApiIds.js';
 import { getSessionApiBaseUrl } from './runtimeConfig.js';
 import { getSpinErrorCode } from './spinApiClient.js';
@@ -9,7 +9,7 @@ export function buildDoubleForm(params, context) {
   buildAuthHeaders(context.token);
   const fields = {gameId:resolveApiGameId(context),requestId:params.requestId,cardId:params.idCard,wasDouble:params.wasDouble,sum:params.sum};
   for (const value of Object.values(fields)) if (!['string','number'].includes(typeof value) || !String(value).trim()) throw error('Missing double field','CONFIGURATION_ERROR');
-  if (!Number.isInteger(Number(fields.wasDouble)) || Number(fields.wasDouble)<1 || !Number.isFinite(Number(fields.sum)) || Number(fields.sum)<=0) throw error('Invalid double amount or step','CONFIGURATION_ERROR');
+  if (!Number.isInteger(Number(fields.wasDouble)) || Number(fields.wasDouble)<1 || Number(fields.wasDouble)>DOUBLE_MAX_STEPS || !Number.isFinite(Number(fields.sum)) || Number(fields.sum)<=0) throw error('Invalid double amount or step','CONFIGURATION_ERROR');
   return new URLSearchParams(fields);
 }
 export function mapDoubleResponse(payload, params) {

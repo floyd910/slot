@@ -35,6 +35,8 @@ test('remote spins avoid partner mutations and retain unpaid wins',async()=>{
           const prop=key[0].toLowerCase()+key.slice(1);
           options['set'+key]=value=>{live.current[prop]=typeof value==='function'?value(live.current[prop]??(key==='SpinHistory'?[]:0)):value;};
         }
+        const previousFetch=globalThis.fetch;
+        globalThis.fetch=async(url,...args)=>url.endsWith('/freespins') ? new Response(JSON.stringify({CountFreeSpin:'0'})) : previousFetch(url,...args);
         const actions=createSpinActions(options);
         const result=await actions.handleSpin();
         assert.ok(result);assert.equal(result.creditedToBalance,undefined); // returned raw result; saved result carries credit status

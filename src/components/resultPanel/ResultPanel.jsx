@@ -22,7 +22,10 @@ function getResultMessage(result, freeSpinsTotal, freeSpinsLeft, t) {
   const multiplier = asNumber(result.multiplier, 1);
   const baseWin = asNumber(result.BaseWinSum ?? result.WinSum);
   const finalWin = asNumber(result.WinSum);
-  const awardedFreeSpins = getAwardedFreeSpinCount(result);
+  const awardedFreeSpins = result.backendManagedWallet ? 0 : getAwardedFreeSpinCount(result);
+  if (result.backendManagedWallet && (freeSpinsLeft > 0 || result.isFreeSpin)) {
+    return t("prizeSpins") + ": " + freeSpinsLeft + ". " + t("win") + ": " + finalWin.toFixed(2) + ".";
+  }
   const scatterWin = asNumber(
     result.scatterWin?.totalWin ?? result.scatterWin?.baseWin,
   );

@@ -7,7 +7,7 @@ import { useLanguage } from "../../i18n.jsx";
 
 
 
-export default function FreeSpinsPrompt({ onStart }) {
+export default function FreeSpinsPrompt({ onStart, count }) {
   const { t } = useLanguage();
 
   return (
@@ -17,11 +17,9 @@ export default function FreeSpinsPrompt({ onStart }) {
           {t("bonusRoundTitle")}
         </h2>
         <p className="free-spins-modal__text">
-          {t("freeSpinsRewardText")}
+          {t("freeSpinsFooter")}: {count}
         </p>
-        <p className="free-spins-modal__multiplier">
-          {t("freeSpinsMultiplierText")}
-        </p>
+
         <button
           className="free-spins-modal__start"
           type="button"

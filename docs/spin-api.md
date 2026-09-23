@@ -27,7 +27,7 @@ Double transport still uses the existing SOAP method; mock mode retains local be
 
 Existing behavior needing confirmation:
 - Demo mode comes from trusted parent launch data; the permitted dev partner sends demoMode=true. Free spins send demoSpin=0.
-- FreeSpin=1 awards 15 spins locally; it is not a remaining-count value.
+- Remote remaining counts come from POST /freespins; the frontend no longer interprets FreeSpin=1 as a 15-spin award. Mock mode retains simulated awards.
 - Gold uses the existing bonus-row mapping.
 - Line 10 has no confirmed highlight coordinates.
 
@@ -48,4 +48,6 @@ Local testing: the parent casinobet development server reads PARTNER_TEST_TOKEN 
 
 /init gameState now provides the authoritative startup grid through Line1.Slot11–Slot15, Line2.Slot21–Slot25 and Line3.Slot31–Slot35. LinesKoff maps Koff1–Koff10. Raw state is retained. CountFreeSpin is the exact remaining free-spin count and restores the bonus counter (zero clears it). CardSum is the total bet; SpinResult.LineSum is the per-line stake and SpinResult.Lines is the selected line count. These do not represent unpaid winnings. SumPay is the unpaid win amount and restores the collectible win when PayDate is empty; paid cards do not restore a collectible win. Pending-operation reconciliation still needs a backend contract; a last-card snapshot alone does not settle a pending request.
 
-Authentication: /init, /balance, /spin and /pay send Authorization: Bearer <token>. The token is never included in their form bodies. The backend must allow Authorization in CORS preflight responses and handle OPTIONS. Double uses POST /double with the same Bearer header. Its form fields are gameId, requestId, cardId, wasDouble (one-based step), and sum (original card win, preserving the existing Double flow). WinSum and matching idCard are required in the response. No automatic retries; uncertain results remain pending.
+Authentication: /init, /balance, /spin and /pay send Authorization: Bearer <token>. The token is never included in their form bodies. The backend must allow Authorization in CORS preflight responses and handle OPTIONS. Double uses POST /double with the same Bearer header. Its form fields are gameId, requestId, cardId, wasDouble (one-based step, 1 through 5), and sum (the latest confirmed WinSum; the first request uses the Spin win and subsequent requests use the previous Double response). WinSum and matching idCard are required in the response. No automatic retries; uncertain results remain pending.
+
+Free-spin counter: POST /freespins with the existing Bearer token and form fields gameId/playerId returns CountFreeSpin. Initialization reads this count only when /init returns a prior-spin gameState. A player without a prior spin starts at zero without calling /freespins. Each successful remote spin reads this count, including zero. Failed post-spin reads preserve the confirmed spin result, stop autoplay and require a counter-only refresh before another spin. A count read never resolves an uncertain spin request. Original award totals, accumulated bonus winnings and completion payouts are not inferred from this endpoint.

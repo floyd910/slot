@@ -170,11 +170,12 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const [gridRevealKey, setGridRevealKey] = useState(0);
   const [gridAnimation, setGridAnimation] = useState("idle");
   const [hasRecoveredGrid, setHasRecoveredGrid] = useState(false);
+  const [hasSessionSpin, setHasSessionSpin] = useState(false);
   const [stake, setStake] = useState(() => Number(uiPreferences.stake ?? 0.1));
-  const [visualMode, setVisualMode] = useState(false);
+  const [visualMode, setVisualMode] = useState(() => uiPreferences.visualMode === true);
   const [carpetCloseMs, setCarpetCloseMs] = useState(CARPET_ANIMATION_HALF_MS);
   const [carpetOpenMs, setCarpetOpenMs] = useState(CARPET_ANIMATION_HALF_MS);
-  const [expandedBoard, setExpandedBoard] = useState(false);
+  const [expandedBoard, setExpandedBoard] = useState(() => uiPreferences.visualMode === true);
   const [spinResult, setSpinResult] = useState(null);
   const [freeSpinsTotal, setFreeSpinsTotal] = useState(0);
   const [freeSpinsLeft, setFreeSpinsLeft] = useState(0);
@@ -679,6 +680,13 @@ export function useGameController(selectedGameId, gameDefinition = null) {
           setRoundRecoveryStatus(null);
         }
       }
+      if (session.freeSpinsLeft != null) {
+        setFreeSpinsLeft(session.freeSpinsLeft);
+        setFreeSpinsTotal(0); // Original award total is not supplied by /freespins.
+        setFreeSpinRoundStarted(false);
+        setShowFreeSpinPrompt(session.freeSpinsLeft > 0 && !needsRecovery);
+        liveSpinStateRef.current = {...liveSpinStateRef.current, freeSpinsLeft:session.freeSpinsLeft, freeSpinsTotal:0, freeSpinCountUnknown:false};
+      }
       setPlayer(session.player);
       setGames(session.games);
       setSupportedCombinations(setCombinations, setSelectedCombinationId, gameDefinition?.id ?? context.gameId, session.combinations);
@@ -826,6 +834,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       setGridAnimation,
       setGridRevealKey,
       setHasRecoveredGrid,
+      setHasSessionSpin,
       setLastKnownState,
       setPlayer,
       setShowFreeSpinPrompt,
@@ -935,6 +944,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     setVisualMode((value) => {
       const nextValue = !value;
       setExpandedBoard(nextValue);
+      liveSpinStateRef.current = { ...liveSpinStateRef.current, visualMode: nextValue };
       return nextValue;
     });
   };
@@ -1074,6 +1084,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       gridAnimation,
       gridRevealKey,
       hasRecoveredGrid,
+      hasSessionSpin,
       paytableRows,
       paytableStatus,
       recoveringRound,

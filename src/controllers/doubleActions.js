@@ -17,13 +17,8 @@ const getChestPick = (side) => (CHEST_SIDES.has(side) ? side : "");
 
 const withMoney = (value) => Number(Number(value ?? 0).toFixed(2));
 
-const getOriginalCardWin = (spinResult, doublingState) =>
-  withMoney(
-    spinResult?.BaseWinSum ||
-      doublingState?.initialAmount ||
-      spinResult?.WinSum ||
-      0,
-  );
+const getCurrentCardWin = (spinResult, doublingState) =>
+  withMoney(spinResult?.WinSum ?? getTicketWinAmount(spinResult, doublingState));
 
 export const createDoubleActions = ({
   emitSound,
@@ -224,8 +219,7 @@ export const createDoubleActions = ({
       return;
 
     const step = doublingState.step || 0;
-    const currentAmount = getTicketWinAmount(spinResult, doublingState);
-    const originalCardWin = getOriginalCardWin(spinResult, doublingState);
+    const currentAmount = getCurrentCardWin(spinResult, doublingState);
     if (step >= DOUBLE_MAX_STEPS || currentAmount <= 0) return;
 
     try {
@@ -273,7 +267,7 @@ export const createDoubleActions = ({
         frameApi.double({
           idCard: spinResult.idCard,
           wasDouble: step + 1,
-          sum: originalCardWin,
+          sum: currentAmount,
           side,
           requestId,
         }),
@@ -361,7 +355,7 @@ export const createDoubleActions = ({
   const pickDouble = async (side) => {
     const { doubleState, doublingState, spinResult, status } =
       liveSpinStateRef.current;
-    if (!spinResult?.idCard || liveSpinStateRef.current.roundRecoveryBlocked || doubleState.loading || status === "processing")
+    if (!spinResult?.idCard || liveSpinStateRef.current.roundRecoveryBlocked || doubleState.loading || status === "processing" || doubleState.step > DOUBLE_MAX_STEPS || getCurrentCardWin(spinResult, doublingState) <= 0)
       return;
 
     try {
@@ -382,7 +376,7 @@ export const createDoubleActions = ({
         frameApi.double({
           idCard: spinResult.idCard,
           wasDouble: doubleState.step,
-          sum: getOriginalCardWin(spinResult, doublingState),
+          sum: getCurrentCardWin(spinResult, doublingState),
           side,
           requestId,
         }),
@@ -394,7 +388,7 @@ export const createDoubleActions = ({
         creditedToBalance: false,
       };
       const nextDoubleState = {
-        active: result.WinSum > 0,
+        active: result.WinSum > 0 && doubleState.step < DOUBLE_MAX_STEPS,
         loading: false,
         step: doubleState.step + 1,
         status:
@@ -406,9 +400,12 @@ export const createDoubleActions = ({
 
       setSpinResult(nextSpinResult);
       setDoubleState(nextDoubleState);
+      const nextDoublingState = { ...doublingState, currentAmount: result.WinSum, step: doubleState.step, active: nextDoubleState.active };
+      setDoublingState(nextDoublingState);
       setReadyStatus();
       syncLiveState({
         doubleState: nextDoubleState,
+        doublingState: nextDoublingState,
         spinResult: nextSpinResult,
       });
       setLastKnownState(result.status === "win" ? "double-win" : "double-lose");
