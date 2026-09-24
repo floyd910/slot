@@ -24,7 +24,7 @@ test('all games and views count 15 per catch, restore, retrigger and finish usin
     const key=name[0].toLowerCase()+name.slice(1);options['set'+name]=v=>{live.current[key]=typeof v==='function'?v(live.current[key]??(name==='SpinHistory'?[]:0)):v;};
    }
    const setTotal=options.setFreeSpinsWinTotal;
-   options.setFreeSpinsWinTotal=value=>{assert.equal(value,expectedMinor/100);setTotal(value);};
+   options.setFreeSpinsWinTotal=value=>{assert.equal(live.current.gridAnimation,'settled','total must wait for the reveal to finish');assert.equal(value,expectedMinor === null ? null : expectedMinor/100);setTotal(value);};
    globalThis.fetch=async url=>{assert.ok(url.endsWith('/freespins'));if(failCount)throw new TypeError('offline');return new Response(JSON.stringify({CountFreeSpin:String(played)}));};
    frameApi.pay=async params=>{
     payCalls++;
@@ -54,6 +54,52 @@ test('all games and views count 15 per catch, restore, retrigger and finish usin
    assert.equal(errors.length,1);assert.equal(payCalls,20);assert.equal(live.current.player.balance,5858.5);assert.equal(freeSpinSeries.getPaidTotal(context),5758.5);
    assert.equal(live.current.freeSpinsWinTotal,5758.5);
    assert.equal(freeSpinSeries.read(context).freeSpinsWinTotal,5758.5);
+   // A successful normal spin may return a counter below the completed series.
+   // The supplied losing payload must remain playable; the later win must collect its own card.
+   expectedMinor=null;
+   played=0;
+   const {mapJsonSpinPayload}=await server.ssrLoadModule('/src/api/slotPayloadMappers.js');
+   const payload={
+    ...Object.fromEntries([[5,2,4,4,7],[5,6,5,4,0],[4,1,2,5,1]].map((row,i)=>['Line'+(i+1),Object.fromEntries(row.map((v,j)=>['Slot'+(j+1),String(v)]))])),
+    ...Object.fromEntries(Array.from({length:10},(_,i)=>['LineWinKoff'+(i+1),{Koff:'0'}])),
+    WinSum:'0',FreeSpin:'0',Gold:'0',idCard:'67163663',Number:'62753371',ballance:1503,
+   };
+   globalThis.fetch=async url=>{
+    if(url.endsWith('/balance'))return new Response(JSON.stringify({balance:1503,currency:'USD',playerId:context.playerId}));
+    assert.ok(url.endsWith('/freespins'));return new Response(JSON.stringify({CountFreeSpin:String(played)}));
+   };
+   frameApi.spin=async params=>({...mapJsonSpinPayload(payload,params),backendManagedWallet:true});
+   const normalLoss=await actions.handleSpin();
+   assert.ok(normalLoss,'a confirmed losing spin must not fail on the old bonus counter');
+   assert.equal(normalLoss.idCard,'67163663');
+   assert.equal(live.current.freeSpinCountUnknown,false);
+   assert.equal(live.current.freeSpinsLeft,0);
+   assert.equal(live.current.freeSpinsWinTotal,null);
+   assert.equal(errors.length,1);
+   assert.equal(payCalls,20);
+   // The next ordinary win must collect its own card, without replaying bonus payments.
+   expectedMinor=null;
+   const paidCards=freeSpinSeries.getPayments(context).map(card=>({...card}));
+   const nextCard=context.sessionId+'-post-bonus';
+   frameApi.spin=async params=>{
+    assert.equal(buildSpinForm(params,context).get('freeSpin'),'0');
+    return {backendManagedWallet:true,balance:5857.5,idCard:nextCard,WinSum:5,FreeSpin:0,grid:live.current.grid};
+   };
+   const {mapPayResponse}=await server.ssrLoadModule('/src/api/payApiClient.js');
+   frameApi.pay=async params=>{
+    payCalls++;
+    assert.equal(params.idCard,nextCard);
+    return mapPayResponse({idCard:nextCard,PayDate:'2026-09-24T10:00:00Z',ballance:5862.5},params);
+   };
+   await actions.handleSpin();
+   assert.equal(live.current.spinResult.idCard,nextCard);
+   assert.equal(live.current.spinResult.freeSpinDeferred,false);
+   assert.equal(await actions.collectWin(),true);
+   assert.equal(payCalls,21);
+   assert.equal(live.current.player.balance,5862.5);
+   assert.equal(live.current.spinResult,null);
+   assert.equal(errors.length,1);
+   assert.deepEqual(freeSpinSeries.getPayments(context),paidCards);
    // Starting a second award must not subtract the prior 30 spins again.
    freeSpinSeries.recordResult(context,{idCard:'new-award',FreeSpin:1},false);
    assert.equal(freeSpinSeries.reconcile(context,played).freeSpinsLeft,15);

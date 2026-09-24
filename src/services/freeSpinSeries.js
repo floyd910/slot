@@ -50,7 +50,12 @@ export const freeSpinSeries = {
    if(isFreeSpin)throw Object.assign(new Error('Cannot restore free spins without the locally saved award history'),{code:'FREE_SPIN_HISTORY_MISSING'});
    return snapshot(null);
   }
-  if(!Number.isSafeInteger(played) || played<0 || (value.baseline!=null && played<value.played))throw Object.assign(new Error('Invalid lifetime free-spin counter'),{code:'BACKEND_RESPONSE_ERROR'});
+  if(!Number.isSafeInteger(played) || played<0)throw Object.assign(new Error('Invalid free-spin counter'),{code:'BACKEND_RESPONSE_ERROR'});
+  // /freespins can return 0 on the first normal spin after the bonus.
+  // A finished series is immutable until recordResult starts a new award.
+  // Retain its winnings/payment ledger, including any unconfirmed payments.
+  if(value.baseline!=null && snapshot(value).freeSpinsLeft===0)return snapshot(value);
+  if(value.baseline!=null && played<value.played)throw Object.assign(new Error('Invalid active free-spin counter'),{code:'BACKEND_RESPONSE_ERROR'});
   return snapshot(save(context,{...value,baseline:value.baseline ?? played,played}));
  }
 };

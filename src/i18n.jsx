@@ -10,6 +10,11 @@ import {
 
 const copy = {
   ru: {
+    freeSpinsCompleted: "ФРИСПИНЫ ЗАВЕРШЕНЫ!",
+    freeSpinsSessionWin: "Вы выиграли за Free Spins",
+    freeSpinsZeroWin: "Выигрыш",
+    freeSpinsCredited: "Выигрыш зачислен на баланс.",
+    freeSpinsContinue: "ПРОДОЛЖИТЬ",
     freeSpinsAlreadyPaid: "Уже зачислено на баланс за эту серию",
     freeSpinHistoryMissing: "Не удалось восстановить остаток фриспинов: история начислений отсутствует. Новые спины недоступны.",
     freeSpinsMultiplierText: "МНОЖИТЕЛЬ X3",
@@ -142,6 +147,11 @@ const copy = {
     betRejected: "Регистрация ставки отклонена.",
   },
   tg: {
+    freeSpinsCompleted: "ФРИСПИНҲО БА АНҶОМ РАСИДАНД!",
+    freeSpinsSessionWin: "Бурди шумо дар Free Spins",
+    freeSpinsZeroWin: "Бурд",
+    freeSpinsCredited: "Бурд ба тавозун гузаронида шуд.",
+    freeSpinsContinue: "ИДОМА ДОДАН",
     freeSpinsAlreadyPaid: "Барои ин давра аллакай ба тавозун гузаронида шуд",
     freeSpinHistoryMissing: "Бақияи фриспинҳо барқарор нашуд: таърихи мукофотҳо мавҷуд нест. Спинҳои нав дастнорасанд.",
     freeSpinsMultiplierText: "ЗАРБКУНАНДА X3",

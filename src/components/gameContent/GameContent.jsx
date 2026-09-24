@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import CombinationSelector from "../combinationSelector/CombinationSelector.jsx";
 import GameAlert from "../gameAlert/GameAlert.jsx";
 import DoubleMode from "../doubleMode/DoubleMode.jsx";
@@ -39,6 +39,13 @@ export default function GameContent({ controller, game, runtimeState }) {
   const [drawDetailsExpanded, setDrawDetailsExpanded] = useState(false);
   const [lastTicket, setLastTicket] = useState(null);
   const { actions, derived, state } = controller;
+  // Close the receipt before spin animation mutations trigger a grid refit.
+  // Layout effects run before paint, so both views measure the collapsed ticket.
+  useLayoutEffect(() => {
+    if (state.status === "processing" || state.gridAnimation === "spinning") {
+      setDrawDetailsExpanded(false);
+    }
+  }, [state.status, state.gridAnimation]);
   const view = buildGameContentViewModel({ derived, state, t });
   // Babylon and Fruits require at least three zeros for a scatter highlight.
   const scatterCells = ["babylon", "fruits"].includes(game.id) && (view.highlightResult?.scatterCells?.length ?? 0) < 3

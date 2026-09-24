@@ -184,6 +184,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const [freeSpinsLeft, setFreeSpinsLeft] = useState(0);
   const [freeSpinRoundStarted, setFreeSpinRoundStarted] = useState(false);
   const [showFreeSpinPrompt, setShowFreeSpinPrompt] = useState(false);
+  const [freeSpinSummary, setFreeSpinSummary] = useState(null);
   const [showPaytable, setShowPaytable] = useState(false);
   const [paytableRows, setPaytableRows] = useState([]);
   const [paytableStatus, setPaytableStatus] = useState("idle");
@@ -879,10 +880,10 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   }, [spinResult]);
 
   const freeSpinsActive =
-    freeSpinsLeft > 0 || showFreeSpinPrompt || freeSpinRunRef.current;
+    freeSpinsLeft > 0 || showFreeSpinPrompt || freeSpinSummary || freeSpinRunRef.current;
   const paytableControlsLocked = showPaytable || autoPlayOn || freeSpinsActive;
 
-  const { collectWin, handleSpin, onAutoPlay, startFreeSpinRun, refreshBalance, settleFreeSpinWins } =
+  const { collectWin, handleSpin, onAutoPlay, startFreeSpinRun, refreshBalance, settleFreeSpinWins, showFreeSpinCompletion, continueAfterFreeSpins } =
     createSpinActions({
       onRecoveryRequired: () => setRoundRecoveryStatus(ROUND_OPERATION_STATUS.RECOVERY_REQUIRED),
       autoPlayOnRef,
@@ -903,6 +904,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       setFreeSpinsTotal,
       setFreeSpinsWinTotal,
       setFreeSpinsPaidTotal,
+      setFreeSpinSummary,
       setGrid,
       setGridAnimation,
       setGridRevealKey,
@@ -919,6 +921,16 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     });
 
   liveSpinStateRef.current.settleFreeSpinWins = settleFreeSpinWins;
+  useEffect(() => {
+    liveSpinStateRef.current.freeSpinSummary = null;
+    liveSpinStateRef.current.freeSpinSummaryChecking = false;
+    setFreeSpinSummary(null);
+  }, [context.playerId, context.userId, context.idUser, context.gameId, context.sessionId]);
+  useEffect(() => {
+    if (status === 'ready' && freeSpinsLeft === 0 && freeSpinsTotal > 0 && spinResult?.isFreeSpin) {
+      void showFreeSpinCompletion();
+    }
+  }, [status, freeSpinsLeft, freeSpinsTotal, spinResult?.idCard, context]);
 
   const cycleStake = (direction) => {
     if (paytableControlsLocked) return;
@@ -981,7 +993,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   }, [autoPlayOn]);
 
   const toggleAutoPlay = () => {
-    if (freeSpinHistoryMissing) return;
+    if (freeSpinHistoryMissing || freeSpinSummary || liveSpinStateRef.current.freeSpinSummaryChecking) return;
     resumeAutoPlayAfterFreeSpinsRef.current = false;
     setAutoPlayOn((current) => !current);
   };
@@ -1051,6 +1063,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
           (pendingTicketWin && doublingState.step > 0)),
     );
   const viewSwitchDisabled =
+    Boolean(freeSpinSummary) ||
     status === "processing" ||
     autoPlayOn ||
     freeSpinRunRef.current ||
@@ -1082,6 +1095,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     );
   const hasPlayableSession = Boolean(context.token && context.sessionId);
   const spinButtonDisabled =
+    Boolean(freeSpinSummary) ||
     status !== "ready" ||
     !hasPlayableSession ||
     !spinAssetsReady ||
@@ -1119,6 +1133,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
 
   return {
     actions: {
+      continueAfterFreeSpins,
       refreshBalance,
       collectWin,
       cycleCombination,
@@ -1143,6 +1158,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       enterVisualDouble,
     },
     state: {
+      freeSpinSummary,
       autoPlayOn,
       carpetCloseMs,
       carpetOpenMs,

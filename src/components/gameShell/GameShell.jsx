@@ -10,6 +10,7 @@ import StartupLoader from "../startupLoader/StartupLoader.jsx";
 import View2Paytable from "../view2Paytable/View2Paytable.jsx";
 import { useLanguage } from "../../i18n.jsx";
 import { buildStandardPaytableViewModel } from "../../viewModels/paytableViewModel.js";
+import FreeSpinsSummary from "../freeSpinsPrompt/FreeSpinsSummary.jsx";
 import FreeSpinsPrompt from "../freeSpinsPrompt/FreeSpinsPrompt.jsx";
 import GameContent from "../gameContent/GameContent.jsx";
 import { useResponsiveGameLayout } from "../../hooks/useResponsiveGameLayout.js";
@@ -244,7 +245,8 @@ export default function GameShell({ controller, game, onBackToSlots }) {
             onClose={() => actions.setShowGameMenu(false)}
           />
         )}
-        {state.showFreeSpinPrompt && !(state.hasRecoveredGrid && derived.pendingTicketWin) && (
+        {state.freeSpinSummary && <FreeSpinsSummary result={state.freeSpinSummary} onContinue={actions.continueAfterFreeSpins} />}
+        {!state.freeSpinSummary && state.showFreeSpinPrompt && !(state.hasRecoveredGrid && derived.pendingTicketWin) && (
           <FreeSpinsPrompt onStart={actions.startFreeSpinRun} count={state.freeSpinsLeft} paidTotal={state.freeSpinsPaidTotal} />
         )}
 

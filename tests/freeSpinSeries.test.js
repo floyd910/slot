@@ -58,3 +58,20 @@ test('round total uses every server win including losses and retriggers, and sur
  assert.equal(series.read(c).freeSpinsWinTotal,16.65);
  assert.equal(series.getPaidTotal(c),16.65);
 });
+
+test('a completed series stays completed when a later normal-spin counter is lower',()=>{
+ const c={playerId:'completed-counter',gameId:'fruits'};
+ series.recordResult(c,{idCard:'completed-award',FreeSpin:1},false);
+ series.reconcile(c,100);
+ series.recordResult(c,{idCard:'completed-win',WinSum:1},true);
+ const completed=series.reconcile(c,115);
+ assert.equal(completed.freeSpinsLeft,0);
+ for(const count of [0,1,114,115,120])assert.deepEqual(series.reconcile(c,count),completed);
+ assert.equal(series.getPayments(c).length,1,'pending winnings must not be discarded');
+ series.markPaid(c,'completed-win',1503);
+ assert.equal(series.getPaidTotal(c),1);
+ series.recordResult(c,{idCard:'next-award',FreeSpin:1},false);
+ assert.equal(series.reconcile(c,0).freeSpinsLeft,15);
+ assert.equal(series.reconcile(c,1).freeSpinsLeft,14);
+ assert.throws(()=>series.reconcile(c,0),{code:'BACKEND_RESPONSE_ERROR'});
+});
