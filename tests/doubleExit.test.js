@@ -1,7 +1,7 @@
 import {createWinningDoublingState,createDoubleState} from "../src/config/gameSettings.js";
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createDoubleExitHandler} from '../src/services/doubleExitService.js';
+import {hasPendingExitRecovery,createDoubleExitHandler} from '../src/services/doubleExitService.js';
 function setup({pending=null,blocked=false,double=true,payResult,doublingState,doubleState}={}) {
  const events=[];const state={context:{gameId:'babylon'},spinResult:{idCard:'card',WinSum:200,grid:{A:[1],B:[1],C:[1]}},doublingState:doublingState??{entered:double,step:double?1:0},doubleState:doubleState??createDoubleState(),roundRecoveryBlocked:blocked};
  const recovery={getPendingRequest:()=>pending,getLocalState:()=>null,saveRound:r=>events.push(['save',r]),completeRound:()=>events.push(['complete']),saveLastSpin:r=>events.push(['last',r])};
@@ -27,3 +27,16 @@ test('explicit Double entry still pays before the first choice in either view',a
  assert.equal(events.filter(([type])=>type==='pay').length,1);
  }
 });
+
+ test('recovery exit guard covers free spins and preserves pending state without payment',()=>{
+  for(const variant of ['pending','blocked','saved']) {
+   const state={context:{gameId:'fruits'},freeSpinsLeft:7,spinResult:{freeSpinDeferred:true},roundRecoveryBlocked:variant==='blocked'};
+   const pending=variant==='pending'?{methodName:'/spin',requestId:'unresolved'}:null;
+   const saved={operationStatus:variant==='saved'?'RECOVERY_REQUIRED':'WAITING_FOR_PLAYER_ACTION'};
+   const recovery={getPendingRequest:()=>pending,getLocalState:()=>saved};
+   const before=JSON.stringify({state,pending,saved});
+   assert.equal(hasPendingExitRecovery(state,recovery),true);
+   assert.equal(JSON.stringify({state,pending,saved}),before);
+  }
+  assert.equal(hasPendingExitRecovery({context:{},freeSpinsLeft:7},{getPendingRequest:()=>null,getLocalState:()=>null}),false);
+ });

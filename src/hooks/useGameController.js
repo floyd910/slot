@@ -1,5 +1,5 @@
 import { getPrimaryGameAction } from "../viewModels/primaryGameAction.js";
-import { createDoubleExitHandler, registerDoubleExit, requestDoubleExit } from "../services/doubleExitService.js";
+import { hasPendingExitRecovery, createDoubleExitHandler, registerDoubleExit, requestDoubleExit } from "../services/doubleExitService.js";
 import { isStandaloneDemo, requestDemoLaunch } from "../api/demoLaunch.js";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { frameApi } from "../api/frameApi.js";
@@ -178,6 +178,9 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const [expandedBoard, setExpandedBoard] = useState(() => uiPreferences.visualMode === true);
   const [spinResult, setSpinResult] = useState(null);
   const [freeSpinsTotal, setFreeSpinsTotal] = useState(0);
+  const [freeSpinsWinTotal, setFreeSpinsWinTotal] = useState(null);
+  const [freeSpinsPaidTotal, setFreeSpinsPaidTotal] = useState(0);
+  const [freeSpinHistoryMissing, setFreeSpinHistoryMissing] = useState(false);
   const [freeSpinsLeft, setFreeSpinsLeft] = useState(0);
   const [freeSpinRoundStarted, setFreeSpinRoundStarted] = useState(false);
   const [showFreeSpinPrompt, setShowFreeSpinPrompt] = useState(false);
@@ -223,6 +226,9 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     doublingState,
     freeSpinsLeft,
     freeSpinsTotal,
+    freeSpinsWinTotal,
+    freeSpinsPaidTotal,
+    freeSpinHistoryMissing,
     player,
     selectedCombination: null,
     spinResult,
@@ -396,6 +402,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
 
   useEffect(() => {
     liveSpinStateRef.current = {
+      ...liveSpinStateRef.current,
       carpetCloseMs,
       carpetOpenMs,
       context,
@@ -404,6 +411,9 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       freeSpinsLeft,
       freeSpinRoundStarted,
       freeSpinsTotal,
+    freeSpinsWinTotal,
+    freeSpinsPaidTotal,
+      freeSpinHistoryMissing,
       player,
       selectedCombination,
       spinResult,
@@ -421,6 +431,9 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     doublingState,
     freeSpinsLeft,
     freeSpinsTotal,
+    freeSpinsWinTotal,
+    freeSpinsPaidTotal,
+    freeSpinHistoryMissing,
     player,
     selectedCombination,
     spinResult,
@@ -564,8 +577,34 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         reportOperationError(error,tRef.current('paymentUnknown'));
       },
     });
-    const unregister=registerDoubleExit(exit);
-    const pageHide=()=>{void exit({keepalive:true});};
+    const exitGame=async (options={})=>{
+      if(hasPendingExitRecovery(liveSpinStateRef.current, stateRecoveryService)) {
+        freeSpinRunRef.current=false;
+        autoPlayOnRef.current=false;
+        setAutoPlayOn(false);
+        return {handled:true,allowExit:true,pending:true};
+      }
+      if(liveSpinStateRef.current.freeSpinsLeft>0 || liveSpinStateRef.current.spinResult?.freeSpinDeferred) {
+        freeSpinRunRef.current=false;
+        autoPlayOnRef.current=false;
+        setAutoPlayOn(false);
+        if(!options.keepalive) {
+          const deadline=Date.now()+10000;
+          while(liveSpinStateRef.current.status==="processing" && Date.now()<deadline) await wait(50);
+        }
+        // The operation may have become uncertain while waiting for it to finish.
+        if(hasPendingExitRecovery(liveSpinStateRef.current, stateRecoveryService))
+          return {handled:true,allowExit:true,pending:true};
+        // Leaving pauses an unfinished series; keep its wins unpaid for continuation.
+        if (liveSpinStateRef.current.freeSpinsLeft > 0 || liveSpinStateRef.current.freeSpinCountUnknown)
+          return {handled:true,allowExit:true};
+        const paid=await liveSpinStateRef.current.settleFreeSpinWins?.(options);
+        return {handled:true,allowExit:paid===true};
+      }
+      return exit(options);
+    };
+    const unregister=registerDoubleExit(exitGame);
+    const pageHide=()=>{void exitGame({keepalive:true});};
     window.addEventListener('pagehide',pageHide);
     return ()=>{unregister();window.removeEventListener('pagehide',pageHide);};
   }, [postEvent, reportOperationError]);
@@ -596,10 +635,10 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       setError("");
       partnerApi.configure(context);
       persistInitContext(context);
-      const session = await withTimeout(
-        frameApi.initSession(context),
-        "Session bootstrap",
-      );
+      // Each HTTP request has its own aborting timeout. A shared timeout would
+      // reject a healthy multi-request bootstrap and leave it running behind Retry.
+      const session = await frameApi.initSession(context);
+      const paymentRows = await withTimeout(frameApi.getPaytable(), "Paytable");
       if (session.sessionId && session.sessionId !== context.sessionId) {
         const initializedContext = {
           ...context,
@@ -616,7 +655,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         persistInitContext(initializedContext);
         setContext(initializedContext);
       }
-      const paymentRows = await withTimeout(frameApi.getPaytable(), "Paytable");
+      initializedSessionIdRef.current = session.sessionId ?? context.sessionId;
       const pendingRecovery = frameApi.getPendingRequest(context);
       const recoveredState = session.gameState ? null : frameApi.recoverState(context);
       const lastSpinSnapshot = session.gameState ?? stateRecoveryService.getLastSpin(context);
@@ -642,7 +681,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         // The server result is unknown. Keep this round blocked until a
         // recovery response resolves it; never clear or blindly retry it.
         setRoundRecoveryStatus(ROUND_OPERATION_STATUS.RECOVERY_REQUIRED);
-        setError(tRef.current("operationPendingRecovery"));
+        setError("");
       } else if (recoveredState?.spinResult) {
         setSpinResult(confirmedSpinResult);
         setDoublingState(recoveredState.doublingState ? { ...recoveredState.doublingState, loading: false, lastPick: "", lastStatus: "" } : createEmptyDoublingState());
@@ -675,17 +714,22 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         setShowFreeSpinPrompt(remaining > 0 && !needsRecovery);
         if (!needsRecovery) {
           setSpinResult(session.gameState.spinResult);
-          setDoublingState(createEmptyDoublingState());
-          setDoubleState(createDoubleState());
+          setDoublingState(session.gameState.doublingState ?? createEmptyDoublingState());
+          setDoubleState(session.gameState.doubleState ?? createDoubleState());
+          if (session.gameState.doublingState?.step > 0) setHasSessionSpin(true);
           setRoundRecoveryStatus(null);
         }
       }
+      setFreeSpinsPaidTotal(session.freeSpinsPaidTotal ?? 0);
+      setFreeSpinsWinTotal(session.freeSpinsLeft > 0 || session.gameState?.spinResult?.isFreeSpin ? session.freeSpinsWinTotal ?? null : null);
+      setFreeSpinHistoryMissing(session.freeSpinHistoryMissing === true);
+      liveSpinStateRef.current = {...liveSpinStateRef.current, freeSpinHistoryMissing:session.freeSpinHistoryMissing === true};
       if (session.freeSpinsLeft != null) {
         setFreeSpinsLeft(session.freeSpinsLeft);
-        setFreeSpinsTotal(0); // Original award total is not supplied by /freespins.
+        setFreeSpinsTotal(session.freeSpinsTotal ?? 0);
         setFreeSpinRoundStarted(false);
         setShowFreeSpinPrompt(session.freeSpinsLeft > 0 && !needsRecovery);
-        liveSpinStateRef.current = {...liveSpinStateRef.current, freeSpinsLeft:session.freeSpinsLeft, freeSpinsTotal:0, freeSpinCountUnknown:false};
+        liveSpinStateRef.current = {...liveSpinStateRef.current, freeSpinsLeft:session.freeSpinsLeft, freeSpinsTotal:session.freeSpinsTotal ?? 0, freeSpinCountUnknown:false};
       }
       setPlayer(session.player);
       setGames(session.games);
@@ -728,7 +772,34 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     }
   }, [context, postEvent, reportError]);
 
-  const retryInitialization = useCallback(() => init({ force: true }), [init]);
+  const retryInitialization = useCallback(async () => {
+    const pending = frameApi.getPendingRequest(context);
+    if (pending?.methodName !== '/double') return init({ force: true });
+    if (initializationInFlightRef.current) return;
+    initializationInFlightRef.current = true;
+    setStatus("bootstrap-loading");
+    try {
+      const recovered = await frameApi.recoverDouble(context);
+      setSpinResult(recovered.spinResult);
+      setDoublingState(recovered.doublingState);
+      setDoubleState(recovered.doubleState);
+      const restoredGrid = recovered.lastConfirmedGrid ?? recovered.grid ?? recovered.spinResult.grid;
+      if (restoredGrid) setGrid(restoredGrid);
+      setHasRecoveredGrid(true);
+      setGridAnimation("settled");
+      setRoundRecoveryStatus(null);
+      setRestoredDoubleAvailable(false);
+      liveSpinStateRef.current = {...liveSpinStateRef.current, spinResult:recovered.spinResult, doublingState:recovered.doublingState, doubleState:recovered.doubleState, roundRecoveryBlocked:false, status:"ready"};
+      setError("");
+      setLastKnownState("ready");
+      setStatus("ready");
+    } catch (error) {
+      setRoundRecoveryStatus(ROUND_OPERATION_STATUS.RECOVERY_REQUIRED);
+      reportError(error);
+    } finally {
+      initializationInFlightRef.current = false;
+    }
+  }, [context, init, reportError, setError]);
 
   useEffect(() => {
     if (roundRecoveryStatus !== ROUND_OPERATION_STATUS.RECOVERY_REQUIRED) return undefined;
@@ -811,7 +882,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     freeSpinsLeft > 0 || showFreeSpinPrompt || freeSpinRunRef.current;
   const paytableControlsLocked = showPaytable || autoPlayOn || freeSpinsActive;
 
-  const { collectWin, handleSpin, onAutoPlay, startFreeSpinRun, refreshBalance } =
+  const { collectWin, handleSpin, onAutoPlay, startFreeSpinRun, refreshBalance, settleFreeSpinWins } =
     createSpinActions({
       onRecoveryRequired: () => setRoundRecoveryStatus(ROUND_OPERATION_STATUS.RECOVERY_REQUIRED),
       autoPlayOnRef,
@@ -830,6 +901,8 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       setFreeSpinsLeft,
       setFreeSpinRoundStarted,
       setFreeSpinsTotal,
+      setFreeSpinsWinTotal,
+      setFreeSpinsPaidTotal,
       setGrid,
       setGridAnimation,
       setGridRevealKey,
@@ -844,6 +917,8 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       showFreeSpinPrompt,
       t,
     });
+
+  liveSpinStateRef.current.settleFreeSpinWins = settleFreeSpinWins;
 
   const cycleStake = (direction) => {
     if (paytableControlsLocked) return;
@@ -906,6 +981,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   }, [autoPlayOn]);
 
   const toggleAutoPlay = () => {
+    if (freeSpinHistoryMissing) return;
     resumeAutoPlayAfterFreeSpinsRef.current = false;
     setAutoPlayOn((current) => !current);
   };
@@ -964,7 +1040,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     spinResult?.creditedToBalance !== true &&
     Boolean(spinResult?.idCard) &&
     ticketWinAmount > 0;
-  const pendingTicketWin = hasTicketWin(spinResult, doublingState);
+  const pendingTicketWin = !spinResult?.freeSpinDeferred && hasTicketWin(spinResult, doublingState);
   const visualDoubleSceneActive =
     visualMode &&
     Boolean(
@@ -1013,10 +1089,10 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     status === "initial-loading" ||
     status === "bootstrap-loading" ||
     Boolean(doublingState.loading) ||
-    (!pendingTicketWin && !canAffordSpin);
+    (!pendingTicketWin && (!canAffordSpin || freeSpinHistoryMissing));
   const hideHeader =
     context.mode === "embedded" && context.featureFlags?.hiddenHeader !== false;
-  const primaryGameAction = getPrimaryGameAction({isVisualDoubling, pendingTicketWin, hasRecoveredGrid, showFreeSpinPrompt, hasFreeSpinsPending});
+  const primaryGameAction = (freeSpinsLeft <= 0 && freeSpinsWinTotal > freeSpinsPaidTotal) ? 'collect' : getPrimaryGameAction({isVisualDoubling, pendingTicketWin, hasRecoveredGrid, showFreeSpinPrompt, hasFreeSpinsPending});
   const primaryActionCollectsWin = primaryGameAction === 'collect';
   const shellClass = `frame-app mode-${context.mode} theme-${context.theme}${hideHeader ? " headerless" : ""}${expandedBoard || visualMode ? " expanded-board" : ""}${visualMode ? " view-2" : " view-1"}${isVisualDoubling ? " doubling-active" : ""}`;
   const runtimeStateVisible = !["guest", "ready", "empty", "processing", "initial-loading", "bootstrap-loading"].includes(status);
@@ -1079,6 +1155,9 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       freeSpinsLeft,
       freeSpinRoundStarted,
       freeSpinsTotal,
+    freeSpinsWinTotal,
+    freeSpinsPaidTotal,
+      freeSpinHistoryMissing,
       games,
       grid,
       gridAnimation,

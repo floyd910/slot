@@ -30,6 +30,14 @@ const getScopedKey = (baseKey, context = {}) => {
   return `${baseKey}:${hashScope(`${sessionId}:${gameId}`)}`;
 };
 
+// Pending operations must remain discoverable when /init issues a new session ID.
+const getPendingKey = (context = {}) => {
+  const playerId = context.playerId ?? context.userId ?? context.idUser;
+  const gameId = context.recoveryGameId ?? context.gameId;
+  return playerId != null && gameId
+    ? `${PENDING_KEY}:player:${hashScope(JSON.stringify([String(playerId), gameId]))}`
+    : getScopedKey(PENDING_KEY, context);
+};
 const safeJson = (value) => {
   try {
     return JSON.parse(value);
@@ -38,10 +46,13 @@ const safeJson = (value) => {
   }
 };
 
+const storageFor = key => key.startsWith(`${PENDING_KEY}:player:`)
+  ? (window.localStorage ?? window.sessionStorage) : window.sessionStorage;
+
 const readStorage = (key) => {
   if (!key) return null;
   try {
-    const value = safeJson(window.sessionStorage.getItem(key));
+    const value = safeJson(storageFor(key).getItem(key));
     if (value) memoryStore.set(key, value);
     return value ?? memoryStore.get(key) ?? null;
   } catch {
@@ -57,7 +68,7 @@ const writeStorage = (key, value) => {
   if (!key) return;
   memoryStore.set(key, value);
   try {
-    window.sessionStorage.setItem(key, JSON.stringify(value));
+    storageFor(key).setItem(key, JSON.stringify(value));
   } catch {
     // Storage can be blocked inside partner iframes.
   }
@@ -68,7 +79,7 @@ const removeStorage = (key) => {
   if (!key) return;
   memoryStore.delete(key);
   try {
-    window.sessionStorage.removeItem(key);
+    storageFor(key).removeItem(key);
   } catch {
     // Storage can be blocked inside partner iframes.
   }
@@ -91,10 +102,11 @@ export class StateRecoveryService {
   rememberPendingRequest(request, context = {}) {
     const pending = {
       ...request,
+      recoveryState: request.methodName === "/double" ? this.getLocalState(context) : undefined,
       status: "pending",
       createdAt: new Date().toISOString(),
     };
-    writeStorage(getScopedKey(PENDING_KEY, context), pending);
+    writeStorage(getPendingKey(context), pending);
     return pending;
   }
 
@@ -109,18 +121,19 @@ export class StateRecoveryService {
       errorMessage: error?.message ?? "Operation result is unknown",
       updatedAt: new Date().toISOString(),
     };
-    writeStorage(getScopedKey(PENDING_KEY, context), next);
+    writeStorage(getPendingKey(context), next);
     return next;
   }
 
   completePendingRequest(requestId, context = {}) {
     const pending = this.getPendingRequest(context);
     if (!pending || (requestId && pending.requestId !== requestId)) return;
+    removeStorage(getPendingKey(context));
     removeStorage(getScopedKey(PENDING_KEY, context));
   }
 
   getPendingRequest(context = {}) {
-    return readStorage(getScopedKey(PENDING_KEY, context));
+    return readStorage(getPendingKey(context)) ?? readStorage(getScopedKey(PENDING_KEY, context));
   }
 
   saveGameState(state = {}, context = {}) {
@@ -182,7 +195,7 @@ export class StateRecoveryService {
       for (let index = 0; index < window.sessionStorage.length; index += 1) {
         const key = window.sessionStorage.key(index);
         if (!key?.startsWith(GAME_STATE_KEY + ":")) continue;
-        const value = safeJson(window.sessionStorage.getItem(key));
+        const value = safeJson(storageFor(key).getItem(key));
         if (value) recoveredByKey.set(key, value);
       }
     } catch {
@@ -213,8 +226,9 @@ export class StateRecoveryService {
       freeSpinsLeft: gameState.freeSpinsLeft ?? 0,
       freeSpinsActive: Number(gameState.freeSpinsLeft) > 0,
       doubleAvailable: false,
-      doubleState: null,
-      doublingState: null,
+      WasDouble: gameState.WasDouble ?? 0,
+      doubleState: gameState.doubleState ?? null,
+      doublingState: gameState.doublingState ?? null,
     }, context);
   }
 

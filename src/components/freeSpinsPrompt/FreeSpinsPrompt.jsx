@@ -7,7 +7,7 @@ import { useLanguage } from "../../i18n.jsx";
 
 
 
-export default function FreeSpinsPrompt({ onStart, count }) {
+export default function FreeSpinsPrompt({ onStart, count, paidTotal = 0 }) {
   const { t } = useLanguage();
 
   return (
@@ -20,6 +20,11 @@ export default function FreeSpinsPrompt({ onStart, count }) {
           {t("freeSpinsFooter")}: {count}
         </p>
 
+        {paidTotal > 0 && (
+          <p className="free-spins-modal__text">
+            {t("freeSpinsAlreadyPaid")}: {Number(paidTotal).toFixed(2)}
+          </p>
+        )}
         <button
           className="free-spins-modal__start"
           type="button"

@@ -15,6 +15,7 @@ import { normalizeDoubleResult } from "../models/doubleResult.js";
 import { normalizePayResult } from "../models/payResult.js";
 import { normalizeSpinResult } from "../models/spinResult.js";
 import { stateRecoveryService } from "./stateRecoveryService.js";
+import { freeSpinSeries } from "./freeSpinSeries.js";
 
 const getContext = () => getRuntimeConfig();
 
@@ -59,6 +60,7 @@ export class GameApiService {
     try {
       const payload = await sendSpinRequest(body, { token: getContext().token, requestId: params.requestId });
       const result = normalizeSpinResult({ ...mapJsonSpinPayload(payload, { ...getContext(), ...params }), backendManagedWallet: true });
+      freeSpinSeries.recordResult(getContext(), result, params.isFreeSpin === true);
       stateRecoveryService.saveGameState({
         lastIdCard: result.idCard,
         currentMode: params.isFreeSpin ? "free-spin" : "spin",
@@ -91,6 +93,7 @@ export class GameApiService {
       roundId: params.idCard,
       wasDouble: params.wasDouble,
       sum: params.sum,
+      formData: Object.fromEntries(body),
     };
     remember(operation);
 
@@ -106,7 +109,7 @@ export class GameApiService {
       complete(params.requestId);
       return result;
     } catch (error) {
-      if (["TIMEOUT", "NETWORK_ERROR", "SERVER_ERROR", "BACKEND_RESPONSE_ERROR"].includes(error.code)) {
+      if (["TIMEOUT", "NETWORK_ERROR", "SERVER_ERROR", "BACKEND_RESPONSE_ERROR", "REQUEST_IN_PROGRESS"].includes(error.code)) {
         stateRecoveryService.markRecoveryRequired(error, operation, context);
         stateRecoveryService.markRoundRecoveryRequired(error, {operationType:"DOUBLE"}, context);
       } else complete(params.requestId);

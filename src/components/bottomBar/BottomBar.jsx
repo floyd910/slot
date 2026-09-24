@@ -28,14 +28,15 @@ export default function BottomBar(inputProps) {
     props.spinResult,
     props.doublingState,
   );
+  const winLabel = t(props.freeSpinRoundStarted || Number(props.freeSpinsLeft ?? 0) > 0 ? "totalWinning" : "win");
   const currentWin = formatMoney(
-    props.revealComplete === false ? 0 : ticketWinAmount,
+    props.freeSpinsWinTotal ?? (props.revealComplete === false ? 0 : ticketWinAmount),
   );
   const normalSpinWinAmount = getTicketWinAmount(props.spinResult, null);
   const isFreeSpinResult =
     props.spinResult?.isFreeSpin === true ||
     Number(props.spinResult?.FreeSpin ?? 0) > 0;
-  const hasFreeSpins = Number(props.freeSpinsLeft ?? 0) > 0;
+  const hasFreeSpins = props.freeSpinHistoryMissing || Number(props.freeSpinsLeft ?? 0) > 0;
   const showDoubleOffer =
     !hasFreeSpins && props.revealComplete !== false &&
     (props.doubleOfferAvailable ||
@@ -52,7 +53,7 @@ export default function BottomBar(inputProps) {
       <div className="footer-block footer-block-desktop">
         <BottomBarMetric title={t("balance")} value={balance} />
         <BottomBarMetric title={t("purchaseAmount")} value={totalPurchase} />
-        <BottomBarMetric title={t("win")} value={currentWin} accent />
+        <BottomBarMetric title={winLabel} value={currentWin} accent />
         {props.isVisualDoubling ? (
           <DoubleScenePickButtons
             disabled={props.disabled || props.doublingState?.loading}
@@ -65,7 +66,7 @@ export default function BottomBar(inputProps) {
           <>
         {showFreeSpinCounter ? (
           <FooterFreeSpins
-            count={props.freeSpinsLeft}
+            count={props.freeSpinHistoryMissing ? "?" : props.freeSpinsLeft}
             label={t("freeSpinsFooter")}
             sizingLabel={t("lotteryBet")}
             sizingValue={formatMoney(props.stake, shortLandscape)}
@@ -118,7 +119,7 @@ export default function BottomBar(inputProps) {
             label={t("info")}
             onClick={props.onInfo}
           />
-          <BottomBarMetric title={t("win")} value={currentWin} accent />
+          <BottomBarMetric title={winLabel} value={currentWin} accent />
           <BottomBarMetric title={t("balance")} value={balance} />
           <BottomBarMetric title={t("purchaseAmount")} value={totalPurchase} />
         </div>
@@ -136,7 +137,7 @@ export default function BottomBar(inputProps) {
             <>
           {showFreeSpinCounter ? (
           <FooterFreeSpins
-            count={props.freeSpinsLeft}
+            count={props.freeSpinHistoryMissing ? "?" : props.freeSpinsLeft}
             label={t("freeSpinsFooter")}
             sizingLabel={t("lotteryBet")}
             sizingValue={formatMoney(props.stake, shortLandscape)}
@@ -182,7 +183,7 @@ export default function BottomBar(inputProps) {
           label={t("info")}
           onClick={props.onInfo}
         />
-        <BottomBarMetric title={t("win")} value={currentWin} accent />
+        <BottomBarMetric title={winLabel} value={currentWin} accent />
         <div className="footer-flex">
           <BottomBarMetric title={t("balance")} value={balance} />
           <BottomBarMetric title={t("purchaseAmount")} value={totalPurchase} />
@@ -201,7 +202,7 @@ export default function BottomBar(inputProps) {
             <>
           {showFreeSpinCounter ? (
           <FooterFreeSpins
-            count={props.freeSpinsLeft}
+            count={props.freeSpinHistoryMissing ? "?" : props.freeSpinsLeft}
             label={t("freeSpinsFooter")}
             sizingLabel={t("lotteryBet")}
             sizingValue={formatMoney(props.stake, shortLandscape)}

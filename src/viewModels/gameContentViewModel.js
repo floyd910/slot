@@ -17,7 +17,9 @@ export function buildGameContentViewModel({ derived, state, t = (key) => key }) 
       ? null
       : state.spinResult,
     alertMessage:
+      (derived.isRoundRecoveryBlocked ? t("operationPendingRecovery") : "") ||
       state.error ||
+      (state.freeSpinHistoryMissing ? t("freeSpinHistoryMissing") : "") ||
       (gridMissing ? t("gridOutOfSync") : ""),
     gridMissing,
     showLobby: !state.currentGame,

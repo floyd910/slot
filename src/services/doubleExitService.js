@@ -1,3 +1,7 @@
+export function hasPendingExitRecovery(state, recovery) {
+  return Boolean(state.roundRecoveryBlocked || recovery.getPendingRequest(state.context) ||
+    recovery.getLocalState(state.context)?.operationStatus === 'RECOVERY_REQUIRED');
+}
 let activeHandler;
 export function registerDoubleExit(handler) { activeHandler=handler; return ()=>{if(activeHandler===handler)activeHandler=null;}; }
 export function requestDoubleExit(options={}) { return activeHandler ? activeHandler(options) : Promise.resolve({handled:false,allowExit:true}); }
@@ -9,7 +13,7 @@ export function createDoubleExitHandler({getState,recovery,pay,onPaid,onError,on
     // Collect on exit for ordinary wins with Double available as well as entered Double.
     const inDouble=Boolean(state.doublingState?.entered || state.doublingState?.active || state.doubleState?.active || state.doublingState?.step>0);
     if(!inDouble)return Promise.resolve({handled:false,allowExit:true});
-    if(recovery.getPendingRequest(context) || state.roundRecoveryBlocked || recovery.getLocalState(context)?.operationStatus==='RECOVERY_REQUIRED') return Promise.resolve({handled:true,allowExit:true,pending:true});
+    if(hasPendingExitRecovery(state, recovery)) return Promise.resolve({handled:true,allowExit:true,pending:true});
     const spin=state.spinResult;
     if(!spin?.idCard || spin.creditedToBalance || Number(spin.WinSum)<=0){recovery.completeRound(context);return Promise.resolve({handled:true,allowExit:true});}
     const id=requestId();

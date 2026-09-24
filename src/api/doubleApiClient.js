@@ -32,6 +32,7 @@ export const sendDoubleRequest = async (body, { token, requestId, timeoutMs = RE
       body,
       signal: controller.signal,
     });
+    if (response.status === 202) throw error("Double is still processing", "REQUEST_IN_PROGRESS", {requestId});
     let payload;
     try { payload = await response.json(); } catch (cause) {
       if (cause.name === "AbortError") throw cause;

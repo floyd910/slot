@@ -1,3 +1,4 @@
+import { recoverPendingDouble } from "../services/doubleRecoveryService.js";
 import { gameApiService } from "../services/gameApiService.js";
 import { sessionApiService } from "../services/sessionApiService.js";
 import { stateRecoveryService } from "../services/stateRecoveryService.js";
@@ -49,6 +50,10 @@ export const frameApi = {
 
   pay(params) {
     return runExclusive("pay", () => gameApiService.pay(params));
+  },
+
+  recoverDouble(context) {
+    return runExclusive("recoverDouble", () => recoverPendingDouble(context));
   },
 
   recoverState(context) {

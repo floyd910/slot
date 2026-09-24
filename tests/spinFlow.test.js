@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createServer } from 'vite';
 import { webcrypto } from 'node:crypto';
 
-test('remote spins avoid partner mutations and retain unpaid wins',async()=>{
+test('ordinary remote spins avoid partner mutations and retain unpaid wins',async()=>{
   const originalFetch=globalThis.fetch;
   globalThis.fetch=async()=>new Response(JSON.stringify({error_code:400,error:"fixture rejected"}),{status:400});
   const store=new Map();
@@ -23,7 +23,8 @@ test('remote spins avoid partner mutations and retain unpaid wins',async()=>{
     partnerApi.settleRound=async()=>{throw new Error('Duplicate partner settlement');};
     partnerApi.cancelBet=async()=>{throw new Error('Duplicate partner cancellation');};
     for(const balance of [undefined,0,95]) {
-      for(const free of [false,true]) {
+      // Free-spin payouts have dedicated end-of-series coverage in freeSpinFlow.test.js.
+      for(const free of [false]) {
         const context={token:'fixture',gameId:'khiradmandi-makor',sessionId:'test-'+balance+'-'+free,userId:7};
         mergeRuntimeConfig({...context,playerId:7});
         const live={current:{context,carpetCloseMs:0,carpetOpenMs:0,doubleState:{},doublingState:{},freeSpinsLeft:free?1:0,freeSpinsTotal:free?1:0,player:{balance:100},selectedCombination:{groups:[{}],id:'one'},stake:1,status:'ready',visualMode:true}};

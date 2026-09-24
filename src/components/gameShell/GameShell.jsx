@@ -200,7 +200,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
                   onCollect={actions.collectWin}
                   onPickLeft={() => actions.playFooterDouble("left")}
                   onPickRight={() => actions.playFooterDouble("right")}
-                  freeSpinsLeft={state.freeSpinsLeft}
+                  freeSpinsWinTotal={state.freeSpinsWinTotal} freeSpinsLeft={state.freeSpinsLeft} freeSpinHistoryMissing={state.freeSpinHistoryMissing}
                   freeSpinRoundStarted={state.freeSpinRoundStarted}
                   autoPlayOn={state.autoPlayOn}
                   infoActive={state.showPaytable}
@@ -245,19 +245,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
           />
         )}
         {state.showFreeSpinPrompt && !(state.hasRecoveredGrid && derived.pendingTicketWin) && (
-          <FreeSpinsPrompt onStart={actions.startFreeSpinRun} count={state.freeSpinsLeft} />
-        )}
-        {derived.isRoundRecoveryBlocked && !showStartupLoader && (
-          <section
-            className="round-recovery-notice"
-            role="alert"
-            aria-live="assertive"
-          >
-            <p>{state.error || t("operationPendingRecovery")}</p>
-            <button type="button" onClick={actions.retryInitialization}>
-              {t("retry")}
-            </button>
-          </section>
+          <FreeSpinsPrompt onStart={actions.startFreeSpinRun} count={state.freeSpinsLeft} paidTotal={state.freeSpinsPaidTotal} />
         )}
 
       {backgroundLoadFailed && (

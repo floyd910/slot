@@ -1,3 +1,4 @@
+import { freeSpinSeries } from "./freeSpinSeries.js";
 import { requestFreeSpins } from "../api/freeSpinsApiClient.js";
 import { isDemoContext } from "../api/demoLaunch.js";
 import { buildAuthHeaders } from "../api/authHeaders.js";
@@ -25,6 +26,7 @@ const requestRemoteSession = async (params) => {
     method: "POST",
     headers: buildAuthHeaders(params.token),
     body: new URLSearchParams({ gameId, playerId }),
+    signal: AbortSignal.timeout(20000),
   });
 
   if (!response.ok) {
@@ -44,7 +46,9 @@ const requestRemoteSession = async (params) => {
 
 const validateSessionContext = (params = {}) => {
   if (params.initSource !== "postMessage" && !isDemoContext(params)) {
-    throw Object.assign(new Error("Parent initialization is required"), { code: "ACCESS_DENIED" });
+    throw Object.assign(new Error("Parent initialization is required"), {
+      code: "ACCESS_DENIED",
+    });
   }
   if (params.maintenance) {
     const error = new Error("Maintenance mode");
@@ -78,15 +82,64 @@ export class SessionApiService {
     const gameState = mapInitGameState(remote.gameState, params);
     const wallet = await requestBalance({ token: params.token, playerId });
     // No last-spin snapshot means there is no spin history to refresh yet.
-    const freeSpinsLeft = gameState ? await requestFreeSpins(params) : 0;
-    if (gameState) gameState.freeSpinsLeft = freeSpinsLeft;
-    mergeRuntimeConfig({ ...params, sessionId: remote.sessionId, playerId, userId: playerId, idUser: playerId });
+    const played = gameState ? await requestFreeSpins(params) : 0;
+    let freeSpinState;
+    try {
+      freeSpinState = freeSpinSeries.reconcile(params, played, {
+        isFreeSpin: gameState?.spinResult?.isFreeSpin === true,
+      });
+    } catch (error) {
+      if (error.code !== "FREE_SPIN_HISTORY_MISSING") throw error;
+      // Missing browser history is not a failed /init. Keep the session and wallet usable.
+      freeSpinState = {
+        freeSpinsLeft: null,
+        freeSpinsTotal: null,
+        freeSpinsPlayed: played,
+        freeSpinHistoryMissing: true,
+      };
+    }
+    const {
+      freeSpinsLeft,
+      freeSpinsTotal,
+      freeSpinsPlayed,
+      freeSpinsWinTotal,
+    } = freeSpinState;
+    if (gameState) {
+      Object.assign(gameState, freeSpinState);
+      const card = freeSpinSeries
+        .getPayments(params)
+        .find(
+          (card) => String(card.idCard) === String(gameState.spinResult.idCard),
+        );
+      if (card && !card.paid && !gameState.spinResult.creditedToBalance)
+        gameState.spinResult.freeSpinDeferred = true;
+    }
+    mergeRuntimeConfig({
+      ...params,
+      sessionId: remote.sessionId,
+      playerId,
+      userId: playerId,
+      idUser: playerId,
+    });
     return {
       sessionId: remote.sessionId,
-      player: { id: playerId, balance: wallet.balance, currency: wallet.currency },
-      games, combinations, grid: gameState?.grid ?? getInitialGrid(params.recoveryGameId ?? params.gameId),
+      player: {
+        id: playerId,
+        balance: wallet.balance,
+        currency: wallet.currency,
+      },
+      games,
+      combinations,
+      grid:
+        gameState?.grid ??
+        getInitialGrid(params.recoveryGameId ?? params.gameId),
       gameState,
       freeSpinsLeft,
+      freeSpinsTotal,
+      freeSpinsPlayed,
+      freeSpinsWinTotal,
+      freeSpinsPaidTotal: freeSpinSeries.getPaidTotal(params),
+      freeSpinHistoryMissing: freeSpinState.freeSpinHistoryMissing === true,
       backendGameId: remote.backendGameId ?? null,
       unfinishedRound: remote.unfinishedRound ?? null,
     };
