@@ -16,6 +16,7 @@ import { normalizePayResult } from "../models/payResult.js";
 import { normalizeSpinResult } from "../models/spinResult.js";
 import { stateRecoveryService } from "./stateRecoveryService.js";
 import { freeSpinSeries } from "./freeSpinSeries.js";
+import { assertBrowserOnline } from "../utils/connectivity.js";
 
 const getContext = () => getRuntimeConfig();
 
@@ -46,6 +47,7 @@ export class GameApiService {
       return normalizeSpinResult(result);
     }
 
+    assertBrowserOnline("Spin");
     const body = buildSpinForm(params, getContext());
     const operation = {
       methodName: "/spin",
@@ -83,6 +85,7 @@ export class GameApiService {
       return normalizeDoubleResult({ ...result, requestId: params.requestId });
     }
 
+    assertBrowserOnline("Double");
     const context = getContext();
     if (stateRecoveryService.getPendingRequest(context)) throw Object.assign(new Error("Pending operation"), {code:"RECOVERY_REQUIRED"});
     const body = buildDoubleForm(params, context);
@@ -109,7 +112,7 @@ export class GameApiService {
       complete(params.requestId);
       return result;
     } catch (error) {
-      if (["TIMEOUT", "NETWORK_ERROR", "SERVER_ERROR", "BACKEND_RESPONSE_ERROR", "REQUEST_IN_PROGRESS"].includes(error.code)) {
+      if (["TIMEOUT", "NETWORK_ERROR", "NETWORK_UNREACHABLE", "SERVER_ERROR", "BACKEND_RESPONSE_ERROR", "REQUEST_IN_PROGRESS"].includes(error.code)) {
         stateRecoveryService.markRecoveryRequired(error, operation, context);
         stateRecoveryService.markRoundRecoveryRequired(error, {operationType:"DOUBLE"}, context);
       } else complete(params.requestId);
@@ -118,6 +121,7 @@ export class GameApiService {
   }
 
   async pay(params = {}) {
+    assertBrowserOnline("Payment");
     if (useSoapBackend()) {
       const context = getContext();
       if (stateRecoveryService.getPendingRequest(context)) {
@@ -131,7 +135,7 @@ export class GameApiService {
         stateRecoveryService.completePendingRequest(params.requestId, context);
         return result;
       } catch(error) {
-        if (["TIMEOUT","NETWORK_ERROR","SERVER_ERROR","BACKEND_RESPONSE_ERROR"].includes(error.code)) {
+        if (["TIMEOUT","NETWORK_ERROR","NETWORK_UNREACHABLE","SERVER_ERROR","BACKEND_RESPONSE_ERROR"].includes(error.code)) {
           stateRecoveryService.markRecoveryRequired(error, operation, context);
           stateRecoveryService.markRoundRecoveryRequired(error, {operationType:"COLLECT"}, context);
         } else stateRecoveryService.completePendingRequest(params.requestId, context);

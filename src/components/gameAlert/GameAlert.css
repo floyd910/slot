@@ -114,3 +114,6 @@
     transform: translateX(120%);
   }
 }
+
+.game-alert__retry { flex-shrink: 0; padding: 8px 12px; border: 1px solid currentColor; border-radius: 6px; background: transparent; color: inherit; cursor: pointer; }
+.game-alert__retry:disabled { opacity: .5; cursor: default; }

@@ -17,9 +17,10 @@ test('restored free-spin controls show the remaining count and stay usable in ei
    assert.equal(buttons.length,3);
    for(const button of buttons) { assert.doesNotMatch(button,/--disabled|aria-disabled="true"/); assert.match(button,/tabindex="0"/); }
   }
-  for(const revealComplete of [false,true]) {
-   const html=renderToStaticMarkup(React.createElement(LanguageProvider,null,React.createElement(BottomBar,{freeSpinsWinTotal:16.65,freeSpinsLeft:0,player:{balance:100},spinResult:{WinSum:0,creditedToBalance:true},selectedCombination:{groups:[[]]},revealComplete})));
-   assert.match(html,/16[.,]65/);
+  for(const visualMode of [false,true]) for(const revealComplete of [false,true]) {
+   const html=renderToStaticMarkup(React.createElement(LanguageProvider,null,React.createElement(BottomBar,{visualMode,freeSpinsWinTotal:16.65,freeSpinsLeft:0,player:{balance:100},spinResult:{WinSum:0,creditedToBalance:true},selectedCombination:{groups:[[]]},revealComplete})));
+   if (revealComplete) assert.match(html,/16[.,]65/);
+   else { assert.doesNotMatch(html,/16[.,]65/); assert.match(html,/0[.,]00/); }
   }
   const prompt=renderToStaticMarkup(React.createElement(LanguageProvider,null,React.createElement(Prompt,{count:7,paidTotal:12.5})));
   assert.match(prompt,/7/);

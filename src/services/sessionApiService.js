@@ -1,3 +1,5 @@
+import { reconcileConfirmedPayment } from './paymentRecoveryService.js';
+import { stateRecoveryService } from './stateRecoveryService.js';
 import { freeSpinSeries } from "./freeSpinSeries.js";
 import { requestFreeSpins } from "../api/freeSpinsApiClient.js";
 import { isDemoContext } from "../api/demoLaunch.js";
@@ -77,6 +79,7 @@ export class SessionApiService {
     mergeRuntimeConfig(params);
     validateSessionContext(params);
 
+    const pendingAtStart = stateRecoveryService.getPendingRequest(params);
     const remote = await requestRemoteSession(params);
     const playerId = params.playerId ?? params.userId ?? params.idUser;
     const gameState = mapInitGameState(remote.gameState, params);
@@ -114,6 +117,7 @@ export class SessionApiService {
       if (card && !card.paid && !gameState.spinResult.creditedToBalance)
         gameState.spinResult.freeSpinDeferred = true;
     }
+    const paymentRecovered = reconcileConfirmedPayment(params, remote, gameState, wallet, pendingAtStart);
     mergeRuntimeConfig({
       ...params,
       sessionId: remote.sessionId,
@@ -122,6 +126,7 @@ export class SessionApiService {
       idUser: playerId,
     });
     return {
+      paymentRecovered,
       sessionId: remote.sessionId,
       player: {
         id: playerId,

@@ -125,7 +125,7 @@ export default function GameContent({ controller, game, runtimeState }) {
         />
       </aside>
       <section className="main-container__center" aria-busy={derived.isBusy}>
-        <GameAlert message={view.alertMessage} />
+        <GameAlert message={view.alertMessage} onRetry={derived.canRetryPaymentRecovery ? actions.retryInitialization : undefined} retryLabel={t("retry")} retryDisabled={["processing", "bootstrap-loading", "initial-loading"].includes(state.status)} />
         {view.showStandardGame && (
           <>
             <div

@@ -22,7 +22,7 @@ test('paid restored View 1 has empty cells while source symbols remain intact',(
  for(const row of ['A','B','C','D'])assert.deepEqual(mapped.view1Grid[row],['','','','','']);
  assert.deepEqual(state.grid.A,[1,2,3,4,5]);
  assert.equal(buildGameContentViewModel({derived:{},state:{...state,hasRecoveredGrid:false,hasSessionSpin:true}}).view1Grid,grid);
- assert.deepEqual(buildGameContentViewModel({derived:{},state:{...state,spinResult:{...result,creditedToBalance:false}}}).view1Grid.A,['','','','','']);
+ assert.deepEqual(buildGameContentViewModel({derived:{},state:{...state,spinResult:{...result,WinSum:10,creditedToBalance:false}}}).view1Grid.A,grid.A);
 });
 
 test('Fruits View 1 clears restored zero-win and grid-only history',()=>{
@@ -36,9 +36,9 @@ test('Fruits View 1 clears restored zero-win and grid-only history',()=>{
   assert.equal(buildGameContentViewModel({derived:{},state:{...state,hasRecoveredGrid:false,hasSessionSpin:true}}).view1Grid,grid);
   assert.deepEqual(buildGameContentViewModel({derived:{isRoundRecoveryBlocked:true},state}).view1Grid.A,['','','','','']);
  }
- for(const patch of [{spinResult:{WinSum:10,creditedToBalance:false}},{spinResult:{WinSum:0,creditedToBalance:false},freeSpinsLeft:3}]) {
+ for(const patch of [{spinResult:{idCard:'unpaid',WinSum:10,creditedToBalance:false}},{spinResult:{WinSum:0,creditedToBalance:false},freeSpinsLeft:3}]) {
   const state={currentGame:'fruits',grid,hasRecoveredGrid:true,...patch};
-  assert.deepEqual(buildGameContentViewModel({derived:{},state}).view1Grid.A,['','','','','']);
+  assert.deepEqual(buildGameContentViewModel({derived:{},state}).view1Grid.A,patch.spinResult.idCard ? grid.A : ['','','','','']);
  }
 });
 test('all games start View 1 empty even when initial symbols are not marked recovered',()=>{

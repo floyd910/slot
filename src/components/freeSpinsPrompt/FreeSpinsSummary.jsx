@@ -3,6 +3,13 @@ import { useLanguage } from '../../i18n.jsx';
 export default function FreeSpinsSummary({ result, onContinue }) {
   const { t } = useLanguage();
   const button = useRef(null);
+  const continueRef = useRef(onContinue);
+  useEffect(() => { continueRef.current = onContinue; }, [onContinue]);
+  useEffect(() => {
+    if (!result.resumeAutoExpress) return undefined;
+    const timer = setTimeout(() => continueRef.current(), 2000);
+    return () => clearTimeout(timer);
+  }, [result.id, result.resumeAutoExpress]);
   useEffect(() => {
     const previous = document.activeElement;
     button.current?.focus();

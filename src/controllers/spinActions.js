@@ -1,7 +1,7 @@
 import { settleFreeSpinSeries } from "../services/freeSpinSettlementService.js";
 import { freeSpinSeries } from "../services/freeSpinSeries.js";
 import { claimFreeSpinCompletion } from "../services/freeSpinCompletionService.js";
-import { requestFreeSpinSession, requestFreeSpins } from "../api/freeSpinsApiClient.js";
+import { requestFreeSpins } from "../api/freeSpinsApiClient.js";
 import { requestBalance } from "../api/balanceApiClient.js";
 import { useSoapBackend } from "../api/runtimeConfig.js";
 import { flushSync } from "react-dom";
@@ -20,6 +20,7 @@ import { ROUND_OPERATION_STATUS, stateRecoveryService } from "../services/stateR
 import { partnerApi } from "../services/partnerApi.js";
 import { getNextSpinDelayMs } from "../utils/spinTiming.js";
 import { asNumber } from "../utils/number.js";
+import { isBrowserOffline } from "../utils/connectivity.js";
 
 
 const VALID_FRAME_LINE_COUNTS = new Set([1, 3, 5, 7, 9]);
@@ -70,33 +71,59 @@ export const createSpinActions = ({
   const showFreeSpinCompletion = async () => {
     const state = liveSpinStateRef.current;
     if (state.status !== "ready" && !state.freeSpinSettling) return;
-    if (!useSoapBackend() || state.freeSpinsLeft !== 0 || !(state.freeSpinsTotal > 0) ||
+    if (state.freeSpinsLeft !== 0 || !(state.freeSpinsTotal > 0) ||
         state.freeSpinCountUnknown || state.freeSpinHistoryMissing || state.roundRecoveryBlocked ||
         state.freeSpinSummary || state.freeSpinSummaryChecking ||
         stateRecoveryService.getPendingRequest(state.context) ||
         freeSpinSeries.getPayments(state.context).some(card => !card.paid)) return;
     liveSpinStateRef.current.freeSpinSummaryChecking = true;
     try {
-      const summary = await requestFreeSpinSession(state.context);
+      const summary = freeSpinSeries.getCompletionSummary(
+        state.context, state.player?.currency ?? state.context.currency,
+      );
       const current = liveSpinStateRef.current;
       if (current.context !== state.context || current.freeSpinsLeft !== 0 ||
           current.freeSpinCountUnknown || current.roundRecoveryBlocked || !summary) return;
       if (!claimFreeSpinCompletion(state.context, summary.id)) return;
+      const completion = {...summary, resumeAutoExpress: Boolean(resumeAutoPlayAfterFreeSpinsRef.current)};
       autoPlayOnRef.current = false;
       resumeAutoPlayAfterFreeSpinsRef.current = false;
       setAutoPlayOn?.(false);
-      current.freeSpinSummary = summary;
-      setFreeSpinSummary(summary);
+      current.freeSpinSummary = completion;
+      setFreeSpinSummary(completion);
     } catch (error) {
-      reportOperationError(error, 'Unable to load the server free-spin session total');
+      reportOperationError(error, 'Unable to show the free-spin session total');
     } finally {
       liveSpinStateRef.current.freeSpinSummaryChecking = false;
     }
   };
 
+  let freeSpinContinuePromise = null;
   const continueAfterFreeSpins = () => {
-    liveSpinStateRef.current.freeSpinSummary = null;
-    setFreeSpinSummary(null);
+    const summary = liveSpinStateRef.current.freeSpinSummary;
+    if (!summary) return Promise.resolve(false);
+    if (freeSpinContinuePromise) return freeSpinContinuePromise;
+    freeSpinContinuePromise = (async () => {
+      try {
+        await refreshBalance();
+        liveSpinStateRef.current.freeSpinSummary = null;
+        // Zero is an explicit display reset; null would reveal the last ticket amount.
+        liveSpinStateRef.current.freeSpinsWinTotal = 0;
+        setFreeSpinsWinTotal(0);
+        setFreeSpinSummary(null);
+        if (summary.resumeAutoExpress && !liveSpinStateRef.current.roundRecoveryBlocked) {
+          autoPlayOnRef.current = true;
+          setAutoPlayOn?.(true);
+        }
+        return true;
+      } catch (error) {
+        reportOperationError(error, "Unable to refresh balance after free spins");
+        return false;
+      } finally {
+        freeSpinContinuePromise = null;
+      }
+    })();
+    return freeSpinContinuePromise;
   };
 
   // Refresh the wallet only: this must never resolve or retry an uncertain round.
@@ -149,6 +176,10 @@ export const createSpinActions = ({
       doublingState.loading ||
       (freeSpinRunRef.current && !freeSpinAuto)
     ) {
+      return null;
+    }
+    if (isBrowserOffline()) {
+      setError(t("networkError"));
       return null;
     }
     const backendManagedWallet = useSoapBackend();
@@ -647,6 +678,10 @@ export const createSpinActions = ({
     return task;
   };
   const collectWin = async () => {
+    if (isBrowserOffline()) {
+      setError(t("networkError"));
+      return false;
+    }
     if (liveSpinStateRef.current.freeSpinsLeft <= 0 && freeSpinSeries.getPayments(liveSpinStateRef.current.context).some(card=>!card.paid)) return settleFreeSpinWins();
     if (liveSpinStateRef.current.spinResult?.freeSpinDeferred) return liveSpinStateRef.current.freeSpinsLeft > 0 ? startFreeSpinRun() : settleFreeSpinWins();
     const { doublingState, player, spinResult, status, context } = liveSpinStateRef.current;
@@ -793,6 +828,3 @@ export const createSpinActions = ({
     startFreeSpinRun,
   };
 };
-
-
-

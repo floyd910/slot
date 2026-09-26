@@ -1,7 +1,7 @@
 import { AlertTriangle } from "lucide-react";
 import "./GameAlert.css";
 
-export default function GameAlert({ message }) {
+export default function GameAlert({ message, onRetry, retryLabel, retryDisabled }) {
   if (!message) return null;
 
   return (
@@ -11,6 +11,7 @@ export default function GameAlert({ message }) {
         <AlertTriangle size={20} strokeWidth={2.4} />
       </span>
       <p className="game-alert__message">{message}</p>
+      {onRetry && <button type="button" className="game-alert__retry" disabled={retryDisabled} onClick={onRetry}>{retryLabel}</button>}
     </div>
   );
 }

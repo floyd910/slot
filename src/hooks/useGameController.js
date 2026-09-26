@@ -657,6 +657,16 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         setContext(initializedContext);
       }
       initializedSessionIdRef.current = session.sessionId ?? context.sessionId;
+      if (session.paymentRecovered) {
+        liveSpinStateRef.current = {...liveSpinStateRef.current, roundRecoveryBlocked:false, freeSpinsWinTotal:0};
+        setRoundRecoveryStatus(null);
+        setRestoredDoubleAvailable(false);
+      }
+      // Builds before recoveryVersion=2 persisted definitely-offline attempts as
+      // unknown operations. Once /init succeeds online, discard only those legacy
+      // NETWORK_UNREACHABLE locks; versioned in-flight failures remain protected.
+      stateRecoveryService.clearLegacyOfflinePending(context);
+      if (globalThis.navigator?.onLine !== false) stateRecoveryService.clearConnectivityRecovery(context);
       const pendingRecovery = frameApi.getPendingRequest(context);
       const recoveredState = session.gameState ? null : frameApi.recoverState(context);
       const lastSpinSnapshot = session.gameState ?? stateRecoveryService.getLastSpin(context);
@@ -722,7 +732,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         }
       }
       setFreeSpinsPaidTotal(session.freeSpinsPaidTotal ?? 0);
-      setFreeSpinsWinTotal(session.freeSpinsLeft > 0 || session.gameState?.spinResult?.isFreeSpin ? session.freeSpinsWinTotal ?? null : null);
+      setFreeSpinsWinTotal(session.paymentRecovered && !(session.freeSpinsLeft > 0) ? 0 : session.freeSpinsLeft > 0 || session.gameState?.spinResult?.isFreeSpin ? session.freeSpinsWinTotal ?? null : null);
       setFreeSpinHistoryMissing(session.freeSpinHistoryMissing === true);
       liveSpinStateRef.current = {...liveSpinStateRef.current, freeSpinHistoryMissing:session.freeSpinHistoryMissing === true};
       if (session.freeSpinsLeft != null) {
@@ -773,8 +783,23 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     }
   }, [context, postEvent, reportError]);
 
+  const paymentRecoveryAttemptsRef = useRef(new Map());
   const retryInitialization = useCallback(async () => {
+    if (globalThis.navigator?.onLine === false) {
+      setError(tRef.current("networkError"));
+      setStatus("network-error");
+      return false;
+    }
     const pending = frameApi.getPendingRequest(context);
+    if (pending?.methodName === '/spin') {
+      stateRecoveryService.markConnectivityInterrupted(context);
+      stateRecoveryService.clearConnectivityRecovery(context);
+      liveSpinStateRef.current={...liveSpinStateRef.current,roundRecoveryBlocked:false,status:'ready'};
+      setRoundRecoveryStatus(null);
+      setError('');
+      setStatus('ready');
+      return init({ force: true });
+    }
     if (pending?.methodName !== '/double') return init({ force: true });
     if (initializationInFlightRef.current) return;
     initializationInFlightRef.current = true;
@@ -801,6 +826,24 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       initializationInFlightRef.current = false;
     }
   }, [context, init, reportError, setError]);
+
+  useEffect(() => {
+    const pending=frameApi.getPendingRequest(context);
+    if (roundRecoveryStatus !== ROUND_OPERATION_STATUS.RECOVERY_REQUIRED || pending?.methodName !== '/pay') return;
+    let cancelled=false, timer;
+    const attempts=paymentRecoveryAttemptsRef.current;
+    const check=async()=>{
+      if (cancelled || navigator.onLine === false || frameApi.getPendingRequest(context)?.requestId !== pending.requestId) return;
+      const count=attempts.get(pending.requestId) ?? 0;
+      if (count>=3) return;
+      if (initializationInFlightRef.current) { timer=window.setTimeout(check,1000); return; }
+      attempts.set(pending.requestId,count+1);
+      await retryInitialization();
+      if (!cancelled && frameApi.getPendingRequest(context)?.requestId === pending.requestId) timer=window.setTimeout(check,2000);
+    };
+    timer=window.setTimeout(check,1000);
+    return ()=>{cancelled=true;window.clearTimeout(timer);};
+  }, [roundRecoveryStatus,context,retryInitialization]);
 
   useEffect(() => {
     if (roundRecoveryStatus !== ROUND_OPERATION_STATUS.RECOVERY_REQUIRED) return undefined;
@@ -838,9 +881,17 @@ export function useGameController(selectedGameId, gameDefinition = null) {
 
   useEffect(() => {
     const reconnect = () => {
-      if (status === "network-error" || lastKnownState === "network-error") retryInitialization();
+      const pending = frameApi.getPendingRequest(context);
+      if (pending?.methodName === "/spin") {
+        stateRecoveryService.markConnectivityInterrupted(context);
+        stateRecoveryService.clearConnectivityRecovery(context);
+        window.location.reload();
+        return;
+      }
+      if (pending?.methodName === "/pay" || status === "network-error" || lastKnownState === "network-error") retryInitialization();
     };
     const disconnect = () => {
+      stateRecoveryService.markConnectivityInterrupted(context);
       if (lastKnownState === "spin-submitted") {
         setError(tRef.current("connectionLostRecovering"));
         setRoundRecoveryStatus(ROUND_OPERATION_STATUS.RECOVERY_REQUIRED);
@@ -854,7 +905,16 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       window.removeEventListener("online", reconnect);
       window.removeEventListener("offline", disconnect);
     };
-  }, [retryInitialization, lastKnownState, status]);
+  }, [retryInitialization, lastKnownState, status, context]);
+
+  useEffect(() => {
+    if (roundRecoveryStatus !== ROUND_OPERATION_STATUS.RECOVERY_REQUIRED || globalThis.navigator?.onLine === false) return;
+    if (frameApi.getPendingRequest(context)?.methodName === "/spin") {
+      stateRecoveryService.markConnectivityInterrupted(context);
+    }
+    if (!stateRecoveryService.clearConnectivityRecovery(context)) return;
+    window.location.reload();
+  }, [context, retryInitialization, roundRecoveryStatus]);
 
   useEffect(() => {
     if (
@@ -1200,6 +1260,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       visualMode,
     },
     derived: {
+      canRetryPaymentRecovery: isRoundRecoveryBlocked && ["/spin", "/pay"].includes(frameApi.getPendingRequest(context)?.methodName),
       canAffordSpin,
       doubleOfferAvailable,
       isBusy,
@@ -1223,5 +1284,3 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     },
   };
 }
-
-

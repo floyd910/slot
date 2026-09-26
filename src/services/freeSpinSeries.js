@@ -14,6 +14,13 @@ const save = (context,value) => {
 };
 const snapshot = value => ({freeSpinsWinTotal:value ? (value.winMinor == null ? null : value.winMinor / 100) : 0,freeSpinsTotal:value?.total ?? 0,freeSpinsPlayed:value?.baseline == null ? 0 : Math.max(0,value.played-value.baseline),freeSpinsLeft:value?.baseline == null ? (value?.total ?? 0) : Math.max(0,value.total-(value.played-value.baseline))});
 export const freeSpinSeries = {
+ getCompletionSummary(context,currency) {
+  const value=read(context);
+  const id=value?.awardIds?.[0];
+  if(id == null || value.winMinor == null || !Number.isSafeInteger(value.winMinor) || value.winMinor<0 ||
+     typeof currency !== 'string' || !currency.trim())return null;
+  return {id:'local-series:'+id,totalWin:(value.winMinor/100).toFixed(2),currency};
+ },
  getPayments(context) {return read(context)?.payments ?? [];},
  getPaidTotal(context) {return (read(context)?.payments ?? []).filter(p=>p.paid).reduce((sum,p)=>sum+p.winMinor,0)/100;},
  markPaid(context,id,balance) {

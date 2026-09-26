@@ -102,6 +102,8 @@ export class StateRecoveryService {
   rememberPendingRequest(request, context = {}) {
     const pending = {
       ...request,
+      recoveryVersion: 2,
+      startedOnline: globalThis.navigator?.onLine !== false,
       recoveryState: request.methodName === "/double" ? this.getLocalState(context) : undefined,
       status: "pending",
       createdAt: new Date().toISOString(),
@@ -134,6 +136,48 @@ export class StateRecoveryService {
 
   getPendingRequest(context = {}) {
     return readStorage(getPendingKey(context)) ?? readStorage(getScopedKey(PENDING_KEY, context));
+  }
+
+  clearLegacyOfflinePending(context = {}) {
+    const pending = this.getPendingRequest(context);
+    if (!pending || pending.recoveryVersion != null || pending.errorCode !== "NETWORK_UNREACHABLE") return false;
+    this.completePendingRequest(pending.requestId, context);
+    return true;
+  }
+
+  markConnectivityInterrupted(context = {}) {
+    const pending = this.getPendingRequest(context);
+    if (!pending) return false;
+    writeStorage(getPendingKey(context), {
+      ...pending,
+      connectivityInterrupted: true,
+      connectivityInterruptedAt: new Date().toISOString(),
+    });
+    return true;
+  }
+
+  clearConnectivityRecovery(context = {}) {
+    const pending = this.getPendingRequest(context);
+    if (!pending || !(pending.connectivityInterrupted === true || ["OFFLINE", "NETWORK_UNREACHABLE", "NETWORK_ERROR"].includes(pending.errorCode))) return false;
+    this.completePendingRequest(pending.requestId, context);
+    const round = this.getLocalState(context);
+    if (!round) return true;
+    const confirmedResult = round.lastConfirmedSpinResult ?? round.spinResult ?? null;
+    const confirmedGrid = round.lastConfirmedGrid ?? confirmedResult?.grid ?? round.grid ?? null;
+    const hasConfirmedWin = Number(confirmedResult?.WinSum ?? 0) > 0 && confirmedResult?.creditedToBalance !== true;
+    const hasFreeSpins = round.freeSpinsActive === true && Number(round.freeSpinsLeft ?? 0) > 0;
+    if (!confirmedResult && !hasFreeSpins) this.completeRound(context);
+    else this.saveRound({
+      requestId: null,
+      operationStatus: hasConfirmedWin || hasFreeSpins
+        ? ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION
+        : ROUND_OPERATION_STATUS.ROUND_COMPLETED,
+      recoveryError: null,
+      spinResult: confirmedResult,
+      grid: confirmedGrid,
+      doubleAvailable: hasConfirmedWin,
+    }, context);
+    return true;
   }
 
   saveGameState(state = {}, context = {}) {

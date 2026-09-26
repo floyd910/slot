@@ -5,6 +5,8 @@ export default defineConfig(({ mode }) => {
   const env = {...loadEnv(mode, process.cwd(), ""), ...process.env};
   return {
   plugins: [react()],
+  // Browser profiles and preview HTML under tmp/tools are not app entries.
+  optimizeDeps: { entries: ["index.html"] },
   // Public demo account only. The token is intentionally included in the client build.
   define: {
     'import.meta.env.VITE_DEMO_TOKEN': JSON.stringify(env.DEMO_TOKEN || ''),

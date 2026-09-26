@@ -16,7 +16,7 @@ test('all games and views count 15 per catch, restore, retrigger and finish usin
   mergeRuntimeConfig({backendMode:'soap'});
   for(const gameId of ['ganchina-sokrovishch','marvorid-djemchug','khiradmandi-makor','egypt','kadima-drevnii','khocha-afandi','babylon','fruits'])for(const visualMode of [false,true]) {
    const context={token:'fixture',playerId:'player-'+visualMode,gameId,sessionId:gameId+'-'+visualMode};
-   const live={current:{context,visualMode,carpetCloseMs:0,carpetOpenMs:0,status:'ready',player:{balance:100},doubleState:{},doublingState:{},freeSpinsLeft:0,freeSpinsTotal:0,selectedCombination:{groups:[{}],id:1},stake:1}};
+   const live={current:{context,visualMode,carpetCloseMs:0,carpetOpenMs:0,status:'ready',player:{balance:100,currency:'USD'},doubleState:{},doublingState:{},freeSpinsLeft:0,freeSpinsTotal:0,selectedCombination:{groups:[{}],id:1},stake:1}};
    let played=100,calls=0,failCount=false,payCalls=0,expectedMinor=0,paidMinor=0;const cardWins=new Map();const errors=[];
    const options={liveSpinStateRef:live,autoPlayOnRef:{current:false},freeSpinRunRef:{current:false},t:k=>k,reportOperationError:e=>errors.push(e)};
    for(const name of ['emitLotteryRevealSounds','emitSound','playSpinFeedback','setError','setHasRecoveredGrid','setHasSessionSpin','setLastKnownState','onRecoveryRequired','postEvent','setAutoPlayOn'])options[name]=()=>{};
@@ -54,6 +54,17 @@ test('all games and views count 15 per catch, restore, retrigger and finish usin
    assert.equal(errors.length,1);assert.equal(payCalls,20);assert.equal(live.current.player.balance,5858.5);assert.equal(freeSpinSeries.getPaidTotal(context),5758.5);
    assert.equal(live.current.freeSpinsWinTotal,5758.5);
    assert.equal(freeSpinSeries.read(context).freeSpinsWinTotal,5758.5);
+   assert.equal(live.current.freeSpinSummary.totalWin,'5758.50');
+   assert.equal(live.current.freeSpinSummary.currency,'USD');
+   expectedMinor=0;
+   globalThis.fetch=async url=>{
+    if(url.endsWith('/balance'))return new Response(JSON.stringify({balance:1503,currency:'USD',playerId:context.playerId}));
+    assert.ok(url.endsWith('/freespins'));return new Response(JSON.stringify({CountFreeSpin:String(played)}));
+   };
+   assert.equal(await actions.continueAfterFreeSpins(),true);
+   assert.equal(live.current.player.balance,1503);
+   assert.equal(live.current.freeSpinsWinTotal,0);
+   assert.equal(freeSpinSeries.read(context).freeSpinsWinTotal,5758.5);
    // A successful normal spin may return a counter below the completed series.
    // The supplied losing payload must remain playable; the later win must collect its own card.
    expectedMinor=null;
@@ -63,10 +74,6 @@ test('all games and views count 15 per catch, restore, retrigger and finish usin
     ...Object.fromEntries([[5,2,4,4,7],[5,6,5,4,0],[4,1,2,5,1]].map((row,i)=>['Line'+(i+1),Object.fromEntries(row.map((v,j)=>['Slot'+(j+1),String(v)]))])),
     ...Object.fromEntries(Array.from({length:10},(_,i)=>['LineWinKoff'+(i+1),{Koff:'0'}])),
     WinSum:'0',FreeSpin:'0',Gold:'0',idCard:'67163663',Number:'62753371',ballance:1503,
-   };
-   globalThis.fetch=async url=>{
-    if(url.endsWith('/balance'))return new Response(JSON.stringify({balance:1503,currency:'USD',playerId:context.playerId}));
-    assert.ok(url.endsWith('/freespins'));return new Response(JSON.stringify({CountFreeSpin:String(played)}));
    };
    frameApi.spin=async params=>({...mapJsonSpinPayload(payload,params),backendManagedWallet:true});
    const normalLoss=await actions.handleSpin();

@@ -10,6 +10,7 @@ import { withTimeout } from "../utils/async.js";
 import { getTicketWinAmount } from "../utils/gameResult.js";
 import { ROUND_OPERATION_STATUS, stateRecoveryService } from "../services/stateRecoveryService.js";
 import { partnerApi } from "../services/partnerApi.js";
+import { createOfflineError, isBrowserOffline } from "../utils/connectivity.js";
 
 const CHEST_SIDES = new Set(["left", "right"]);
 
@@ -217,6 +218,10 @@ export const createDoubleActions = ({
     const { doublingState, spinResult, status } = liveSpinStateRef.current;
     if (!spinResult?.idCard || liveSpinStateRef.current.roundRecoveryBlocked || doublingState.loading || status === "processing")
       return;
+    if (isBrowserOffline()) {
+      reportError(createOfflineError("Double"), t("networkError"));
+      return;
+    }
 
     const step = doublingState.step || 0;
     const currentAmount = getCurrentCardWin(spinResult, doublingState);
@@ -357,6 +362,10 @@ export const createDoubleActions = ({
       liveSpinStateRef.current;
     if (!spinResult?.idCard || liveSpinStateRef.current.roundRecoveryBlocked || doubleState.loading || status === "processing" || doubleState.step > DOUBLE_MAX_STEPS || getCurrentCardWin(spinResult, doublingState) <= 0)
       return;
+    if (isBrowserOffline()) {
+      reportError(createOfflineError("Double"), t("networkError"));
+      return;
+    }
 
     try {
       emitSound("double");

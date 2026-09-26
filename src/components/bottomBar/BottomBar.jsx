@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./BottomBar.css";
 import { useLanguage } from "../../i18n.jsx";
 import { getTicketWinAmount } from "../../utils/gameResult.js";
@@ -29,8 +29,23 @@ export default function BottomBar(inputProps) {
     props.doublingState,
   );
   const winLabel = t(props.freeSpinRoundStarted || Number(props.freeSpinsLeft ?? 0) > 0 ? "totalWinning" : "win");
+  // Retain the last visually completed total while the next board is concealed/revealing.
+  // A recovered or newly received series total must not bypass the reveal gate.
+  const revealedFreeSpinsTotal = useRef(
+    props.revealComplete === false ? 0 : (props.freeSpinsWinTotal ?? 0),
+  );
+  useEffect(() => {
+    if (props.revealComplete !== false) {
+      revealedFreeSpinsTotal.current = props.freeSpinsWinTotal ?? 0;
+    }
+  }, [props.revealComplete, props.freeSpinsWinTotal]);
+  const visibleFreeSpinsTotal = props.revealComplete === false
+    ? revealedFreeSpinsTotal.current
+    : props.freeSpinsWinTotal;
   const currentWin = formatMoney(
-    props.freeSpinsWinTotal ?? (props.revealComplete === false ? 0 : ticketWinAmount),
+    props.freeSpinsWinTotal != null
+      ? visibleFreeSpinsTotal
+      : (props.revealComplete === false ? 0 : ticketWinAmount),
   );
   const normalSpinWinAmount = getTicketWinAmount(props.spinResult, null);
   const isFreeSpinResult =

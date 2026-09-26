@@ -38,7 +38,7 @@ test('completion is deduplicated across reconnects and persisted storage', () =>
   } finally {globalThis.window=original;}
 });
 
-test('settlement displays the server series total once, stops autoplay, and waits for Continue', async () => {
+test('settlement displays the accumulated series total once, stops autoplay, and waits for Continue', async () => {
   const originalFetch=globalThis.fetch, originalWindow=globalThis.window;
   const store=new Map();
   globalThis.window={dispatchEvent(){},addEventListener(){},localStorage:{getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v)},sessionStorage:{getItem:()=>null}};
@@ -47,18 +47,26 @@ test('settlement displays the server series total once, stops autoplay, and wait
     const {createSpinActions}=await server.ssrLoadModule('/src/controllers/spinActions.js');
     const {mergeRuntimeConfig}=await server.ssrLoadModule('/src/api/runtimeConfig.js');
     mergeRuntimeConfig({backendMode:'soap'});
-    for (const totalWin of ['24.60','0.00',null]) {
-      const context={playerId:'completion-'+totalWin,gameId:'khiradmandi-makor',token:'fixture'};
-      const live={current:{context,status:'ready',freeSpinsLeft:15,freeSpinsTotal:30,freeSpinsWinTotal:9999,spinResult:{WinSum:1.23}}};
-      const autoPlayOnRef={current:true}, resumeAutoPlayAfterFreeSpinsRef={current:true};
-      const summaries=[], errors=[];
+    const {freeSpinSeries}=await server.ssrLoadModule('/src/services/freeSpinSeries.js');
+    for (const autoExpress of [false,true]) for (const totalWin of ['24.60','0.00',null]) {
+      const context={playerId:'completion-'+totalWin+'-'+autoExpress,gameId:'khiradmandi-makor',token:'fixture'};
+      if (totalWin !== null) {
+        freeSpinSeries.recordResult(context,{idCard:'award',FreeSpin:1,WinSum:99},false);
+        freeSpinSeries.recordResult(context,{idCard:'retrigger',FreeSpin:1,WinSum:0},true);
+        freeSpinSeries.recordResult(context,{idCard:'win',WinSum:totalWin,creditedToBalance:true},true);
+      }
+      const live={current:{context,player:{currency:'USD'},status:'ready',freeSpinsLeft:15,freeSpinsTotal:30,freeSpinsWinTotal:9999,spinResult:{WinSum:1.23}}};
+      const autoPlayOnRef={current:true}, resumeAutoPlayAfterFreeSpinsRef={current:autoExpress};
+      const summaries=[], errors=[], displayedTotals=[];
       let requests=0;
-      globalThis.fetch=async () => {
+      globalThis.fetch=async url => {
         requests++;
+        if (url.endsWith('/balance')) return new Response(JSON.stringify({balance:777,currency:'USD',playerId:context.playerId}));
         return new Response(JSON.stringify({CountFreeSpin:130, ...(totalWin === null ? {} : {FreeSpinSession:{...finalSession,totalWin}})}));
       };
       const actions=createSpinActions({liveSpinStateRef:live,autoPlayOnRef,resumeAutoPlayAfterFreeSpinsRef,
-        setAutoPlayOn:()=>{},setFreeSpinSummary:v=>summaries.push(v),reportOperationError:e=>errors.push(e)});
+        setFreeSpinsWinTotal:value=>displayedTotals.push(value),
+        setAutoPlayOn:()=>{},setPlayer:()=>{},postEvent:()=>{},setFreeSpinSummary:v=>summaries.push(v),reportOperationError:e=>errors.push(e)});
       // Retriggered spins are still pending: neither a request nor a summary is allowed.
       assert.equal(await actions.settleFreeSpinWins(),false);
       assert.equal(requests,0);
@@ -68,15 +76,25 @@ test('settlement displays the server series total once, stops autoplay, and wait
       live.current.freeSpinCountUnknown=false;
       assert.equal(await actions.settleFreeSpinWins(),true);
       if (totalWin === null) {assert.deepEqual(summaries,[]);continue;}
+      assert.equal(requests,0,'summary must not require an extra API request');
       assert.equal(summaries.length,1);
       assert.equal(summaries[0].totalWin,totalWin);
+      assert.equal(summaries[0].resumeAutoExpress,autoExpress);
       assert.equal(autoPlayOnRef.current,false);
       assert.equal(resumeAutoPlayAfterFreeSpinsRef.current,false);
       assert.equal(await actions.handleSpin(),null);
       await actions.settleFreeSpinWins();
       assert.equal(summaries.length,1);
-      actions.continueAfterFreeSpins();
+      const ledgerBefore=freeSpinSeries.read(context);
+      const paymentsBefore=freeSpinSeries.getPayments(context);
+      assert.equal(await actions.continueAfterFreeSpins(),true,errors.at(-1)?.message);
+      assert.equal(live.current.player.balance,777);
+      assert.equal(live.current.freeSpinsWinTotal,0);
+      assert.deepEqual(displayedTotals,[0]);
+      assert.deepEqual(freeSpinSeries.read(context),ledgerBefore);
+      assert.deepEqual(freeSpinSeries.getPayments(context),paymentsBefore);
       assert.equal(live.current.freeSpinSummary,null);
+      assert.equal(autoPlayOnRef.current,autoExpress);
       await actions.settleFreeSpinWins();
       assert.equal(summaries.length,2); // One dialog and its explicit close; no repeated dialog.
       assert.equal(summaries[1],null);
