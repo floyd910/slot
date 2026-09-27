@@ -61,3 +61,16 @@ test('paid, zero-win and undoubled snapshots do not reopen Double; invalid steps
   assert.throws(()=>mapInitGameState(raw,context),{code:'BACKEND_RESPONSE_ERROR'});
  }
 });
+
+test('restored init card preserves explicit or grid-inferred Free Spin awards',()=>{
+ for(const variant of ['explicit','scatter']) {
+  const raw=fixture();
+  if(variant==='explicit')raw.FreeSpin='1';
+  else raw.Line1={Slot11:'0',Slot12:'0',Slot13:'0',Slot14:'10',Slot15:'11'};
+  const result=mapInitGameState(raw,context).spinResult;
+  assert.equal(result.FreeSpin,1);
+  assert.equal(result.scatterCount>=3,variant==='scatter');
+ }
+ const invalid=fixture();invalid.FreeSpin='2';
+ assert.throws(()=>mapInitGameState(invalid,context),{code:'BACKEND_RESPONSE_ERROR'});
+});

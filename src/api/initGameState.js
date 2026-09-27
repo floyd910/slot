@@ -14,8 +14,14 @@ export function mapInitGameState(state, context) {
   const wasDouble = Number(state.SpinResult.WasDouble);
   if (!Number.isInteger(wasDouble) || wasDouble > DOUBLE_MAX_STEPS) fail();
   const paid=typeof state.PayDate === "string" && state.PayDate.trim() !== "";
-  const payload = {idCard:state.idCard,Number:state.SpinResult.Number,WinSum:paid ? 0 : Number(state.SumPay),FreeSpin:0,Gold:0};
-  for(let row=1;row<=3;row++) payload['Line'+row]=Object.fromEntries(Array.from({length:5},(_,i)=>['Slot'+(i+1),state['Line'+row]?.['Slot'+row+(i+1)]]));
+  const rows = Array.from({length:3},(_,row)=>Array.from({length:5},(_,index)=>state["Line"+(row+1)]?.["Slot"+(row+1)+(index+1)]));
+  const explicitFreeSpin = state.FreeSpin ?? state.SpinResult.FreeSpin;
+  if (explicitFreeSpin != null && (!numeric(explicitFreeSpin) || ![0,1].includes(Number(explicitFreeSpin)))) fail();
+  const recoveredFreeSpin = explicitFreeSpin == null
+    ? (rows.flat().filter(value => Number(value) === 0).length >= 3 ? 1 : 0)
+    : Number(explicitFreeSpin);
+  const payload = {idCard:state.idCard,Number:state.SpinResult.Number,WinSum:paid ? 0 : Number(state.SumPay),FreeSpin:recoveredFreeSpin,Gold:0};
+  for(let row=1;row<=3;row++) payload['Line'+row]=Object.fromEntries(rows[row-1].map((value,index)=>['Slot'+(index+1),value]));
   for(let i=1;i<=10;i++) payload['LineWinKoff'+i]={Koff:state.LinesKoff?.['Koff'+i]};
   const spinResult=mapJsonSpinPayload(payload,{...context,isDemo:truth(state.SlotDemoSpin),isFreeSpin:truth(state.SlotFreeSpin)});
 

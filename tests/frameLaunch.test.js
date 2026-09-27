@@ -265,3 +265,37 @@ test('network-failed first spin unlocks when validated init has no card',async()
     globalThis.fetch=original;
   }
 });
+test('auto-express free-spin count survives ordinary leave and reopen',async()=>{
+  mergeRuntimeConfig({sessionApiBaseUrl:'https://example.invalid'});
+  const original=globalThis.fetch,service=new SessionApiService();
+  const params={token:'fixture',playerId:'auto-exit-player',gameId:'khiradmandi-makor',initSource:'postMessage'};
+  const raw={SpinResult:{idCard:'free-2',LineSum:'0',Lines:'5',WasDouble:'0',Number:'7'},...Object.fromEntries([[1,2,3,4,5],[6,7,8,9,10],[11,12,8,1,2]].map((row,r)=>['Line'+(r+1),Object.fromEntries(row.map((v,c)=>['Slot'+(r+1)+(c+1),String(v)]))])),LinesKoff:Object.fromEntries(Array.from({length:10},(_,i)=>['Koff'+(i+1),'0'])),idCard:'free-2',CardSum:'5',SumPay:'0',PayDate:'',idGameType:'36',SlotFreeSpin:'True',SlotDemoSpin:'False',CountFreeSpin:'502'};
+  try {
+    freeSpinSeries.recordResult(params,{idCard:'auto-award',FreeSpin:1,WinSum:0},false);
+    freeSpinSeries.reconcile(params,500);
+    freeSpinSeries.recordResult(params,{idCard:'free-1',FreeSpin:0,WinSum:0},true);
+    freeSpinSeries.recordResult(params,{idCard:'free-2',FreeSpin:0,WinSum:0},true);
+    globalThis.fetch=async(url)=>url.endsWith('/init')?new Response(JSON.stringify({sessionId:'auto-reopened',gameState:raw})):url.endsWith('/balance')?new Response(JSON.stringify({balance:100,currency:'GEL',playerId:params.playerId})):new Response(JSON.stringify({CountFreeSpin:'502'}));
+    const result=await service.initSession(params);
+    assert.deepEqual({total:result.freeSpinsTotal,played:result.freeSpinsPlayed,left:result.freeSpinsLeft},{total:15,played:2,left:13});
+  } finally {stateRecoveryService.clearLocalState(params);globalThis.fetch=original;}
+});
+
+test('interrupted auto-express trigger rebuilds its missed 15-spin award',async()=>{
+  mergeRuntimeConfig({sessionApiBaseUrl:'https://example.invalid'});
+  const original=globalThis.fetch,service=new SessionApiService();
+  try {for(const interruption of ['leave','network']) {
+    const params={token:'fixture',playerId:'auto-trigger-'+interruption,gameId:'khiradmandi-makor',initSource:'postMessage'};
+    const raw={SpinResult:{idCard:'award-'+interruption,LineSum:'0',Lines:'5',WasDouble:'0',Number:'7'},Line1:{Slot11:'0',Slot12:'0',Slot13:'0',Slot14:'4',Slot15:'5'},Line2:{Slot21:'6',Slot22:'7',Slot23:'8',Slot24:'9',Slot25:'10'},Line3:{Slot31:'11',Slot32:'12',Slot33:'8',Slot34:'1',Slot35:'2'},LinesKoff:Object.fromEntries(Array.from({length:10},(_,i)=>['Koff'+(i+1),'0'])),idCard:'award-'+interruption,CardSum:'5',SumPay:'0',PayDate:'',idGameType:'36',SlotFreeSpin:'False',SlotDemoSpin:'False',CountFreeSpin:'700'};
+    stateRecoveryService.saveRound({operationStatus:'SPIN_PROCESSING'},params);
+    stateRecoveryService.rememberPendingRequest({requestId:'lost-award-'+interruption,methodName:'/spin',isFreeSpin:false},params);
+    if(interruption==='network')stateRecoveryService.markRecoveryRequired({code:'NETWORK_ERROR'}, {}, params);
+    globalThis.fetch=async(url)=>url.endsWith('/init')?new Response(JSON.stringify({sessionId:'recovered-'+interruption,gameState:raw})):url.endsWith('/balance')?new Response(JSON.stringify({balance:100,currency:'GEL',playerId:params.playerId})):new Response(JSON.stringify({CountFreeSpin:'700'}));
+    const result=await service.initSession(params);
+    assert.equal(result.spinRecovered,true);
+    assert.equal(result.gameState.spinResult.FreeSpin,1);
+    assert.deepEqual({total:result.freeSpinsTotal,played:result.freeSpinsPlayed,left:result.freeSpinsLeft},{total:15,played:0,left:15});
+    assert.equal(stateRecoveryService.getPendingRequest(params),null);
+    stateRecoveryService.clearLocalState(params);
+  }} finally {globalThis.fetch=original;}
+});

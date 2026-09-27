@@ -92,9 +92,7 @@ const reconcileConfirmedSpin = (context, pending, localState, gameState) => {
   const isConfirmedResult = previousCardId != null
     ? returnedCardId !== String(previousCardId)
     : capturedBeforeDispatch;
-  if (!isConfirmedResult) return false;
-  stateRecoveryService.completePendingRequest(pending.requestId, context);
-  return true;
+  return isConfirmedResult;
 };
 
 const rollbackConnectivityFailedSpin = (context, pending, localState, gameState) => {
@@ -145,6 +143,19 @@ export class SessionApiService {
     const remote = await requestRemoteSession(params);
     const playerId = params.playerId ?? params.userId ?? params.idUser;
     const gameState = mapInitGameState(remote.gameState, params);
+    const spinRecovered = reconcileConfirmedSpin(
+      params,
+      pendingAtStart,
+      localStateAtStart,
+      gameState,
+    );
+    if (spinRecovered && gameState?.spinResult) {
+      freeSpinSeries.recordResult(
+        params,
+        gameState.spinResult,
+        pendingAtStart?.isFreeSpin === true || gameState.spinResult.isFreeSpin === true,
+      );
+    }
     const wallet = await requestBalance({ token: params.token, playerId });
     // No last-spin snapshot means there is no spin history to refresh yet.
     const played = gameState ? await requestFreeSpins(params) : 0;
@@ -179,12 +190,7 @@ export class SessionApiService {
       if (card && !card.paid && !gameState.spinResult.creditedToBalance)
         gameState.spinResult.freeSpinDeferred = true;
     }
-    const spinRecovered = reconcileConfirmedSpin(
-      params,
-      pendingAtStart,
-      localStateAtStart,
-      gameState,
-    );
+    if (spinRecovered) stateRecoveryService.completePendingRequest(pendingAtStart.requestId, params);
     const spinRolledBack = !spinRecovered && rollbackConnectivityFailedSpin(
       params,
       pendingAtStart,
