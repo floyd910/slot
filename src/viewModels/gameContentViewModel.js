@@ -16,7 +16,7 @@ export function buildGameContentViewModel({ derived, state, t = (key) => key }) 
       ? Object.fromEntries(Object.entries(state.grid ?? {}).map(([row, cells]) => [row, Array.isArray(cells) ? cells.map(() => "") : cells]))
       : state.grid,
     // Completed history stays available to View 2, but must not replay win effects.
-    highlightResult: restoredHistory
+    highlightResult: state.spinResult?.creditedToBalance === true || restoredHistory
       ? null
       : state.spinResult,
     alertMessage:

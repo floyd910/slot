@@ -10,3 +10,12 @@ export const normalizeRuntimeStatus = (error) => {
   if (RETRYABLE_CODES.has(error?.code)) return "network-error";
   return "error";
 };
+
+export const getOperationErrorStatus = (error, hasVisibleGrid) =>
+  hasVisibleGrid ? "ready" : normalizeRuntimeStatus(error);
+
+export const shouldShowRuntimeState = (status, recoveryBlocked = false) =>
+  recoveryBlocked || !["guest", "ready", "empty", "processing", "initial-loading", "bootstrap-loading"].includes(status);
+
+export const getRuntimeStateStatus = (status, recoveryBlocked = false) =>
+  recoveryBlocked ? "network-error" : status;

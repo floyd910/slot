@@ -61,7 +61,11 @@ const readStorage = (key) => {
 };
 
 const notifyRecoveryStateChanged = () => {
-  window.dispatchEvent(new CustomEvent("hiranmandi:recovery-state-changed"));
+  if (typeof window === "undefined" || typeof window.dispatchEvent !== "function") return;
+  const EventClass = globalThis.CustomEvent;
+  if (typeof EventClass === "function") {
+    window.dispatchEvent(new EventClass("hiranmandi:recovery-state-changed"));
+  }
 };
 
 const writeStorage = (key, value) => {
@@ -104,7 +108,12 @@ export class StateRecoveryService {
       ...request,
       recoveryVersion: 2,
       startedOnline: globalThis.navigator?.onLine !== false,
-      recoveryState: request.methodName === "/double" ? this.getLocalState(context) : undefined,
+      // Keep the last confirmed card for both Spin and Double.  After a lost
+      // response /init can then prove that the server advanced to a new card
+      // and the complete result (including SumPay) can be restored safely.
+      recoveryState: ["/spin", "/double"].includes(request.methodName)
+        ? (this.getLocalState(context) ?? {})
+        : undefined,
       status: "pending",
       createdAt: new Date().toISOString(),
     };
@@ -205,6 +214,7 @@ export class StateRecoveryService {
     const current = this.getLocalState({ ...context, recoveryGameId: gameId }) ?? {};
     const next = {
       ...current, ...round, gameId,
+      ownerPlayerId: context.playerId ?? context.userId ?? context.idUser ?? current.ownerPlayerId ?? null,
       idCard: round.idCard ?? round.roundId ?? current.idCard ?? current.roundId ?? null,
       roundId: round.roundId ?? round.idCard ?? current.roundId ?? current.idCard ?? null,
       requestId: round.requestId ?? current.requestId ?? null,
@@ -230,7 +240,25 @@ export class StateRecoveryService {
   }
 
   clearLocalState(context = {}) {
-    removeStorage(getScopedKey(GAME_STATE_KEY, context));
+    const exactKey = getScopedKey(GAME_STATE_KEY, context);
+    const gameId = context.recoveryGameId ?? context.gameId;
+    const playerId = context.playerId ?? context.userId ?? context.idUser;
+    const keys = new Set(memoryStore.keys());
+    try {
+      for (let index = 0; index < window.sessionStorage.length; index += 1) {
+        const key = window.sessionStorage.key(index);
+        if (key?.startsWith(GAME_STATE_KEY + ":")) keys.add(key);
+      }
+    } catch {
+      // The in-memory keys are enough when iframe storage is blocked.
+    }
+    for (const key of keys) {
+      if (!key?.startsWith(GAME_STATE_KEY + ":")) continue;
+      const round = readStorage(key);
+      const sameGame = gameId && String(round?.gameId) === String(gameId);
+      const samePlayer = playerId == null || round?.ownerPlayerId == null || String(round.ownerPlayerId) === String(playerId);
+      if (key === exactKey || (sameGame && samePlayer)) removeStorage(key);
+    }
   }
 
   getActiveRounds() {

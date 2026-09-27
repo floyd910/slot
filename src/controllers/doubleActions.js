@@ -25,6 +25,7 @@ export const createDoubleActions = ({
   emitSound,
   liveSpinStateRef,
   postEvent,
+  markDefinitelyOfflineAction,
   reportError,
   setDoubleState,
   setDoublingState,
@@ -219,6 +220,7 @@ export const createDoubleActions = ({
     if (!spinResult?.idCard || liveSpinStateRef.current.roundRecoveryBlocked || doublingState.loading || status === "processing")
       return;
     if (isBrowserOffline()) {
+      markDefinitelyOfflineAction?.();
       reportError(createOfflineError("Double"), t("networkError"));
       return;
     }
@@ -363,6 +365,7 @@ export const createDoubleActions = ({
     if (!spinResult?.idCard || liveSpinStateRef.current.roundRecoveryBlocked || doubleState.loading || status === "processing" || doubleState.step > DOUBLE_MAX_STEPS || getCurrentCardWin(spinResult, doublingState) <= 0)
       return;
     if (isBrowserOffline()) {
+      markDefinitelyOfflineAction?.();
       reportError(createOfflineError("Double"), t("networkError"));
       return;
     }

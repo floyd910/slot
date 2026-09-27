@@ -2,7 +2,6 @@ import { SLOT_CHOOSER_BACKGROUND_SRC } from "./config/gameAssets.js";
 import { Suspense, lazy } from "react";
 import StartupLoader from "./components/startupLoader/StartupLoader.jsx";
 import { useSlotApp } from "./hooks/useSlotApp.js";
-import { useLanguage } from "./i18n.jsx";
 
 const loadSlotChooser = () => import("./components/slotChooser/SlotChooser.jsx");
 const SlotChooser = lazy(loadSlotChooser);
@@ -11,7 +10,6 @@ const SelectedSlotGame = lazy(loadSelectedSlotGame);
 
 export default function App() {
   const slotApp = useSlotApp({ loadSelectedSlotGame, loadSlotChooser });
-  const { t } = useLanguage();
   const query = new URLSearchParams(window.location.search);
   const isDirectGameRoute =
     /^#\/games\/[^/?#]+$/.test(window.location.hash) ||
@@ -49,34 +47,6 @@ export default function App() {
           backgroundSrc={showGameLoader ? SLOT_CHOOSER_BACKGROUND_SRC : undefined}
           progress={showChooserLoader ? slotApp.chooserLoadProgress : slotApp.gameLoadProgress}
         />
-      )}
-
-      {slotApp.exitConfirmationOpen && (
-        <div className="round-exit-dialog-backdrop" role="presentation">
-          <section
-            className="round-exit-dialog"
-            role="alertdialog"
-            aria-modal="true"
-            aria-labelledby="round-exit-dialog-title"
-          >
-            <p id="round-exit-dialog-title">
-              {t("unfinishedRoundMessage")}
-            </p>
-            <div className="round-exit-dialog__actions">
-              <button type="button" onClick={slotApp.confirmCloseSlot}>
-                {t("goToGames")}
-              </button>
-              <button
-                type="button"
-                className="round-exit-dialog__stay"
-                onClick={slotApp.cancelCloseSlot}
-                autoFocus
-              >
-                {t("stay")}
-              </button>
-            </div>
-          </section>
-        </div>
       )}
 
       {slotApp.selectedSlotId && (

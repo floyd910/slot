@@ -11,7 +11,6 @@ export default function SlotChooser({
   const slots = useSlotChooserItems(interactive);
   const { t } = useLanguage();
   const activeGameIds = new Set(activeRounds.map(({ gameId }) => gameId));
-  const activeSlot = slots.find(({ id }) => id === activeRounds[0]?.gameId);
 
   return (
     <main
@@ -22,19 +21,6 @@ export default function SlotChooser({
       onSelect={preventNativeSelection}
     >
       <div className="bg-overlay"></div>
-
-      {activeSlot && (
-        <aside className="slot-chooser__continue" aria-live="polite">
-          <span>{t("unfinishedGame")}</span>
-          <button
-            type="button"
-            onClick={() => interactive && onSelectSlot(activeSlot.slot)}
-            disabled={!interactive}
-          >
-            {t("continueGame")}
-          </button>
-        </aside>
-      )}
 
       <section className="slots" aria-label={t("availableSlots")}>
         {slots.map((slot) => (

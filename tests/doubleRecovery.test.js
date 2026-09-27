@@ -9,7 +9,7 @@ mergeRuntimeConfig({sessionApiBaseUrl:'https://example.invalid'});
 function seed(playerId,methodName='/double') {
  const context={playerId,gameId:'fruits',sessionId:'old',token:'fixture'};
  const formData={gameId:'42',cardId:'card',requestId:'original-id',wasDouble:'2',sum:'3'};
- recovery.saveRound({spinResult:{idCard:'card',WinSum:3,BaseWinSum:1.5,grid:{A:[1],B:[1],C:[1]}},operationStatus:'DOUBLE_PROCESSING'},context);
+ recovery.saveRound({spinResult:{idCard:'card',WinSum:3,BaseWinSum:1.5,WasDouble:1,winningCells:[{row:'A',col:0}],lineWins:[{line:1}],grid:{A:[1],B:[1],C:[1]}},operationStatus:'DOUBLE_PROCESSING'},context);
  recovery.rememberPendingRequest({methodName,requestId:'original-id',idCard:'card',wasDouble:2,sum:3,formData},context);
  return {context:{...context,sessionId:'new'},formData};
 }
@@ -20,6 +20,7 @@ test('recovery replays exact original form after session renewal and restores co
   globalThis.fetch=async(url,options)=>{calls++;assert.equal(url,'https://example.invalid/double');assert.deepEqual(Object.fromEntries(options.body),formData);return new Response(JSON.stringify({idCard:'card',WinSum}));};
   const result=await recoverPendingDouble(context);
   assert.equal(calls,1);assert.equal(result.spinResult.WinSum,WinSum);assert.equal(result.spinResult.BaseWinSum,WinSum);
+  assert.equal(result.spinResult.WasDouble,2);assert.deepEqual(result.spinResult.winningCells,[{row:'A',col:0}]);assert.deepEqual(result.spinResult.lineWins,[{line:1}]);
   assert.equal(result.doubleState.active,false);assert.equal(result.doublingState.entered,false);
   assert.equal(recovery.getPendingRequest(context),null);
   assert.equal(recovery.getLocalState(context).operationStatus,WinSum > 0 ? 'WAITING_FOR_COLLECT' : 'ROUND_COMPLETED');
@@ -57,4 +58,35 @@ test('pending operation and original snapshot survive a fresh module with a new 
  assert.equal(pending.formData.sum,'3');
  assert.equal(JSON.stringify([...local.values()]).includes('fixture'),false,'do not persist tokens');
  delete window.localStorage;
+});
+
+test('startup-style connectivity cleanup never removes a pending double snapshot',()=>{
+ const context={gameId:'fruits',playerId:'startup-double-player',sessionId:'old-session'};
+ const snapshot={spinResult:{idCard:'card',WinSum:12,creditedToBalance:false},grid:{A:[1],B:[2],C:[3]}};
+ recovery.saveRound(snapshot,context);
+ recovery.rememberPendingRequest({methodName:'/double',requestId:'double-startup',idCard:'card',wasDouble:1,sum:12},context);
+ recovery.markConnectivityInterrupted(context);
+ const startupPending=recovery.getPendingRequest({...context,sessionId:'new-session'});
+ assert.equal(startupPending.methodName,'/double');
+ assert.equal(startupPending.recoveryState.spinResult.idCard,'card');
+ // Startup cleanup is intentionally Spin-only; Double remains available to recoverPendingDouble.
+ assert.notEqual(startupPending.methodName,'/spin');
+ assert.equal(recovery.getPendingRequest(context).requestId,'double-startup');
+});
+
+test('connectivity-failed double restores the exact pre-double unpaid spin without replay',()=>{
+ const context={playerId:'offline-double-player',gameId:'fruits',sessionId:'old'};
+ const spinResult={idCard:'offline-card',WinSum:12,WasDouble:1,creditedToBalance:false,winningCells:[{row:'B',col:2}],lineWins:[{line:4}],grid:{A:[1],B:[2],C:[3]}};
+ recovery.saveRound({spinResult,lastConfirmedSpinResult:spinResult,grid:spinResult.grid,lastConfirmedGrid:spinResult.grid,WasDouble:1,doublingState:{step:1,loading:true},operationStatus:'DOUBLE_PROCESSING'},context);
+ recovery.rememberPendingRequest({methodName:'/double',requestId:'offline-double',idCard:'offline-card',wasDouble:2,sum:12},context);
+ recovery.markRecoveryRequired({code:'NETWORK_ERROR'}, {}, context);
+ assert.equal(recovery.clearConnectivityRecovery(context),true);
+ const restored=recovery.getLocalState(context);
+ assert.equal(recovery.getPendingRequest(context),null);
+ assert.equal(restored.operationStatus,'WAITING_FOR_PLAYER_ACTION');
+ assert.equal(restored.spinResult.WinSum,12);
+ assert.equal(restored.WasDouble,1);
+ assert.deepEqual(restored.spinResult.winningCells,[{row:'B',col:2}]);
+ assert.deepEqual(restored.spinResult.lineWins,[{line:4}]);
+ assert.deepEqual(restored.grid,spinResult.grid);
 });

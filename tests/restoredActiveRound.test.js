@@ -26,3 +26,14 @@ test('restoration cannot overwrite a pending payment',()=>{
  assert.equal(recovery.registerRestoredUnpaidWin(state,context),null);
  assert.equal(recovery.getPendingRequest(context).requestId,'pay-pending');
 });
+
+test('completion after session renewal removes the old-session active-game record',()=>{
+ const oldContext={gameId:'renewed-game',sessionId:'old-session',playerId:'player-7'};
+ const newContext={gameId:'renewed-game',sessionId:'new-session',playerId:'player-7'};
+ recovery.registerRestoredUnpaidWin(state,oldContext);
+ assert.equal(recovery.hasActiveRound('renewed-game'),true);
+ assert.equal(recovery.getLocalState(newContext),null);
+ recovery.completeRound(newContext);
+ assert.equal(recovery.getLocalState(oldContext),null);
+ assert.equal(recovery.hasActiveRound('renewed-game'),false);
+});

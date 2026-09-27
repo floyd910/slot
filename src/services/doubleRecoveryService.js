@@ -16,7 +16,7 @@ export async function recoverPendingDouble(context) {
   try {
     const payload = await sendDoubleRequest(body, {token:context.token, requestId:pending.requestId});
     const result = mapDoubleResponse(payload, pending);
-    const spinResult = {...previous.spinResult, WinSum:result.WinSum, BaseWinSum:result.WinSum, BackendWinSum:result.WinSum, creditedToBalance:false};
+    const spinResult = {...previous.spinResult, WinSum:result.WinSum, BaseWinSum:result.WinSum, BackendWinSum:result.WinSum, WasDouble:pending.wasDouble, creditedToBalance:false};
     const round = {
       ...previous, spinResult, lastConfirmedSpinResult:spinResult,
       currentWinSum:result.WinSum, WasDouble:pending.wasDouble,

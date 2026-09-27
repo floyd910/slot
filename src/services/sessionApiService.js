@@ -74,12 +74,36 @@ const validateSessionContext = (params = {}) => {
   }
 };
 
+const getConfirmedCardId = (state) =>
+  state?.lastConfirmedSpinResult?.idCard ??
+  state?.spinResult?.idCard ??
+  state?.idCard ??
+  state?.roundId ??
+  null;
+
+const reconcileConfirmedSpin = (context, pending, localState, gameState) => {
+  if (pending?.methodName !== "/spin" || !gameState?.spinResult?.idCard) return false;
+  const previousCardId = getConfirmedCardId(pending.recoveryState) ?? getConfirmedCardId(localState);
+  // A different card proves the uncertain request completed.  With no prior
+  // card, only a snapshot captured with the request can safely establish that
+  // this is the first spin's result.
+  const capturedBeforeDispatch = pending.recoveryState != null;
+  const returnedCardId = String(gameState.spinResult.idCard);
+  const isConfirmedResult = previousCardId != null
+    ? returnedCardId !== String(previousCardId)
+    : capturedBeforeDispatch;
+  if (!isConfirmedResult) return false;
+  stateRecoveryService.completePendingRequest(pending.requestId, context);
+  return true;
+};
+
 export class SessionApiService {
   async initSession(params = {}) {
     mergeRuntimeConfig(params);
     validateSessionContext(params);
 
     const pendingAtStart = stateRecoveryService.getPendingRequest(params);
+    const localStateAtStart = stateRecoveryService.getLocalState(params);
     const remote = await requestRemoteSession(params);
     const playerId = params.playerId ?? params.userId ?? params.idUser;
     const gameState = mapInitGameState(remote.gameState, params);
@@ -117,6 +141,12 @@ export class SessionApiService {
       if (card && !card.paid && !gameState.spinResult.creditedToBalance)
         gameState.spinResult.freeSpinDeferred = true;
     }
+    const spinRecovered = reconcileConfirmedSpin(
+      params,
+      pendingAtStart,
+      localStateAtStart,
+      gameState,
+    );
     const paymentRecovered = reconcileConfirmedPayment(params, remote, gameState, wallet, pendingAtStart);
     mergeRuntimeConfig({
       ...params,
@@ -127,6 +157,7 @@ export class SessionApiService {
     });
     return {
       paymentRecovered,
+      spinRecovered,
       sessionId: remote.sessionId,
       player: {
         id: playerId,

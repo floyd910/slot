@@ -56,6 +56,10 @@ export const frameApi = {
     return runExclusive("recoverDouble", () => recoverPendingDouble(context));
   },
 
+  retryPendingNetworkRequest(context) {
+    return runExclusive("retryPendingNetworkRequest", () => gameApiService.retryPendingNetworkRequest(context));
+  },
+
   recoverState(context) {
     return gameApiService.recoverState(context);
   },

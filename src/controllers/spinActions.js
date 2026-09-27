@@ -20,7 +20,7 @@ import { ROUND_OPERATION_STATUS, stateRecoveryService } from "../services/stateR
 import { partnerApi } from "../services/partnerApi.js";
 import { getNextSpinDelayMs } from "../utils/spinTiming.js";
 import { asNumber } from "../utils/number.js";
-import { isBrowserOffline } from "../utils/connectivity.js";
+import { createOfflineError, isBrowserOffline } from "../utils/connectivity.js";
 
 
 const VALID_FRAME_LINE_COUNTS = new Set([1, 3, 5, 7, 9]);
@@ -43,6 +43,7 @@ export const createSpinActions = ({
   liveSpinStateRef,
   playSpinFeedback,
   postEvent,
+  markDefinitelyOfflineAction,
   reportOperationError,
   setDoubleState,
   setDoublingState,
@@ -179,7 +180,8 @@ export const createSpinActions = ({
       return null;
     }
     if (isBrowserOffline()) {
-      setError(t("networkError"));
+      markDefinitelyOfflineAction?.();
+      reportOperationError(createOfflineError("Spin"), t("networkError"));
       return null;
     }
     const backendManagedWallet = useSoapBackend();
@@ -679,7 +681,8 @@ export const createSpinActions = ({
   };
   const collectWin = async () => {
     if (isBrowserOffline()) {
-      setError(t("networkError"));
+      markDefinitelyOfflineAction?.();
+      reportOperationError(createOfflineError("Payment"), t("networkError"));
       return false;
     }
     if (liveSpinStateRef.current.freeSpinsLeft <= 0 && freeSpinSeries.getPayments(liveSpinStateRef.current.context).some(card=>!card.paid)) return settleFreeSpinWins();

@@ -74,7 +74,9 @@ export class GameApiService {
       complete(params.requestId);
       return result;
     } catch (error) {
-      trackTimeout(error, operation);
+      if (["TIMEOUT", "NETWORK_ERROR", "NETWORK_UNREACHABLE"].includes(error?.code)) {
+        stateRecoveryService.markRecoveryRequired(error, operation, getContext());
+      }
       throw error;
     }
   }
@@ -96,6 +98,7 @@ export class GameApiService {
       roundId: params.idCard,
       wasDouble: params.wasDouble,
       sum: params.sum,
+      side: params.side,
       formData: Object.fromEntries(body),
     };
     remember(operation);
@@ -169,7 +172,30 @@ export class GameApiService {
     }
   }
 
-  recoverState(context = getContext()) {
+  async retryPendingNetworkRequest(context = getContext()) {
+    const pending = stateRecoveryService.getPendingRequest(context);
+    if (!pending || !["NETWORK_ERROR", "NETWORK_UNREACHABLE", "OFFLINE"].includes(pending.errorCode)) {
+      return null;
+    }
+
+    // A failed payment must be reconciled by /init, never replayed automatically.
+    // If the card has no PayDate, startup restores the original unpaid win so
+    // the player can explicitly press Pay again.
+    if (["/pay", "/double"].includes(pending.methodName)) return null;
+
+    stateRecoveryService.completePendingRequest(pending.requestId, context);
+    if (pending.methodName === "/spin") {
+      return this.spin({
+        requestId: pending.requestId,
+        stake: pending.stake,
+        lines: pending.lines,
+        isDemo: pending.isDemo,
+        isFreeSpin: pending.isFreeSpin,
+      });
+    }
+
+    return null;
+  }  recoverState(context = getContext()) {
     return stateRecoveryService.getLocalState(context);
   }
 

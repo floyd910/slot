@@ -14,6 +14,7 @@ import FreeSpinsSummary from "../freeSpinsPrompt/FreeSpinsSummary.jsx";
 import FreeSpinsPrompt from "../freeSpinsPrompt/FreeSpinsPrompt.jsx";
 import GameContent from "../gameContent/GameContent.jsx";
 import { useResponsiveGameLayout } from "../../hooks/useResponsiveGameLayout.js";
+import { getRuntimeStateStatus } from "../../utils/runtimeStatus.js";
 
 export default function GameShell({ controller, game, onBackToSlots }) {
   const shellRef = useRef(null);
@@ -89,7 +90,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
   const runtimeState =
     derived.runtimeStateVisible && !isLanguageChanging && !showStartupLoader ? (
       <RuntimeState
-        status={state.status}
+        status={getRuntimeStateStatus(state.status, derived.isRoundRecoveryBlocked)}
         error={state.error}
         mode={state.context.mode}
         onRetry={actions.retryInitialization}

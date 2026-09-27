@@ -185,8 +185,6 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
   const [activeRounds, setActiveRounds] = useState(() =>
     stateRecoveryService.getActiveRounds(),
   );
-  const [exitConfirmationOpen, setExitConfirmationOpen] = useState(false);
-  const navigationBypassRef = useRef(false);
   const chooserReadyNotifiedRef = useRef(false);
   const initialRouteSlotIdRef = useRef(getInitialSlotId());
   const openRequestRef = useRef(0);
@@ -221,7 +219,15 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
         if (!active) return;
         setChooserAssetsReady(true);
       })
-      .catch((assetError) => console.error(assetError));
+      .catch((assetError) => {
+        // A transient preload timeout must not leave the chooser behind the
+        // startup loader forever. The browser can still fetch missing assets
+        // through their normal CSS/img requests after the chooser mounts.
+        console.warn("Chooser asset preload did not finish", assetError);
+        if (!active) return;
+        setChooserLoadProgress(100);
+        setChooserAssetsReady(true);
+      });
 
     return () => {
       active = false;
@@ -318,27 +324,7 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
   const closeSlot = async () => {
     const exit = await requestDoubleExit();
     if (exit.handled) { if(exit.allowExit) performCloseSlot(); return; }
-    if (
-      selectedSlotId &&
-      stateRecoveryService.hasActiveRound(selectedSlotId)
-    ) {
-      setExitConfirmationOpen(true);
-      return;
-    }
     performCloseSlot();
-  };
-
-  const confirmCloseSlot = () => {
-    navigationBypassRef.current = true;
-    setExitConfirmationOpen(false);
-    performCloseSlot();
-  };
-
-  const cancelCloseSlot = () => {
-    setExitConfirmationOpen(false);
-    if (selectedSlotId) {
-      setHashRoute('/games/' + encodeURIComponent(selectedSlotId));
-    }
   };
 
   useEffect(() => {
@@ -347,7 +333,6 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
       if (selectedSlotId && gameId !== selectedSlotId) {
         const exit = await requestDoubleExit();
         if (exit.handled && !exit.allowExit) { setHashRoute('/games/' + encodeURIComponent(selectedSlotId)); return; }
-        if (exit.handled) navigationBypassRef.current = true;
       }
       if (!gameId) {
         if (window.location.hash !== `#${SLOT_CHOOSER_ROUTE}`) {
@@ -358,16 +343,6 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
           );
         }
         if (selectedSlotId || pendingSlotId) {
-          if (
-            selectedSlotId &&
-            stateRecoveryService.hasActiveRound(selectedSlotId) &&
-            !navigationBypassRef.current
-          ) {
-            setExitConfirmationOpen(true);
-            setHashRoute('/games/' + encodeURIComponent(selectedSlotId));
-            return;
-          }
-          navigationBypassRef.current = false;
           performCloseSlot();
         }
         return;
@@ -380,16 +355,6 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
       }
       if (selectedSlotId === gameId || pendingSlotId === gameId) return;
       if (selectedSlotId || pendingSlotId) {
-        if (
-          selectedSlotId &&
-          stateRecoveryService.hasActiveRound(selectedSlotId) &&
-          !navigationBypassRef.current
-        ) {
-          setExitConfirmationOpen(true);
-          setHashRoute('/games/' + encodeURIComponent(selectedSlotId));
-          return;
-        }
-        navigationBypassRef.current = false;
         openRequestRef.current += 1;
         setPendingSlotId(null);
         setSelectedSlotId(null);
@@ -404,12 +369,9 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
   }, [chooserAssetsReady, pendingSlotId, selectedSlotId]);
   return {
     activeRounds,
-    cancelCloseSlot,
     chooserAssetsReady,
     chooserLoadProgress,
     closeSlot,
-    confirmCloseSlot,
-    exitConfirmationOpen,
     gameLoadProgress,
     isPlaying: Boolean(selectedSlotId),
     openSlot,
