@@ -203,3 +203,65 @@ test('init restores an unpaid win instead of replaying a transport-failed paymen
     globalThis.fetch=original;
   }
 });
+test('network-failed spin rolls back when validated init still returns the previous card',async()=>{
+  mergeRuntimeConfig({sessionApiBaseUrl:'https://example.invalid'});
+  const original=globalThis.fetch;
+  const service=new SessionApiService();
+  const params={token:'fixture',playerId:'rollback-spin-player',gameId:'khiradmandi-makor',initSource:'postMessage'};
+  const grid={A:[1,2,3,4,5],B:[6,7,8,9,10],C:[11,12,8,1,2]};
+  const previousResult={idCard:'previous-card',WinSum:20,creditedToBalance:false,winningCells:[{row:'A',col:0}],lineWins:[{line:1}],grid};
+  const raw={
+    SpinResult:{idCard:'previous-card',LineSum:'20',Lines:'5',WasDouble:'0',Number:'7'},
+    ...Object.fromEntries(Object.values(grid).map((row,r)=>['Line'+(r+1),Object.fromEntries(row.map((v,c)=>['Slot'+(r+1)+(c+1),String(v)]))])),
+    LinesKoff:Object.fromEntries(Array.from({length:10},(_,i)=>['Koff'+(i+1),i===0?'4':'0'])),
+    idCard:'previous-card',CardSum:'5',SumPay:'20',PayDate:'',idGameType:'36',SlotFreeSpin:'False',SlotDemoSpin:'False',CountFreeSpin:'0',
+  };
+  try {
+    stateRecoveryService.saveRound({spinResult:previousResult,lastConfirmedSpinResult:previousResult,grid,lastConfirmedGrid:grid,operationStatus:'SPIN_PROCESSING'},params);
+    stateRecoveryService.rememberPendingRequest({requestId:'network-spin',methodName:'/spin'},params);
+    stateRecoveryService.markRecoveryRequired({code:'NETWORK_ERROR'}, {}, params);
+    globalThis.fetch=async(url)=>url.endsWith('/init')
+      ? new Response(JSON.stringify({sessionId:'rollback-session',gameState:raw}))
+      : url.endsWith('/balance')
+        ? new Response(JSON.stringify({balance:100,currency:'GEL',playerId:'rollback-spin-player'}))
+        : new Response(JSON.stringify({CountFreeSpin:'0'}));
+    const result=await service.initSession(params);
+    assert.equal(result.spinRecovered,false);
+    assert.equal(result.spinRolledBack,true);
+    assert.equal(stateRecoveryService.getPendingRequest(params),null);
+    const restored=stateRecoveryService.getLocalState(params);
+    assert.equal(restored.operationStatus,'WAITING_FOR_PLAYER_ACTION');
+    assert.equal(restored.spinResult.WinSum,20);
+    assert.deepEqual(restored.spinResult.winningCells,[{row:'A',col:0}]);
+  } finally {
+    stateRecoveryService.completePendingRequest('network-spin',params);
+    stateRecoveryService.clearLocalState(params);
+    globalThis.fetch=original;
+  }
+});
+
+test('network-failed first spin unlocks when validated init has no card',async()=>{
+  mergeRuntimeConfig({sessionApiBaseUrl:'https://example.invalid'});
+  const original=globalThis.fetch;
+  const service=new SessionApiService();
+  const params={token:'fixture',playerId:'first-rollback-player',gameId:'khiradmandi-makor',initSource:'postMessage'};
+  try {
+    stateRecoveryService.saveRound({operationStatus:'SPIN_PROCESSING'},params);
+    stateRecoveryService.rememberPendingRequest({requestId:'first-network-spin',methodName:'/spin'},params);
+    stateRecoveryService.markRecoveryRequired({code:'NETWORK_ERROR'}, {}, params);
+    globalThis.fetch=async(url)=>url.endsWith('/init')
+      ? new Response(JSON.stringify({sessionId:'first-rollback-session',gameState:null}))
+      : url.endsWith('/balance')
+        ? new Response(JSON.stringify({balance:100,currency:'GEL',playerId:'first-rollback-player'}))
+        : new Response(JSON.stringify({CountFreeSpin:'0'}));
+    const result=await service.initSession(params);
+    assert.equal(result.spinRecovered,false);
+    assert.equal(result.spinRolledBack,true);
+    assert.equal(stateRecoveryService.getPendingRequest(params),null);
+    assert.equal(stateRecoveryService.getLocalState(params),null);
+  } finally {
+    stateRecoveryService.completePendingRequest('first-network-spin',params);
+    stateRecoveryService.clearLocalState(params);
+    globalThis.fetch=original;
+  }
+});

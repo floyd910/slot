@@ -854,7 +854,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       };
       return true;
     }
-    if (pending?.methodName !== "/double" && pending && ["NETWORK_ERROR", "NETWORK_UNREACHABLE", "OFFLINE"].includes(pending.errorCode)) {
+    if (pending && !["/double", "/spin"].includes(pending.methodName) && ["NETWORK_ERROR", "NETWORK_UNREACHABLE", "OFFLINE"].includes(pending.errorCode)) {
       try {
         setStatus("bootstrap-loading");
         setError("");

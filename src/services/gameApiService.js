@@ -181,18 +181,8 @@ export class GameApiService {
     // A failed payment must be reconciled by /init, never replayed automatically.
     // If the card has no PayDate, startup restores the original unpaid win so
     // the player can explicitly press Pay again.
-    if (["/pay", "/double"].includes(pending.methodName)) return null;
+    if (["/pay", "/double", "/spin"].includes(pending.methodName)) return null;
 
-    stateRecoveryService.completePendingRequest(pending.requestId, context);
-    if (pending.methodName === "/spin") {
-      return this.spin({
-        requestId: pending.requestId,
-        stake: pending.stake,
-        lines: pending.lines,
-        isDemo: pending.isDemo,
-        isFreeSpin: pending.isFreeSpin,
-      });
-    }
 
     return null;
   }  recoverState(context = getContext()) {

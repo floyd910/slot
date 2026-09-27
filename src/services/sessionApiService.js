@@ -1,5 +1,5 @@
 import { reconcileConfirmedPayment } from './paymentRecoveryService.js';
-import { stateRecoveryService } from './stateRecoveryService.js';
+import { ROUND_OPERATION_STATUS, stateRecoveryService } from './stateRecoveryService.js';
 import { freeSpinSeries } from "./freeSpinSeries.js";
 import { requestFreeSpins } from "../api/freeSpinsApiClient.js";
 import { isDemoContext } from "../api/demoLaunch.js";
@@ -97,6 +97,44 @@ const reconcileConfirmedSpin = (context, pending, localState, gameState) => {
   return true;
 };
 
+const rollbackConnectivityFailedSpin = (context, pending, localState, gameState) => {
+  if (pending?.methodName !== "/spin" || !["NETWORK_ERROR", "NETWORK_UNREACHABLE", "OFFLINE"].includes(pending.errorCode)) return false;
+  const previous = pending.recoveryState ?? localState ?? {};
+  const previousCardId = getConfirmedCardId(previous);
+  const returnedCardId = gameState?.spinResult?.idCard ?? null;
+  // A different card is handled by reconcileConfirmedSpin. The same card (or
+  // no card for a first spin) proves /init did not advance this failed attempt.
+  if (previousCardId != null && returnedCardId != null && String(returnedCardId) !== String(previousCardId)) return false;
+
+  const confirmedSpin = previous.lastConfirmedSpinResult ?? previous.spinResult ?? null;
+  const confirmedGrid = previous.lastConfirmedGrid ?? confirmedSpin?.grid ?? previous.grid ?? null;
+  stateRecoveryService.completePendingRequest(pending.requestId, context);
+  if (!confirmedSpin) {
+    stateRecoveryService.completeRound(context);
+    return true;
+  }
+  const hasUnpaidWin = confirmedSpin.creditedToBalance !== true && Number(confirmedSpin.WinSum ?? 0) > 0;
+  const hasFreeSpins = previous.freeSpinsActive === true && Number(previous.freeSpinsLeft ?? 0) > 0;
+  if (!hasUnpaidWin && !hasFreeSpins) {
+    stateRecoveryService.completeRound(context);
+    stateRecoveryService.saveLastSpin({grid:confirmedGrid,spinResult:confirmedSpin},context);
+    return true;
+  }
+  stateRecoveryService.saveLastSpin({grid:confirmedGrid,spinResult:confirmedSpin},context);
+  stateRecoveryService.saveRound({
+    ...previous,
+    requestId:null,
+    operationStatus:ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION,
+    recoveryError:null,
+    spinResult:confirmedSpin,
+    lastConfirmedSpinResult:confirmedSpin,
+    grid:confirmedGrid,
+    lastConfirmedGrid:confirmedGrid,
+    currentWinSum:Number(confirmedSpin.WinSum ?? 0),
+    doubleAvailable:hasUnpaidWin,
+  },context);
+  return true;
+};
 export class SessionApiService {
   async initSession(params = {}) {
     mergeRuntimeConfig(params);
@@ -147,6 +185,12 @@ export class SessionApiService {
       localStateAtStart,
       gameState,
     );
+    const spinRolledBack = !spinRecovered && rollbackConnectivityFailedSpin(
+      params,
+      pendingAtStart,
+      localStateAtStart,
+      gameState,
+    );
     const paymentRecovered = reconcileConfirmedPayment(params, remote, gameState, wallet, pendingAtStart);
     mergeRuntimeConfig({
       ...params,
@@ -158,6 +202,7 @@ export class SessionApiService {
     return {
       paymentRecovered,
       spinRecovered,
+      spinRolledBack,
       sessionId: remote.sessionId,
       player: {
         id: playerId,
