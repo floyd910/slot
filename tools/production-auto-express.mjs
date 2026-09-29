@@ -1,0 +1,17 @@
+import { chromium } from 'file:///C:/Users/user/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs';
+import { writeFileSync } from 'node:fs';
+const context=await chromium.launchPersistentContext('tmp/prod-recovery-profile',{headless:true,executablePath:'C:/Users/user/AppData/Local/Google/Chrome/Application/chrome.exe',viewport:{width:1440,height:900}});
+const page=context.pages()[0]??await context.newPage();
+const api=[]; const errors=[];
+page.on('console',m=>{if(m.type()==='error')errors.push(m.text())});
+page.on('pageerror',e=>errors.push(e.message));
+page.on('response',async r=>{if(!/api\.raxshloto\.online\/(spin|pay|double|init|freespin|balance)/i.test(r.url()))return; let body=''; try{body=await r.text()}catch{} api.push({at:new Date().toISOString(),url:r.url(),status:r.status(),body:body.slice(0,3000)});});
+await page.goto('https://raxshloto.online/#/games/khiradmandi-makor',{waitUntil:'domcontentloaded',timeout:60000});
+const auto=page.getByRole('button',{name:/АВТО ЭКСПРЕСС/i});
+await auto.waitFor({state:'visible',timeout:180000});
+await auto.click();
+await page.waitForTimeout(45000);
+const result={testedAt:new Date().toISOString(),url:page.url(),body:(await page.locator('body').innerText()).slice(-3000),api,errors,buttons:await page.getByRole('button').allTextContents(),storage:await page.evaluate(()=>Object.fromEntries(Object.keys(localStorage).map(k=>[k,localStorage.getItem(k)])))};
+writeFileSync('tmp/production-auto-express.json',JSON.stringify(result,null,2));
+await page.screenshot({path:'tmp/production-auto-express.png',fullPage:true});
+await context.close();

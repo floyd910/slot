@@ -253,7 +253,7 @@ export default function View2Paytable({
               <SymbolTile symbol={0} className="--coeff-bag" />
               <div className="view2-info-coeff-card__payout">
                 <ZeroPayoutRows
-                  payoutMultiplier={payoutMultiplier}
+                  payoutMultiplier={zeroPayoutMultiplier}
                   combinationId={selectedCombinationId}
                   compact
                 />
@@ -446,7 +446,7 @@ export default function View2Paytable({
               <SymbolTile symbol={0} className="--coeff-bag" />
               <div className="view2-info-coeff-card__payout">
                 <ZeroPayoutRows
-                  payoutMultiplier={payoutMultiplier}
+                  payoutMultiplier={zeroPayoutMultiplier}
                   combinationId={selectedCombinationId}
                   compact
                 />

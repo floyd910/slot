@@ -1,0 +1,453 @@
+{
+  "startedAt": "2026-09-28T10:26:50.364Z",
+  "spins": 37,
+  "trigger": {
+    "at": "2026-09-28T10:31:45.738Z",
+    "status": 200,
+    "payload": {
+      "Line1": {
+        "Slot1": "12",
+        "Slot2": "8",
+        "Slot3": "1",
+        "Slot4": "8",
+        "Slot5": "4"
+      },
+      "Line2": {
+        "Slot1": "0",
+        "Slot2": "1",
+        "Slot3": "1",
+        "Slot4": "10",
+        "Slot5": "10"
+      },
+      "Line3": {
+        "Slot1": "9",
+        "Slot2": "0",
+        "Slot3": "8",
+        "Slot4": "0",
+        "Slot5": "6"
+      },
+      "LineWinKoff1": {
+        "Koff": "0"
+      },
+      "LineWinKoff2": {
+        "Koff": "0"
+      },
+      "LineWinKoff3": {
+        "Koff": "0"
+      },
+      "LineWinKoff4": {
+        "Koff": "0"
+      },
+      "LineWinKoff5": {
+        "Koff": "0"
+      },
+      "LineWinKoff6": {
+        "Koff": "0"
+      },
+      "LineWinKoff7": {
+        "Koff": "0"
+      },
+      "LineWinKoff8": {
+        "Koff": "0"
+      },
+      "LineWinKoff9": {
+        "Koff": "0"
+      },
+      "LineWinKoff10": {
+        "Koff": "0"
+      },
+      "WinSum": "0.5",
+      "FreeSpin": "1",
+      "Gold": "1",
+      "idCard": "67215058",
+      "Number": "22858359",
+      "ballance": 1183
+    }
+  },
+  "beforeRetry": {
+    "body": "ИГРЫ\nРУССКИЙ\nСетевое соединение прервано\n\nСетевое соединение прервано\n\nПовторить",
+    "buttons": [
+      "Игры",
+      "Русский",
+      "Визуализация",
+      "",
+      "",
+      "",
+      " Повторить"
+    ],
+    "storage": {
+      "hiranmandi-frame:sound-enabled:v1": "true",
+      "hiranmandi-frame:pending-operation:v2:player:pjmsim": "{\"requestId\":\"spin-8625c8e2-684e-46da-b74e-eeee23c67cf2\",\"roundId\":null,\"gameId\":\"khiradmandi-makor\",\"idCard\":null,\"methodName\":\"/spin\",\"stake\":0.1,\"lines\":1,\"isDemo\":false,\"isFreeSpin\":false,\"recoveryVersion\":2,\"startedOnline\":true,\"recoveryState\":{\"requestId\":\"spin-8625c8e2-684e-46da-b74e-eeee23c67cf2\",\"partnerRoundId\":null,\"operationType\":\"SPIN\",\"operationStatus\":\"SPIN_PROCESSING\",\"WasDouble\":0,\"currentWinSum\":0,\"doubleAvailable\":false,\"freeSpinsActive\":false,\"freeSpinsTotal\":0,\"freeSpinsLeft\":0,\"freeSpinsPlayed\":0,\"lastConfirmedSpinResult\":null,\"lastConfirmedGrid\":{\"A\":[1,1,0,6,6],\"B\":[12,10,5,1,5],\"C\":[7,2,12,3,12],\"D\":[\"\",\"\",\"\",\"\",\"\"]},\"gameId\":\"khiradmandi-makor\",\"ownerPlayerId\":\"4121003830070845140219829220302541374652\",\"idCard\":null,\"roundId\":null,\"savedAt\":\"2026-09-28T10:31:45.094Z\"},\"status\":\"recovery-required\",\"createdAt\":\"2026-09-28T10:31:45.095Z\",\"errorCode\":\"NETWORK_ERROR\",\"errorMessage\":\"Spin network request failed\",\"updatedAt\":\"2026-09-28T10:31:45.742Z\"}",
+      "hiranmandi-frame:ui-preferences:v1": "{\"khiradmandi-makor\":{\"selectedCombinationId\":1,\"soundEnabled\":true,\"stake\":0.1,\"visualMode\":false}}",
+      "hiranmandi-frame:language:v1": "ru",
+      "raxshloto.demo.playerId.v1": "4121003830070845140219829220302541374652"
+    }
+  },
+  "afterRetry": {
+    "url": "https://raxshloto.online/#/games/khiradmandi-makor",
+    "body": "ИГРЫ\nРУССКИЙ\nВЫБОР ЛОТЕРЕЙНОЙ\nКОМБИНАЦИИ\nКОМБИНАЦИЯ\n\nвключающая группу координат: В1-В2-В3-В4-В5\n\n1\nКОМБИНАЦИЯ\n\nвключающая группу координат: А1-А2-А3-А4-А5В1-В2-В3-В4-В5С1-С2-С3-С4-С5 или их сочетание\n\n3\nКОМБИНАЦИЯ\n\nвключающая группу координат: А1-А2-А3-А4-А5В1-В2-В3-В4-В5С1-С2-С3-С4-С5А1-В2-С3-В4-А5С1-В2-А3-В4-С5 или их сочетание\n\n5\nКОМБИНАЦИЯ\n\nвключающая группу координат: А1-А2-А3-А4-А5В1-В2-В3-В4-В5С1-С2-С3-С4-С5А1-В2-С3-В4-А5С1-В2-А3-В4-С5В1-А2-А3-А4-В5В1-С2-С3-С4-В5 или их сочетание\n\n7\nКОМБИНАЦИЯ\n\nвключающая группу координат: А1-А2-А3-А4-А5В1-В2-В3-В4-В5С1-С2-С3-С4-С5А1-В2-С3-В4-А5С1-В2-А3-В4-С5В1-А2-А3-А4-В5В1-С2-С3-С4-В5А1-А2-В3-С4-С5С1-С2-В3-А4-А5 или их сочетание\n\n9\n\nЗаберите текущий выигрыш перед началом следующего спина.\n\nA\n1\n2\n3\n4\n5\n12\n8\n1\n8\n4\nB\n0\n1\n1\n10\n10\nC\n9\n0\n8\n0\n6\nD\n1\n2\n3\n4\n5\nТираж №67215058\nПодробно\nТАБЛИЦА ВЫИГРЫШЕЙ\nx1\tx2\tx3\tx4\tx5\n\n0\n\t\n0.2\n\t\n0.5\n\t\n2\n\t\n50\n\t\n\n\n1\n\t\n0.2\n\t\n0.5\n\t\n2.5\n\t\n10\n\t\n\n\n2\n\t\n\t\n0.5\n\t\n2.5\n\t\n10\n\t\n\n\n3\n\t\n\t\n0.5\n\t\n2.5\n\t\n10\n\t\n\n\n4\n\t\n\t\n0.5\n\t\n2.5\n\t\n10\n\t\n\n\n5\n\t\n\t\n1\n\t\n5\n\t\n12.5\n\t\n\n\n6\n\t\n\t\n1\n\t\n5\n\t\n12.5\n\t\n\n\n7\n\t\n\t\n1.5\n\t\n7.5\n\t\n25\n\t\n\n\n8\n\t\n\t\n1.5\n\t\n7.5\n\t\n25\n\t\n\n\n9\n\t\n\t\n2\n\t\n10\n\t\n40\n\t\n\n\n10\n\t\n0.2\n\t\n2.5\n\t\n12.5\n\t\n75\n\t\n\n\n11\n\t\n0.2\n\t\n2.5\n\t\n12.5\n\t\n75\n\t\n\n\n12\n\t\n1\n\t\n25\n\t\n250\n\t\n900\n\t\nБАЛАНС\n1311.00\nСУММА ПОКУПКИ\n0.10\nОБЩИЙ ВЫИГРЫШ\n0.00\nФРИСПИНЫ: 15\nЛОТЕРЕЙНАЯ КОМБИНАЦИЯ\n-\n1\n+\nИНФО\nАВТО ЭКСПРЕСС\nЗАБРАТЬ ВЫИГРЫШ",
+    "buttons": [
+      "Игры",
+      "Русский",
+      "Визуализация",
+      "",
+      "",
+      "",
+      "Комбинациявключающая группу координат: В1-В2-В3-В4-В5 1",
+      "Комбинациявключающая группу координат: А1-А2-А3-А4-А5В1-В2-В3-В4-В5С1-С2-С3-С4-С5 или их сочетание3",
+      "Комбинациявключающая группу координат: А1-А2-А3-А4-А5В1-В2-В3-В4-В5С1-С2-С3-С4-С5А1-В2-С3-В4-А5С1-В2-А3-В4-С5 или их сочетание5",
+      "Комбинациявключающая группу координат: А1-А2-А3-А4-А5В1-В2-В3-В4-В5С1-С2-С3-С4-С5А1-В2-С3-В4-А5С1-В2-А3-В4-С5В1-А2-А3-А4-В5В1-С2-С3-С4-В5 или их сочетание7",
+      "Комбинациявключающая группу координат: А1-А2-А3-А4-А5В1-В2-В3-В4-В5С1-С2-С3-С4-С5А1-В2-С3-В4-А5С1-В2-А3-В4-С5В1-А2-А3-А4-В5В1-С2-С3-С4-В5А1-А2-В3-С4-С5С1-С2-В3-А4-А5 или их сочетание9",
+      "Подробно",
+      "-",
+      "+",
+      " ИНФО",
+      "АВТО ЭКСПРЕСС",
+      "ЗАБРАТЬ ВЫИГРЫШ"
+    ],
+    "storage": {
+      "hiranmandi-frame:sound-enabled:v1": "true",
+      "slot:free-spin-series:v1:[\"4121003830070845140219829220302541374652\",\"36\"]": "{\"total\":15,\"baseline\":0,\"played\":0,\"awardIds\":[\"67215058\"],\"resultIds\":[\"67215058\"],\"winMinor\":0,\"payments\":[]}",
+      "hiranmandi-frame:ui-preferences:v1": "{\"khiradmandi-makor\":{\"selectedCombinationId\":1,\"soundEnabled\":true,\"stake\":0.1,\"visualMode\":false}}",
+      "hiranmandi-frame:language:v1": "ru",
+      "raxshloto.demo.playerId.v1": "4121003830070845140219829220302541374652"
+    }
+  },
+  "api": [
+    {
+      "at": "2026-09-28T10:28:02.894Z",
+      "url": "https://api.raxshloto.online/init",
+      "status": 200,
+      "body": "{\"idValute\":\"3\",\"NameValute\":\"USD\",\"TimeZone\":\"0\",\"LimitMin\":\"1\",\"LimitMax\":\"5000000\",\"sessionId\":\"8f941c5615aefda0ba9f0d181d9fc3d3\",\"playerId\":\"4121003830070845140219829220302541374652\",\"balance\":1245.9,\"currency\":\"GEL\"}"
+    },
+    {
+      "at": "2026-09-28T10:28:03.166Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1544,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:28:06.381Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1525,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:28:11.938Z",
+      "url": "https://api.raxshloto.online/pay",
+      "status": 200,
+      "body": "{\"idCard\":\"67214853\",\"PayDate\":\"9\\/28\\/2026 2:28:11 PM\",\"ballance\":1560}"
+    },
+    {
+      "at": "2026-09-28T10:28:13.891Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1570,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:28:20.042Z",
+      "url": "https://api.raxshloto.online/pay",
+      "status": 200,
+      "body": "{\"idCard\":\"67214859\",\"PayDate\":\"9\\/28\\/2026 2:28:20 PM\",\"ballance\":1917}"
+    },
+    {
+      "at": "2026-09-28T10:28:23.119Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1793,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:28:31.084Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1241,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:28:37.279Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1843,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:28:43.343Z",
+      "url": "https://api.raxshloto.online/pay",
+      "status": 200,
+      "body": "{\"idCard\":\"67214874\",\"PayDate\":\"9\\/28\\/2026 2:28:43 PM\",\"ballance\":1266}"
+    },
+    {
+      "at": "2026-09-28T10:28:45.570Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1300,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:28:51.758Z",
+      "url": "https://api.raxshloto.online/pay",
+      "status": 200,
+      "body": "{\"idCard\":\"67214880\",\"PayDate\":\"9\\/28\\/2026 2:28:51 PM\",\"ballance\":1089}"
+    },
+    {
+      "at": "2026-09-28T10:28:53.023Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1779,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:28:58.218Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1537,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:29:03.808Z",
+      "url": "https://api.raxshloto.online/pay",
+      "status": 200,
+      "body": "{\"idCard\":\"67214891\",\"PayDate\":\"9\\/28\\/2026 2:29:04 PM\",\"ballance\":1312}"
+    },
+    {
+      "at": "2026-09-28T10:29:04.887Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1538,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:29:10.083Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1163,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:29:15.363Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1163,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:29:20.746Z",
+      "url": "https://api.raxshloto.online/pay",
+      "status": 200,
+      "body": "{\"idCard\":\"67214906\",\"PayDate\":\"9\\/28\\/2026 2:29:20 PM\",\"ballance\":1897}"
+    },
+    {
+      "at": "2026-09-28T10:29:22.081Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1273,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:29:26.796Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1549,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:29:31.679Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1746,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:29:36.706Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1002,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:29:42.275Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1375,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:29:47.051Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1111,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:29:52.664Z",
+      "url": "https://api.raxshloto.online/pay",
+      "status": 200,
+      "body": "{\"idCard\":\"67214937\",\"PayDate\":\"9\\/28\\/2026 2:29:52 PM\",\"ballance\":1758}"
+    },
+    {
+      "at": "2026-09-28T10:29:53.970Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1803,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:29:59.230Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1210,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:30:04.382Z",
+      "url": "https://api.raxshloto.online/pay",
+      "status": 200,
+      "body": "{\"idCard\":\"67214948\",\"PayDate\":\"9\\/28\\/2026 2:30:04 PM\",\"ballance\":1414}"
+    },
+    {
+      "at": "2026-09-28T10:30:05.306Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1722,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:30:10.546Z",
+      "url": "https://api.raxshloto.online/pay",
+      "status": 200,
+      "body": "{\"idCard\":\"67214953\",\"PayDate\":\"9\\/28\\/2026 2:30:10 PM\",\"ballance\":1469}"
+    },
+    {
+      "at": "2026-09-28T10:30:11.934Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1123,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:30:17.391Z",
+      "url": "https://api.raxshloto.online/pay",
+      "status": 200,
+      "body": "{\"idCard\":\"67214961\",\"PayDate\":\"9\\/28\\/2026 2:30:17 PM\",\"ballance\":1056}"
+    },
+    {
+      "at": "2026-09-28T10:30:20.016Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1193,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:30:28.247Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1171,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:30:33.696Z",
+      "url": "https://api.raxshloto.online/pay",
+      "status": 200,
+      "body": "{\"idCard\":\"67214970\",\"PayDate\":\"9\\/28\\/2026 2:30:33 PM\",\"ballance\":1463}"
+    },
+    {
+      "at": "2026-09-28T10:30:35.048Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1098,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:30:40.224Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1409,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:30:45.544Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1409,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:30:50.955Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1094,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:30:56.045Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1102,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:31:00.826Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1738,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:31:05.563Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1264,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:31:10.483Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1678,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:31:15.613Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1240,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:31:20.823Z",
+      "url": "https://api.raxshloto.online/pay",
+      "status": 200,
+      "body": "{\"idCard\":\"67215026\",\"PayDate\":\"9\\/28\\/2026 2:31:21 PM\",\"ballance\":1214}"
+    },
+    {
+      "at": "2026-09-28T10:31:22.011Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1482,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:31:27.565Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1523,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:31:32.630Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1789,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:31:38.162Z",
+      "url": "https://api.raxshloto.online/pay",
+      "status": 200,
+      "body": "{\"idCard\":\"67215044\",\"PayDate\":\"9\\/28\\/2026 2:31:38 PM\",\"ballance\":1807}"
+    },
+    {
+      "at": "2026-09-28T10:31:39.414Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1084,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:31:44.998Z",
+      "url": "https://api.raxshloto.online/pay",
+      "status": 200,
+      "body": "{\"idCard\":\"67215051\",\"PayDate\":\"9\\/28\\/2026 2:31:45 PM\",\"ballance\":1318}"
+    },
+    {
+      "at": "2026-09-28T10:31:45.925Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1488,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    },
+    {
+      "at": "2026-09-28T10:31:48.960Z",
+      "url": "https://api.raxshloto.online/init",
+      "status": 200,
+      "body": "{\"idValute\":\"3\",\"NameValute\":\"USD\",\"TimeZone\":\"0\",\"LimitMin\":\"1\",\"LimitMax\":\"5000000\",\"sessionId\":\"938015eef5e287703acd17e02015929c\",\"playerId\":\"4121003830070845140219829220302541374652\",\"balance\":1245.9,\"currency\":\"GEL\",\"gameState\":{\"SpinResult\":{\"idCard\":\"67215058\",\"LineSum\":\"0\",\"Lines\":\"1\",\"WasDouble\":\"0\",\"Number\":\"22858359\"},\"Line1\":{\"Slot11\":\"12\",\"Slot12\":\"8\",\"Slot13\":\"1\",\"Slot14\":\"8\",\"Slot15\":\"4\"},\"Line2\":{\"Slot21\":\"0\",\"Slot22\":\"1\",\"Slot23\":\"1\",\"Slot24\":\"10\",\"Slot25\":\"10\"},\"Line3\":{\"Slot31\":\"9\",\"Slot32\":\"0\",\"Slot33\":\"8\",\"Slot34\":\"0\",\"Slot35\":\"6\"},\"LinesKoff\":{\"Koff1\":\"0\",\"Koff2\":\"0\",\"Koff3\":\"0\",\"Koff4\":\"0\",\"Koff5\":\"0\",\"Koff6\":\"0\",\"Koff7\":\"0\",\"Koff8\":\"0\",\"Koff9\":\"0\",\"Koff10\":\"0\"},\"SpinZeros\":[],\"idCard\":\"67215058\",\"CardDate\":\"9\\/28\\/2026 2:31:46 PM\",\"CardSum\":\"0.1\",\"PayDate\":\"\",\"SumPay\":\"0.5\",\"idGameType\":\"36\",\"idCardClient\":\"qwerty-123456-asdfgh-789010-zxcvbn\",\"SlotFreeSpin\":\"False\",\"SlotDemoSpin\":\"False\",\"CountFreeSpin\":\"0\"}}"
+    },
+    {
+      "at": "2026-09-28T10:31:49.133Z",
+      "url": "https://api.raxshloto.online/balance",
+      "status": 200,
+      "body": "{\"balance\":1311,\"currency\":\"GEL\",\"playerId\":\"4121003830070845140219829220302541374652\"}"
+    }
+  ],
+  "errors": [
+    "Failed to load resource: net::ERR_FAILED"
+  ],
+  "finishedAt": "2026-09-28T10:32:08.445Z",
+  "triggered": true
+}

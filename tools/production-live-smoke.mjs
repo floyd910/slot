@@ -1,0 +1,18 @@
+import { chromium } from 'file:///C:/Users/user/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright/index.mjs';
+import { writeFileSync } from 'node:fs';
+const browser=await chromium.launch({headless:true,executablePath:'C:/Users/user/AppData/Local/Google/Chrome/Application/chrome.exe'});
+const context=await browser.newContext({viewport:{width:1440,height:900}});
+const page=await context.newPage();
+const consoleErrors=[];
+const networkFailures=[];
+page.on('console',message=>{if(message.type()==='error')consoleErrors.push(message.text());});
+page.on('pageerror',error=>consoleErrors.push(error.message));
+page.on('requestfailed',request=>networkFailures.push({url:request.url(),error:request.failure()?.errorText}));
+page.on('response',response=>{if(response.status()>=400)networkFailures.push({url:response.url(),status:response.status()});});
+await page.goto('https://raxshloto.online/#/slots',{waitUntil:'domcontentloaded',timeout:45000});
+await page.waitForTimeout(70000);
+const result={testedAt:new Date().toISOString(),url:page.url(),title:await page.title(),body:(await page.locator('body').innerText()).slice(0,8000),buttons:await page.getByRole('button').allTextContents(),networkFailures,links:await page.getByRole('link').allTextContents(),consoleErrors,resources:await page.evaluate(()=>performance.getEntriesByType('resource').map(({name,duration,transferSize})=>({name,duration,transferSize})).filter(item=>item.duration>10000||item.transferSize===0)),storage:await page.evaluate(()=>({local:Object.fromEntries(Object.keys(localStorage).map(key=>[key,localStorage.getItem(key)])),session:Object.fromEntries(Object.keys(sessionStorage).map(key=>[key,sessionStorage.getItem(key)]))}))};
+await page.screenshot({path:'tmp/production-live-smoke.png',fullPage:true});
+writeFileSync('tmp/production-live-smoke.json',JSON.stringify(result,null,2));
+console.log(JSON.stringify(result,null,2));
+await browser.close();

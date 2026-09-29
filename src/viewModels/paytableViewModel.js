@@ -30,6 +30,7 @@ export function buildStandardPaytableViewModel({ stake, selectedCombination, sel
     combinationNumber,
     groupLabels: combinationGroups.map(formatPayoutGroup),
     payoutMultiplier,
+    zeroPayoutMultiplier,
     rowSpan: payoutRows.length,
     rows: payoutRows.map((row) => ({
       symbol: row.symbol,

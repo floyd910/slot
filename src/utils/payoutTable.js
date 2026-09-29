@@ -126,7 +126,12 @@ export const getPayoutMultiplier = (
 ) => {
   const betMultiplier =
     toPayoutNumber(stake, BASE_PAYOUT_STAKE) / BASE_PAYOUT_STAKE;
-  if (Number(symbol) !== 0 || gameId === "fruits") return betMultiplier;
+  if (gameId === "fruits" && Number(symbol) === 0) {
+    // Game 8 coefficients apply to the complete purchase, not one line.
+    // The selected combination contains the five purchased lines.
+    return betMultiplier * getCombinationNumber(selectedCombination);
+  }
+  if (Number(symbol) !== 0) return betMultiplier;
 
   // selectedCombinationId is the live chooser value; it must control zero
   // payouts even when the session's combination object is stale.
