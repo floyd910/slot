@@ -50,6 +50,11 @@ import {
 const initialContext = readFrameParams();
 const UI_PREFERENCES_KEY = "hiranmandi-frame:ui-preferences:v1";
 const SOUND_PREFERENCE_KEY = "hiranmandi-frame:sound-enabled:v1";
+const STANDALONE_INITIAL_BALANCE = 1000;
+
+// Module memory survives game unmounts/navigation inside the SPA, but is reset
+// when the browser reloads the page and evaluates this module again.
+let standalonePageBalance = STANDALONE_INITIAL_BALANCE;
 
 const readSoundPreference = () => {
   try {
@@ -111,6 +116,12 @@ const setSupportedCombinations = (setCombinations, setSelectedCombinationId, gam
       : (supportedCombinations[0]?.id ?? 1),
   );
 };
+
+const normalizeStakeOption = (value, fallback = stakeOptions[0]) => {
+  const numericValue = Number(value);
+  return stakeOptions.includes(numericValue) ? numericValue : fallback;
+};
+
 export function useGameController(selectedGameId, gameDefinition = null) {
   const { t } = useLanguage();
   const [spinAssetsReady, setSpinAssetsReady] = useState(false);
@@ -171,7 +182,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const [gridAnimation, setGridAnimation] = useState("idle");
   const [hasRecoveredGrid, setHasRecoveredGrid] = useState(false);
   const [hasSessionSpin, setHasSessionSpin] = useState(false);
-  const [stake, setStake] = useState(() => Number(uiPreferences.stake ?? 0.1));
+  const [stake, setStake] = useState(() => normalizeStakeOption(uiPreferences.stake));
   const [visualMode, setVisualMode] = useState(() => uiPreferences.visualMode === true);
   const [carpetCloseMs, setCarpetCloseMs] = useState(CARPET_ANIMATION_HALF_MS);
   const [carpetOpenMs, setCarpetOpenMs] = useState(CARPET_ANIMATION_HALF_MS);
@@ -201,6 +212,12 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const [startupAssetsReady, setStartupAssetsReady] = useState(false);
   const [startupLoaderVisible, setStartupLoaderVisible] = useState(true);
   const [startupLoaderLeaving, setStartupLoaderLeaving] = useState(false);
+
+  useEffect(() => {
+    if (context.mode !== "standalone") return;
+    const balance = Number(player?.balance);
+    if (Number.isFinite(balance)) standalonePageBalance = balance;
+  }, [context.mode, player?.balance]);
 
   useEffect(() => {
     if (gameDefinition?.id !== "fruits") return;
@@ -645,7 +662,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       // reject a healthy multi-request bootstrap and leave it running behind Retry.
       const session = await frameApi.initSession(context);
       const sessionPlayer = context.mode === "standalone"
-        ? { ...session.player, balance: 1000 }
+        ? { ...session.player, balance: standalonePageBalance }
         : session.player;
       const paymentRows = await withTimeout(frameApi.getPaytable(), "Paytable");
       if (session.sessionId && session.sessionId !== context.sessionId) {
@@ -707,7 +724,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
           setHasRecoveredGrid(true);
           setGridRevealKey((key) => key + 1);
           setGridAnimation("settled");
-          if (Number.isFinite(Number(recoveredState.stake))) setStake(Number(recoveredState.stake));
+          if (recoveredState.stake != null) setStake(normalizeStakeOption(recoveredState.stake));
           if (recoveredState.selectedCombinationId != null) setSelectedCombinationId(recoveredState.selectedCombinationId);
           setFreeSpinsLeft(Number(recoveredState.freeSpinsLeft ?? 0));
           setFreeSpinsTotal(Number(recoveredState.freeSpinsTotal ?? recoveredState.freeSpinsLeft ?? 0));
@@ -725,7 +742,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         setHasRecoveredGrid(true);
           setGridRevealKey((key) => key + 1);
         setGridAnimation("settled");
-        if (Number.isFinite(Number(recoveredState.stake))) setStake(Number(recoveredState.stake));
+        if (recoveredState.stake != null) setStake(normalizeStakeOption(recoveredState.stake));
         if (recoveredState.selectedCombinationId != null) setSelectedCombinationId(recoveredState.selectedCombinationId);
         setRoundRecoveryStatus(recoveredState.operationStatus === ROUND_OPERATION_STATUS.RECOVERY_REQUIRED ? null : (recoveredState.operationStatus ?? ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION));
         setRestoredDoubleAvailable(recoveredState.doubleAvailable === true);
@@ -771,7 +788,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       setSupportedCombinations(setCombinations, setSelectedCombinationId, gameDefinition?.id ?? context.gameId, session.combinations);
       if (session.gameState) {
         // Zero is used in empty/test snapshots; keep the playable stake in that case.
-        if (session.gameState.stake > 0) setStake(session.gameState.stake);
+        if (session.gameState.stake > 0) setStake(normalizeStakeOption(session.gameState.stake));
         const restoredCombination = getSupportedCombinations(gameDefinition?.id ?? context.gameId, session.combinations)
           .find(item => item.groups.length === session.gameState.lines);
         if (restoredCombination) setSelectedCombinationId(restoredCombination.id);
@@ -915,7 +932,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       setHasRecoveredGrid(true);
       setGridRevealKey((key) => key + 1);
       setGridAnimation("settled");
-      if (Number.isFinite(Number(recovered.stake))) setStake(Number(recovered.stake));
+      if (recovered.stake != null) setStake(normalizeStakeOption(recovered.stake));
       if (recovered.selectedCombinationId != null) setSelectedCombinationId(recovered.selectedCombinationId);
       setRoundRecoveryStatus(recovered.operationStatus);
       setRestoredDoubleAvailable(recovered.doubleAvailable === true);
@@ -1346,3 +1363,5 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     },
   };
 }
+
+
