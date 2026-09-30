@@ -212,7 +212,7 @@ header {
     max-width: 32px;
   }
 }
-@media (orientation: landscape) and (max-height: 620px) {
+@media (orientation: landscape) and (max-width: 1280px) and (max-height: 700px) {
   .header-left {
     gap: 11px;
   }
@@ -417,7 +417,7 @@ header {
 }
 
 @media (max-width: 720px),
-  (orientation: landscape) and (max-height: 620px) {
+  (orientation: landscape) and (max-width: 1280px) and (max-height: 700px) {
   .lang-chooser {
     transform: translateY(3.5px);
   }
@@ -428,7 +428,7 @@ header {
   }
 }
 /* Compact header icon sizing and balanced vertical spacing. */
-@media (orientation: landscape) and (max-height: 620px) {
+@media (orientation: landscape) and (max-width: 1280px) and (max-height: 700px) {
   .header-games-button,
   .header-games-button__icon,
   .lang-chooser__flag,
@@ -545,7 +545,7 @@ header {
   }
 }
 
-@media (orientation: landscape) and (max-height: 620px), (max-width: 720px) {
+@media (orientation: landscape) and (max-width: 1280px) and (max-height: 700px), (max-width: 720px) {
   .header-btns > .view-changer {
     width: 52px;
     min-width: 52px;
@@ -560,7 +560,7 @@ header {
     flex-basis: 30px;
   }
 }
-@media (orientation: landscape) and (max-height: 620px) {
+@media (orientation: landscape) and (max-width: 1280px) and (max-height: 700px) {
   .header-btns > .view-changer {
     width: 38px;
     min-width: 38px;

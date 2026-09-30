@@ -59,7 +59,8 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       const fixedFooterBottom = footer
         ? Math.max(0, window.innerHeight - footer.getBoundingClientRect().top)
         : 0;
-      const shortFrame = root.getBoundingClientRect().height <= 620;
+      const rootRect = root.getBoundingClientRect();
+      const shortFrame = rootRect.width <= 1280 && rootRect.height <= 700;
       const mobilePortrait = window.matchMedia("(max-width: 639px) and (orientation: portrait)").matches;
       const doubleChestBottom = mobilePortrait && footer?.classList.contains("footer-block-mobile")
         ? fixedFooterBottom
@@ -81,7 +82,8 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       const areaRect = area.getBoundingClientRect();
       if (areaRect.width <= 0 || areaRect.height <= 0 || !footer) return;
       const footerTop = footer.getBoundingClientRect().top;
-      const compactLandscape = areaRect.width > areaRect.height && areaRect.width <= 1280;
+      const compactLandscape = window.matchMedia("(orientation: landscape) and (max-width: 1280px)").matches;
+      const scrollLandscape = window.matchMedia("(orientation: landscape) and (max-width: 669px)").matches;
       const logoWidth = compactLandscape
         ? Math.min(260, areaRect.width * 0.4)
         : areaRect.width <= 440
@@ -113,12 +115,33 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
         bounds = getBounds(root, center);
       }
       if (!bounds) return;
+      const widthScale = (areaRect.width - GAP * 2) / Math.max(1, bounds.right - bounds.left);
+      const contentHeight = Math.max(1, bounds.bottom - bounds.top);
+      const heightScale = (footerTop - GAP - (areaRect.top + resolvedContentTop))
+        / contentHeight;
+      const viewportHeight = Math.min(
+        document.documentElement.clientHeight || window.innerHeight,
+        window.visualViewport?.height || Number.POSITIVE_INFINITY,
+      );
+      const viewportHeightScale = (viewportHeight - GAP - bounds.top) / contentHeight;
       const scale = Math.max(0.1, Math.min(
         compactLandscape ? Number.POSITIVE_INFINITY : 1,
-        (areaRect.width - GAP * 2) / Math.max(1, bounds.right - bounds.left),
-        (footerTop - GAP - (areaRect.top + resolvedContentTop)) / Math.max(1, bounds.bottom - bounds.top),
+        widthScale,
+        scrollLandscape ? viewportHeightScale : heightScale,
       ) * 0.995);
       root.style.setProperty("--fluid-content-scale", String(scale));
+
+      if (scrollLandscape) {
+        const contentTopInArea = Math.max(0, bounds.top - areaRect.top);
+        const scaledContentHeight = (bounds.bottom - bounds.top) * scale;
+        const scrollFooterTop = contentTopInArea + scaledContentHeight + GAP;
+        const footerHeight = footer.getBoundingClientRect().height;
+        root.style.setProperty("--narrow-scroll-footer-top", String(scrollFooterTop) + "px");
+        root.style.setProperty("--narrow-scroll-height", String(scrollFooterTop + footerHeight + GAP) + "px");
+      } else {
+        root.style.removeProperty("--narrow-scroll-footer-top");
+        root.style.removeProperty("--narrow-scroll-height");
+      }
 
 
 

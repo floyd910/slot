@@ -10,7 +10,7 @@
   }
 }
 
-@media (orientation: landscape) and (max-height: 620px) {
+@media (orientation: landscape) and (max-width: 1280px) and (max-height: 700px) {
   .bottom-bar {
     display: none;
   }
@@ -704,7 +704,7 @@
 
 
 
-@media (min-width: 652px) and (orientation: landscape) and (max-height: 620px) {
+@media (orientation: landscape) and (max-width: 1280px) and (max-height: 700px) {
   .bottom-bar {
     display: block;
     left: 0;
@@ -840,15 +840,28 @@
   }
 }
 
-/* Narrow frames choose their footer by width, independent of landscape overrides. */
-@media (max-width: 651px) {
+/* Narrow portrait frames choose their footer by width; compact landscape keeps the desktop footer. */
+@media (orientation: portrait) and (max-width: 651px) {
   .bottom-bar > .footer-block-desktop { display: none; }
 }
-@media (max-width: 639px) {
+@media (orientation: portrait) and (max-width: 639px) {
   .bottom-bar > .footer-block-tablet { display: none; }
   .bottom-bar > .footer-block-mobile { display: flex; }
 }
-@media (min-width: 640px) and (max-width: 651px) {
+@media (orientation: portrait) and (min-width: 640px) and (max-width: 651px) {
   .bottom-bar > .footer-block-tablet { display: flex; }
   .bottom-bar > .footer-block-mobile { display: none; }
+}
+
+/* Very narrow landscape frames scroll to the mobile footer. */
+@media (orientation: landscape) and (max-width: 669px) {
+  .bottom-bar {
+    position: absolute;
+    top: var(--narrow-scroll-footer-top, calc(100% - 210px));
+    bottom: auto;
+  }
+
+  .bottom-bar > .footer-block-desktop { display: none; }
+  .bottom-bar > .footer-block-tablet { display: none; }
+  .bottom-bar > .footer-block-mobile { display: flex; }
 }
