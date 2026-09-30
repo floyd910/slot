@@ -644,6 +644,9 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       // Each HTTP request has its own aborting timeout. A shared timeout would
       // reject a healthy multi-request bootstrap and leave it running behind Retry.
       const session = await frameApi.initSession(context);
+      const sessionPlayer = context.mode === "standalone"
+        ? { ...session.player, balance: 1000 }
+        : session.player;
       const paymentRows = await withTimeout(frameApi.getPaytable(), "Paytable");
       if (session.sessionId && session.sessionId !== context.sessionId) {
         const initializedContext = {
@@ -651,10 +654,10 @@ export function useGameController(selectedGameId, gameDefinition = null) {
           sessionId: session.sessionId,
           backendGameId: session.backendGameId ?? context.backendGameId,
           unfinishedRound: session.unfinishedRound ?? null,
-          userId: session.player?.id ?? context.userId,
-          idUser: session.player?.id ?? context.idUser,
-          balance: session.player?.balance ?? context.balance,
-          currency: session.player?.currency ?? context.currency,
+          userId: sessionPlayer?.id ?? context.userId,
+          idUser: sessionPlayer?.id ?? context.idUser,
+          balance: sessionPlayer?.balance ?? context.balance,
+          currency: sessionPlayer?.currency ?? context.currency,
         };
         initializedSessionIdRef.current = session.sessionId;
         partnerApi.configure(initializedContext);
@@ -763,7 +766,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         setShowFreeSpinPrompt(session.freeSpinsLeft > 0 && !needsRecovery);
         liveSpinStateRef.current = {...liveSpinStateRef.current, freeSpinsLeft:session.freeSpinsLeft, freeSpinsTotal:session.freeSpinsTotal ?? 0, freeSpinCountUnknown:false};
       }
-      setPlayer(session.player);
+      setPlayer(sessionPlayer);
       setGames(session.games);
       setSupportedCombinations(setCombinations, setSelectedCombinationId, gameDefinition?.id ?? context.gameId, session.combinations);
       if (session.gameState) {
@@ -791,10 +794,10 @@ export function useGameController(selectedGameId, gameDefinition = null) {
           setGridRevealKey((key) => key + 1);
         });
       }
-      postEvent("UPDATE_BALANCE", { balance: session.player.balance, currency: session.player.currency });
+      postEvent("UPDATE_BALANCE", { balance: sessionPlayer.balance, currency: sessionPlayer.currency });
       postEvent("LOADED", {
         gameId: context.gameId,
-        userId: session.player.id,
+        userId: sessionPlayer.id,
       });
     } catch (initError) {
       initializedSessionIdRef.current = null;

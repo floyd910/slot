@@ -24,6 +24,8 @@ import { createOfflineError, isBrowserOffline } from "../utils/connectivity.js";
 
 
 const VALID_FRAME_LINE_COUNTS = new Set([1, 3, 5, 7, 9]);
+const usesBackendManagedWallet = (context) =>
+  useSoapBackend() && context?.mode === "embedded";
 const UNKNOWN_SPIN_RESULT_CODES = new Set([
   "TIMEOUT",
   "NETWORK_ERROR",
@@ -131,7 +133,7 @@ export const createSpinActions = ({
   const refreshBalance = async ({ duringOperation = false } = {}) => {
     const snapshot = liveSpinStateRef.current;
     const { context, player } = snapshot;
-    if (!useSoapBackend() || !player || !context?.token ||
+    if (!usesBackendManagedWallet(context) || !player || !context?.token ||
         (snapshot.freeSpinsLeft > 0 || snapshot.freeSpinSettling || (!duringOperation && snapshot.status === "processing"))) return null;
     const request = (snapshot.balanceRefreshId ?? 0) + 1;
     liveSpinStateRef.current = { ...snapshot, balanceRefreshId: request };
@@ -184,7 +186,7 @@ export const createSpinActions = ({
       reportOperationError(createOfflineError("Spin"), t("networkError"));
       return null;
     }
-    const backendManagedWallet = useSoapBackend();
+    const backendManagedWallet = usesBackendManagedWallet(context);
     if (liveSpinStateRef.current.freeSpinHistoryMissing) {
       setError(t("freeSpinHistoryMissing"));
       return null;
@@ -218,7 +220,7 @@ export const createSpinActions = ({
     const isFreeSpin = freeSpinsLeft > 0;
     const creditWinOnReveal =
       isFreeSpin || freeSpinAuto || autoExpressSpin || autoPlayOnRef.current;
-    const effectiveDemo = context.demoMode === true;
+    const effectiveDemo = context.demoMode === true || context.mode === "standalone";
     const lineCount = selectedCombination.groups.length;
     const totalStake = Number((stake * lineCount).toFixed(2));
     if (!VALID_FRAME_LINE_COUNTS.has(lineCount)) {
@@ -334,6 +336,7 @@ export const createSpinActions = ({
         WinSum: asNumber(apiResult.WinSum),
         BaseWinSum: asNumber(apiResult.BaseWinSum, asNumber(apiResult.WinSum)),
         BackendWinSum: asNumber(apiResult.BackendWinSum, asNumber(apiResult.WinSum)),
+        backendManagedWallet,
       };
       // Persist confirmed wins before animation; the ledger deduplicates API records.
       freeSpinSeries.recordResult(context, result, isFreeSpin);
@@ -651,7 +654,7 @@ export const createSpinActions = ({
     const task=(async()=>{
       try {
         const settled=await settleFreeSpinSeries({context,pay:params=>frameApi.pay(params),requestId:()=>buildRequestId("free-spin-pay"),keepalive});
-        const balance=useSoapBackend() ? settled.balance : Number((Number(state.player?.balance ?? 0)+cards.reduce((sum,card)=>sum+card.winMinor,0)/100).toFixed(2));
+        const balance=usesBackendManagedWallet(context) ? settled.balance : Number((Number(state.player?.balance ?? 0)+cards.reduce((sum,card)=>sum+card.winMinor,0)/100).toFixed(2));
         const nextPlayer=state.player ? {...state.player,balance:balance ?? state.player.balance} : null;
         setPlayer(nextPlayer);
         setFreeSpinsPaidTotal(settled.paidTotal);
@@ -696,7 +699,7 @@ export const createSpinActions = ({
     liveSpinStateRef.current = { ...liveSpinStateRef.current, balanceVersion: (liveSpinStateRef.current.balanceVersion ?? 0) + 1 };
     const requestId = buildRequestId("pay");
     const payout = getTicketWinAmount(spinResult, doublingState);
-    const backendManagedWallet = useSoapBackend();
+    const backendManagedWallet = usesBackendManagedWallet(context);
     try {
       setStatus("processing");
       liveSpinStateRef.current = {...liveSpinStateRef.current, status:"processing"};
@@ -797,7 +800,7 @@ export const createSpinActions = ({
     const result = await handleSpin({ autoExpressSpin: true });
     if (!result) return;
 
-    if (!useSoapBackend() && getAwardedFreeSpinCount(result) > 0) {
+    if (!usesBackendManagedWallet(liveSpinStateRef.current.context) && getAwardedFreeSpinCount(result) > 0) {
       // Auto Express acknowledges the award and runs the bonus automatically.
       // startFreeSpinRun collects any pending win before its first spin.
       await startFreeSpinRun();

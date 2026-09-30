@@ -21,3 +21,15 @@ dist
 /output/symbol-assets.md
 /tmp/export-symbol-assets.mjs
 /symbols/
+# Generated local build/test artifacts
+/.codex-build-verify-*/
+/.tmp/
+/.tmp-*/
+/tmp/
+/output/
+/yt-dlp.exe
+/*.part
+/*.mp4
+/*.webm
+/*.mkv
+/*.m4a
