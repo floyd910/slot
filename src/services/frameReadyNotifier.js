@@ -13,6 +13,8 @@ export const notifySlotChooserReady = () => {
       contractVersion: "1.0",
       type: "SLOT_CHOOSER_READY",
       payload: { assetsReady: true },
+      event: "SLOT_CHOOSER_READY",
+      data: { assetsReady: true },
       meta: {
         timestamp: new Date().toISOString(),
         viewportWidth: window.innerWidth,

@@ -67,6 +67,8 @@ export function useFrameBridge({ context, diagnostics, onCommand, onInitContext 
         contractVersion: CONTRACT_VERSION,
         type,
         payload,
+        event: type,
+        data: payload,
         meta: {
           requestId: buildRequestId("evt"),
 
@@ -92,7 +94,7 @@ export function useFrameBridge({ context, diagnostics, onCommand, onInitContext 
       const command = payload.type ?? payload.event;
       if (!HOST_COMMANDS.has(command)) return;
       if (command === "INIT_CONTEXT") {
-        const next = normalizeHostInit(payload.payload, contextRef.current.gameId);
+        const next = normalizeHostInit(payload.payload ?? payload.data, contextRef.current.gameId);
         if (next) onInitContext?.(next);
         return;
       }
@@ -134,3 +136,5 @@ export function useFrameBridge({ context, diagnostics, onCommand, onInitContext 
 
   return { postEvent };
 }
+
+

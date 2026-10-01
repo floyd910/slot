@@ -76,7 +76,7 @@ export class GameApiService {
     } catch (error) {
       if (["TIMEOUT", "NETWORK_ERROR", "NETWORK_UNREACHABLE"].includes(error?.code)) {
         stateRecoveryService.markRecoveryRequired(error, operation, getContext());
-      }
+      } else complete(params.requestId);
       throw error;
     }
   }

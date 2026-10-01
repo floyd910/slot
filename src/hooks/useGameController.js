@@ -637,9 +637,12 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     if (!force && initializedSessionIdRef.current && context.sessionId === initializedSessionIdRef.current) return;
     const missing = getMissingRequiredContext(context);
     if (missing.length) {
-      // The standalone launch is still resolving; do not expose a guest grid.
+      // A standalone demo resolves its credentials asynchronously, so keep its
+      // loader visible during that handshake. An embedded game without player
+      // context renders as a guest preview with spin disabled until INIT_CONTEXT.
       if (context.initSource === "missing" && isStandaloneDemo()) {
         setStatus("initial-loading");
+        setError("");
         return;
       }
       setGames(displayGames);
@@ -724,7 +727,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
           setHasRecoveredGrid(true);
           setGridRevealKey((key) => key + 1);
           setGridAnimation("settled");
-          if (recoveredState.stake != null) setStake(normalizeStakeOption(recoveredState.stake));
+          if (recoveredState.stake != null) setStake(normalizeStakeOption(recoveredState.stake, normalizeStakeOption(liveSpinStateRef.current.stake)));
           if (recoveredState.selectedCombinationId != null) setSelectedCombinationId(recoveredState.selectedCombinationId);
           setFreeSpinsLeft(Number(recoveredState.freeSpinsLeft ?? 0));
           setFreeSpinsTotal(Number(recoveredState.freeSpinsTotal ?? recoveredState.freeSpinsLeft ?? 0));
@@ -733,7 +736,11 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         // The server result is unknown. Keep this round blocked until a
         // recovery response resolves it; never clear or blindly retry it.
         setRoundRecoveryStatus(ROUND_OPERATION_STATUS.RECOVERY_REQUIRED);
-        setError("");
+        setError(({
+          "/spin": "spinUnknown",
+          "/double": "doubleUnknown",
+          "/pay": "paymentUnknown",
+        })[pendingRecovery?.methodName] ?? "operationPendingRecovery");
       } else if (recoveredState?.spinResult) {
         setSpinResult(confirmedSpinResult);
         setDoublingState(recoveredState.doublingState ? { ...recoveredState.doublingState, loading: false, lastPick: "", lastStatus: "" } : createEmptyDoublingState());
@@ -742,7 +749,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         setHasRecoveredGrid(true);
           setGridRevealKey((key) => key + 1);
         setGridAnimation("settled");
-        if (recoveredState.stake != null) setStake(normalizeStakeOption(recoveredState.stake));
+        if (recoveredState.stake != null) setStake(normalizeStakeOption(recoveredState.stake, normalizeStakeOption(liveSpinStateRef.current.stake)));
         if (recoveredState.selectedCombinationId != null) setSelectedCombinationId(recoveredState.selectedCombinationId);
         setRoundRecoveryStatus(recoveredState.operationStatus === ROUND_OPERATION_STATUS.RECOVERY_REQUIRED ? null : (recoveredState.operationStatus ?? ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION));
         setRestoredDoubleAvailable(recoveredState.doubleAvailable === true);
@@ -788,7 +795,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       setSupportedCombinations(setCombinations, setSelectedCombinationId, gameDefinition?.id ?? context.gameId, session.combinations);
       if (session.gameState) {
         // Zero is used in empty/test snapshots; keep the playable stake in that case.
-        if (session.gameState.stake > 0) setStake(normalizeStakeOption(session.gameState.stake));
+        if (session.gameState.stake > 0) setStake(normalizeStakeOption(session.gameState.stake, normalizeStakeOption(liveSpinStateRef.current.stake)));
         const restoredCombination = getSupportedCombinations(gameDefinition?.id ?? context.gameId, session.combinations)
           .find(item => item.groups.length === session.gameState.lines);
         if (restoredCombination) setSelectedCombinationId(restoredCombination.id);
@@ -932,7 +939,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       setHasRecoveredGrid(true);
       setGridRevealKey((key) => key + 1);
       setGridAnimation("settled");
-      if (recovered.stake != null) setStake(normalizeStakeOption(recovered.stake));
+      if (recovered.stake != null) setStake(normalizeStakeOption(recovered.stake, normalizeStakeOption(liveSpinStateRef.current.stake)));
       if (recovered.selectedCombinationId != null) setSelectedCombinationId(recovered.selectedCombinationId);
       setRoundRecoveryStatus(recovered.operationStatus);
       setRestoredDoubleAvailable(recovered.doubleAvailable === true);
@@ -1363,5 +1370,6 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     },
   };
 }
+
 
 

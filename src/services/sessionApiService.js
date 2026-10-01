@@ -74,6 +74,13 @@ const validateSessionContext = (params = {}) => {
   }
 };
 
+export const isRollbackEligibleSpin = (pending, now = Date.now()) => {
+  if (pending?.methodName !== "/spin") return false;
+  if (["NETWORK_ERROR", "NETWORK_UNREACHABLE", "OFFLINE"].includes(pending.errorCode)) return true;
+  const createdAt = Date.parse(pending.createdAt ?? "");
+  return Number.isFinite(createdAt) && now - createdAt > 30000;
+};
+
 const getConfirmedCardId = (state) =>
   state?.lastConfirmedSpinResult?.idCard ??
   state?.spinResult?.idCard ??
@@ -96,7 +103,7 @@ const reconcileConfirmedSpin = (context, pending, localState, gameState) => {
 };
 
 const rollbackConnectivityFailedSpin = (context, pending, localState, gameState) => {
-  if (pending?.methodName !== "/spin" || !["NETWORK_ERROR", "NETWORK_UNREACHABLE", "OFFLINE"].includes(pending.errorCode)) return false;
+  if (!isRollbackEligibleSpin(pending)) return false;
   const previous = pending.recoveryState ?? localState ?? {};
   const previousCardId = getConfirmedCardId(previous);
   const returnedCardId = gameState?.spinResult?.idCard ?? null;

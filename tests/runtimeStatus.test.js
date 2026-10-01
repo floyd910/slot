@@ -15,7 +15,7 @@ test('operation errors use full-screen retry only when no result grid is visible
 
 test('uncertain operations use one stable full-screen Retry state even over a restored grid',()=>{
   assert.equal(shouldShowRuntimeState('ready',true),true);
-  assert.equal(getRuntimeStateStatus('ready',true),'network-error');
+  assert.equal(getRuntimeStateStatus('ready',true),'recovery-required');
   assert.equal(shouldShowRuntimeState('ready',false),false);
   assert.equal(getRuntimeStateStatus('ready',false),'ready');
 });

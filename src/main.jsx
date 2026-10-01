@@ -4,6 +4,14 @@ import "./styles.css";
 import App from "./App.jsx";
 import { LanguageProvider } from "./i18n.jsx";
 
+if (window.parent === window && !window.location.hash && !window.location.search) {
+  window.history.replaceState(
+    window.history.state,
+    "",
+    `${window.location.pathname}#/slots`,
+  );
+}
+
 const syncViewportHeight = () => {
   const height = Math.floor(
     Math.min(

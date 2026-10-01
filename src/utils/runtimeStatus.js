@@ -18,4 +18,4 @@ export const shouldShowRuntimeState = (status, recoveryBlocked = false) =>
   recoveryBlocked || !["guest", "ready", "empty", "processing", "initial-loading", "bootstrap-loading"].includes(status);
 
 export const getRuntimeStateStatus = (status, recoveryBlocked = false) =>
-  recoveryBlocked ? "network-error" : status;
+  recoveryBlocked ? "recovery-required" : status;

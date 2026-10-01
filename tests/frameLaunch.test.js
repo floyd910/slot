@@ -2,9 +2,18 @@ import {freeSpinSeries} from '../src/services/freeSpinSeries.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { resolveParentOrigin, readHostMessage, normalizeHostInit } from '../src/api/frameLaunch.js';
-import { SessionApiService } from '../src/services/sessionApiService.js';
+import { SessionApiService, isRollbackEligibleSpin } from '../src/services/sessionApiService.js';
 import { stateRecoveryService } from '../src/services/stateRecoveryService.js';
 import { mergeRuntimeConfig } from '../src/api/runtimeConfig.js';
+
+test('only confirmed network failures or old orphaned spin locks are rollback eligible',()=>{
+  const now=Date.parse('2026-10-01T12:00:00.000Z');
+  assert.equal(isRollbackEligibleSpin({methodName:'/spin',errorCode:'NETWORK_ERROR',createdAt:new Date(now).toISOString()},now),true);
+  assert.equal(isRollbackEligibleSpin({methodName:'/spin',createdAt:new Date(now-31000).toISOString()},now),true);
+  assert.equal(isRollbackEligibleSpin({methodName:'/spin',errorCode:'UNKNOWN',createdAt:new Date(now-31000).toISOString()},now),true);
+  assert.equal(isRollbackEligibleSpin({methodName:'/spin',createdAt:new Date(now-29000).toISOString()},now),false);
+  assert.equal(isRollbackEligibleSpin({methodName:'/pay',createdAt:new Date(now-31000).toISOString()},now),false);
+});
 
 test('trusted parent requires configured origin, parent window, and contract version',()=>{
   const parent={},other={};const origin='https://partner.example';
@@ -18,6 +27,16 @@ test('trusted parent requires configured origin, parent window, and contract ver
   assert.equal(readHostMessage({...event,origin:'https://evil.example'},parent,origin,true),null);
   assert.equal(readHostMessage(event,parent,origin,false),null);
   assert.equal(readHostMessage({...event,data:{...event.data,contractVersion:'9'}},parent,origin,true),null);
+});
+test('documented partner event/data envelope and playerID are supported only for trusted parent',()=>{
+  const parent={};const origin='https://partner.example';
+  const message=readHostMessage({source:parent,origin,data:{event:'INIT_CONTEXT',data:{token:'fixture',playerID:'partner-42',language:'rus'}}},parent,origin,true);
+  assert.equal(message.type,'INIT_CONTEXT');
+  assert.deepEqual(message.payload,{token:'fixture',playerID:'partner-42',language:'rus'});
+  assert.equal(readHostMessage({source:{},origin,data:{event:'INIT_CONTEXT',data:{}}},parent,origin,true),null);
+  const init=normalizeHostInit(message.payload,'khiradmandi-makor');
+  assert.equal(init.playerId,'partner-42');
+  assert.equal(init.locale,'ru');
 });
 test('host init accepts only launch fields, never fake session or endpoint overrides',()=>{
   const init=normalizeHostInit({token:"fixture",playerId:7,sessionId:'fake',password:'secret',sessionApiBaseUrl:'https://evil.example',allowedOrigins:['*'],backendMode:'mock',demoMode:true},'khiradmandi-makor');
@@ -69,6 +88,7 @@ test('startup skips freespins before the first spin and refreshes returning play
         if(gameState)assert.equal(result.gameState.freeSpinsLeft,0);
       }
     }
+
     freeSpinSeries.recordResult(params,{idCard:'first-award',FreeSpin:1},false);
     freeSpinSeries.reconcile(params,100);
     freeSpinSeries.recordResult(params,{idCard:'retrigger',FreeSpin:1},true);
@@ -186,7 +206,7 @@ test('init restores an unpaid win instead of replaying a transport-failed paymen
     stateRecoveryService.saveRound({idCard:'unpaid-card',spinResult:{idCard:'unpaid-card',WinSum:45},operationStatus:'WAITING_FOR_COLLECT'},params);
     stateRecoveryService.rememberPendingRequest({requestId:'lost-pay',methodName:'/pay',idCard:'unpaid-card'},params);
     globalThis.fetch=async(url)=>url.endsWith('/init')
-      ? new Response(JSON.stringify({sessionId:'unpaid-session',playerId:'unpaid-pay-player',gameState:raw}))
+      ? new Response(JSON.stringify({sessionId:'unpaid-session',gameState:raw}))
       : url.endsWith('/balance')
         ? new Response(JSON.stringify({balance:100,currency:'GEL',playerId:'unpaid-pay-player'}))
         : new Response(JSON.stringify({CountFreeSpin:'0'}));

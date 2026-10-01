@@ -853,15 +853,3 @@
   .bottom-bar > .footer-block-mobile { display: none; }
 }
 
-/* Very narrow landscape frames scroll to the mobile footer. */
-@media (orientation: landscape) and (max-width: 669px) {
-  .bottom-bar {
-    position: absolute;
-    top: var(--narrow-scroll-footer-top, calc(100% - 210px));
-    bottom: auto;
-  }
-
-  .bottom-bar > .footer-block-desktop { display: none; }
-  .bottom-bar > .footer-block-tablet { display: none; }
-  .bottom-bar > .footer-block-mobile { display: flex; }
-}

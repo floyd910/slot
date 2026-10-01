@@ -1,10 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {isStandaloneDemo,isDemoContext,requestDemoLaunch,buildDemoLaunch} from '../src/api/demoLaunch.js';
-const standalone=(origin='https://raxshloto.online',hash='#/slots')=>{const runtime={location:{origin,hash}};runtime.parent=runtime;return runtime;};
+const standalone=(origin='https://raxshloto.online',hash='#/slots',search='')=>{const runtime={location:{origin,hash,search}};runtime.parent=runtime;return runtime;};
 test('demo is restricted to standalone stand routes',()=>{
  assert.equal(isStandaloneDemo(standalone()),true);
+ assert.equal(isStandaloneDemo(standalone('https://www.raxshloto.online')),true);
  assert.equal(isStandaloneDemo(standalone(undefined,'#/games/babylon')),true);
+ assert.equal(isStandaloneDemo(standalone(undefined,'','?gameId=36')),true);
+ assert.equal(isStandaloneDemo(standalone(undefined,'','?gameId=khiradmandi-makor')),true);
  assert.equal(isStandaloneDemo(standalone('https://casino.example')),false);
  assert.equal(isStandaloneDemo(standalone(undefined,'#/other')),false);
  for(const origin of ['https://raxshloto.online','https://casino.example']){const framed=standalone(origin);framed.parent={};assert.equal(isStandaloneDemo(framed),false);}

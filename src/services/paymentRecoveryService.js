@@ -13,7 +13,7 @@ export function reconcileConfirmedPayment(context, remote, gameState, wallet, ex
    expectedPending && pending?.methodName === '/pay' &&
    pending.requestId === expectedPending.requestId &&
    String(pending.idCard) === String(expectedPending.idCard) &&
-   String(remote.playerId) === String(playerId) &&
+   (remote.playerId == null || String(remote.playerId) === String(playerId)) &&
    String(card?.idGameType) === String(resolveApiGameId(context)) &&
    pending.idCard != null && String(card?.idCard) === String(pending.idCard) &&
    String(gameState?.spinResult?.idCard) === String(pending.idCard)

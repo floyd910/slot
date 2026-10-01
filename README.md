@@ -21,3 +21,6 @@ Collection is still unavailable pending the backend endpoint; unpaid winnings re
 
 Tests: node --test tests/spinApi.test.js tests/spinFlow.test.js tests/frameLaunch.test.js
 Build: npm run build
+
+Partner frontend integration: [docs/partner-iframe-frontend.md](docs/partner-iframe-frontend.md)
+

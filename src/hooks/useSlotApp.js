@@ -4,6 +4,7 @@ import {
   SLOT_CHOOSER_BACKGROUND_SRC,
 } from "../config/gameAssets.js";
 import { GAME_DEFINITIONS } from "../config/gameDefinitions.js";
+import { GAME_API_IDS } from "../api/gameApiIds.js";
 import { VIEW2_DICE_PRELOAD_ASSETS } from "../config/view2Assets.js";
 import { notifySlotChooserReady } from "../services/frameReadyNotifier.js";
 import { stateRecoveryService } from "../services/stateRecoveryService.js";
@@ -26,6 +27,9 @@ const waitForAnimationFrame = () =>
 
 const SLOT_CHOOSER_ROUTE = "/slots";
 const GAME_ROUTE_IDS_BY_API_ID = Object.freeze({
+  ...Object.fromEntries(
+    Object.entries(GAME_API_IDS).map(([routeId, apiId]) => [apiId, routeId]),
+  ),
   "1": "ganchina-sokrovishch",
   "2": "marvorid-djemchug",
   "3": "khiradmandi-makor",
@@ -380,3 +384,4 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
     slotChooserInteractive: !selectedSlotId && !pendingSlotId,
   };
 }
+

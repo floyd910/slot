@@ -1225,22 +1225,14 @@ button:disabled {
   transform: none;
 }
 
-/* Narrow landscape keeps the width-fitted grid size and scrolls to its footer. */
-@media (orientation: landscape) and (max-width: 669px) {
-  .frame-app {
-    height: var(--app-viewport-height, 100dvh);
-    overflow-x: hidden;
-    overflow-y: auto;
-    overscroll-behavior-y: contain;
-    -webkit-overflow-scrolling: touch;
-  }
 
-  .frame-app .game_area {
-    height: var(--narrow-scroll-height, calc(var(--app-viewport-height) + 220px));
-    min-height: var(--narrow-scroll-height, calc(var(--app-viewport-height) + 220px));
+/* Slightly use the spare portrait-mobile height without visibly stretching symbols. */
+@media (orientation: portrait) and (min-width: 390px) and (max-width: 720px) {
+  .frame-app[data-fluid-fit="true"].view-2:not(.doubling-active)
+    .lottery-grid-view2-cell {
+    height: 207px;
   }
 }
-
 /* Mobile portrait breathing room; landscape keeps its full-width layout. */
 @media (orientation: portrait) and (max-width: 639px) {
   .frame-app .game_area {
