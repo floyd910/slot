@@ -25,7 +25,8 @@ import { createOfflineError, isBrowserOffline } from "../utils/connectivity.js";
 
 const VALID_FRAME_LINE_COUNTS = new Set([1, 3, 5, 7, 9]);
 const usesBackendManagedWallet = (context) =>
-  useSoapBackend() && context?.mode === "embedded";
+  useSoapBackend() &&
+  (context?.mode === "embedded" || context?.initSource === "demo-stand");
 const UNKNOWN_SPIN_RESULT_CODES = new Set([
   "TIMEOUT",
   "NETWORK_ERROR",

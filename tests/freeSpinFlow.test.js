@@ -15,7 +15,7 @@ test('all games and views count 15 per catch, restore, retrigger and finish usin
   const {mergeRuntimeConfig}=await server.ssrLoadModule('/src/api/runtimeConfig.js');
   mergeRuntimeConfig({backendMode:'soap'});
   for(const gameId of ['ganchina-sokrovishch','marvorid-djemchug','khiradmandi-makor','egypt','kadima-drevnii','khocha-afandi','babylon','fruits'])for(const visualMode of [false,true]) {
-   const context={token:'fixture',playerId:'player-'+visualMode,gameId,sessionId:gameId+'-'+visualMode};
+   const context={token:'fixture',playerId:'player-'+visualMode,gameId,sessionId:gameId+'-'+visualMode,mode:'standalone',initSource:'demo-stand'};
    const live={current:{context,visualMode,carpetCloseMs:0,carpetOpenMs:0,status:'ready',player:{balance:100,currency:'USD'},doubleState:{},doublingState:{},freeSpinsLeft:0,freeSpinsTotal:0,selectedCombination:{groups:[{}],id:1},stake:1}};
    let played=100,calls=0,failCount=false,payCalls=0,expectedMinor=0,paidMinor=0;const cardWins=new Map();const errors=[];
    const options={liveSpinStateRef:live,autoPlayOnRef:{current:false},freeSpinRunRef:{current:false},t:k=>k,reportOperationError:e=>errors.push(e)};

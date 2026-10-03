@@ -46,6 +46,7 @@ export const freeSpinSeries = {
   if(!Number.isFinite(win)||win<0)throw new Error('Invalid free-spin win');
   save(context,{
    ...value,total:value.total+award,
+   played:value.played+(isFreeSpin && result.backendManagedWallet === true ? 1 : 0),
    payments:isFreeSpin && win>0 ? [...(value.payments ?? []),{idCard:result.idCard,winMinor:Math.round(win*100),paid:result.creditedToBalance === true}] : (value.payments ?? []),
    winMinor:value.winMinor == null ? null : value.winMinor+(isFreeSpin ? Math.round(win*100) : 0),
    resultIds:[...(value.resultIds ?? []),key],
@@ -62,7 +63,8 @@ export const freeSpinSeries = {
   // A finished series is immutable until recordResult starts a new award.
   // Retain its winnings/payment ledger, including any unconfirmed payments.
   if(value.baseline!=null && snapshot(value).freeSpinsLeft===0)return snapshot(value);
-  if(value.baseline!=null && played<value.played)throw Object.assign(new Error('Invalid active free-spin counter'),{code:'BACKEND_RESPONSE_ERROR'});
-  return snapshot(save(context,{...value,baseline:value.baseline ?? played,played}));
+  // A confirmed local result can be newer than the eventually-consistent
+  // counter endpoint. Never move the played count backwards on recovery.
+  return snapshot(save(context,{...value,baseline:value.baseline ?? played,played:Math.max(value.played,played)}));
  }
 };

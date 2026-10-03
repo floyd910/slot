@@ -17,7 +17,7 @@ test('15 per award, lifetime baseline, retriggers, deduplication and new series'
  series.recordResult(context,{idCard:'award-3',FreeSpin:1},false);
  assert.equal(series.reconcile(context,130).freeSpinsLeft,15);
  assert.equal(series.reconcile(context,131).freeSpinsLeft,14);
- assert.throws(()=>series.reconcile(context,130),{code:'BACKEND_RESPONSE_ERROR'});
+ assert.equal(series.reconcile(context,130).freeSpinsLeft,14);
 });
 test('awards survive module reload before count refresh and do not cross players/games',async()=>{
  const c={playerId:'reload-player',gameId:'fruits'};
@@ -73,5 +73,16 @@ test('a completed series stays completed when a later normal-spin counter is low
  series.recordResult(c,{idCard:'next-award',FreeSpin:1},false);
  assert.equal(series.reconcile(c,0).freeSpinsLeft,15);
  assert.equal(series.reconcile(c,1).freeSpinsLeft,14);
- assert.throws(()=>series.reconcile(c,0),{code:'BACKEND_RESPONSE_ERROR'});
+ assert.equal(series.reconcile(c,0).freeSpinsLeft,14);
+});
+
+test('confirmed free spins recover locally when the server counter lags',()=>{
+ const c={playerId:'fast-exit-player',gameId:'fruits'};
+ series.recordResult(c,{idCard:'fast-award',FreeSpin:1},false);
+ series.reconcile(c,700);
+ series.recordResult(c,{idCard:'fast-free-1',WinSum:0,backendManagedWallet:true},true);
+ series.recordResult(c,{idCard:'fast-free-2',WinSum:0,backendManagedWallet:true},true);
+ assert.equal(series.read(c).freeSpinsLeft,13);
+ assert.equal(series.reconcile(c,700).freeSpinsLeft,13);
+ assert.equal(series.reconcile(c,702).freeSpinsLeft,13);
 });
