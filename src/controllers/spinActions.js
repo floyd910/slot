@@ -4,6 +4,7 @@ import { claimFreeSpinCompletion } from "../services/freeSpinCompletionService.j
 import { requestFreeSpins } from "../api/freeSpinsApiClient.js";
 import { requestBalance } from "../api/balanceApiClient.js";
 import { useSoapBackend } from "../api/runtimeConfig.js";
+import { usesStandaloneDemoWallet } from "../api/demoLaunch.js";
 import { flushSync } from "react-dom";
 import { frameApi } from "../api/frameApi.js";
 import {
@@ -26,7 +27,8 @@ import { createOfflineError, isBrowserOffline } from "../utils/connectivity.js";
 const VALID_FRAME_LINE_COUNTS = new Set([1, 3, 5, 7, 9]);
 const usesBackendManagedWallet = (context) =>
   useSoapBackend() &&
-  context?.mode === "embedded";
+  context?.mode === "embedded" &&
+  !usesStandaloneDemoWallet(context);
 const UNKNOWN_SPIN_RESULT_CODES = new Set([
   "TIMEOUT",
   "NETWORK_ERROR",
@@ -221,7 +223,7 @@ export const createSpinActions = ({
     const isFreeSpin = freeSpinsLeft > 0;
     const creditWinOnReveal =
       isFreeSpin || freeSpinAuto || autoExpressSpin || autoPlayOnRef.current;
-    const effectiveDemo = context.demoMode === true || context.mode === "standalone";
+    const effectiveDemo = context.demoMode === true || usesStandaloneDemoWallet(context);
     const lineCount = selectedCombination.groups.length;
     const totalStake = Number((stake * lineCount).toFixed(2));
     if (!VALID_FRAME_LINE_COUNTS.has(lineCount)) {
@@ -240,6 +242,7 @@ export const createSpinActions = ({
     let stakeDeducted = false;
     let partnerRoundId = null;
     let authoritativePartnerBalance = null;
+    let visualSpinStartedAt = null;
 
     try {
       if (!backendManagedWallet && !isFreeSpin && spinStartBalance < totalStake) {
@@ -303,7 +306,11 @@ export const createSpinActions = ({
 
       playSpinFeedback();
       setHasRecoveredGrid?.(false);
-      if (!visualMode) setGridAnimation("spinning");
+      if (visualMode) {
+        visualSpinStartedAt = Date.now();
+        setGridAnimation("spinning");
+        emitSound("carpet");
+      } else setGridAnimation("spinning");
       setDoublingState(createEmptyDoublingState());
       setLastKnownState("spin-submitted");
       setError("");
@@ -358,9 +365,9 @@ export const createSpinActions = ({
         if (wallet) authoritativePartnerBalance = wallet.balance;
       }
       if (visualMode) {
-        setGridAnimation("spinning");
-        emitSound("carpet");
-        if (carpetCloseMs > 0) await wait(carpetCloseMs);
+        const elapsedCloseMs = visualSpinStartedAt == null ? 0 : Date.now() - visualSpinStartedAt;
+        const remainingCloseMs = Math.max(0, carpetCloseMs - elapsedCloseMs);
+        if (remainingCloseMs > 0) await wait(remainingCloseMs);
       }
       const hasBackendWin = result.hasBackendWin ?? result.WinSum > 0;
       const awardedFreeSpins = backendManagedWallet ? 0 : getAwardedFreeSpinCount(result);

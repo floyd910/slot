@@ -1,6 +1,6 @@
 import { getPrimaryGameAction } from "../viewModels/primaryGameAction.js";
 import { hasPendingExitRecovery, createDoubleExitHandler, registerDoubleExit, requestDoubleExit } from "../services/doubleExitService.js";
-import { isStandaloneDemo, requestDemoLaunch } from "../api/demoLaunch.js";
+import { isStandaloneDemo, requestDemoLaunch, usesStandaloneDemoWallet } from "../api/demoLaunch.js";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { frameApi } from "../api/frameApi.js";
 import {
@@ -214,10 +214,10 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const [startupLoaderLeaving, setStartupLoaderLeaving] = useState(false);
 
   useEffect(() => {
-    if (context.mode !== "standalone") return;
+    if (!usesStandaloneDemoWallet(context)) return;
     const balance = Number(player?.balance);
     if (Number.isFinite(balance)) standalonePageBalance = balance;
-  }, [context.mode, player?.balance]);
+  }, [context, player?.balance]);
 
   useEffect(() => {
     if (gameDefinition?.id !== "fruits") return;
@@ -664,7 +664,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       // Each HTTP request has its own aborting timeout. A shared timeout would
       // reject a healthy multi-request bootstrap and leave it running behind Retry.
       const session = await frameApi.initSession(context);
-      const sessionPlayer = context.mode === "standalone"
+      const sessionPlayer = usesStandaloneDemoWallet(context)
         ? { ...session.player, balance: standalonePageBalance }
         : session.player;
       const paymentRows = await withTimeout(frameApi.getPaytable(), "Paytable");

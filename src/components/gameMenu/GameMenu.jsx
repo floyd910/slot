@@ -22,6 +22,9 @@ const RULES_COPY = {
     rulesLabel: "Правила",
     closeRulesLabel: "Закрыть правила",
     lineLabel: "Линия",
+    payoutTitle: '\u041a\u043e\u044d\u0444\u0444\u0438\u0446\u0438\u0435\u043d\u0442\u044b \u0432\u044b\u043f\u043b\u0430\u0442',
+    payoutSymbolHeader: '\u0421\u0438\u043c\u0432\u043e\u043b',
+    payoutEmptyValue: '-',
     menuLabel: "Игровое меню",
     closeMenuLabel: "Закрыть меню",
     historyButton: "ИСТОРИЯ ТИРАЖЕЙ",
@@ -46,12 +49,49 @@ const RULES_COPY = {
     rulesLabel: "Қоидаҳо",
     closeRulesLabel: "Пӯшидани қоидаҳо",
     lineLabel: "Хат",
+    payoutTitle: '\u041a\u043e\u044d\u0444\u0444\u0438\u0442\u0441\u0438\u0435\u043d\u0442\u04b3\u043e\u0438 \u043f\u0430\u0440\u0434\u043e\u0445\u0442',
+    payoutSymbolHeader: '\u0420\u0430\u043c\u0437',
+    payoutEmptyValue: '-',
     menuLabel: "Менюи бозӣ",
     closeMenuLabel: "Пӯшидани меню",
     historyButton: "ТАЪРИХИ ТИРОЖҲО",
     rulesButton: "ҚОИДАҲО",
   },
 };
+function RulesPayoutTable({ copy, view }) {
+  if (!view?.rows?.length || !view?.columns?.length) return null;
+
+  return (
+    <section className='game-rules-screen__payouts' aria-label={copy.payoutTitle}>
+      <h2>{copy.payoutTitle}</h2>
+      <div className='game-rules-screen__payout-table-wrap'>
+        <table className='game-rules-screen__payout-table'>
+          <thead>
+            <tr>
+              <th scope='col'>{copy.payoutSymbolHeader}</th>
+              {view.columns.map((column) => (
+                <th scope='col' key={column}>{column}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {view.rows.map((row) => (
+              <tr key={row.symbol}>
+                <th scope='row'>{row.symbol}</th>
+                {row.values.map((value, index) => (
+                  <td key={String(row.symbol) + '-' + view.columns[index]}>
+                    {value || copy.payoutEmptyValue}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+}
+
 const RULE_LINES = [
   [5, 6, 7, 8, 9],
   [0, 1, 2, 3, 4],
@@ -64,7 +104,7 @@ const RULE_LINES = [
   [10, 11, 7, 3, 4],
 ];
 
-export default function GameMenu({ gameId, onClose }) {
+export default function GameMenu({ gameId, onClose, paytableView }) {
   const { language } = useLanguage();
   const rulesCopy = RULES_COPY[language] ?? RULES_COPY.ru;
   const [showRules, setShowRules] = useState(false);
@@ -190,6 +230,7 @@ export default function GameMenu({ gameId, onClose }) {
               </div>
             ))}
           </div>
+          <RulesPayoutTable copy={rulesCopy} view={paytableView} />
         </div>
       </section>,
       document.body,

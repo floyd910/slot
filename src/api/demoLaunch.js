@@ -24,6 +24,7 @@ export function isStandaloneDemo(runtime = globalThis.window) {
     .some((key) => Boolean(query.get(key)));
   return trustedOrigin && (hashRoute || directGameRoute);
 }
+export const usesStandaloneDemoWallet = context => context?.mode === 'standalone' || context?.initSource === 'demo-stand';
 export const isDemoContext = context => isStandaloneDemo() && context?.initSource === 'demo-stand' && typeof context.token === 'string' && Boolean(context.token.trim()) && Boolean(context.playerId);
 export function buildDemoLaunch(token, playerId) {
   if (typeof token !== 'string' || !token.trim() || playerId == null || !String(playerId).trim()) {

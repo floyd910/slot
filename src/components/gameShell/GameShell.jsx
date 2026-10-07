@@ -243,6 +243,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
         {state.showGameMenu && (
           <GameMenu
             gameId={game.id}
+            paytableView={paytableView}
             onClose={() => actions.setShowGameMenu(false)}
           />
         )}
