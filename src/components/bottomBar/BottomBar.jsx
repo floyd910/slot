@@ -199,12 +199,12 @@ export default function BottomBar(inputProps) {
           onClick={props.onInfo}
         />
         <BottomBarMetric title={winLabel} value={currentWin} accent />
-        <div className="footer-flex">
+        <div className="footer-flex footer-flex--mobile-metrics">
           <BottomBarMetric title={t("balance")} value={balance} />
           <BottomBarMetric title={t("purchaseAmount")} value={totalPurchase} />
         </div>
 
-        <div className="footer-flex">
+        <div className="footer-flex footer-flex--mobile-settings">
           {props.isVisualDoubling ? (
             <DoubleScenePickButtons
               disabled={props.disabled || props.doublingState?.loading}
@@ -251,7 +251,7 @@ export default function BottomBar(inputProps) {
             </>
           )}
         </div>
-        <div className="footer-flex">
+        <div className="footer-flex footer-flex--mobile-actions">
           {controls.map((control) =>
             renderBottomBarControl(control, { language, t }),
           )}

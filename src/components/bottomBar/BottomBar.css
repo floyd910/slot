@@ -853,3 +853,40 @@
   .bottom-bar > .footer-block-mobile { display: none; }
 }
 
+
+/* Mobile CTA emphasis: keep stake controls compact while making the spin action dominant. */
+@media (max-width: 639px) {
+  .footer-block-mobile {
+    padding-top: 10px;
+    padding-bottom: 14px;
+  }
+
+  .footer-block-mobile .footer-flex--mobile-actions {
+    align-items: stretch;
+    gap: 8px;
+    margin-top: 7px;
+    transform: none;
+  }
+
+  .footer-block-mobile .footer-flex--mobile-actions .auto-express-button {
+    flex: 0.72 1 0;
+    height: 48px;
+    min-height: 48px;
+    padding: 0 6px;
+  }
+
+  .footer-block-mobile .footer-flex--mobile-actions .spin-draw-button,
+  .footer-block-mobile .footer-flex--mobile-actions .take-money {
+    flex: 1.55 1 0;
+    height: 48px;
+    min-height: 48px;
+    padding: 0 8px;
+    border-radius: 10px;
+  }
+
+  .footer-block-mobile .footer-flex--mobile-actions .spin-draw-button .basic-button__label,
+  .footer-block-mobile .footer-flex--mobile-actions .take-money .take-money__title {
+    font-size: 11px;
+    line-height: 14px;
+  }
+}

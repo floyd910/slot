@@ -1090,3 +1090,273 @@
   .lottery-grid-view1-cell--win-highlight {
   background: url("/assets/img/game7-babylon-highlight-background.webp") center / 100% 100% no-repeat;
 }
+
+/* Mobile draw ticket emphasis: one compact, readable current-draw block below the grid. */
+@media (max-width: 639px) {
+  .grid-bottom-panel {
+    top: calc(100% + 8px);
+    min-height: 52px;
+    padding: 10px 12px;
+    border-radius: 14px;
+  }
+
+  .grid-bottom-panel__footer {
+    gap: 10px;
+  }
+
+  .grid-bottom-panel__draw {
+    min-width: 0;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 22px;
+    text-transform: uppercase;
+  }
+
+  .grid-bottom-panel__draw-number {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .grid-bottom-panel__icon {
+    width: 28px;
+    height: 28px;
+    flex-basis: 28px;
+  }
+
+  .grid-bottom-panel__details {
+    flex: 0 0 auto;
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  .grid-bottom-panel--expanded {
+    gap: 10px;
+    padding-top: 12px;
+  }
+
+
+  .view-2 .grid-bottom-panel--expanded[data-ticket-position="below"][data-ticket-expansion="up"] {
+    top: calc(100% + 8px);
+    bottom: auto;
+  }
+
+  .view-2 .grid-bottom-panel--expanded {
+    align-items: stretch;
+    max-height: min(34vh, 150px);
+    overflow: visible;
+  }
+
+  .view-2 .grid-bottom-panel__receipt,
+  .view-2 .grid-bottom-panel__draw,
+  .view-2 .grid-bottom-panel__details {
+    line-height: 1.35;
+  }
+
+  .view-2 .grid-bottom-panel__receipt {
+    padding-right: 34px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .grid-bottom-panel__receipt {
+    font-size: 12px;
+    line-height: 16px;
+  }
+}
+
+/* Keep expanded mobile ticket spacing consistent across both view modes. */
+@media (max-width: 639px) {
+  .grid-bottom-panel--expanded,
+  .view-2 .grid-bottom-panel--expanded {
+    padding: 12px 12px 10px;
+  }
+
+  .grid-bottom-panel__receipt {
+    font-size: 14px;
+    line-height: 1.35;
+  }
+
+  .view-2 .grid-bottom-panel__receipt {
+    font-size: var(--fluid-ticket-font-size, 14px);
+  }
+}
+
+/* Single visual ticket contract: view modes may position/open differently, but the ticket itself must match. */
+.grid-bottom-panel,
+.view-2 .grid-bottom-panel {
+  min-height: 56px;
+  padding: 16px 16px 16px 24px;
+  border-radius: 18px;
+}
+
+.grid-bottom-panel__draw,
+.view-2 .grid-bottom-panel__draw,
+.grid-bottom-panel__details,
+.view-2 .grid-bottom-panel__details,
+.grid-bottom-panel__receipt,
+.view-2 .grid-bottom-panel__receipt {
+  font-size: 14px;
+  line-height: normal;
+}
+
+.grid-bottom-panel__draw,
+.view-2 .grid-bottom-panel__draw {
+  gap: 16px;
+}
+
+.grid-bottom-panel__icon,
+.view-2 .grid-bottom-panel__icon,
+.grid-bottom-panel__close img,
+.view-2 .grid-bottom-panel__close img {
+  width: 24px;
+  height: 24px;
+}
+
+.grid-bottom-panel__icon,
+.view-2 .grid-bottom-panel__icon {
+  flex: 0 0 24px;
+}
+
+.grid-bottom-panel--expanded,
+.view-2 .grid-bottom-panel--expanded {
+  gap: 16px;
+  padding: 16px 16px 16px 24px;
+}
+
+@media (max-width: 639px) {
+  .grid-bottom-panel,
+  .view-2 .grid-bottom-panel {
+    min-height: 52px;
+    padding: 10px 12px;
+    border-radius: 14px;
+  }
+
+  .grid-bottom-panel__draw,
+  .view-2 .grid-bottom-panel__draw {
+    gap: 10px;
+    font-size: 18px;
+    line-height: 22px;
+  }
+
+  .grid-bottom-panel__details,
+  .view-2 .grid-bottom-panel__details,
+  .grid-bottom-panel__receipt,
+  .view-2 .grid-bottom-panel__receipt {
+    font-size: 14px;
+    line-height: 1.35;
+  }
+
+  .grid-bottom-panel__icon,
+  .view-2 .grid-bottom-panel__icon {
+    width: 28px;
+    height: 28px;
+    flex-basis: 28px;
+  }
+
+  .grid-bottom-panel--expanded,
+  .view-2 .grid-bottom-panel--expanded {
+    gap: 10px;
+    padding: 10px 12px;
+  }
+
+  .view-2 .grid-bottom-panel--expanded[data-ticket-position="below"][data-ticket-expansion="up"] {
+    top: calc(100% + 8px);
+    bottom: auto;
+  }
+}
+
+/* View 2 can be scaled with the game area; compensate ticket internals so they stay visually equal to View 1. */
+.frame-app[data-fluid-fit="true"].view-2 .grid-bottom-panel {
+  min-height: var(--fluid-ticket-min-height, 56px);
+  padding: var(--fluid-ticket-padding, 16px 16px 16px 24px);
+  border-radius: var(--fluid-ticket-radius, 18px);
+}
+
+.frame-app[data-fluid-fit="true"].view-2 .grid-bottom-panel__draw,
+.frame-app[data-fluid-fit="true"].view-2 .grid-bottom-panel__details,
+.frame-app[data-fluid-fit="true"].view-2 .grid-bottom-panel__receipt {
+  font-size: var(--fluid-ticket-font-size, 14px);
+  line-height: normal;
+}
+
+.frame-app[data-fluid-fit="true"].view-2 .grid-bottom-panel__draw {
+  gap: var(--fluid-ticket-gap, 16px);
+}
+
+.frame-app[data-fluid-fit="true"].view-2 .grid-bottom-panel__icon,
+.frame-app[data-fluid-fit="true"].view-2 .grid-bottom-panel__close img {
+  width: var(--fluid-ticket-icon-size, 24px);
+  height: var(--fluid-ticket-icon-size, 24px);
+}
+
+.frame-app[data-fluid-fit="true"].view-2 .grid-bottom-panel__icon {
+  flex: 0 0 var(--fluid-ticket-icon-size, 24px);
+}
+
+.frame-app[data-fluid-fit="true"].view-2 .grid-bottom-panel--expanded {
+  gap: var(--fluid-ticket-gap, 16px);
+  padding: var(--fluid-ticket-padding, 16px 16px 16px 24px);
+}
+
+@media (max-width: 639px) {
+  .frame-app[data-fluid-fit="true"].view-2 .grid-bottom-panel {
+    min-height: var(--fluid-ticket-mobile-min-height, 52px);
+    padding: var(--fluid-ticket-mobile-padding, 10px 12px);
+    border-radius: var(--fluid-ticket-mobile-radius, 14px);
+  }
+
+  .frame-app[data-fluid-fit="true"].view-2 .grid-bottom-panel__draw {
+    gap: var(--fluid-ticket-mobile-gap, 10px);
+    font-size: var(--fluid-ticket-mobile-draw-font-size, 18px);
+    line-height: var(--fluid-ticket-mobile-draw-line-height, 22px);
+  }
+
+  .frame-app[data-fluid-fit="true"].view-2 .grid-bottom-panel__details,
+  .frame-app[data-fluid-fit="true"].view-2 .grid-bottom-panel__receipt {
+    font-size: var(--fluid-ticket-mobile-text-font-size, 14px);
+    line-height: 1.35;
+  }
+
+  .frame-app[data-fluid-fit="true"].view-2 .grid-bottom-panel__icon {
+    width: var(--fluid-ticket-mobile-icon-size, 28px);
+    height: var(--fluid-ticket-mobile-icon-size, 28px);
+    flex-basis: var(--fluid-ticket-mobile-icon-size, 28px);
+  }
+
+  .frame-app[data-fluid-fit="true"].view-2 .grid-bottom-panel--expanded {
+    gap: var(--fluid-ticket-mobile-gap, 10px);
+    padding: var(--fluid-ticket-mobile-padding, 10px 12px);
+  }
+}
+
+/* Expanded View 2 ticket must grow with its receipt text after inverse-scale compensation. */
+@media (max-width: 639px) {
+  .frame-app[data-fluid-fit="true"].view-2 .grid-bottom-panel--expanded,
+  .view-2 .grid-bottom-panel--expanded {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+    box-sizing: border-box;
+  }
+
+  .frame-app[data-fluid-fit="true"].view-2 .grid-bottom-panel--expanded .grid-bottom-panel__receipt,
+  .view-2 .grid-bottom-panel--expanded .grid-bottom-panel__receipt {
+    display: block;
+    min-height: 0;
+    padding-right: var(--fluid-ticket-mobile-icon-size, 28px);
+    overflow: visible;
+  }
+}
+
+/* Give the expanded View 2 mobile ticket close button breathing room from the right edge. */
+@media (max-width: 639px) {
+  .frame-app[data-fluid-fit="true"].view-2 .grid-bottom-panel--expanded .grid-bottom-panel__close,
+  .view-2 .grid-bottom-panel--expanded .grid-bottom-panel__close {
+    top: var(--fluid-ticket-close-inset, 18px);
+    right: var(--fluid-ticket-close-inset, 18px);
+  }
+}

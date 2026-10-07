@@ -208,8 +208,7 @@ export default function GameContent({ controller, game, runtimeState }) {
                 )}
                 {drawDetailsExpanded && (
                   <div className="grid-bottom-panel__receipt">
-                    {ticketCopy.receiptLabel} {receiptNumber}{" "}
-                    {ticketCopy.drawLabel} {drawNumber} {ticketCopy.description}
+                    {ticketCopy.receiptLabel} {receiptNumber} {ticketCopy.description}
                   </div>
                 )}
                 <div className="grid-bottom-panel__footer">
@@ -219,7 +218,7 @@ export default function GameContent({ controller, game, runtimeState }) {
                       src="/img/ui/draw-info-icon.png"
                       alt=""
                     />
-                    <span>
+                    <span className="grid-bottom-panel__draw-number">
                       {ticketCopy.drawLabel}
                       {drawNumber}
                     </span>

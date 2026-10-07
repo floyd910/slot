@@ -131,6 +131,20 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       ) * 0.995);
       root.style.setProperty("--fluid-content-scale", String(scale));
       root.style.setProperty("--fluid-ticket-font-size", `${14 / scale}px`);
+      root.style.setProperty("--fluid-ticket-min-height", `${56 / scale}px`);
+      root.style.setProperty("--fluid-ticket-padding", `${16 / scale}px ${16 / scale}px ${16 / scale}px ${24 / scale}px`);
+      root.style.setProperty("--fluid-ticket-radius", `${18 / scale}px`);
+      root.style.setProperty("--fluid-ticket-gap", `${16 / scale}px`);
+      root.style.setProperty("--fluid-ticket-icon-size", `${24 / scale}px`);
+      root.style.setProperty("--fluid-ticket-mobile-min-height", `${52 / scale}px`);
+      root.style.setProperty("--fluid-ticket-mobile-padding", `${10 / scale}px ${12 / scale}px`);
+      root.style.setProperty("--fluid-ticket-mobile-radius", `${14 / scale}px`);
+      root.style.setProperty("--fluid-ticket-mobile-draw-font-size", `${18 / scale}px`);
+      root.style.setProperty("--fluid-ticket-mobile-draw-line-height", `${22 / scale}px`);
+      root.style.setProperty("--fluid-ticket-mobile-text-font-size", `${14 / scale}px`);
+      root.style.setProperty("--fluid-ticket-mobile-gap", `${10 / scale}px`);
+      root.style.setProperty("--fluid-ticket-mobile-icon-size", `${28 / scale}px`);
+      root.style.setProperty("--fluid-ticket-close-inset", `${18 / scale}px`);
 
       if (!initialFitStarted) {
         initialFitStarted = true;

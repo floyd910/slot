@@ -244,6 +244,9 @@ export default function GameShell({ controller, game, onBackToSlots }) {
           <GameMenu
             gameId={game.id}
             paytableView={paytableView}
+            visualMode={state.visualMode}
+            symbolAssets={game.assets.view2Symbols}
+            symbolImageOverrides={game.assets.view2Info?.symbolImageOverrides}
             onClose={() => actions.setShowGameMenu(false)}
           />
         )}

@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useLanguage } from "../../i18n";
+import { VIEW2_SYMBOL_CONFIGS } from "../view2Symbols/index.jsx";
 import "./GameMenu.css";
 const RULES_COPY = {
   ru: {
@@ -22,12 +23,11 @@ const RULES_COPY = {
     rulesLabel: "Правила",
     closeRulesLabel: "Закрыть правила",
     lineLabel: "Линия",
-    payoutTitle: '\u041a\u043e\u044d\u0444\u0444\u0438\u0446\u0438\u0435\u043d\u0442\u044b \u0432\u044b\u043f\u043b\u0430\u0442',
+    payoutTitle: '\u0422\u0430\u0431\u043b\u0438\u0446\u0430 \u0432\u044b\u043f\u043b\u0430\u0442',
     payoutSymbolHeader: '\u0421\u0438\u043c\u0432\u043e\u043b',
     payoutEmptyValue: '-',
     menuLabel: "Игровое меню",
     closeMenuLabel: "Закрыть меню",
-    historyButton: "ИСТОРИЯ ТИРАЖЕЙ",
     rulesButton: "ПРАВИЛА",
   },
   tg: {
@@ -49,16 +49,42 @@ const RULES_COPY = {
     rulesLabel: "Қоидаҳо",
     closeRulesLabel: "Пӯшидани қоидаҳо",
     lineLabel: "Хат",
-    payoutTitle: '\u041a\u043e\u044d\u0444\u0444\u0438\u0442\u0441\u0438\u0435\u043d\u0442\u04b3\u043e\u0438 \u043f\u0430\u0440\u0434\u043e\u0445\u0442',
+    payoutTitle: '\u04b6\u0430\u0434\u0432\u0430\u043b\u0438 \u043f\u0430\u0440\u0434\u043e\u0445\u0442\u04b3\u043e',
     payoutSymbolHeader: '\u0420\u0430\u043c\u0437',
     payoutEmptyValue: '-',
     menuLabel: "Менюи бозӣ",
     closeMenuLabel: "Пӯшидани меню",
-    historyButton: "ТАЪРИХИ ТИРОЖҲО",
     rulesButton: "ҚОИДАҲО",
   },
 };
-function RulesPayoutTable({ copy, view }) {
+const getRulesPayoutSymbolImage = (symbol, symbolAssets) => {
+  const gameAsset = symbolAssets?.[symbol];
+  const gameStaticImage =
+    typeof gameAsset === "string" ? gameAsset : gameAsset?.staticImage;
+
+  return (
+    gameStaticImage ??
+    VIEW2_SYMBOL_CONFIGS[symbol]?.staticImage ??
+    (typeof gameAsset === "object" ? gameAsset?.background : null) ??
+    `/assets/img/info-symbols/view2-symbol-${symbol}.webp?v=20260801-assets-lossless`
+  );
+};
+
+function RulesPayoutSymbol({ symbol, symbolAssets, symbolImageOverrides }) {
+  const imageSymbol = symbolImageOverrides?.[symbol] ?? symbol;
+
+  return (
+    <span className={`game-rules-screen__payout-symbol symbol-${symbol}`} aria-label={String(symbol)}>
+      <img
+        className='game-rules-screen__payout-symbol-image'
+        src={getRulesPayoutSymbolImage(imageSymbol, symbolAssets)}
+        alt=''
+      />
+    </span>
+  );
+}
+
+function RulesPayoutTable({ copy, view, visualMode = false, symbolAssets = {}, symbolImageOverrides = {} }) {
   if (!view?.rows?.length || !view?.columns?.length) return null;
 
   return (
@@ -77,7 +103,17 @@ function RulesPayoutTable({ copy, view }) {
           <tbody>
             {view.rows.map((row) => (
               <tr key={row.symbol}>
-                <th scope='row'>{row.symbol}</th>
+                <th scope='row' className='game-rules-screen__payout-symbol-cell'>
+                  {visualMode ? (
+                    <RulesPayoutSymbol
+                      symbol={row.symbol}
+                      symbolAssets={symbolAssets}
+                      symbolImageOverrides={symbolImageOverrides}
+                    />
+                  ) : (
+                    row.symbol
+                  )}
+                </th>
                 {row.values.map((value, index) => (
                   <td key={String(row.symbol) + '-' + view.columns[index]}>
                     {value || copy.payoutEmptyValue}
@@ -104,7 +140,7 @@ const RULE_LINES = [
   [10, 11, 7, 3, 4],
 ];
 
-export default function GameMenu({ gameId, onClose, paytableView }) {
+export default function GameMenu({ gameId, onClose, paytableView, visualMode = false, symbolAssets = {}, symbolImageOverrides = {} }) {
   const { language } = useLanguage();
   const rulesCopy = RULES_COPY[language] ?? RULES_COPY.ru;
   const [showRules, setShowRules] = useState(false);
@@ -230,7 +266,13 @@ export default function GameMenu({ gameId, onClose, paytableView }) {
               </div>
             ))}
           </div>
-          <RulesPayoutTable copy={rulesCopy} view={paytableView} />
+          <RulesPayoutTable
+            copy={rulesCopy}
+            view={paytableView}
+            visualMode={visualMode}
+            symbolAssets={symbolAssets}
+            symbolImageOverrides={symbolImageOverrides}
+          />
         </div>
       </section>,
       document.body,
@@ -252,7 +294,6 @@ export default function GameMenu({ gameId, onClose, paytableView }) {
         >
           <img src="/img/ui/game-menu-close.png" alt="" />
         </button>
-        <button type="button">{rulesCopy.historyButton}</button>
         <button type="button" onClick={() => setShowRules(true)}>
           {rulesCopy.rulesButton}
         </button>
