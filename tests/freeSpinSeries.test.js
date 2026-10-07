@@ -86,3 +86,14 @@ test('confirmed free spins recover locally when the server counter lags',()=>{
  assert.equal(series.reconcile(c,700).freeSpinsLeft,13);
  assert.equal(series.reconcile(c,702).freeSpinsLeft,13);
 });
+
+test('confirmed standalone free spins recover locally without backend counter progress',()=>{
+ const c={playerId:'local-free-player',gameId:'fruits'};
+ series.recordResult(c,{idCard:'local-award',FreeSpin:1},false);
+ series.reconcile(c,900);
+ for(const id of ['local-free-1','local-free-2','local-free-3']) {
+  series.recordResult(c,{idCard:id,WinSum:0,backendManagedWallet:false},true);
+ }
+ assert.equal(series.read(c).freeSpinsLeft,12);
+ assert.equal(series.reconcile(c,900).freeSpinsLeft,12);
+});

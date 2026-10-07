@@ -738,6 +738,14 @@
   width: 525px;
   transform: none;
 }
+
+/* View 2's center is transformed as one unit. The responsive layout supplies
+   an inverse-scaled font size so ticket text remains 14px after that transform. */
+.view-2 .grid-bottom-panel__draw,
+.view-2 .grid-bottom-panel__details,
+.view-2 .grid-bottom-panel__receipt {
+  font-size: var(--fluid-ticket-font-size, 14px);
+}
 .grid-bottom-panel__draw {
   display: flex;
   align-items: center;

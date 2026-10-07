@@ -46,7 +46,7 @@ export const freeSpinSeries = {
   if(!Number.isFinite(win)||win<0)throw new Error('Invalid free-spin win');
   save(context,{
    ...value,total:value.total+award,
-   played:value.played+(isFreeSpin && result.backendManagedWallet === true ? 1 : 0),
+   played:value.played+(isFreeSpin && result.backendManagedWallet != null ? 1 : 0),
    payments:isFreeSpin && win>0 ? [...(value.payments ?? []),{idCard:result.idCard,winMinor:Math.round(win*100),paid:result.creditedToBalance === true}] : (value.payments ?? []),
    winMinor:value.winMinor == null ? null : value.winMinor+(isFreeSpin ? Math.round(win*100) : 0),
    resultIds:[...(value.resultIds ?? []),key],

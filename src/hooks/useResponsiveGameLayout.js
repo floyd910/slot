@@ -11,10 +11,16 @@ const getFooter = (root) =>
   Array.from(root.querySelectorAll(".bottom-bar")).find(isVisible);
 
 const getBounds = (root, center) => {
-  const ticket = center.querySelector(".grid-bottom-panel:not(.grid-bottom-panel--expanded)");
+  const ticket = center.querySelector(".grid-bottom-panel");
+  // The expanded receipt is an overlay. Its footer keeps the same visual
+  // bottom edge as the collapsed ticket, so use that stable footprint while
+  // ignoring only the extra receipt content during responsive fitting.
+  const ticketFootprint = ticket?.classList.contains("grid-bottom-panel--expanded")
+    ? ticket.querySelector(".grid-bottom-panel__footer")
+    : ticket;
   const elements = [
     root.querySelector(".main-container__left"), center,
-    root.querySelector(".main-container__right"), ticket,
+    root.querySelector(".main-container__right"), ticketFootprint,
   ].filter(isVisible);
   if (!elements.length) return null;
   const rects = elements.map((element) => element.getBoundingClientRect());
@@ -124,6 +130,7 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
         heightScale,
       ) * 0.995);
       root.style.setProperty("--fluid-content-scale", String(scale));
+      root.style.setProperty("--fluid-ticket-font-size", `${14 / scale}px`);
 
       if (!initialFitStarted) {
         initialFitStarted = true;
