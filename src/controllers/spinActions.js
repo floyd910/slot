@@ -5,6 +5,7 @@ import { requestFreeSpins } from "../api/freeSpinsApiClient.js";
 import { requestBalance } from "../api/balanceApiClient.js";
 import { useSoapBackend } from "../api/runtimeConfig.js";
 import { usesStandaloneDemoWallet } from "../api/demoLaunch.js";
+
 import { flushSync } from "react-dom";
 import { frameApi } from "../api/frameApi.js";
 import {
@@ -27,9 +28,7 @@ import { createOfflineError, isBrowserOffline } from "../utils/connectivity.js";
 const VALID_FRAME_LINE_COUNTS = new Set([1, 3, 5, 7, 9]);
 const AUTO_EXPRESS_FREE_SPIN_PROMPT_MS = 2000;
 const usesBackendManagedWallet = (context) =>
-  useSoapBackend() &&
-  context?.mode === "embedded" &&
-  !usesStandaloneDemoWallet(context);
+  useSoapBackend() && !usesStandaloneDemoWallet(context);
 const UNKNOWN_SPIN_RESULT_CODES = new Set([
   "TIMEOUT",
   "NETWORK_ERROR",
@@ -224,7 +223,7 @@ export const createSpinActions = ({
     const isFreeSpin = freeSpinsLeft > 0;
     const creditWinOnReveal =
       isFreeSpin || freeSpinAuto || autoExpressSpin || autoPlayOnRef.current;
-    const effectiveDemo = context.demoMode === true || usesStandaloneDemoWallet(context);
+    const effectiveDemo = context.demoMode === true;
     const lineCount = selectedCombination.groups.length;
     const totalStake = Number((stake * lineCount).toFixed(2));
     if (!VALID_FRAME_LINE_COUNTS.has(lineCount)) {

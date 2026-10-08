@@ -8,6 +8,7 @@ import {
   spin as mockSpin,
 } from "../api/mockSlotBackend.js";
 import { getRuntimeConfig, useSoapBackend } from "../api/runtimeConfig.js";
+import { usesStandaloneDemoWallet } from "../api/demoLaunch.js";
 import {
   buildPayRequest,
 } from "../api/soapRequestBuilder.js";
@@ -17,7 +18,7 @@ import { normalizeSpinResult } from "../models/spinResult.js";
 import { stateRecoveryService } from "./stateRecoveryService.js";
 import { freeSpinSeries } from "./freeSpinSeries.js";
 import { assertBrowserOnline } from "../utils/connectivity.js";
-import { usesStandaloneDemoWallet } from "../api/demoLaunch.js";
+
 
 const getContext = () => getRuntimeConfig();
 
@@ -63,7 +64,10 @@ export class GameApiService {
     try {
       const context = getContext();
       const payload = await sendSpinRequest(body, { token: context.token, requestId: params.requestId });
-      const result = normalizeSpinResult({ ...mapJsonSpinPayload(payload, { ...context, ...params }), backendManagedWallet: context.mode === "embedded" && !usesStandaloneDemoWallet(context) });
+      const result = normalizeSpinResult({
+        ...mapJsonSpinPayload(payload, { ...context, ...params }),
+        backendManagedWallet: !usesStandaloneDemoWallet(context),
+      });
       freeSpinSeries.recordResult(context, result, params.isFreeSpin === true);
       stateRecoveryService.saveGameState({
         lastIdCard: result.idCard,

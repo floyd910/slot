@@ -2,7 +2,7 @@ import { reconcileConfirmedPayment } from './paymentRecoveryService.js';
 import { ROUND_OPERATION_STATUS, stateRecoveryService } from './stateRecoveryService.js';
 import { freeSpinSeries } from "./freeSpinSeries.js";
 import { requestFreeSpins } from "../api/freeSpinsApiClient.js";
-import { isDemoContext } from "../api/demoLaunch.js";
+import { isDemoContext, usesStandaloneDemoWallet } from "../api/demoLaunch.js";
 import { buildAuthHeaders } from "../api/authHeaders.js";
 import { mapInitGameState } from "../api/initGameState.js";
 import { requestBalance } from "../api/balanceApiClient.js";
@@ -163,7 +163,9 @@ export class SessionApiService {
         pendingAtStart?.isFreeSpin === true || gameState.spinResult.isFreeSpin === true,
       );
     }
-    const wallet = await requestBalance({ token: params.token, playerId });
+    const wallet = usesStandaloneDemoWallet(params)
+      ? { balance: 1000, currency: "USD", playerId: String(playerId) }
+      : await requestBalance({ token: params.token, playerId });
     // No last-spin snapshot means there is no spin history to refresh yet.
     const played = gameState ? await requestFreeSpins(params) : 0;
     let freeSpinState;

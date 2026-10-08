@@ -39,7 +39,7 @@ export const createSession = async (params) => {
       balance: testMode
         ? initialBalance(params.testBalance)
         : initialBalance(params.balance),
-      currency: params.currency ?? "GEL",
+      currency: params.currency ?? "USD",
     },
     partner: {
       idPartner: params.idPartner ?? params.partnerId ?? "1",

@@ -33,7 +33,7 @@ test('all games and views count 15 per catch, restore, retrigger and finish usin
     return {balance:100+paidMinor/100};
    };
    frameApi.spin=async params=>{
-    calls++;assert.equal(buildSpinForm(params,context).get('freeSpin'),calls===1?'0':'1');
+    calls++;const form=buildSpinForm(params,context);assert.equal(form.get('freeSpin'),calls===1?'0':'1');assert.equal(form.get('demoSpin'),'0','standalone production token must never force demo spins');
     const winMinor=params.isFreeSpin?[56350,0,1235][(calls-2)%3]:0;
     expectedMinor+=winMinor;cardWins.set(context.sessionId+'-'+calls,winMinor);
     if(params.isFreeSpin)played++;

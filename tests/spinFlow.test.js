@@ -25,7 +25,7 @@ test('ordinary remote spins avoid partner mutations and retain unpaid wins',asyn
     for(const balance of [undefined,0,95]) {
       // Free-spin payouts have dedicated end-of-series coverage in freeSpinFlow.test.js.
       for(const free of [false]) {
-        const context={token:'fixture',gameId:'khiradmandi-makor',sessionId:'test-'+balance+'-'+free,userId:7};
+        const context={token:'fixture',gameId:'khiradmandi-makor',sessionId:'test-'+balance+'-'+free,userId:7,mode:'embedded'};
         mergeRuntimeConfig({...context,playerId:7});
         const live={current:{context,carpetCloseMs:0,carpetOpenMs:0,doubleState:{},doublingState:{},freeSpinsLeft:free?1:0,freeSpinsTotal:free?1:0,player:{balance:100},selectedCombination:{groups:[{}],id:'one'},stake:1,status:'ready',visualMode:true}};
         let calls=0;const events=[];const errors=[];
@@ -45,7 +45,7 @@ test('ordinary remote spins avoid partner mutations and retain unpaid wins',asyn
         assert.equal(live.current.player.balance,balance??100);
         assert.equal(events.filter(e=>e.type==='UPDATE_BALANCE').length,balance==null?0:1);
         globalThis.fetch=async(url)=>url.endsWith('/balance')
-          ? new Response(JSON.stringify({balance:73,currency:'GEL',playerId:'7'}))
+          ? new Response(JSON.stringify({balance:73,currency:'USD',playerId:'7'}))
           : new Response(JSON.stringify({error_code:400,error:'fixture rejected'}),{status:400});
         const originalPay=frameApi.pay;
         frameApi.pay=params=>{assert.equal(params.idPartnerCard,'partner-0001');return originalPay(params);};
@@ -68,7 +68,7 @@ test('ordinary remote spins avoid partner mutations and retain unpaid wins',asyn
         assert.equal(live.current.player.balance,1820);
         assert.equal(live.current.spinResult,null);
         assert.equal(events.filter(e=>e.type==='UPDATE_BALANCE').at(-1).payload.balance,1820);
-        globalThis.fetch=async()=>new Response(JSON.stringify({balance:0,currency:'GEL',playerId:'7'}));
+        globalThis.fetch=async()=>new Response(JSON.stringify({balance:0,currency:'USD',playerId:'7'}));
         await actions.refreshBalance();
         assert.equal(live.current.player.balance,0);
         assert.equal(events.at(-1).payload.balance,0);
@@ -76,7 +76,7 @@ test('ordinary remote spins avoid partner mutations and retain unpaid wins',asyn
         globalThis.fetch=()=>new Promise(resolve=>{resolveBalance=resolve;});
         const staleRefresh=actions.refreshBalance();
         live.current={...live.current,balanceVersion:(live.current.balanceVersion??0)+1,player:{...live.current.player,balance:500}};
-        resolveBalance(new Response(JSON.stringify({balance:10,currency:'GEL',playerId:'7'})));
+        resolveBalance(new Response(JSON.stringify({balance:10,currency:'USD',playerId:'7'})));
         assert.equal(await staleRefresh,null);
         assert.equal(live.current.player.balance,500);
         if(free)assert.equal(stateRecoveryService.getLocalState(context).freeSpinsLeft,2);
