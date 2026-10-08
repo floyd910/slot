@@ -66,6 +66,7 @@ export function View2SymbolBase({
 }) {
   const [animationClockMs, setAnimationClockMs] = useState(0);
   const [animatedImageDone, setAnimatedImageDone] = useState(false);
+  const [animationVisualReady, setAnimationVisualReady] = useState(false);
   const animationActive = highlighted || animated;
   const animatedImagePlayMs =
     singlePlayMs ?? cycleMs ?? VIEW2_SYMBOL_WIN_CYCLE_MS;
@@ -79,6 +80,10 @@ export function View2SymbolBase({
   const frameDurationMs = activeWinFrames?.length > 1
     ? getFrameDurationMs(frameMs, activeWinFrames.length)
     : VIEW2_SYMBOL_WIN_FRAME_MS;
+
+  useEffect(() => {
+    setAnimationVisualReady(false);
+  }, [animationActive, animationKey, symbol]);
 
   useEffect(() => {
     setAnimatedImageDone(false);
@@ -134,26 +139,7 @@ export function View2SymbolBase({
             src={background}
           />
         )}
-        {activeAnimatedImage ? (
-          <img
-            key={`${animationKey}-${activeAnimatedImage}`}
-            alt=""
-            aria-hidden="true"
-            src={activeAnimatedImage}
-            className="lottery-grid-view2-cell__image"
-            style={fullCellStyle}
-          />
-        ) : activeWinFrames?.length > 1 ? (
-          <span className="lottery-grid-view2-cell__animation" style={fullCellStyle} aria-label="image">
-            <img
-              alt=""
-              aria-hidden="true"
-              src={activeWinFrames[frameIndex]}
-              className="lottery-grid-view2-cell__image"
-            style={fullCellStyle}
-            />
-          </span>
-        ) : staticImage ? (
+        {staticImage ? (
           <img
             alt="image"
             src={staticImage}
@@ -165,6 +151,30 @@ export function View2SymbolBase({
             {symbol}
           </span>
         )}
+        {activeAnimatedImage ? (
+          <span className="lottery-grid-view2-cell__animation" style={fullCellStyle} aria-label="image">
+            <img
+              key={String(animationKey) + "-" + activeAnimatedImage}
+              alt=""
+              aria-hidden="true"
+              src={activeAnimatedImage}
+              className="lottery-grid-view2-cell__image"
+              onLoad={() => setAnimationVisualReady(true)}
+              style={{...fullCellStyle, opacity: animationVisualReady ? 1 : 0}}
+            />
+          </span>
+        ) : activeWinFrames?.length > 1 ? (
+          <span className="lottery-grid-view2-cell__animation" style={fullCellStyle} aria-label="image">
+            <img
+              alt=""
+              aria-hidden="true"
+              src={activeWinFrames[frameIndex]}
+              className="lottery-grid-view2-cell__image"
+              onLoad={() => setAnimationVisualReady(true)}
+              style={{...fullCellStyle, opacity: animationVisualReady ? 1 : 0}}
+            />
+          </span>
+        ) : null}
       </div>
     </div>
   );

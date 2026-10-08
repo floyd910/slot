@@ -1,7 +1,11 @@
 import {createWinningDoublingState,createDoubleState} from "../src/config/gameSettings.js";
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {hasPendingExitRecovery,createDoubleExitHandler} from '../src/services/doubleExitService.js';
+import {hasPendingExitRecovery,createDoubleExitHandler,resolveExitPaidBalance} from '../src/services/doubleExitService.js';
+test('demo stand exit balance uses frontend math while production trusts the server',()=>{
+ assert.equal(resolveExitPaidBalance({frontendWallet:true,currentBalance:990,payout:25,serverBalance:7000}),1015);
+ assert.equal(resolveExitPaidBalance({frontendWallet:false,currentBalance:990,payout:25,serverBalance:7000}),7000);
+});
 function setup({pending=null,blocked=false,double=true,payResult,doublingState,doubleState}={}) {
  const events=[];const state={context:{gameId:'babylon'},spinResult:{idCard:'card',WinSum:200,grid:{A:[1],B:[1],C:[1]}},doublingState:doublingState??{entered:double,step:double?1:0},doubleState:doubleState??createDoubleState(),roundRecoveryBlocked:blocked};
  const recovery={getPendingRequest:()=>pending,getLocalState:()=>null,saveRound:r=>events.push(['save',r]),completeRound:()=>events.push(['complete']),saveLastSpin:r=>events.push(['last',r])};
@@ -11,7 +15,34 @@ test('confirmed 200 win is collected and Double restoration data removed',async(
 test('pending or unknown Double never triggers a payout',async()=>{for(const args of [{pending:{methodName:'/double'}},{blocked:true}]){const {exit,events}=setup(args);assert.equal((await exit()).pending,true);assert.equal(events.length,0);}});
 test('simultaneous navigation and pagehide share one payment request',async()=>{let resolve;const promise=new Promise(r=>resolve=r);const {exit,events}=setup({payResult:promise});const a=exit({keepalive:true}),b=exit();assert.equal(a,b);assert.equal(events.find(([type])=>type==='pay')[1].keepalive,true);resolve({balance:1200});await a;assert.equal(events.filter(([type])=>type==='pay').length,1);});
 test('failed payout does not clear recovery data or allow in-app exit',async()=>{const {exit,events}=setup({payResult:Promise.reject(Object.assign(new Error('timeout'),{code:'TIMEOUT'}))});assert.equal((await exit()).allowExit,false);assert.equal(events.some(([type])=>type==='complete'),false);assert.equal(events.some(([type])=>type==='paid'),false);});
-test('inactive state does not use exit collection',async()=>{const {exit,events}=setup({double:false});assert.equal((await exit()).handled,false);assert.equal(events.length,0);});
+test('inactive paid or losing state does not use exit collection',async()=>{
+ const result=await createDoubleExitHandler({
+  getState:()=>({context:{gameId:'babylon'},spinResult:{idCard:'card',WinSum:0,creditedToBalance:true},doublingState:{entered:false,active:false,step:0}}),
+  recovery:{getPendingRequest:()=>null,getLocalState:()=>null},
+  pay:()=>{throw new Error('must not pay');},
+  requestId:()=> 'unused'
+ })();
+ assert.equal(result.handled,false);
+});
+test('ordinary unpaid win is collected even when Double state is inactive',async()=>{
+ const {exit,events}=setup({double:false,doublingState:{entered:false,active:false,step:0},doubleState:createDoubleState()});
+ assert.deepEqual(await exit(),{handled:true,allowExit:true});
+ assert.equal(events.filter(([type])=>type==='pay').length,1);
+ assert.equal(events.find(([type])=>type==='last')[1].spinResult.creditedToBalance,true);
+});test('Auto Express unpaid win is collected once when navigation and pagehide overlap',async()=>{
+ let resolvePayment;
+ const payment=new Promise(resolve=>{resolvePayment=resolve;});
+ const {exit,events}=setup({double:false,doublingState:{entered:false,active:false,step:0},doubleState:createDoubleState(),payResult:payment});
+ const navigation=exit();
+ const pagehide=exit({keepalive:true});
+ assert.equal(navigation,pagehide);
+ assert.equal(events.filter(([type])=>type==='pay').length,1);
+ resolvePayment({balance:1200});
+ assert.deepEqual(await navigation,{handled:true,allowExit:true});
+ assert.equal(events.filter(([type])=>type==='pay').length,1);
+ assert.equal(events.find(([type])=>type==='last')[1].spinResult.creditedToBalance,true);
+});
+
 
 test('ordinary winning state collects on navigation or pagehide',async()=>{
  for(const keepalive of [false,true]){

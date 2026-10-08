@@ -28,7 +28,17 @@ export default function BottomBar(inputProps) {
     props.spinResult,
     props.doublingState,
   );
-  const winLabel = t(props.freeSpinRoundStarted || Number(props.freeSpinsLeft ?? 0) > 0 ? "totalWinning" : "win");
+  // FreeSpin > 0 on an ordinary result means the bonus was awarded, not that
+  // its round has started. Keep showing that ordinary Spin's win until the
+  // player starts the bonus (or Auto Express starts it after the prompt).
+  const isFreeSpinResultForWinDisplay =
+    props.spinResult?.isFreeSpin === true;
+  const showFreeSpinsTotal =
+    props.freeSpinsWinTotal != null &&
+    (props.freeSpinRoundStarted ||
+      isFreeSpinResultForWinDisplay ||
+      Number(props.freeSpinsLeft ?? 0) <= 0);
+  const winLabel = t(showFreeSpinsTotal ? "totalWinning" : "win");
   // Retain the last visually completed total while the next board is concealed/revealing.
   // A recovered or newly received series total must not bypass the reveal gate.
   const revealedFreeSpinsTotal = useRef(
@@ -43,7 +53,7 @@ export default function BottomBar(inputProps) {
     ? revealedFreeSpinsTotal.current
     : props.freeSpinsWinTotal;
   const currentWin = formatMoney(
-    props.freeSpinsWinTotal != null
+    showFreeSpinsTotal
       ? visibleFreeSpinsTotal
       : (props.revealComplete === false ? 0 : ticketWinAmount),
   );

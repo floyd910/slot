@@ -483,6 +483,7 @@ button:disabled {
   height: max-content;
 }
 
+
 @media (max-width: 440px) {
   .view-2 .main-container__center {
     width: calc(100% - 96px);
@@ -1361,5 +1362,12 @@ button:disabled {
   .frame-app .game_area {
     box-sizing: border-box;
     padding-inline: 10px;
+  }
+}
+/* Tablet View 2 safe area for the complete grid + ticket group. */
+@media (min-width: 640px) and (max-width: 1024px) {
+  .frame-app.view-2:not(.doubling-active) .game-main-layout > .frame-content {
+    box-sizing: border-box;
+    padding-inline: 48px;
   }
 }

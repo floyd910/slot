@@ -1,7 +1,7 @@
 export function buildGameContentViewModel({ derived, state, t = (key) => key }) {
   const gridMissing = !derived.isVisualDoubling && !hasPlayableGrid(state.grid);
 
-  const restoredHistory = state.hasRecoveredGrid && !derived.isRoundRecoveryBlocked && (
+  const restoredHistory = state.hasRecoveredGrid && !state.hasSessionSpin && !derived.isRoundRecoveryBlocked && (
     state.spinResult?.creditedToBalance === true ||
     !state.spinResult ||
     (state.spinResult.WinSum != null && Number(state.spinResult.WinSum) <= 0 && !(state.freeSpinsLeft > 0))

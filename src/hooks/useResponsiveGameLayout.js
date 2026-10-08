@@ -51,6 +51,7 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
     const fit = () => {
       frame = 0;
       const area = root.querySelector(".game_area");
+      const content = root.querySelector(".game-main-layout > .frame-content");
       const logo = root.querySelector(".header_img");
       const center = root.querySelector(".main-container__center");
       const footer = getFooter(root);
@@ -120,7 +121,13 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
         bounds = getBounds(root, center);
       }
       if (!bounds) return;
-      const widthScale = (areaRect.width - GAP * 2) / Math.max(1, bounds.right - bounds.left);
+      const contentStyle = content ? window.getComputedStyle(content) : null;
+      const contentHorizontalPadding = contentStyle
+        ? Number.parseFloat(contentStyle.paddingLeft || "0") +
+          Number.parseFloat(contentStyle.paddingRight || "0")
+        : 0;
+      const widthScale = (areaRect.width - contentHorizontalPadding - GAP * 2) /
+        Math.max(1, bounds.right - bounds.left);
       const contentHeight = Math.max(1, bounds.bottom - bounds.top);
       const heightScale = (footerTop - GAP - (areaRect.top + resolvedContentTop))
         / contentHeight;

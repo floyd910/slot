@@ -691,6 +691,7 @@
   height: max-content;
 }
 
+
 @media (max-width: 1024px) {
   .lottery-grid-view2-cell--dice .lottery-grid-view2-cell__image {
     width: 80px;

@@ -10,8 +10,14 @@ test('restored free-spin controls show the remaining count and stay usable in ei
   const {default:BottomBar}=await server.ssrLoadModule('/src/components/bottomBar/BottomBar.jsx');
   const {default:Prompt}=await server.ssrLoadModule('/src/components/freeSpinsPrompt/FreeSpinsPrompt.jsx');
   for(const visualMode of [false,true]) {
-   const html=renderToStaticMarkup(React.createElement(LanguageProvider,null,React.createElement(BottomBar,{visualMode,freeSpinsLeft:7,freeSpinRoundStarted:false,player:{balance:0},spinResult:{WinSum:10,creditedToBalance:false},selectedCombination:{groups:[[]]},doublingState:{},revealComplete:true})));
+   const html=renderToStaticMarkup(React.createElement(LanguageProvider,null,React.createElement(BottomBar,{visualMode,freeSpinsWinTotal:0,freeSpinsLeft:7,freeSpinRoundStarted:false,player:{balance:0},spinResult:{WinSum:10,FreeSpin:1,isFreeSpin:false,creditedToBalance:true},selectedCombination:{groups:[[]]},doublingState:{},revealComplete:true})));
    assert.match(html,/footer-free-spins__content/);
+   assert.match(html,/10[.,]00/);
+   assert.match(html,/ВЫИГРЫШ/);
+   assert.doesNotMatch(html,/ОБЩИЙ ВЫИГРЫШ/);
+   const startedHtml=renderToStaticMarkup(React.createElement(LanguageProvider,null,React.createElement(BottomBar,{visualMode,freeSpinsWinTotal:16.65,freeSpinsLeft:7,freeSpinRoundStarted:true,player:{balance:0},spinResult:{WinSum:10,FreeSpin:1,isFreeSpin:false,creditedToBalance:true},selectedCombination:{groups:[[]]},doublingState:{},revealComplete:true})));
+   assert.match(startedHtml,/16[.,]65/);
+   assert.match(startedHtml,/ОБЩИЙ ВЫИГРЫШ/);
    assert.doesNotMatch(html,/УДВОИТЬ/);
    const buttons=[...html.matchAll(/<div[^>]*class="[^"]*spin-draw-button[^"]*"[^>]*>/g)].map(match=>match[0]);
    assert.equal(buttons.length,3);

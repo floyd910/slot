@@ -13,6 +13,8 @@ test('unpaid restored win keeps its highlights',()=>{
 });
 test('fresh spins keep win effects even when automatically credited',()=>{
  assert.equal(view(result,false).highlightResult,result);
+ const freshAutoExpress={currentGame:'babylon',grid:{A:[1],B:[1],C:[1]},spinResult:result,hasRecoveredGrid:true,hasSessionSpin:true};
+ assert.equal(buildGameContentViewModel({derived:{},state:freshAutoExpress}).highlightResult,result);
 });
 
 test('paid restored View 1 has empty cells while source symbols remain intact',()=>{

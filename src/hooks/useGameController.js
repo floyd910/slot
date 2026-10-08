@@ -1,5 +1,5 @@
 import { getPrimaryGameAction } from "../viewModels/primaryGameAction.js";
-import { hasPendingExitRecovery, createDoubleExitHandler, registerDoubleExit, requestDoubleExit } from "../services/doubleExitService.js";
+import { hasPendingExitRecovery, createDoubleExitHandler, registerDoubleExit, requestDoubleExit, resolveExitPaidBalance } from "../services/doubleExitService.js";
 import { isStandaloneDemo, requestDemoLaunch, usesStandaloneDemoWallet } from "../api/demoLaunch.js";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { frameApi } from "../api/frameApi.js";
@@ -586,12 +586,25 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       requestId:()=>buildRequestId('exit-pay'),
       onStart:()=>{liveSpinStateRef.current={...liveSpinStateRef.current,status:'processing'};setStatus('processing');},
       onPaid:(result, snapshot)=>{
-        const nextPlayer=snapshot.player ? {...snapshot.player,balance:result.balance} : null;
+        const frontendWallet=usesStandaloneDemoWallet(snapshot.context);
+        const paidBalance=resolveExitPaidBalance({
+          frontendWallet,
+          currentBalance:snapshot.player?.balance,
+          payout:getTicketWinAmount(snapshot.spinResult,snapshot.doublingState),
+          serverBalance:result.balance,
+        });
+        const nextPlayer=snapshot.player ? {...snapshot.player,balance:paidBalance} : null;
+        // Demo stand keeps its display wallet entirely in page memory. The real
+        // /pay still closes the card, but its server wallet must not replace the
+        // local 1000 - bet + win calculation.
+        if (frontendWallet && Number.isFinite(paidBalance)) {
+          standalonePageBalance = paidBalance;
+        }
         liveSpinStateRef.current={...liveSpinStateRef.current,spinResult:null,doublingState:createEmptyDoublingState(),doubleState:createDoubleState(),player:nextPlayer,status:"ready"};
         setStatus("ready");
         setSpinResult(null);setDoublingState(createEmptyDoublingState());setDoubleState(createDoubleState());
         if(nextPlayer)setPlayer(nextPlayer);
-        postEvent('UPDATE_BALANCE',{balance:result.balance,currency:snapshot.player?.currency});
+        postEvent('UPDATE_BALANCE',{balance:paidBalance,currency:snapshot.player?.currency});
       },
       onError:error=>{
         const pending=stateRecoveryService.getPendingRequest(liveSpinStateRef.current.context);
@@ -601,10 +614,12 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       },
     });
     const exitGame=async (options={})=>{
+      // Stop Auto Express synchronously before deciding how to settle the
+      // current round, so its delayed collect cannot race the exit payment.
+      autoPlayOnRef.current=false;
+      setAutoPlayOn(false);
       if(hasPendingExitRecovery(liveSpinStateRef.current, stateRecoveryService)) {
         freeSpinRunRef.current=false;
-        autoPlayOnRef.current=false;
-        setAutoPlayOn(false);
         return {handled:true,allowExit:true,pending:true};
       }
       if(liveSpinStateRef.current.freeSpinsLeft>0 || liveSpinStateRef.current.spinResult?.freeSpinDeferred) {
@@ -1017,6 +1032,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
 
   const { collectWin, handleSpin, onAutoPlay, startFreeSpinRun, refreshBalance, settleFreeSpinWins, showFreeSpinCompletion, continueAfterFreeSpins } =
     createSpinActions({
+      gameDefinition,
       onRecoveryRequired: () => setRoundRecoveryStatus(ROUND_OPERATION_STATUS.RECOVERY_REQUIRED),
       autoPlayOnRef,
       setAutoPlayOn,

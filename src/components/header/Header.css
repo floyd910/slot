@@ -577,17 +577,4 @@ header {
     flex-basis: 26px;
   }
 }
-/* Keep the view-mode tooltip above the in-game header logo when they overlap. */
-header:has(.view-changer:hover),
-header:has(.view-changer:focus-visible) {
-  z-index: 40;
-}
-
-.header-btns > .view-changer:hover,
-.header-btns > .view-changer:focus-visible {
-  z-index: 41;
-}
-
-.view-changer__tooltip {
-  z-index: 2147483647;
-}
+/* The game logo intentionally stays above a tooltip where their areas overlap. */

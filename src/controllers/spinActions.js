@@ -23,6 +23,7 @@ import { partnerApi } from "../services/partnerApi.js";
 import { getNextSpinDelayMs } from "../utils/spinTiming.js";
 import { asNumber } from "../utils/number.js";
 import { createOfflineError, isBrowserOffline } from "../utils/connectivity.js";
+import { preloadResultWinAnimations } from "../utils/mediaPreload.js";
 
 
 const VALID_FRAME_LINE_COUNTS = new Set([1, 3, 5, 7, 9]);
@@ -41,6 +42,7 @@ const UNKNOWN_SPIN_RESULT_CODES = new Set([
 export const createSpinActions = ({
   autoPlayOnRef,
   setAutoPlayOn,
+  gameDefinition,
   emitLotteryRevealSounds,
   emitSound,
   freeSpinRunRef,
@@ -346,6 +348,11 @@ export const createSpinActions = ({
         BackendWinSum: asNumber(apiResult.BackendWinSum, asNumber(apiResult.WinSum)),
         backendManagedWallet,
       };
+      const winAnimationPreload = visualMode
+        // Win art is cosmetic. A missing, slow, or malformed WebP must never
+        // turn an already confirmed Spin response into a gameplay error.
+        ? preloadResultWinAnimations(gameDefinition, result).catch(() => undefined)
+        : Promise.resolve();
       // Persist confirmed wins before animation; the ledger deduplicates API records.
       freeSpinSeries.recordResult(context, result, isFreeSpin);
       setFreeSpinsPaidTotal(freeSpinSeries.getPaidTotal(context));
@@ -367,7 +374,10 @@ export const createSpinActions = ({
       if (visualMode) {
         const elapsedCloseMs = visualSpinStartedAt == null ? 0 : Date.now() - visualSpinStartedAt;
         const remainingCloseMs = Math.max(0, carpetCloseMs - elapsedCloseMs);
-        if (remainingCloseMs > 0) await wait(remainingCloseMs);
+        await Promise.all([
+          remainingCloseMs > 0 ? wait(remainingCloseMs) : Promise.resolve(),
+          winAnimationPreload,
+        ]);
       }
       const hasBackendWin = result.hasBackendWin ?? result.WinSum > 0;
       const awardedFreeSpins = backendManagedWallet ? 0 : getAwardedFreeSpinCount(result);

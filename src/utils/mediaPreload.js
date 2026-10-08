@@ -417,6 +417,7 @@ const loadDeferredStartupAssets = async (game) => {
 const deferredStartupAssetsPromises = new Map();
 const scheduledGameAssetPromises = new Map();
 const spinReadyAssetPromises = new Map();
+const winAnimationPreloadPromises = new Map();
 
 // The shell and controller enter the same gate during startup. Share one load
 // so mobile devices do not repeat decode work or attach duplicate media waits.
@@ -493,9 +494,64 @@ export const preloadDeferredStartupAssets = (game) => {
   return deferredStartupAssetsPromises.get(cacheKey);
 };
 
+const getGridSymbol = (grid, coordinate) => {
+  const text = String(coordinate ?? "");
+  const row = text.slice(0, 1);
+  const column = Number(text.slice(1));
+  if (!["A", "B", "C"].includes(row) || !Number.isInteger(column) || column < 1) return null;
+  const value = Number(grid?.[row]?.[column - 1]);
+  return Number.isInteger(value) ? value : null;
+};
+export const getResultWinAnimationSymbols = (result) => {
+  const coordinates = [
+    ...(Array.isArray(result?.winningCells) ? result.winningCells : []),
+    ...(Array.isArray(result?.scatterCells) ? result.scatterCells : []),
+  ];
+  return [...new Set(coordinates.map((coordinate) => getGridSymbol(result?.grid, coordinate)).filter((value) => value != null))];
+};
+
+export const getResultWinAnimationSources = (game, result) =>
+  getResultWinAnimationSymbols(result).flatMap((symbol) => {
+    const assets = game?.assets?.view2Symbols?.[symbol];
+    return [
+      assets?.animatedImage,
+      ...(Array.isArray(assets?.winFrames) ? assets.winFrames : []),
+    ].filter(Boolean);
+  });
+
+const preloadSymbolWinAnimation = (game, symbol) => {
+  const key = (game?.id ?? "shared") + ":" + symbol;
+  if (!winAnimationPreloadPromises.has(key)) {
+    const assets = game?.assets?.view2Symbols?.[symbol];
+    const sources = [
+      assets?.animatedImage,
+      ...(Array.isArray(assets?.winFrames) ? assets.winFrames : []),
+    ].filter(Boolean);
+    const promise = preloadDeferredImages(sources).catch((error) => {
+      winAnimationPreloadPromises.delete(key);
+      throw error;
+    });
+    winAnimationPreloadPromises.set(key, promise);
+  }
+  return winAnimationPreloadPromises.get(key);
+};
+
+export const preloadResultWinAnimations = (game, result) =>
+  Promise.allSettled(
+    getResultWinAnimationSymbols(result).map((symbol) =>
+      preloadSymbolWinAnimation(game, symbol),
+    ),
+  );
+
+// Packaged animations are cheap to warm once. Numbered frame sequences are
+// loaded only for symbols that actually win, after the Spin response arrives.
 export const preloadWinAnimations = (game) =>
   preloadImages(
-    getGameView2Assets(game).filter((src) => src.includes("/assets/img/animations/")),
+    getGameView2Assets(game).filter(
+      (src) =>
+        src.includes("/assets/img/animations/") &&
+        !src.includes("/frame_"),
+    ),
     {
       decode: false,
       fetchPriority: "low",
@@ -503,7 +559,6 @@ export const preloadWinAnimations = (game) =>
       timeoutMs: IMAGE_PRELOAD_TIMEOUT_MS,
     },
   );
-
 export const preloadSpinReadyAssets = (game) => {
   const cacheKey = game?.id ?? "shared";
   if (!spinReadyAssetPromises.has(cacheKey)) {

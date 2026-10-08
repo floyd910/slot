@@ -28,7 +28,7 @@
   justify-content: space-between;
   gap: 16px;
   background: rgba(13, 13, 13, 0.6);
-  border-radius: 18px;
+  border-radius: 18px 18px 0 0;
 }
 
 .footer-block-mobile {
@@ -837,6 +837,10 @@
 @media (max-width: 440px) and (min-height: 700px) {
   .bottom-bar {
     bottom: 41px;
+  }
+
+  .footer-block-mobile {
+    border-radius: 12px;
   }
 }
 
