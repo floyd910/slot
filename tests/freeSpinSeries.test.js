@@ -4,30 +4,30 @@ const store=new Map();
 globalThis.window={localStorage:{getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v)}};
 const {freeSpinSeries:series}=await import('../src/services/freeSpinSeries.js');
 const context={playerId:'ledger-test',gameId:'fruits'};
-test('15 per award, lifetime baseline, retriggers, deduplication and new series',()=>{
- assert.equal(series.reconcile(context,100).freeSpinsLeft,0);
+test('15 per award, current-series counter, retriggers, deduplication and new series',()=>{
+ assert.equal(series.reconcile(context,0).freeSpinsLeft,0);
  series.recordResult(context,{idCard:'award-1',FreeSpin:1},false);
- assert.deepEqual(series.reconcile(context,100),{freeSpinsWinTotal:0,freeSpinsTotal:15,freeSpinsPlayed:0,freeSpinsLeft:15});
- assert.equal(series.reconcile(context,103).freeSpinsLeft,12);
+ assert.deepEqual(series.reconcile(context,0),{freeSpinsWinTotal:0,freeSpinsTotal:15,freeSpinsPlayed:0,freeSpinsLeft:15});
+ assert.equal(series.reconcile(context,3).freeSpinsLeft,12);
  series.recordResult(context,{idCard:'award-2',FreeSpin:1},true);
  series.recordResult(context,{idCard:'award-2',FreeSpin:1},true);
- assert.equal(series.reconcile(context,103).freeSpinsLeft,27);
- assert.equal(series.reconcile({...context,sessionId:'new-session'},104).freeSpinsLeft,26);
- assert.equal(series.reconcile(context,130).freeSpinsLeft,0);
+ assert.equal(series.reconcile(context,3).freeSpinsLeft,27);
+ assert.equal(series.reconcile({...context,sessionId:'new-session'},4).freeSpinsLeft,26);
+ assert.equal(series.reconcile(context,30).freeSpinsLeft,0);
  series.recordResult(context,{idCard:'award-3',FreeSpin:1},false);
- assert.equal(series.reconcile(context,130).freeSpinsLeft,15);
- assert.equal(series.reconcile(context,131).freeSpinsLeft,14);
- assert.equal(series.reconcile(context,130).freeSpinsLeft,14);
+ assert.equal(series.reconcile(context,0).freeSpinsLeft,15);
+ assert.equal(series.reconcile(context,1).freeSpinsLeft,14);
+ assert.equal(series.reconcile(context,0).freeSpinsLeft,14);
 });
 test('awards survive module reload before count refresh and do not cross players/games',async()=>{
  const c={playerId:'reload-player',gameId:'fruits'};
  series.recordResult(c,{idCard:'award',FreeSpin:1},false);
  const {freeSpinSeries:reloaded}=await import('../src/services/freeSpinSeries.js?reload');
- assert.equal(reloaded.reconcile(c,250).freeSpinsLeft,15);
- assert.equal(reloaded.reconcile(c,253).freeSpinsLeft,12);
- assert.equal(reloaded.reconcile({...c,playerId:'other'},253).freeSpinsLeft,0);
- assert.equal(reloaded.reconcile({...c,gameId:'babylon'},253).freeSpinsLeft,0);
- assert.throws(()=>reloaded.reconcile({playerId:'unknown',gameId:'fruits'},253,{isFreeSpin:true}),{code:'FREE_SPIN_HISTORY_MISSING'});
+ assert.equal(reloaded.reconcile(c,0).freeSpinsLeft,15);
+ assert.equal(reloaded.reconcile(c,3).freeSpinsLeft,12);
+ assert.equal(reloaded.reconcile({...c,playerId:'other'},3).freeSpinsLeft,0);
+ assert.equal(reloaded.reconcile({...c,gameId:'babylon'},3).freeSpinsLeft,0);
+ assert.throws(()=>reloaded.reconcile({playerId:'unknown',gameId:'fruits'},3,{isFreeSpin:true}),{code:'FREE_SPIN_HISTORY_MISSING'});
 });
 test('winnings sum only free spins, deduplicate, survive reload and reset for a new award',async()=>{
  const c={playerId:'money-player',gameId:'fruits'};
@@ -79,21 +79,31 @@ test('a completed series stays completed when a later normal-spin counter is low
 test('confirmed free spins recover locally when the server counter lags',()=>{
  const c={playerId:'fast-exit-player',gameId:'fruits'};
  series.recordResult(c,{idCard:'fast-award',FreeSpin:1},false);
- series.reconcile(c,700);
+ series.reconcile(c,0);
  series.recordResult(c,{idCard:'fast-free-1',WinSum:0,backendManagedWallet:true},true);
  series.recordResult(c,{idCard:'fast-free-2',WinSum:0,backendManagedWallet:true},true);
  assert.equal(series.read(c).freeSpinsLeft,13);
- assert.equal(series.reconcile(c,700).freeSpinsLeft,13);
- assert.equal(series.reconcile(c,702).freeSpinsLeft,13);
+ assert.equal(series.reconcile(c,0).freeSpinsLeft,13);
+ assert.equal(series.reconcile(c,2).freeSpinsLeft,13);
 });
 
 test('confirmed standalone free spins recover locally without backend counter progress',()=>{
  const c={playerId:'local-free-player',gameId:'fruits'};
  series.recordResult(c,{idCard:'local-award',FreeSpin:1},false);
- series.reconcile(c,900);
+ series.reconcile(c,0);
  for(const id of ['local-free-1','local-free-2','local-free-3']) {
   series.recordResult(c,{idCard:id,WinSum:0,backendManagedWallet:false},true);
  }
  assert.equal(series.read(c).freeSpinsLeft,12);
- assert.equal(series.reconcile(c,900).freeSpinsLeft,12);
+ assert.equal(series.reconcile(c,0).freeSpinsLeft,12);
+});
+
+test('CountFreeSpin 6 leaves 9 of one 15-spin award and ignores legacy baselines',()=>{
+ const c={playerId:'current-series-counter',gameId:'fruits'};
+ series.recordResult(c,{idCard:'current-series-award',FreeSpin:1},false);
+ assert.equal(series.reconcile(c,6).freeSpinsLeft,9);
+ const key=[...store.keys()].find(key=>key.includes(c.playerId));
+ const saved=JSON.parse(store.get(key));
+ store.set(key,JSON.stringify({...saved,baseline:1,played:6}));
+ assert.equal(series.reconcile(c,6).freeSpinsLeft,9);
 });

@@ -25,6 +25,7 @@ import { createOfflineError, isBrowserOffline } from "../utils/connectivity.js";
 
 
 const VALID_FRAME_LINE_COUNTS = new Set([1, 3, 5, 7, 9]);
+const AUTO_EXPRESS_FREE_SPIN_PROMPT_MS = 2000;
 const usesBackendManagedWallet = (context) =>
   useSoapBackend() &&
   context?.mode === "embedded" &&
@@ -808,8 +809,9 @@ export const createSpinActions = ({
     const result = await handleSpin({ autoExpressSpin: true });
     if (!result) return;
 
-    if (!usesBackendManagedWallet(liveSpinStateRef.current.context) && getAwardedFreeSpinCount(result) > 0) {
-      // Auto Express acknowledges the award and runs the bonus automatically.
+    if (getAwardedFreeSpinCount(result) > 0 && liveSpinStateRef.current.freeSpinsLeft > 0) {
+      // Keep the award modal visible before starting the bonus automatically.
+      await wait(AUTO_EXPRESS_FREE_SPIN_PROMPT_MS);
       // startFreeSpinRun collects any pending win before its first spin.
       await startFreeSpinRun();
       return;

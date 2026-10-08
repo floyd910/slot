@@ -12,7 +12,13 @@ const save = (context,value) => {
  try { globalThis.window?.localStorage?.setItem(key,JSON.stringify(value)); } catch {}
  return value;
 };
-const snapshot = value => ({freeSpinsWinTotal:value ? (value.winMinor == null ? null : value.winMinor / 100) : 0,freeSpinsTotal:value?.total ?? 0,freeSpinsPlayed:value?.baseline == null ? 0 : Math.max(0,value.played-value.baseline),freeSpinsLeft:value?.baseline == null ? (value?.total ?? 0) : Math.max(0,value.total-(value.played-value.baseline))});
+const playedInSeries = value => !value ? 0 : value.counterMode === 'lifetime' && value.baseline != null
+ ? Math.max(0,(value.played ?? 0)-value.baseline)
+ : Math.max(0,value.played ?? 0);
+const snapshot = value => {
+ const played=playedInSeries(value), total=value?.total ?? 0;
+ return {freeSpinsWinTotal:value ? (value.winMinor == null ? null : value.winMinor / 100) : 0,freeSpinsTotal:total,freeSpinsPlayed:played,freeSpinsLeft:Math.max(0,total-played)};
+};
 export const freeSpinSeries = {
  getCompletionSummary(context,currency) {
   const value=read(context);
@@ -38,7 +44,7 @@ export const freeSpinSeries = {
   const key=String(id);
   let value=read(context);
   if(value?.resultIds?.includes(key) || value?.awardIds?.includes(key))return;
-  if(!isFreeSpin)value={total:0,baseline:null,played:0,awardIds:[],resultIds:[],winMinor:0,payments:[]};
+  if(!isFreeSpin)value={total:0,played:0,awardIds:[],resultIds:[],winMinor:0,payments:[]};
   // Older sessions may have counts but no monetary history. Do not invent their total.
   if(!value)return;
   // WinSum is the server amount for this spin. Never substitute display/base fields.
@@ -62,9 +68,16 @@ export const freeSpinSeries = {
   // /freespins can return 0 on the first normal spin after the bonus.
   // A finished series is immutable until recordResult starts a new award.
   // Retain its winnings/payment ledger, including any unconfirmed payments.
-  if(value.baseline!=null && snapshot(value).freeSpinsLeft===0)return snapshot(value);
+  if(snapshot(value).freeSpinsLeft===0)return snapshot(value);
   // A confirmed local result can be newer than the eventually-consistent
   // counter endpoint. Never move the played count backwards on recovery.
-  return snapshot(save(context,{...value,baseline:value.baseline ?? played,played:Math.max(value.played,played)}));
+  const localPlayed=playedInSeries(value);
+  if(played <= value.total) {
+   return snapshot(save(context,{...value,counterMode:'current',baseline:undefined,played:Math.max(localPlayed,played)}));
+  }
+  const baseline=value.counterMode === 'lifetime' && value.baseline != null
+   ? value.baseline : Math.max(0,played-localPlayed);
+  const absoluteLocal=baseline+localPlayed;
+  return snapshot(save(context,{...value,counterMode:'lifetime',baseline,played:Math.max(absoluteLocal,played)}));
  }
 };
