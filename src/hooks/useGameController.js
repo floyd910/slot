@@ -38,6 +38,7 @@ import {
   preloadStartupAssets,
 } from "../utils/mediaPreload.js";
 import { getOperationErrorStatus, normalizeRuntimeStatus, shouldShowRuntimeState } from "../utils/runtimeStatus.js";
+import { logGameError } from "../utils/gameErrorDiagnostics.js";
 import { useGameAudio } from "./useGameAudio.js";
 import {
   buildRequestId,
@@ -534,6 +535,14 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     (runtimeError, fallbackMessage = "Request failed") => {
       const nextStatus = normalizeRuntimeStatus(runtimeError);
       const message = runtimeError?.message || fallbackMessage;
+      const pending = frameApi.getPendingRequest(context);
+      logGameError({
+        error: runtimeError,
+        operation: runtimeError?.operation ?? runtimeError?.methodName ?? pending?.methodName ?? "INIT",
+        context,
+        requestId: runtimeError?.requestId ?? pending?.requestId,
+        idCard: runtimeError?.idCard ?? pending?.idCard ?? liveSpinStateRef.current.spinResult?.idCard,
+      });
       setError(getNotificationKey(runtimeError, getNotificationKey(fallbackMessage)));
       setStatus(nextStatus);
       setLastKnownState(nextStatus);
@@ -549,7 +558,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         },
       );
     },
-    [postEvent],
+    [context, postEvent],
   );
 
   const reportOperationError = useCallback(
@@ -560,6 +569,14 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         Boolean(liveSpinStateRef.current.spinResult?.idCard),
       );
       const message = runtimeError?.message || fallbackMessage;
+      const pending = frameApi.getPendingRequest(context);
+      logGameError({
+        error: runtimeError,
+        operation: runtimeError?.operation ?? runtimeError?.methodName ?? pending?.methodName,
+        context,
+        requestId: runtimeError?.requestId ?? pending?.requestId,
+        idCard: runtimeError?.idCard ?? pending?.idCard ?? liveSpinStateRef.current.spinResult?.idCard,
+      });
       setError(getNotificationKey(runtimeError, getNotificationKey(fallbackMessage)));
       setStatus(presentationStatus);
       setLastKnownState(nextStatus);
@@ -568,7 +585,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         message,
       });
     },
-    [postEvent],
+    [context, postEvent],
   );
 
   useEffect(() => {

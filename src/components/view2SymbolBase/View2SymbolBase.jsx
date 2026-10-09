@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import WinLineOverlay from "../winLineOverlay/WinLineOverlay.jsx";
 import { WIN_LINE_HIGHLIGHT_MS } from "../../config/gameSettings.js";
+import { logGameError } from "../../utils/gameErrorDiagnostics.js";
 
 export const VIEW2_SYMBOL_WIN_FRAME_MS = 85;
 export const VIEW2_SYMBOL_WIN_CYCLE_MS = WIN_LINE_HIGHLIGHT_MS;
@@ -85,6 +86,7 @@ export function View2SymbolBase({
     setAnimationVisualReady(false);
   }, [animationActive, animationKey, symbol]);
 
+
   useEffect(() => {
     setAnimatedImageDone(false);
     if (!autoSequence || !animationActive || !animatedImage) return undefined;
@@ -144,12 +146,20 @@ export function View2SymbolBase({
             alt="image"
             src={staticImage}
             className="lottery-grid-view2-cell__image"
+            onError={() => {
+              logGameError({
+                operation: "ANIMATION",
+                reason: "asset_load_failed",
+                file: staticImage,
+                error: Object.assign(new Error("View 2 symbol asset failed to load"), {
+                  file: staticImage,
+                }),
+              });
+            }}
             style={fullCellStyle}
           />
         ) : (
-          <span className="lottery-grid-view2-cell__fallback">
-            {symbol}
-          </span>
+          <span className="lottery-grid-view2-cell__fallback">{symbol}</span>
         )}
         {activeAnimatedImage ? (
           <span className="lottery-grid-view2-cell__animation" style={fullCellStyle} aria-label="image">
@@ -160,6 +170,14 @@ export function View2SymbolBase({
               src={activeAnimatedImage}
               className="lottery-grid-view2-cell__image"
               onLoad={() => setAnimationVisualReady(true)}
+              onError={() => {
+                setAnimationVisualReady(false);
+                logGameError({
+                  operation: "ANIMATION",
+                  reason: "asset_load_failed",
+                  file: activeAnimatedImage,
+                });
+              }}
               style={{...fullCellStyle, opacity: animationVisualReady ? 1 : 0}}
             />
           </span>
@@ -171,6 +189,14 @@ export function View2SymbolBase({
               src={activeWinFrames[frameIndex]}
               className="lottery-grid-view2-cell__image"
               onLoad={() => setAnimationVisualReady(true)}
+              onError={() => {
+                setAnimationVisualReady(false);
+                logGameError({
+                  operation: "ANIMATION",
+                  reason: "asset_load_failed",
+                  file: activeWinFrames[frameIndex],
+                });
+              }}
               style={{...fullCellStyle, opacity: animationVisualReady ? 1 : 0}}
             />
           </span>
