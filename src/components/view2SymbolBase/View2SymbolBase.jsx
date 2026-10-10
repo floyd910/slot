@@ -65,25 +65,37 @@ export function View2SymbolBase({
   winLineDimmed = false,
   winLineOverlay = null,
 }) {
-  const [animationClockMs, setAnimationClockMs] = useState(0);
-  const [animatedImageDone, setAnimatedImageDone] = useState(false);
-  const [animationVisualReady, setAnimationVisualReady] = useState(false);
   const animationActive = highlighted || animated;
+  const [animationClockMs, setAnimationClockMs] = useState(() =>
+    typeof window === "undefined" ? 0 : window.performance.now(),
+  );
+  const [animatedImageDone, setAnimatedImageDone] = useState(false);
+  // Winning artwork is decoded by the Spin controller before the result is
+  // revealed. Start visible synchronously so React does not add a one-frame
+  // opacity delay while waiting for an onLoad event from the browser cache.
+  const [animationVisualReady, setAnimationVisualReady] = useState(true);
+
   const animatedImagePlayMs =
     singlePlayMs ?? cycleMs ?? VIEW2_SYMBOL_WIN_CYCLE_MS;
-  const activeAnimatedImage = animationActive && (!autoSequence || !animatedImageDone) ? animatedImage : null;
-  const activeWinFrames = animationActive ? winFrames : null;
-  const frameCycleLength = activeWinFrames?.length > 1
+  // Both visual layers stay mounted for the lifetime of the cell. Highlighting
+  // only changes opacity; it never creates or destroys either image node.
+  const renderedAnimatedImage = animatedImage
+    ? autoSequence && animatedImageDone
+      ? null
+      : animatedImage
+    : null;
+  const renderedWinFrames = winFrames;
+  const frameCycleLength = winFrames.length > 1
     ? forwardLoop
-      ? activeWinFrames.length
-      : activeWinFrames.length * 2 - 2
+      ? winFrames.length
+      : winFrames.length * 2 - 2
     : 1;
-  const frameDurationMs = activeWinFrames?.length > 1
-    ? getFrameDurationMs(frameMs, activeWinFrames.length)
+  const frameDurationMs = winFrames.length > 1
+    ? getFrameDurationMs(frameMs, winFrames.length)
     : VIEW2_SYMBOL_WIN_FRAME_MS;
 
   useEffect(() => {
-    setAnimationVisualReady(false);
+    setAnimationVisualReady(true);
   }, [animationActive, animationKey, symbol]);
 
 
@@ -104,7 +116,7 @@ export function View2SymbolBase({
   ]);
 
   useEffect(() => {
-    if (!activeWinFrames || frameCycleLength <= 1) return undefined;
+    if (!animationActive || winFrames.length <= 1) return undefined;
 
     // Use one absolute clock instead of a per-cell counter. A symbol returning
     // on another win line therefore resumes at its current frame, and matching
@@ -113,20 +125,26 @@ export function View2SymbolBase({
     updateClock();
     const interval = window.setInterval(updateClock, frameDurationMs);
     return () => window.clearInterval(interval);
-  }, [frameCycleLength, frameDurationMs, Boolean(activeWinFrames)]);
+  }, [animationActive, frameDurationMs, winFrames.length]);
 
   const animationFrameTick = Math.floor(animationClockMs / frameDurationMs);
   const frameIndex =
-    activeWinFrames?.length > 1
+    winFrames.length > 1
       ? forwardLoop
-        ? animationFrameTick % activeWinFrames.length
-        : getPingPongFrameIndex(animationFrameTick, activeWinFrames.length)
+        ? animationFrameTick % winFrames.length
+        : getPingPongFrameIndex(animationFrameTick, winFrames.length)
       : 0;
 
   const fullCellStyle = fillCell ? {
     inset: 0, width: "100%", height: "100%", maxWidth: "none", maxHeight: "none",
     objectFit: "fill", transform: "none", display: "block",
   } : undefined;
+  const animationLayerStyle = {
+    ...fullCellStyle,
+    opacity: animationActive && animationVisualReady ? 1 : 0,
+    transition: "none",
+    willChange: "opacity",
+  };
   const rootClass = `lottery-grid-view2-cell lottery-grid-view2-cell--symbol-${symbol}${isDice ? " lottery-grid-view2-cell--dice" : ""}${highlighted ? " lottery-grid-view2-cell--highlighted" : ""}${scatterHighlighted ? " lottery-grid-view2-cell--scatter-highlighted" : ""}${winLineDimmed ? " lottery-grid-view2-cell--win-dimmed" : ""}`;
 
   return (
@@ -142,32 +160,34 @@ export function View2SymbolBase({
           />
         )}
         {staticImage ? (
-          <img
-            alt="image"
-            src={staticImage}
-            className="lottery-grid-view2-cell__image"
-            onError={() => {
-              logGameError({
-                operation: "ANIMATION",
-                reason: "asset_load_failed",
-                file: staticImage,
-                error: Object.assign(new Error("View 2 symbol asset failed to load"), {
-                  file: staticImage,
-                }),
-              });
-            }}
-            style={fullCellStyle}
-          />
-        ) : (
-          <span className="lottery-grid-view2-cell__fallback">{symbol}</span>
-        )}
-        {activeAnimatedImage ? (
-          <span className="lottery-grid-view2-cell__animation" style={fullCellStyle} aria-label="image">
+          <span className="lottery-grid-view2-cell__static-layer" aria-label="image">
             <img
-              key={String(animationKey) + "-" + activeAnimatedImage}
               alt=""
               aria-hidden="true"
-              src={activeAnimatedImage}
+              src={staticImage}
+              className="lottery-grid-view2-cell__image lottery-grid-view2-cell__image--static"
+              onError={() => {
+                logGameError({
+                  operation: "ANIMATION",
+                  reason: "asset_load_failed",
+                  file: staticImage,
+                  error: Object.assign(new Error("View 2 symbol asset failed to load"), {
+                    file: staticImage,
+                  }),
+                });
+              }}
+              style={fullCellStyle}
+            />
+          </span>
+        ) : null}
+
+        {renderedAnimatedImage ? (
+          <span className="lottery-grid-view2-cell__animation" style={animationLayerStyle} aria-label="image">
+            <img
+              key={renderedAnimatedImage}
+              alt=""
+              aria-hidden="true"
+              src={renderedAnimatedImage}
               className="lottery-grid-view2-cell__image"
               onLoad={() => setAnimationVisualReady(true)}
               onError={() => {
@@ -175,18 +195,18 @@ export function View2SymbolBase({
                 logGameError({
                   operation: "ANIMATION",
                   reason: "asset_load_failed",
-                  file: activeAnimatedImage,
+                  file: renderedAnimatedImage,
                 });
               }}
               style={{...fullCellStyle, opacity: animationVisualReady ? 1 : 0}}
             />
           </span>
-        ) : activeWinFrames?.length > 1 ? (
-          <span className="lottery-grid-view2-cell__animation" style={fullCellStyle} aria-label="image">
+        ) : renderedWinFrames?.length > 1 ? (
+          <span className="lottery-grid-view2-cell__animation" style={animationLayerStyle} aria-label="image">
             <img
               alt=""
               aria-hidden="true"
-              src={activeWinFrames[frameIndex]}
+              src={renderedWinFrames[frameIndex]}
               className="lottery-grid-view2-cell__image"
               onLoad={() => setAnimationVisualReady(true)}
               onError={() => {
@@ -194,7 +214,7 @@ export function View2SymbolBase({
                 logGameError({
                   operation: "ANIMATION",
                   reason: "asset_load_failed",
-                  file: activeWinFrames[frameIndex],
+                  file: renderedWinFrames[frameIndex],
                 });
               }}
               style={{...fullCellStyle, opacity: animationVisualReady ? 1 : 0}}

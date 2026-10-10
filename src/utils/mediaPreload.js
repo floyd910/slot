@@ -374,20 +374,19 @@ export const getGameView2GridAssets = (game) =>
     ),
   ]);
 
-// The visible loader includes both View 1 and the static View 2 grid.
+// The default loader includes both View 1 and the static View 2 grid.
 export const getRequiredGameMainScreenAssets = (game) => {
   const gameAssets = [
     game?.assets?.cover,
     game?.assets?.logo,
     ...getGameFirstPaintAssets(game),
-    ...getGameView2GridAssets(game),
   ].filter((src) => isAssetAllowedForGame(src, game));
 
   // Append the common View 2 group after the per-game filter. The carpet,
   // all six dice faces and the dice shine sprite are required by every game.
   // uniqueUrls plus imageLoadEntries make the first game own the load Promise;
   // later games reuse the same loaded and decoded image objects.
-  return uniqueUrls([...gameAssets, ...SHARED_VIEW2_ASSETS]);
+  return uniqueUrls(gameAssets);
 };
 const getGameAudioAssets = (game) => {
   const customAssets = GAME_AUDIO_ASSETS_BY_ID[game?.id] ?? [];
@@ -418,6 +417,7 @@ const deferredStartupAssetsPromises = new Map();
 const scheduledGameAssetPromises = new Map();
 const spinReadyAssetPromises = new Map();
 const winAnimationPreloadPromises = new Map();
+const gameView2GridAssetPromises = new Map();
 
 // The shell and controller enter the same gate during startup. Share one load
 // so mobile devices do not repeat decode work or attach duplicate media waits.
@@ -470,6 +470,21 @@ export const preloadGameAssets = (game, onProgress) => {
 
   gameAssetsPromises.set(cacheKey, promise);
   return promise;
+};
+export const preloadGameView2GridAssets = (game) => {
+  const cacheKey = game?.id ?? "shared";
+  if (!gameView2GridAssetPromises.has(cacheKey)) {
+    const promise = preloadRequiredImages(
+      getGameView2GridAssets(game),
+      undefined,
+      { timeoutMs: 0 },
+    ).catch((error) => {
+      gameView2GridAssetPromises.delete(cacheKey);
+      throw error;
+    });
+    gameView2GridAssetPromises.set(cacheKey, promise);
+  }
+  return gameView2GridAssetPromises.get(cacheKey);
 };
 export const preloadDoubleSceneAssets = (game) =>
   preloadImages(getGameDoubleSceneAssets(game), {
@@ -527,7 +542,16 @@ const preloadSymbolWinAnimation = (game, symbol) => {
       assets?.animatedImage,
       ...(Array.isArray(assets?.winFrames) ? assets.winFrames : []),
     ].filter(Boolean);
-    const promise = preloadDeferredImages(sources).catch((error) => {
+    // The Spin reveal waits for this promise. Decode the winning artwork here,
+    // not after React swaps the visible layer, so the first animation frame is
+    // paint-ready and cannot flash the static symbol for an extra frame.
+    const promise = preloadImages(sources, {
+      decode: true,
+      decodeTimeoutMs: 0,
+      fetchPriority: "high",
+      rejectOnError: false,
+      timeoutMs: 30000,
+    }).catch((error) => {
       winAnimationPreloadPromises.delete(key);
       throw error;
     });
@@ -559,6 +583,7 @@ export const preloadWinAnimations = (game) =>
       timeoutMs: IMAGE_PRELOAD_TIMEOUT_MS,
     },
   );
+export const shouldBlockSpinOnOptionalAssets = () => false;
 export const preloadSpinReadyAssets = (game) => {
   const cacheKey = game?.id ?? "shared";
   if (!spinReadyAssetPromises.has(cacheKey)) {
@@ -576,8 +601,11 @@ export const scheduleDeferredStartupAssets = (game) => {
   }
 
   const promise = new Promise((resolve) => window.setTimeout(resolve, 0))
-    .then(() => preloadSpinReadyAssets(game))
-    .then(() => preloadDeferredStartupAssets(game))
+    // Every game keeps win audio/animations and Double assets out of both the
+    // blocking path and the immediate post-paint network burst. They load from
+    // their real usage paths instead of competing with the first Spin.
+    .then(() => shouldBlockSpinOnOptionalAssets(game) ? preloadSpinReadyAssets(game) : undefined)
+    .then(() => shouldBlockSpinOnOptionalAssets(game) ? preloadDeferredStartupAssets(game) : undefined)
     .catch((error) => {
       // Keep this settled promise cached. A missing optional asset must not
       // create a request loop every time the game component remounts.

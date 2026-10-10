@@ -179,7 +179,7 @@ export function buildLotteryGridViewModel({
     isGridMissing: false,
     mode: "view2",
     cells: topCells.map((cell) => ({
-      key: `${cell.coord}-${revealKey}`,
+      key: cell.coord,
       digit: cell.value,
       highlighted:
         isSettled &&

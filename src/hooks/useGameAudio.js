@@ -502,12 +502,16 @@ export function useGameAudio(gameId) {
   }, []);
 
   useEffect(() => {
+    // Egypt performance pilot: optional audio is warmed by the first real
+    // interaction/playback event instead of competing with initial gameplay.
+    if (gameId === "egypt") return undefined;
     effectSources.forEach((src) => {
       const audio = getAudio(src);
       audio.load();
       warmBuffer(src);
     });
-  }, [effectSources, getAudio, warmBuffer]);
+    return undefined;
+  }, [effectSources, gameId, getAudio, warmBuffer]);
 
   useEffect(() => {
     window.addEventListener("pointerdown", unlockAudio, {

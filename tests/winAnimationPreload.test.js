@@ -7,6 +7,7 @@ test("winning WebP sequences preload once per symbol and are reused by later Spi
   const oldWindow = globalThis.window;
   const oldDocument = globalThis.document;
   let created = 0;
+  let decoded = 0;
   globalThis.window = { setTimeout, clearTimeout };
   globalThis.document = { baseURI: "https://example.test/" };
   globalThis.Image = class {
@@ -19,6 +20,7 @@ test("winning WebP sequences preload once per symbol and are reused by later Spi
       queueMicrotask(() => this.onload?.());
     }
     decode() {
+      decoded += 1;
       return Promise.resolve();
     }
   };
@@ -58,6 +60,7 @@ test("winning WebP sequences preload once per symbol and are reused by later Spi
       preloadResultWinAnimations(game, firstWin),
     ]);
     assert.equal(created, 3, "simultaneous preload calls must share one request per frame");
+    assert.equal(decoded, 3, "winning frames must be decoded before the reveal");
     await preloadResultWinAnimations(game, firstWin);
     assert.equal(created, 3, "a later Spin with the same symbol must reuse the loaded sequence");
 
@@ -66,6 +69,7 @@ test("winning WebP sequences preload once per symbol and are reused by later Spi
       winningCells: ["A3"],
     });
     assert.equal(created, 5, "only the newly winning symbol sequence should be loaded");
+    assert.equal(decoded, 5, "new winning symbols must also be decoded before reveal");
   } finally {
     await server.close();
     globalThis.Image = oldImage;

@@ -34,8 +34,10 @@ import {
 import {
   loadAudioDurationMs,
   preloadGameAssets,
+  preloadGameView2GridAssets,
   preloadSpinReadyAssets,
   preloadStartupAssets,
+  shouldBlockSpinOnOptionalAssets,
 } from "../utils/mediaPreload.js";
 import { getOperationErrorStatus, normalizeRuntimeStatus, shouldShowRuntimeState } from "../utils/runtimeStatus.js";
 import { logGameError } from "../utils/gameErrorDiagnostics.js";
@@ -130,7 +132,9 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   useEffect(() => {
     let active = true;
     setSpinAssetsReady(false);
-    if (!gameDefinition) {
+    if (!gameDefinition || !shouldBlockSpinOnOptionalAssets(gameDefinition)) {
+      // Optional audio and every possible win animation are not a
+      // prerequisite for Participate or Auto Express.
       setSpinAssetsReady(true);
       return () => {
         active = false;
@@ -185,6 +189,29 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const [hasSessionSpin, setHasSessionSpin] = useState(false);
   const [stake, setStake] = useState(() => normalizeStakeOption(uiPreferences.stake));
   const [visualMode, setVisualMode] = useState(() => uiPreferences.visualMode === true);
+  const [view2AssetsReady, setView2AssetsReady] = useState(false);
+  const [view2AssetsLoading, setView2AssetsLoading] = useState(false);
+  useEffect(() => {
+    if (!visualMode || view2AssetsReady) return undefined;
+    let active = true;
+    setView2AssetsLoading(true);
+    preloadGameView2GridAssets(gameDefinition)
+      .then(() => {
+        if (active) setView2AssetsReady(true);
+      })
+      .catch((error) => {
+        console.error(error);
+        if (!active) return;
+        setVisualMode(false);
+        setExpandedBoard(false);
+      })
+      .finally(() => {
+        if (active) setView2AssetsLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [gameDefinition, view2AssetsReady, visualMode]);
   const [carpetCloseMs, setCarpetCloseMs] = useState(CARPET_ANIMATION_HALF_MS);
   const [carpetOpenMs, setCarpetOpenMs] = useState(CARPET_ANIMATION_HALF_MS);
   const [expandedBoard, setExpandedBoard] = useState(() => uiPreferences.visualMode === true);
@@ -1020,10 +1047,13 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     };
   }, [retryInitialization, lastKnownState, status, context]);
 
+  const effectiveStartupAssetsReady =
+    startupAssetsReady && (!visualMode || view2AssetsReady);
+
   useEffect(() => {
     if (
       !startupLoaderVisible ||
-      !startupAssetsReady ||
+      !effectiveStartupAssetsReady ||
       ["initial-loading", "bootstrap-loading"].includes(status)
     ) {
       return;
@@ -1032,7 +1062,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     setStartupLoaderLeaving(true);
     setStartupLoaderVisible(false);
     return undefined;
-  }, [startupAssetsReady, startupLoaderVisible, status]);
+  }, [effectiveStartupAssetsReady, startupLoaderVisible, status]);
 
   const loadPaytable = async () => {
     setShowPaytable((current) => !current);
@@ -1206,14 +1236,24 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     setSoundEnabled(nextSoundEnabled);
   };
 
-  const toggleVisualMode = () => {
-    if (viewSwitchDisabled) return;
-    setVisualMode((value) => {
-      const nextValue = !value;
-      setExpandedBoard(nextValue);
-      liveSpinStateRef.current = { ...liveSpinStateRef.current, visualMode: nextValue };
-      return nextValue;
-    });
+  const toggleVisualMode = async () => {
+    if (viewSwitchDisabled || view2AssetsLoading) return;
+    const nextValue = !visualMode;
+    if (nextValue && !view2AssetsReady) {
+      setView2AssetsLoading(true);
+      try {
+        await preloadGameView2GridAssets(gameDefinition);
+        setView2AssetsReady(true);
+      } catch (error) {
+        console.error(error);
+        return;
+      } finally {
+        setView2AssetsLoading(false);
+      }
+    }
+    setExpandedBoard(nextValue);
+    liveSpinStateRef.current = { ...liveSpinStateRef.current, visualMode: nextValue };
+    setVisualMode(nextValue);
   };
 
   const totalPurchase = Number(
@@ -1242,6 +1282,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
           (pendingTicketWin && doublingState.step > 0)),
     );
   const viewSwitchDisabled =
+    view2AssetsLoading ||
     Boolean(freeSpinSummary) ||
     status === "processing" ||
     autoPlayOn ||
@@ -1372,7 +1413,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       spinResult,
       soundEnabled,
       stake,
-      startupAssetsReady,
+      startupAssetsReady: effectiveStartupAssetsReady,
       startupLoaderLeaving,
       startupLoaderVisible,
       status,

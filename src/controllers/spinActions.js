@@ -572,6 +572,16 @@ export const createSpinActions = ({
           return nextPlayer;
         });
       }
+      // A zero-win round still has to be closed by Pay. Keep the Spin in its
+      // processing state until that mutation releases frameApi's exclusive
+      // lock; otherwise the UI can enable the next Spin while Pay is active
+      // and reject it locally as REQUEST_IN_PROGRESS without any failed HTTP
+      // request appearing in DevTools.
+      if (!backendManagedWallet && !hasBackendWin && !isFreeSpin && awardedFreeSpins === 0) {
+        await frameApi
+          .pay({ idCard: result.idCard, idPartnerCard: result.idPartnerCard, requestId: buildRequestId("pay") })
+          .catch(() => undefined);
+      }
       setStatus("ready");
       liveSpinStateRef.current = {
         ...liveSpinStateRef.current,
@@ -592,13 +602,6 @@ export const createSpinActions = ({
           ).toFixed(2),
         ),
       });
-      // Free Spins are settled as a series. Sending the
-      // legacy zero-win Pay request here can close the saved bonus round.
-      if (!backendManagedWallet && !hasBackendWin && !isFreeSpin && awardedFreeSpins === 0) {
-        frameApi
-          .pay({ idCard: result.idCard, idPartnerCard: result.idPartnerCard, requestId: buildRequestId("pay") })
-          .catch(() => {});
-      }
       if (countRefreshError) {
         reportOperationError(countRefreshError, "Spin completed, but the free-spin count could not be refreshed. Retry the counter before spinning.");
         return null;

@@ -97,8 +97,11 @@ maxHighlighted = Math.max(
   await page.locator(".lottery-grid-view2-cell--highlighted").count(),
 );
 
+const view2TransitionDurations = await page.locator(".lottery-grid-view2-cell__container").evaluateAll((nodes) => [...new Set(nodes.map((node) => getComputedStyle(node).transitionDuration))]);
+
 const result = {
   url: page.url(),
+  view2TransitionDurations,
   spinCount,
   framesBeforeAuto,
   totalFrameRequests: frameRequests.length,
@@ -115,10 +118,13 @@ await browser.close();
 
 if (
   spinCount < 3 ||
-  framesBeforeAuto !== 0 ||
+  // One hidden first frame is intentionally mounted before the first win so
+  // animation entry never creates an image node on the highlight boundary.
+  framesBeforeAuto > 1 ||
   new Set(frameRequests).size !== 144 ||
   frameRequests.length !== 144 ||
   maxHighlighted < 3 ||
+  view2TransitionDurations.some((duration) => duration !== "0s") ||
   spinSnapshots.some((item) => item.demoSpin !== "0" || item.gameId !== "42") ||
   errors.length ||
   failed.length

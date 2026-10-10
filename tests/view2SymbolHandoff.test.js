@@ -4,7 +4,7 @@ import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { createServer } from "vite";
 
-test("View 2 keeps the static symbol beneath an unloaded win animation", async () => {
+test("View 2 paints a predecoded win animation immediately above the static symbol", async () => {
   const server = await createServer({
     configFile: false,
     cacheDir: "tmp/vite-view2-handoff-tests",
@@ -30,7 +30,7 @@ test("View 2 keeps the static symbol beneath an unloaded win animation", async (
     const animationIndex = html.indexOf("/winning-symbol.webp");
     assert.ok(staticIndex >= 0, "static symbol must remain rendered during handoff");
     assert.ok(animationIndex > staticIndex, "animation must be layered above the static symbol");
-    assert.match(html, /winning-symbol\.webp[^>]*opacity:0/);
+    assert.match(html, /winning-symbol\.webp[^>]*opacity:1/);
   } finally {
     await server.close();
   }

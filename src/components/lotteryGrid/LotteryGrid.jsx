@@ -1,6 +1,7 @@
 import "./LotteryGrid.css";
 import WinLineOverlay from "../winLineOverlay/WinLineOverlay.jsx";
-import { VIEW2_SYMBOL_COMPONENTS } from "../view2Symbols/index.jsx";
+import { VIEW2_SYMBOL_CONFIGS } from "../view2Symbols/index.jsx";
+import { View2SymbolBase } from "../view2SymbolBase/View2SymbolBase.jsx";
 import { useLotteryGridViewModel } from "../../hooks/useLotteryGridViewModel.js";
 import {
   getRevealDelayMs,
@@ -115,11 +116,14 @@ function View2Cell({
   winLineOverlay = null,
 }) {
   const symbol = normalizeView2Digit(digit);
-  const SymbolComponent =
-    VIEW2_SYMBOL_COMPONENTS[symbol] ?? VIEW2_SYMBOL_COMPONENTS[0];
+  const assets = {
+    ...(VIEW2_SYMBOL_CONFIGS[symbol] ?? VIEW2_SYMBOL_CONFIGS[0]),
+    ...(symbolAssets[symbol] ?? {}),
+  };
 
   return (
-    <SymbolComponent
+    <View2SymbolBase
+      symbol={symbol}
       animated={animated}
       autoSequence={autoSequence}
       highlighted={highlighted}
@@ -128,7 +132,7 @@ function View2Cell({
       animationKey={animationKey}
       winLineDimmed={winLineDimmed}
       winLineOverlay={winLineOverlay}
-      {...(symbolAssets[symbol] ?? {})}
+      {...assets}
     />
   );
 }
