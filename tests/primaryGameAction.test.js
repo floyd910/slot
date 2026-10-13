@@ -14,3 +14,8 @@ test('paid history never offers collection and new free-spin awards keep their p
  assert.equal(getPrimaryGameAction({hasRecoveredGrid:true,pendingTicketWin:hasTicketWin({WinSum:200,creditedToBalance:true})}),'spin');
  assert.equal(getPrimaryGameAction({hasRecoveredGrid:false,pendingTicketWin:true,showFreeSpinPrompt:true,hasFreeSpinsPending:true}),'free-spins');
 });
+
+test('Auto Express asset readiness',()=>{
+ const controls=buildBottomBarControls({autoPlayOn:false,spinAssetsLoading:true});
+ assert.equal(controls.find(c=>c.type==='autoExpress').disabled,true);
+});

@@ -74,12 +74,9 @@ const validateSessionContext = (params = {}) => {
   }
 };
 
-export const isRollbackEligibleSpin = (pending, now = Date.now()) => {
-  if (pending?.methodName !== "/spin") return false;
-  if (["NETWORK_ERROR", "NETWORK_UNREACHABLE", "OFFLINE"].includes(pending.errorCode)) return true;
-  const createdAt = Date.parse(pending.createdAt ?? "");
-  return Number.isFinite(createdAt) && now - createdAt > 30000;
-};
+// An unchanged card after a transport failure does not prove that the financial
+// mutation was not committed. Only an explicit operation-status contract can.
+export const isRollbackEligibleSpin = () => false;
 
 const getConfirmedCardId = (state) =>
   state?.lastConfirmedSpinResult?.idCard ??
@@ -200,12 +197,7 @@ export class SessionApiService {
         gameState.spinResult.freeSpinDeferred = true;
     }
     if (spinRecovered) stateRecoveryService.completePendingRequest(pendingAtStart.requestId, params);
-    const spinRolledBack = !spinRecovered && rollbackConnectivityFailedSpin(
-      params,
-      pendingAtStart,
-      localStateAtStart,
-      gameState,
-    );
+    const spinRolledBack = false;
     const paymentRecovered = reconcileConfirmedPayment(params, remote, gameState, wallet, pendingAtStart);
     mergeRuntimeConfig({
       ...params,

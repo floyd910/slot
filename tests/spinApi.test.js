@@ -50,7 +50,15 @@ test('transport posts once, handles JSON, HTTP errors and aborts without retries
     globalThis.fetch=async()=>new Response('not json');
     await assert.rejects(sendSpinRequest(buildSpinForm(params,context),{token:context.token}),{code:'BACKEND_RESPONSE_ERROR'});
     calls=0;globalThis.fetch=async(_,options)=>{calls++;return new Promise((resolve,reject)=>options.signal.addEventListener('abort',()=>reject(new DOMException('Aborted','AbortError'))));};
-    await assert.rejects(sendSpinRequest(buildSpinForm(params,context),{token:context.token,requestId:params.requestId,timeoutMs:10}),{code:'TIMEOUT',requestId:params.requestId}); assert.equal(calls,1);
+    const originalError=console.error;let canceled;console.error=(label,data)=>{if(label==='[SPIN_REQUEST_CANCELED]')canceled=data;};
+    try {
+      await assert.rejects(sendSpinRequest(buildSpinForm(params,context),{token:context.token,requestId:params.requestId,timeoutMs:10,gameId:'36',idCard:'previous',autoExpressActive:true,previousPayCompleted:true}),{code:'TIMEOUT',requestId:params.requestId});
+    } finally { console.error=originalError; }
+    assert.equal(calls,1);
+    assert.equal(canceled.gameId,'36');assert.equal(canceled.idCard,'previous');
+    assert.equal(canceled.abortReason,'spin-timeout');assert.equal(canceled.timeoutMs,10);
+    assert.equal(canceled.autoExpressActive,true);assert.equal(canceled.previousPayCompleted,true);
+    assert.ok(canceled.elapsedMs>=0);assert.ok(Date.parse(canceled.timestamp));
   } finally {globalThis.fetch=original;}
 });
 

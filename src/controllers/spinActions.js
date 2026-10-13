@@ -186,6 +186,14 @@ export const createSpinActions = ({
     ) {
       return null;
     }
+    const pendingOperation = stateRecoveryService.getPendingRequest(context);
+    if (pendingOperation) {
+      autoPlayOnRef.current = false;
+      setAutoPlayOn?.(false);
+      setError(t('recoveryRequired'));
+      onRecoveryRequired?.();
+      return null;
+    }
     if (isBrowserOffline()) {
       markDefinitelyOfflineAction?.();
       reportOperationError(createOfflineError("Spin"), t("networkError"));
@@ -329,8 +337,7 @@ export const createSpinActions = ({
                   : Number(betRegistration.balance),
             },
       );
-      const apiResult = await withTimeout(
-        frameApi.spin({
+      const apiResult = await frameApi.spin({
           stake,
           totalStake,
           lines: selectedCombination.groups.length,
@@ -338,9 +345,10 @@ export const createSpinActions = ({
           isFreeSpin,
           selectedCombination,
           requestId,
-        }),
-        "Spin",
-      );
+          previousIdCard: previousResult?.idCard ?? null,
+          autoExpressActive: autoExpressSpin || autoPlayOnRef.current,
+          previousPayCompleted: !previousResult || previousResult.creditedToBalance === true || Number(previousResult.WinSum ?? 0) <= 0,
+        });
       const result = {
         ...apiResult,
         WinSum: asNumber(apiResult.WinSum),
@@ -613,6 +621,9 @@ export const createSpinActions = ({
       const resultUnknown = UNKNOWN_SPIN_RESULT_CODES.has(spinError?.code);
 
       if (resultUnknown) {
+        autoPlayOnRef.current = false;
+        setAutoPlayOn?.(false);
+        resumeAutoPlayAfterFreeSpinsRef.current = false;
         await frameApi
           .recoverAfterTimeout({
             request: {

@@ -25,6 +25,7 @@ export const createDoubleActions = ({
   emitSound,
   liveSpinStateRef,
   postEvent,
+  prepareDoubleScene,
   markDefinitelyOfflineAction,
   reportError,
   setDoubleState,
@@ -158,7 +159,7 @@ export const createDoubleActions = ({
     }, DOUBLE_RESULT_REVEAL_MS);
   };
 
-  const enterVisualDouble = () => {
+  const enterVisualDouble = async () => {
     const { doublingState, spinResult, status } = liveSpinStateRef.current;
     const currentAmount = getTicketWinAmount(spinResult, doublingState);
 
@@ -168,6 +169,18 @@ export const createDoubleActions = ({
       status === "processing"
     )
       return;
+
+    // Keep the current result visible until every Double image has decoded.
+    // Mounting the scene first exposes its black fallback while the background
+    // and chest artwork are still loading.
+    await prepareDoubleScene?.();
+
+    const latestState = liveSpinStateRef.current;
+    if (
+      latestState.status === "processing" ||
+      latestState.doublingState.loading ||
+      getTicketWinAmount(latestState.spinResult, latestState.doublingState) <= 0
+    ) return;
 
     const nextDoublingState = {
       ...createEmptyDoublingState(),

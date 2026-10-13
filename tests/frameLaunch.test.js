@@ -6,13 +6,14 @@ import { SessionApiService, isRollbackEligibleSpin } from '../src/services/sessi
 import { stateRecoveryService } from '../src/services/stateRecoveryService.js';
 import { mergeRuntimeConfig } from '../src/api/runtimeConfig.js';
 
-test('only confirmed network failures or old orphaned spin locks are rollback eligible',()=>{
+test('transport failures never unlock a financial Spin without an explicit status contract',()=>{
   const now=Date.parse('2026-10-01T12:00:00.000Z');
-  assert.equal(isRollbackEligibleSpin({methodName:'/spin',errorCode:'NETWORK_ERROR',createdAt:new Date(now).toISOString()},now),true);
-  assert.equal(isRollbackEligibleSpin({methodName:'/spin',createdAt:new Date(now-31000).toISOString()},now),true);
-  assert.equal(isRollbackEligibleSpin({methodName:'/spin',errorCode:'UNKNOWN',createdAt:new Date(now-31000).toISOString()},now),true);
-  assert.equal(isRollbackEligibleSpin({methodName:'/spin',createdAt:new Date(now-29000).toISOString()},now),false);
-  assert.equal(isRollbackEligibleSpin({methodName:'/pay',createdAt:new Date(now-31000).toISOString()},now),false);
+  for (const pending of [
+    {methodName:'/spin',errorCode:'NETWORK_ERROR',createdAt:new Date(now).toISOString()},
+    {methodName:'/spin',createdAt:new Date(now-31000).toISOString()},
+    {methodName:'/spin',errorCode:'UNKNOWN',createdAt:new Date(now-31000).toISOString()},
+    {methodName:'/pay',createdAt:new Date(now-31000).toISOString()},
+  ]) assert.equal(isRollbackEligibleSpin(pending,now),false);
 });
 
 test('trusted parent requires configured origin, parent window, and contract version',()=>{
@@ -245,7 +246,7 @@ test('init restores an unpaid win instead of replaying a transport-failed paymen
     globalThis.fetch=original;
   }
 });
-test('network-failed spin rolls back when validated init still returns the previous card',async()=>{
+test('network-failed spin stays blocked when init still returns the previous card',async()=>{
   mergeRuntimeConfig({sessionApiBaseUrl:'https://example.invalid'});
   const original=globalThis.fetch;
   const service=new SessionApiService();
@@ -269,10 +270,10 @@ test('network-failed spin rolls back when validated init still returns the previ
         : new Response(JSON.stringify({CountFreeSpin:'0'}));
     const result=await service.initSession(params);
     assert.equal(result.spinRecovered,false);
-    assert.equal(result.spinRolledBack,true);
-    assert.equal(stateRecoveryService.getPendingRequest(params),null);
+    assert.equal(result.spinRolledBack,false);
+    assert.equal(stateRecoveryService.getPendingRequest(params).requestId,'network-spin');
     const restored=stateRecoveryService.getLocalState(params);
-    assert.equal(restored.operationStatus,'WAITING_FOR_PLAYER_ACTION');
+    assert.equal(restored.operationStatus,'SPIN_PROCESSING');
     assert.equal(restored.spinResult.WinSum,20);
     assert.deepEqual(restored.spinResult.winningCells,[{row:'A',col:0}]);
   } finally {
@@ -282,7 +283,7 @@ test('network-failed spin rolls back when validated init still returns the previ
   }
 });
 
-test('network-failed first spin unlocks when validated init has no card',async()=>{
+test('network-failed first spin stays blocked when init has no operation status',async()=>{
   mergeRuntimeConfig({sessionApiBaseUrl:'https://example.invalid'});
   const original=globalThis.fetch;
   const service=new SessionApiService();
@@ -298,9 +299,9 @@ test('network-failed first spin unlocks when validated init has no card',async()
         : new Response(JSON.stringify({CountFreeSpin:'0'}));
     const result=await service.initSession(params);
     assert.equal(result.spinRecovered,false);
-    assert.equal(result.spinRolledBack,true);
-    assert.equal(stateRecoveryService.getPendingRequest(params),null);
-    assert.equal(stateRecoveryService.getLocalState(params),null);
+    assert.equal(result.spinRolledBack,false);
+    assert.equal(stateRecoveryService.getPendingRequest(params).requestId,'first-network-spin');
+    assert.ok(stateRecoveryService.getLocalState(params));
   } finally {
     stateRecoveryService.completePendingRequest('first-network-spin',params);
     stateRecoveryService.clearLocalState(params);

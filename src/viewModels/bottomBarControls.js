@@ -85,7 +85,7 @@ export function buildBottomBarControls({
     //     },
     {
       active: autoPlayOn,
-      disabled: disabled && !autoPlayOn,
+      disabled: (disabled || spinAssetsLoading) && !autoPlayOn,
       extraClass: "auto-express-button",
       onClick: onAutoPlay,
       type: "autoExpress",

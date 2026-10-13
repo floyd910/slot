@@ -1,5 +1,5 @@
 import { buildAuthHeaders } from "./authHeaders.js";
-import { REQUEST_TIMEOUT_MS } from "../config/gameSettings.js";
+import { SPIN_REQUEST_TIMEOUT_MS } from "../config/gameSettings.js";
 import { resolveApiGameId } from "./gameApiIds.js";
 import { getSessionApiBaseUrl } from "./runtimeConfig.js";
 
@@ -39,14 +39,20 @@ export const buildSpinForm = (params, context) => {
   return new URLSearchParams(fields);
 };
 
-export const sendSpinRequest = async (body, { token, requestId, timeoutMs = REQUEST_TIMEOUT_MS } = {}) => {
+export const sendSpinRequest = async (body, {
+  token, requestId, timeoutMs = SPIN_REQUEST_TIMEOUT_MS,
+  gameId = null, idCard = null, autoExpressActive = false,
+  previousPayCompleted = false,
+} = {}) => {
   const headers = buildAuthHeaders(token);
   const endpoint = getSessionApiBaseUrl().replace(/\/$/, "") + "/spin";
   if (import.meta.env?.PROD && new URL(endpoint, window.location.origin).protocol !== "https:") {
     throw error("Production spin endpoint must use HTTPS", "CONFIGURATION_ERROR", { requestId });
   }
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  const startedAt = Date.now();
+  const timeoutReason = 'spin-timeout';
+  const timer = setTimeout(() => controller.abort(timeoutReason), timeoutMs);
   try {
     const response = await fetch(endpoint, {
       method: "POST",
@@ -65,7 +71,18 @@ export const sendSpinRequest = async (body, { token, requestId, timeoutMs = REQU
     }
     return payload;
   } catch (cause) {
-    if (cause.name === "AbortError") throw error("Spin request timed out", "TIMEOUT", { requestId });
+    if (cause.name === 'AbortError') {
+      const diagnostic = {
+        gameId, requestId: requestId ?? null, idCard,
+        abortReason: controller.signal.reason ?? cause.message ?? 'aborted',
+        timeoutMs, elapsedMs: Date.now() - startedAt,
+        autoExpressActive: Boolean(autoExpressActive),
+        previousPayCompleted: Boolean(previousPayCompleted),
+        timestamp: new Date().toISOString(),
+      };
+      console.error('[SPIN_REQUEST_CANCELED]', diagnostic);
+      throw error('Spin request timed out', 'TIMEOUT', { ...diagnostic, reason: diagnostic.abortReason });
+    }
     if (cause.code) { cause.requestId = requestId; throw cause; }
     throw error("Spin network request failed", "NETWORK_ERROR", { requestId });
   } finally { clearTimeout(timer); }

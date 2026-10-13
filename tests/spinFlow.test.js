@@ -93,6 +93,11 @@ test('ordinary remote spins avoid partner mutations and retain unpaid wins',asyn
     assert.equal(stateRecoveryService.getPendingRequest(unknownContext).status,'recovery-required');
     await assert.rejects(gameApiService.pay({idCard:'unknown',idPartnerCard:'partner',requestId:'another-pay'}),{code:'RECOVERY_REQUIRED'});
     assert.equal(attempts,1);
+    stateRecoveryService.completePendingRequest('same-pay',unknownContext);
+    stateRecoveryService.rememberPendingRequest({methodName:'/spin',requestId:'unresolved-spin'},unknownContext);
+    await assert.rejects(gameApiService.spin({stake:1,lines:1,requestId:'new-spin'}),{code:'RECOVERY_REQUIRED',requestId:'unresolved-spin'});
+    assert.equal(attempts,1);
+    stateRecoveryService.completePendingRequest('unresolved-spin',unknownContext);
     const {createDoubleActions}=await server.ssrLoadModule('/src/controllers/doubleActions.js');
     const {DOUBLE_MAX_STEPS,createEmptyDoublingState}=await server.ssrLoadModule('/src/config/gameSettings.js');
     const context={gameId:'khiradmandi-makor',sessionId:'double-limit',userId:7};

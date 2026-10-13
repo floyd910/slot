@@ -33,6 +33,7 @@ import {
 } from "../utils/gameResult.js";
 import {
   loadAudioDurationMs,
+  preloadDoubleSceneAssets,
   preloadGameAssets,
   preloadGameView2GridAssets,
   preloadSpinReadyAssets,
@@ -1199,6 +1200,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   }, [autoPlayOn]);
 
   const toggleAutoPlay = () => {
+    if (!autoPlayOn && !spinAssetsReady) return;
     if (freeSpinHistoryMissing || freeSpinSummary || liveSpinStateRef.current.freeSpinSummaryChecking) return;
     resumeAutoPlayAfterFreeSpinsRef.current = false;
     setAutoPlayOn((current) => !current);
@@ -1211,6 +1213,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       emitSound,
       liveSpinStateRef,
       postEvent,
+      prepareDoubleScene: () => preloadDoubleSceneAssets(gameDefinition),
       markDefinitelyOfflineAction: () => {
         definitelyOfflineActionRef.current = true;
       },

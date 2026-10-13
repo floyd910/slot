@@ -1,4 +1,5 @@
 export const REQUEST_TIMEOUT_MS = 9000;
+export const SPIN_REQUEST_TIMEOUT_MS = 30000;
 
 export const LOTTERY_REVEAL_STEP_MS = 420;
 export const LOTTERY_REVEAL_COLUMNS = 5;

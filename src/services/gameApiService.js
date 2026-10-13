@@ -49,8 +49,16 @@ export class GameApiService {
       return normalizeSpinResult(result);
     }
 
-    assertBrowserOnline("Spin");
-    const body = buildSpinForm(params, getContext());
+    assertBrowserOnline('Spin');
+    const context = getContext();
+    const existingPending = stateRecoveryService.getPendingRequest(context);
+    if (existingPending) {
+      throw Object.assign(new Error('Resolve the pending operation before spinning.'), {
+        code: 'RECOVERY_REQUIRED', requestId: existingPending.requestId,
+        methodName: existingPending.methodName,
+      });
+    }
+    const body = buildSpinForm(params, context);
     const operation = {
       methodName: "/spin",
       requestId: params.requestId,
@@ -62,8 +70,13 @@ export class GameApiService {
     remember(operation);
 
     try {
-      const context = getContext();
-      const payload = await sendSpinRequest(body, { token: context.token, requestId: params.requestId });
+      const payload = await sendSpinRequest(body, {
+        token: context.token, requestId: params.requestId,
+        gameId: context.recoveryGameId ?? context.gameId,
+        idCard: params.previousIdCard ?? null,
+        autoExpressActive: params.autoExpressActive === true,
+        previousPayCompleted: params.previousPayCompleted === true,
+      });
       const result = normalizeSpinResult({
         ...mapJsonSpinPayload(payload, { ...context, ...params }),
         backendManagedWallet: !usesStandaloneDemoWallet(context),

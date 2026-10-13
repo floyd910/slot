@@ -10,11 +10,17 @@ const getFooter = (root) =>
   Array.from(root.querySelectorAll(".footer-block")).find(isVisible) ??
   Array.from(root.querySelectorAll(".bottom-bar")).find(isVisible);
 
+const getFooterBoundaryTop = (root, footer, fallback) => {
+  const boundaries = [footer, root.querySelector(".mobile-info-row")]
+    .filter(isVisible)
+    .map((element) => element.getBoundingClientRect().top);
+  return boundaries.length ? Math.min(...boundaries) : fallback;
+};
+
 const getBounds = (root, center) => {
   const ticket = center.querySelector(".grid-bottom-panel");
-  // The expanded receipt is an overlay. Its footer keeps the same visual
-  // bottom edge as the collapsed ticket, so use that stable footprint while
-  // ignoring only the extra receipt content during responsive fitting.
+  // Only the collapsed footer is part of fitting. Opening details is an overlay
+  // and must not change the grid scale.
   const ticketFootprint = ticket?.classList.contains("grid-bottom-panel--expanded")
     ? ticket.querySelector(".grid-bottom-panel__footer")
     : ticket;
@@ -59,7 +65,7 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       const headerHeight = header?.getBoundingClientRect().height || 48;
       root.style.setProperty("--game-header-height", `${headerHeight}px`);
       const areaBounds = area?.getBoundingClientRect();
-      const footerTopForReserve = footer?.getBoundingClientRect().top ?? areaBounds?.bottom;
+      const footerTopForReserve = getFooterBoundaryTop(root, footer, areaBounds?.bottom);
       const footerReserve = areaBounds
         ? Math.max(0, areaBounds.bottom - footerTopForReserve)
         : 0;
@@ -88,7 +94,7 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
 
       const areaRect = area.getBoundingClientRect();
       if (areaRect.width <= 0 || areaRect.height <= 0 || !footer) return;
-      const footerTop = footer.getBoundingClientRect().top;
+      const footerTop = getFooterBoundaryTop(root, footer, areaRect.bottom);
       const compactLandscape = window.matchMedia("(orientation: landscape) and (max-width: 1280px)").matches;
       const logoWidth = compactLandscape
         ? Math.min(260, areaRect.width * 0.4)
@@ -104,10 +110,40 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       root.style.setProperty("--fluid-logo-height", `${logoHeight}px`);
       root.style.setProperty("--fluid-footer-reserve", `${Math.max(GAP, areaRect.bottom - footerTop + GAP)}px`);
       root.style.setProperty("--fluid-content-scale", "1");
+      // Measure from an unscaled baseline. Keeping values divided by the
+      // previous scale here creates a feedback loop whenever ticket content
+      // changes and can make View 2 resize after a win.
+      root.style.setProperty("--fluid-ticket-font-size", "14px");
+      root.style.setProperty("--fluid-ticket-min-height", "56px");
+      root.style.setProperty("--fluid-ticket-padding", "16px 16px 16px 24px");
+      root.style.setProperty("--fluid-ticket-radius", "18px");
+      root.style.setProperty("--fluid-ticket-gap", "16px");
+      root.style.setProperty("--fluid-ticket-icon-size", "24px");
+      root.style.setProperty("--fluid-ticket-mobile-min-height", "52px");
+      root.style.setProperty("--fluid-ticket-mobile-padding", "10px 12px");
+      root.style.setProperty("--fluid-ticket-mobile-radius", "14px");
+      root.style.setProperty("--fluid-ticket-mobile-draw-font-size", "18px");
+      root.style.setProperty("--fluid-ticket-mobile-draw-line-height", "22px");
+      root.style.setProperty("--fluid-ticket-mobile-text-font-size", "14px");
+      root.style.setProperty("--fluid-ticket-mobile-gap", "10px");
+      root.style.setProperty("--fluid-ticket-mobile-icon-size", "28px");
+      root.style.setProperty("--fluid-ticket-close-inset", "18px");
+      root.style.setProperty("--fluid-ticket-offset", "5px");
+      root.style.setProperty("--fluid-ticket-grid-correction", "0px");
 
       let resolvedContentTop = contentTop;
       root.style.setProperty("--fluid-content-top", `${resolvedContentTop}px`);
       root.style.setProperty("--header-content-start", `${resolvedContentTop}px`);
+
+      // Anchor the ticket to the visible active grid, not to a taller center
+      // wrapper whose invisible tail varies by breakpoint.
+      const activeGrid = center.querySelector(".preloaded-grid-view--active .lottery-grid");
+      const activeGridRect = activeGrid?.getBoundingClientRect();
+      const centerRect = center.getBoundingClientRect();
+      const ticketGridCorrection = activeGridRect
+        ? Math.max(0, centerRect.bottom - activeGridRect.bottom)
+        : 0;
+      root.style.setProperty("--fluid-ticket-grid-correction", `${ticketGridCorrection}px`);
 
       // Use rendered geometry, not only the nominal logo ratio. This catches
       // compact breakpoint transforms that would otherwise pull the grid into
@@ -128,9 +164,19 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
         : 0;
       const widthScale = (areaRect.width - contentHorizontalPadding - GAP * 2) /
         Math.max(1, bounds.right - bounds.left);
-      const contentHeight = Math.max(1, bounds.bottom - bounds.top);
-      const heightScale = (footerTop - GAP - (areaRect.top + resolvedContentTop))
-        / contentHeight;
+      const boardElements = [
+        root.querySelector(".main-container__left"),
+        center,
+        root.querySelector(".main-container__right"),
+      ].filter(isVisible);
+      const boardBottom = Math.max(...boardElements.map((element) => element.getBoundingClientRect().bottom));
+      const boardHeight = Math.max(1, boardBottom - bounds.top);
+      const mobileTicket = window.matchMedia("(max-width: 639px)").matches;
+      const fixedTicketHeight = mobileTicket ? 52 : 56;
+      const fixedTicketOffset = 5;
+      const availableBoardHeight = footerTop - GAP - fixedTicketHeight - fixedTicketOffset -
+        (areaRect.top + resolvedContentTop);
+      const heightScale = availableBoardHeight / boardHeight;
       const scale = Math.max(0.1, Math.min(
         compactLandscape ? Number.POSITIVE_INFINITY : 1,
         widthScale,
@@ -146,12 +192,18 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       root.style.setProperty("--fluid-ticket-mobile-min-height", `${52 / scale}px`);
       root.style.setProperty("--fluid-ticket-mobile-padding", `${10 / scale}px ${12 / scale}px`);
       root.style.setProperty("--fluid-ticket-mobile-radius", `${14 / scale}px`);
-      root.style.setProperty("--fluid-ticket-mobile-draw-font-size", `${18 / scale}px`);
-      root.style.setProperty("--fluid-ticket-mobile-draw-line-height", `${22 / scale}px`);
-      root.style.setProperty("--fluid-ticket-mobile-text-font-size", `${14 / scale}px`);
+      const ticketVisualWidth = center.querySelector(".grid-bottom-panel")?.getBoundingClientRect().width || areaRect.width;
+      const mobileTicketTextSize = Math.max(9, Math.min(14, ticketVisualWidth * 0.042));
+      const mobileTicketDrawSize = Math.max(12, Math.min(18, ticketVisualWidth * 0.055));
+      const mobileTicketDrawLineHeight = mobileTicketDrawSize + 3;
+      const mobileTicketIconSize = Math.max(20, Math.min(28, ticketVisualWidth * 0.08));
+      root.style.setProperty("--fluid-ticket-mobile-draw-font-size", `${mobileTicketDrawSize / scale}px`);
+      root.style.setProperty("--fluid-ticket-mobile-draw-line-height", `${mobileTicketDrawLineHeight / scale}px`);
+      root.style.setProperty("--fluid-ticket-mobile-text-font-size", `${mobileTicketTextSize / scale}px`);
       root.style.setProperty("--fluid-ticket-mobile-gap", `${10 / scale}px`);
-      root.style.setProperty("--fluid-ticket-mobile-icon-size", `${28 / scale}px`);
+      root.style.setProperty("--fluid-ticket-mobile-icon-size", `${mobileTicketIconSize / scale}px`);
       root.style.setProperty("--fluid-ticket-close-inset", `${18 / scale}px`);
+      root.style.setProperty("--fluid-ticket-offset", `${5 / scale}px`);
 
       if (!initialFitStarted) {
         initialFitStarted = true;
@@ -169,13 +221,18 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       frame = requestAnimationFrame(fit);
     };
 
-    // Observe the geometry used by fit, including content mounted after the shell.
-    // Transforms do not change ResizeObserver's layout boxes, avoiding a scale loop.
+    // Refit only when stable viewport containers change. Gameplay DOM updates
+    // (rotating win groups, ticket content, or footer actions) must never change
+    // the scale of an already mounted board.
     const observer = new ResizeObserver(scheduleFit);
     const observed = new Set();
     const observeLayout = () => {
-      const elements = [root, root.parentElement?.querySelector("header"),
-        ...root.querySelectorAll(".game_area, .header_img, .bottom-bar, .footer-block, .main-container__left, .main-container__center, .main-container__right")];
+      const elements = [
+        root,
+        root.parentElement?.querySelector("header"),
+        root.querySelector(".game_area"),
+        root.querySelector(".header_img"),
+      ];
       const current = new Set(elements.filter(Boolean));
       for (const element of observed) {
         if (!current.has(element)) {
@@ -192,17 +249,24 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
     };
     observeLayout();
     fit();
-    mountObserver = new MutationObserver((records) => {
-      // Ticket details are an overlay, not a change to the board layout.
-      // Keep observing board insertion after init, but ignore receipt contents.
-      if (records.every(({ target }) => {
-        const element = target.nodeType === 1 ? target : target.parentElement;
-        return element?.closest(".grid-bottom-panel");
-      })) return;
-      observeLayout();
-      scheduleFit();
-    });
-    mountObserver.observe(root, { childList: true, subtree: true });
+    const hasPlayableGrid = Boolean(
+      root.querySelector(".main-container__center .preloaded-grid-view--active .lottery-grid"),
+    );
+    if (!hasPlayableGrid) {
+      mountObserver = new MutationObserver(() => {
+        // Observe only until the asynchronously loaded playable board exists.
+        // Afterwards mutations are game state, not responsive layout changes.
+        const playableGrid = root.querySelector(
+          ".main-container__center .preloaded-grid-view--active .lottery-grid",
+        );
+        if (!playableGrid) return;
+        observeLayout();
+        scheduleFit();
+        mountObserver?.disconnect();
+        mountObserver = undefined;
+      });
+      mountObserver.observe(root, { childList: true, subtree: true });
+    }
     const fontsReady = () => { if (!disposed) scheduleFit(); };
     document.fonts?.ready.then(fontsReady);
     document.fonts?.addEventListener("loadingdone", fontsReady);
