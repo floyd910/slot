@@ -17,6 +17,10 @@ import {
 // Share successful requests; evict failures so a later explicit retry can reload.
 const imageLoadEntries = new Map();
 const imageDecodePromises = new Map();
+const videoLoadPromises = new Map();
+const audioDataPromises = new Map();
+const audioDurationPromises = new Map();
+const requiredAudioPromises = new Map();
 const retainedPreloadedAudio = new Map();
 let startupAssetsPromise = null;
 const gameAssetsPromises = new Map();
@@ -216,73 +220,89 @@ const preloadDeferredImages = (sources) =>
     }),
   );
 
-const preloadVideo = (src) =>
-  new Promise((resolve) => {
-    const video = document.createElement("video");
-    let settled = false;
-    const done = () => {
-      if (settled) return;
-      settled = true;
-      resolve();
-    };
-    video.muted = true;
-    video.playsInline = true;
-    video.preload = "auto";
-    video.addEventListener("canplaythrough", done, { once: true });
-    video.addEventListener("loadeddata", done, { once: true });
-    video.addEventListener("error", done, { once: true });
-    window.setTimeout(done, 6000);
-    video.src = src;
-    video.load();
-  });
-
-const preloadAudioData = async (src) => {
-  const controller = new AbortController();
-  const timeoutId = window.setTimeout(() => controller.abort(), 30000);
-  try {
-    const response = await fetch(toPreloadUrl(src), {
-      cache: "force-cache",
-      signal: controller.signal,
-    });
-    if (response.ok) await response.arrayBuffer();
-  } catch {
-    // A media request failure must not leave the startup overlay stuck.
-  } finally {
-    window.clearTimeout(timeoutId);
+const preloadVideo = (src) => {
+  const normalizedSrc = toPreloadUrl(src);
+  if (!normalizedSrc) return Promise.resolve();
+  if (!videoLoadPromises.has(normalizedSrc)) {
+    videoLoadPromises.set(normalizedSrc, new Promise((resolve) => {
+      const video = document.createElement("video");
+      let settled = false;
+      const done = () => {
+        if (settled) return;
+        settled = true;
+        resolve(normalizedSrc);
+      };
+      video.muted = true;
+      video.playsInline = true;
+      video.preload = "metadata";
+      video.addEventListener("loadedmetadata", done, { once: true });
+      video.addEventListener("error", done, { once: true });
+      window.setTimeout(done, 6000);
+      video.src = normalizedSrc;
+      video.load();
+    }));
   }
+  return videoLoadPromises.get(normalizedSrc);
 };
 
-const preloadRequiredAudio = (src) =>
-  new Promise((resolve, reject) => {
-    const normalizedSrc = toPreloadUrl(src);
-    const retainedAudio = retainedPreloadedAudio.get(normalizedSrc);
-    if (retainedAudio?.readyState >= HTMLMediaElement.HAVE_ENOUGH_DATA) {
-      resolve(normalizedSrc);
-      return;
-    }
+const preloadAudioData = (src) => {
+  const normalizedSrc = toPreloadUrl(src);
+  if (!normalizedSrc) return Promise.resolve();
+  if (!audioDataPromises.has(normalizedSrc)) {
+    audioDataPromises.set(normalizedSrc, (async () => {
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), 30000);
+      try {
+        const response = await fetch(normalizedSrc, {
+          cache: "force-cache",
+          signal: controller.signal,
+        });
+        if (response.ok) await response.arrayBuffer();
+      } catch {
+        // Keep the settled optional promise cached so a missing sound cannot
+        // create a fresh request on every Spin or Auto Express cycle.
+      } finally {
+        window.clearTimeout(timeoutId);
+      }
+    })());
+  }
+  return audioDataPromises.get(normalizedSrc);
+};
+const preloadRequiredAudio = (src) => {
+  const normalizedSrc = toPreloadUrl(src);
+  if (!normalizedSrc) return Promise.resolve();
+  if (!requiredAudioPromises.has(normalizedSrc)) {
+    requiredAudioPromises.set(normalizedSrc, new Promise((resolve, reject) => {
+      const retainedAudio = retainedPreloadedAudio.get(normalizedSrc);
+      if (retainedAudio?.readyState >= HTMLMediaElement.HAVE_ENOUGH_DATA) {
+        resolve(normalizedSrc);
+        return;
+      }
 
-    const audio = retainedAudio ?? new Audio();
-    retainedPreloadedAudio.set(normalizedSrc, audio);
-    const cleanup = () => {
-      audio.removeEventListener("canplaythrough", done);
-      audio.removeEventListener("error", fail);
-    };
-    const done = () => {
-      cleanup();
-      resolve(normalizedSrc);
-    };
-    const fail = () => {
-      cleanup();
-      reject(new Error(`Failed to preload required audio: ${normalizedSrc}`));
-    };
+      const audio = retainedAudio ?? new Audio();
+      retainedPreloadedAudio.set(normalizedSrc, audio);
+      const cleanup = () => {
+        audio.removeEventListener("canplaythrough", done);
+        audio.removeEventListener("error", fail);
+      };
+      const done = () => {
+        cleanup();
+        resolve(normalizedSrc);
+      };
+      const fail = () => {
+        cleanup();
+        reject(new Error(`Failed to preload required audio: ${normalizedSrc}`));
+      };
 
-    audio.preload = "auto";
-    audio.addEventListener("canplaythrough", done, { once: true });
-    audio.addEventListener("error", fail, { once: true });
-    audio.src = normalizedSrc;
-    audio.load();
-  });
-
+      audio.preload = "auto";
+      audio.addEventListener("canplaythrough", done, { once: true });
+      audio.addEventListener("error", fail, { once: true });
+      audio.src = normalizedSrc;
+      audio.load();
+    }));
+  }
+  return requiredAudioPromises.get(normalizedSrc);
+};
 const warmStartupAudio = () => {
   preloadRequiredAudio(CARPET_SOUND_SRC).catch(() => {
     // Mobile browsers may defer media loading until a user gesture. Audio is
@@ -290,32 +310,37 @@ const warmStartupAudio = () => {
   });
 };
 
-export const loadAudioDurationMs = (src) =>
-  new Promise((resolve) => {
-    const audio = new Audio(src);
-    let settled = false;
-    const done = (durationMs = CARPET_SOUND_FALLBACK_MS) => {
-      if (settled) return;
-      settled = true;
-      resolve(durationMs);
-    };
-    audio.preload = "metadata";
-    audio.addEventListener(
-      "loadedmetadata",
-      () => {
-        const durationMs = Number.isFinite(audio.duration)
-          ? Math.ceil(audio.duration * 1000)
-          : CARPET_SOUND_FALLBACK_MS;
-        done(durationMs);
-      },
-      { once: true },
-    );
-    audio.addEventListener("error", () => done(), { once: true });
-    window.setTimeout(() => done(), 2000);
-    audio.src = src;
-    audio.load();
-  });
-
+export const loadAudioDurationMs = (src) => {
+  const normalizedSrc = toPreloadUrl(src);
+  if (!normalizedSrc) return Promise.resolve(CARPET_SOUND_FALLBACK_MS);
+  if (!audioDurationPromises.has(normalizedSrc)) {
+    audioDurationPromises.set(normalizedSrc, new Promise((resolve) => {
+      const audio = new Audio();
+      let settled = false;
+      const done = (durationMs = CARPET_SOUND_FALLBACK_MS) => {
+        if (settled) return;
+        settled = true;
+        resolve(durationMs);
+      };
+      audio.preload = "metadata";
+      audio.addEventListener(
+        "loadedmetadata",
+        () => {
+          const durationMs = Number.isFinite(audio.duration)
+            ? Math.ceil(audio.duration * 1000)
+            : CARPET_SOUND_FALLBACK_MS;
+          done(durationMs);
+        },
+        { once: true },
+      );
+      audio.addEventListener("error", () => done(), { once: true });
+      window.setTimeout(() => done(), 2000);
+      audio.src = normalizedSrc;
+      audio.load();
+    }));
+  }
+  return audioDurationPromises.get(normalizedSrc);
+};
 const fontReady = () =>
   Promise.race([
     document.fonts?.ready?.catch?.(() => {}) ?? Promise.resolve(),

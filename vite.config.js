@@ -1,10 +1,27 @@
 import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
+const IMMUTABLE_ASSET_PATH = /^\/(?:assets|media|img)\//;
+const immutableAssetCache = () => {
+  const applyHeaders = (server) => {
+    server.middlewares.use((request, response, next) => {
+      const pathname = String(request.url ?? "").split("?", 1)[0];
+      if (IMMUTABLE_ASSET_PATH.test(pathname)) {
+        response.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+      }
+      next();
+    });
+  };
+  return {
+    name: "immutable-static-asset-cache",
+    configureServer: applyHeaders,
+    configurePreviewServer: applyHeaders,
+  };
+};
 
 export default defineConfig(({ mode }) => {
   const env = {...loadEnv(mode, process.cwd(), ""), ...process.env};
   return {
-  plugins: [react()],
+  plugins: [react(), immutableAssetCache()],
   // Browser profiles and preview HTML under tmp/tools are not app entries.
   optimizeDeps: { entries: ["index.html"] },
   // Public demo account only. The token is intentionally included in the client build.
