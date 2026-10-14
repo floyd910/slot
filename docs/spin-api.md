@@ -1,7 +1,7 @@
 # Spin API integration
 
 Non-mock spins POST to the configured sessionApiBaseUrl + /spin (the same base as /init).
-Confirmed URL: https://api.raxshloto.online/spin.
+Confirmed URL: https://api2.raxshloto.online/spin.
 Request: application/x-www-form-urlencoded with gameId, playerId, requestId,
 sum, lines, demoSpin, freeSpin. sum is the selected stake, never totalStake.
 Game codes are shared with /init in src/api/gameApiIds.js. No SOAP credentials or sessionId

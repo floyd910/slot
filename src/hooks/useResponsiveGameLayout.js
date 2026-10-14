@@ -10,12 +10,8 @@ const getFooter = (root) =>
   Array.from(root.querySelectorAll(".footer-block")).find(isVisible) ??
   Array.from(root.querySelectorAll(".bottom-bar")).find(isVisible);
 
-const getFooterBoundaryTop = (root, footer, fallback) => {
-  const boundaries = [footer, root.querySelector(".mobile-info-row")]
-    .filter(isVisible)
-    .map((element) => element.getBoundingClientRect().top);
-  return boundaries.length ? Math.min(...boundaries) : fallback;
-};
+const getFooterBoundaryTop = (_root, footer, fallback) =>
+  isVisible(footer) ? footer.getBoundingClientRect().top : fallback;
 
 const getBounds = (root, center) => {
   const ticket = center.querySelector(".grid-bottom-panel");
@@ -99,7 +95,7 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       const logoWidth = compactLandscape
         ? Math.min(260, areaRect.width * 0.4)
         : areaRect.width <= 440
-          ? areaRect.width * 0.8
+          ? areaRect.width * 0.74
           : Math.min(440, areaRect.width - GAP * 2);
       const logoHeight = logoWidth * LOGO_RATIO;
       const contentTop = compactLandscape
@@ -171,12 +167,17 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       ].filter(isVisible);
       const boardBottom = Math.max(...boardElements.map((element) => element.getBoundingClientRect().bottom));
       const boardHeight = Math.max(1, boardBottom - bounds.top);
+      const compactView2CellHeight = root.classList.contains("view-2") &&
+        window.matchMedia("(orientation: portrait) and (max-width: 486px)").matches;
+      // Keep the fit scale based on the 207px-row geometry. Otherwise reducing
+      // rows to 190px increases heightScale and cancels the visible reduction.
+      const fittedBoardHeight = boardHeight + (compactView2CellHeight ? 51 : 0);
       const mobileTicket = window.matchMedia("(max-width: 639px)").matches;
       const fixedTicketHeight = mobileTicket ? 52 : 56;
       const fixedTicketOffset = 5;
       const availableBoardHeight = footerTop - GAP - fixedTicketHeight - fixedTicketOffset -
         (areaRect.top + resolvedContentTop);
-      const heightScale = availableBoardHeight / boardHeight;
+      const heightScale = availableBoardHeight / fittedBoardHeight;
       const scale = Math.max(0.1, Math.min(
         compactLandscape ? Number.POSITIVE_INFINITY : 1,
         widthScale,

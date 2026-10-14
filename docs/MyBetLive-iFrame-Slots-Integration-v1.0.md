@@ -94,7 +94,7 @@ Retrieving token
 The Integrator's backend requests an access token before launching the game.
 
 Endpoint
-POST https://api.raxshloto.online/token/
+POST https://api2.raxshloto.online/token/
 Content-Type
 Content-Type: application/x-www-form-urlencoded
 Parameters
@@ -104,7 +104,7 @@ password	string	Yes	Integrator account password
 
 Example Request
 POST /token/ HTTP/1.1
-Host: api.raxshloto.online
+Host: api2.raxshloto.online
 Content-Type: application/x-www-form-urlencoded
 
 login=partner_login&password=partner_password
@@ -493,7 +493,7 @@ Available commands:
 
 # Partner frontend iframe integration
 
-This section completes the frontend portion of the MyBetLive Slots 1.0 partner contract. The partner backend must obtain the short-lived token from `POST https://api.raxshloto.online/token/`; partner credentials must never be placed in browser JavaScript.
+This section completes the frontend portion of the MyBetLive Slots 1.0 partner contract. The partner backend must obtain the short-lived token from `POST https://api2.raxshloto.online/token/`; partner credentials must never be placed in browser JavaScript.
 
 Before production launch, provide the exact partner website origin to the game operator so it can be included in `VITE_PARENT_ORIGINS`. Wildcard origins are not accepted.
 

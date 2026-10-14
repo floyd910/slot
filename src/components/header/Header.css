@@ -9,7 +9,10 @@ header {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 5;
+  /* Do not create a stacking context here: the game logo may overlap the
+     header, while individual overlays (such as the view tooltip) must still
+     be able to render above the logo. */
+  z-index: auto;
 }
 .header-left {
   display: inline-flex;
@@ -515,7 +518,7 @@ header {
   top: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  z-index: 20;
+  z-index: 2147483647;
   display: none;
   padding: 7px 9px;
   border: 1px solid var(--game-line, rgba(255, 255, 255, 0.18));
@@ -577,4 +580,4 @@ header {
     flex-basis: 26px;
   }
 }
-/* The game logo intentionally stays above a tooltip where their areas overlap. */
+/* The logo stays above the header surface; the view tooltip owns the top layer. */

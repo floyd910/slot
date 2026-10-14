@@ -1,7 +1,7 @@
 import { isEnabled } from "../utils/featureFlags.js";
 
 const DEFAULT_SOAP_ENDPOINT = "/soap-hiranmandi";
-const DEFAULT_SESSION_API_BASE_URL = "https://api.raxshloto.online";
+const DEFAULT_SESSION_API_BASE_URL = "https://api2.raxshloto.online";
 const env = import.meta.env ?? {};
 
 let runtimeConfig = {};

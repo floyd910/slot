@@ -201,16 +201,13 @@ export default function BottomBar(inputProps) {
         </div>
       </div>
 
-      <div className="mobile-info-row">
+      <div className="footer-block-mobile footer-block">
         <InfoButton
           active={props.infoActive}
           disabled={props.disabled}
           label={t("info")}
           onClick={props.onInfo}
         />
-      </div>
-
-      <div className="footer-block-mobile footer-block">
         <BottomBarMetric title={winLabel} value={currentWin} accent />
         <div className="footer-flex footer-flex--mobile-metrics">
           <BottomBarMetric title={t("balance")} value={balance} />

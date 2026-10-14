@@ -1227,10 +1227,17 @@ button:disabled {
 
 
 /* Slightly use the spare portrait-mobile height without visibly stretching symbols. */
-@media (orientation: portrait) and (min-width: 390px) and (max-width: 720px) {
+@media (orientation: portrait) and (max-width: 639px) {
   .frame-app[data-fluid-fit="true"].view-2:not(.doubling-active)
     .lottery-grid-view2-cell {
     height: 207px;
+  }
+}
+
+@media (orientation: portrait) and (max-width: 486px) {
+  .frame-app[data-fluid-fit="true"].view-2:not(.doubling-active)
+    .lottery-grid-view2-cell {
+    height: 190px;
   }
 }
 /* Mobile portrait breathing room; landscape keeps its full-width layout. */

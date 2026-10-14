@@ -253,3 +253,10 @@ button {
     width: 100%;
   }
 }
+/* Keep the shared game logo slightly smaller and identical in both views on phones. */
+@media (max-width: 639px) and (orientation: portrait) {
+  .configured-game .frame-app[data-fluid-fit="true"] .header_img {
+    width: var(--fluid-logo-width) !important;
+    min-width: 0 !important;
+  }
+}

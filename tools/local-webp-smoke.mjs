@@ -40,7 +40,7 @@ const winningPayload = () => ({
   Number: String(90000000 + spinCount),
 });
 
-await page.route("https://api.raxshloto.online/spin", async (route) => {
+await page.route("https://api2.raxshloto.online/spin", async (route) => {
   spinCount += 1;
   const body = Object.fromEntries(new URLSearchParams(route.request().postData() ?? ""));
   spinSnapshots.push({
@@ -57,7 +57,7 @@ await page.route("https://api.raxshloto.online/spin", async (route) => {
   });
 });
 
-await page.route("https://api.raxshloto.online/pay", async (route) => {
+await page.route("https://api2.raxshloto.online/pay", async (route) => {
   payCount += 1;
   const body = Object.fromEntries(new URLSearchParams(route.request().postData() ?? ""));
   await route.fulfill({

@@ -31,9 +31,6 @@
   border-radius: 18px 18px 0 0;
 }
 
-.mobile-info-row {
-  display: none;
-}
 
 .footer-block-mobile {
   display: none;
@@ -865,7 +862,7 @@
 /* Mobile CTA emphasis: keep stake controls compact while making the spin action dominant. */
 @media (max-width: 639px) {
   .footer-block-mobile {
-    padding-top: 10px;
+    padding-top: 25px;
     padding-bottom: 14px;
   }
 
@@ -896,40 +893,5 @@
   .footer-block-mobile .footer-flex--mobile-actions .take-money .take-money__title {
     font-size: 11px;
     line-height: 14px;
-  }
-}
-
-/* Mobile Info is a separate row outside and above the footer panel. */
-@media (max-width: 639px) {
-  .mobile-info-row {
-    position: absolute;
-    right: 10px;
-    bottom: calc(100% + 10px);
-    z-index: 3;
-    display: flex;
-    justify-content: flex-end;
-    pointer-events: none;
-  }
-
-  .mobile-info-row .information-button {
-    position: static;
-    min-height: 0;
-    height: 24px;
-    margin: 0;
-    padding-left: 8px;
-    gap: 4px;
-    border-radius: 12px;
-    pointer-events: auto;
-  }
-
-  .mobile-info-row .information-button span {
-    font-size: 10px;
-    line-height: 22px;
-  }
-
-  .mobile-info-row .information-button svg {
-    width: 22px;
-    height: 22px;
-    flex: 0 0 22px;
   }
 }
