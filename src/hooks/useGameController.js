@@ -177,6 +177,19 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const error = errorKey ? t(errorKey) : "";
   const [lastKnownState, setLastKnownState] = useState(null);
   const [roundRecoveryStatus, setRoundRecoveryStatus] = useState(null);
+  const [pendingRecoveryActive, setPendingRecoveryActive] = useState(
+    () => frameApi.getPendingRequest(context)?.status === "recovery-required",
+  );
+  useEffect(() => {
+    const syncPendingRecovery = () => {
+      setPendingRecoveryActive(
+        frameApi.getPendingRequest(context)?.status === "recovery-required",
+      );
+    };
+    window.addEventListener("hiranmandi:recovery-state-changed", syncPendingRecovery);
+    syncPendingRecovery();
+    return () => window.removeEventListener("hiranmandi:recovery-state-changed", syncPendingRecovery);
+  }, [context]);
   const [restoredDoubleAvailable, setRestoredDoubleAvailable] = useState(null);
   const [player, setPlayer] = useState(null);
   const [games, setGames] = useState([]);
@@ -241,6 +254,43 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const [startupAssetsReady, setStartupAssetsReady] = useState(false);
   const [startupLoaderVisible, setStartupLoaderVisible] = useState(true);
   const [startupLoaderLeaving, setStartupLoaderLeaving] = useState(false);
+  useEffect(() => {
+    if (!startupAssetsReady || visualMode || view2AssetsReady || !gameDefinition) {
+      return undefined;
+    }
+
+    let active = true;
+    const timer = window.setTimeout(() => {
+      preloadGameView2GridAssets(gameDefinition)
+        .then(() => {
+          if (active) setView2AssetsReady(true);
+        })
+        .catch((assetError) => {
+          console.error(assetError);
+        });
+    }, 0);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
+  }, [gameDefinition, startupAssetsReady, view2AssetsReady, visualMode]);
+
+  useEffect(() => {
+    if (!visualMode || !view2AssetsReady || !gameDefinition) return undefined;
+
+    let active = true;
+    const timer = window.setTimeout(() => {
+      preloadDoubleSceneAssets(gameDefinition).catch((assetError) => {
+        if (active) console.error(assetError);
+      });
+    }, 0);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
+  }, [gameDefinition, view2AssetsReady, visualMode]);
 
   useEffect(() => {
     if (!usesStandaloneDemoWallet(context)) return;
@@ -985,6 +1035,39 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     }
   }, [context, init, reportError, setError]);
 
+  const retryInitializationRef = useRef(retryInitialization);
+  useEffect(() => {
+    retryInitializationRef.current = retryInitialization;
+  }, [retryInitialization]);
+
+  useEffect(() => {
+    if (!pendingRecoveryActive && roundRecoveryStatus !== ROUND_OPERATION_STATUS.RECOVERY_REQUIRED) return undefined;
+
+    const delays = [1000, 2000, 5000, 10000, 15000];
+    let attempt = 0;
+    let stopped = false;
+    let timer = null;
+
+    const schedule = () => {
+      if (stopped) return;
+      const delay = delays[Math.min(attempt, delays.length - 1)];
+      attempt += 1;
+      timer = window.setTimeout(run, delay);
+    };
+
+    const run = async () => {
+      timer = null;
+      if (stopped) return;
+      await retryInitializationRef.current();
+      if (!stopped) schedule();
+    };
+
+    schedule();
+    return () => {
+      stopped = true;
+      if (timer != null) window.clearTimeout(timer);
+    };
+  }, [pendingRecoveryActive, roundRecoveryStatus]);
   useEffect(() => {
     if (roundRecoveryStatus !== ROUND_OPERATION_STATUS.RECOVERY_REQUIRED) return undefined;
 
@@ -1010,6 +1093,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     const timer = window.setInterval(restoreResolvedRound, 300);
     return () => window.clearInterval(timer);
   }, [context, roundRecoveryStatus]);
+
 
   useEffect(() => {
     if (!window.ResizeObserver || !window.Promise) {
@@ -1262,7 +1346,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const totalPurchase = Number(
     (stake * (selectedCombination?.groups.length ?? 0)).toFixed(2),
   );
-  const isRoundRecoveryBlocked = roundRecoveryStatus === ROUND_OPERATION_STATUS.RECOVERY_REQUIRED;
+  const isRoundRecoveryBlocked = pendingRecoveryActive || roundRecoveryStatus === ROUND_OPERATION_STATUS.RECOVERY_REQUIRED;
   const isBusy =
     !["ready", "guest"].includes(status) ||
     isRoundRecoveryBlocked ||

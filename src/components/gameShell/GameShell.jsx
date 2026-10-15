@@ -24,7 +24,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
   const [backgroundAttempt, setBackgroundAttempt] = useState(0);
   const [loaderExitComplete, setLoaderExitComplete] = useState(false);
   const { actions, derived, state } = controller;
-  const checkingSession = ["initial-loading", "bootstrap-loading"].includes(state.status);
+  const checkingSession = ["initial-loading", "bootstrap-loading"].includes(state.status) && !derived.isRoundRecoveryBlocked;
   const showInlineView2Paytable = state.showPaytable && state.visualMode;
   const gridMounted = Boolean(state.grid?.A?.length && state.grid?.B?.length && state.grid?.C?.length);
   const layoutReady = useResponsiveGameLayout(
