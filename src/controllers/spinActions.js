@@ -389,6 +389,11 @@ export const createSpinActions = ({
       }
       const hasBackendWin = result.hasBackendWin ?? result.WinSum > 0;
       const awardedFreeSpins = backendManagedWallet ? 0 : getAwardedFreeSpinCount(result);
+      const zeroWinPayPromise = !backendManagedWallet && !hasBackendWin && !isFreeSpin && awardedFreeSpins === 0
+        ? frameApi
+            .pay({ idCard: result.idCard, idPartnerCard: result.idPartnerCard, requestId: buildRequestId("pay") })
+            .catch(() => undefined)
+        : null;
       const ticketWinAmount = getTicketWinAmount(result);
       const isDigitWin = ticketWinAmount > 0;
       const shouldCreditWin =
@@ -580,16 +585,9 @@ export const createSpinActions = ({
           return nextPlayer;
         });
       }
-      // A zero-win round still has to be closed by Pay. Keep the Spin in its
-      // processing state until that mutation releases frameApi's exclusive
-      // lock; otherwise the UI can enable the next Spin while Pay is active
-      // and reject it locally as REQUEST_IN_PROGRESS without any failed HTTP
-      // request appearing in DevTools.
-      if (!backendManagedWallet && !hasBackendWin && !isFreeSpin && awardedFreeSpins === 0) {
-        await frameApi
-          .pay({ idCard: result.idCard, idPartnerCard: result.idPartnerCard, requestId: buildRequestId("pay") })
-          .catch(() => undefined);
-      }
+      // Start zero-win Pay as soon as the confirmed result arrives, so the
+      // server closes the card while the reveal animation is playing.
+      if (zeroWinPayPromise) await zeroWinPayPromise;
       setStatus("ready");
       liveSpinStateRef.current = {
         ...liveSpinStateRef.current,
