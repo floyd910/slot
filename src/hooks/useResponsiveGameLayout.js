@@ -89,6 +89,7 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       if (areaRect.width <= 0 || areaRect.height <= 0 || !footer) return;
       const footerTop = getFooterBoundaryTop(root, footer, areaRect.bottom);
       const compactLandscape = window.matchMedia("(orientation: landscape) and (max-width: 1280px)").matches;
+      const mobileLandscape = window.matchMedia("(orientation: landscape) and (max-width: 1000px) and (max-height: 500px)").matches;
       const logoWidth = compactLandscape
         ? Math.min(260, areaRect.width * 0.4)
         : areaRect.width <= 440
@@ -173,8 +174,10 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       const mobileTicket = window.matchMedia("(max-width: 639px)").matches;
       const fixedTicketHeight = mobileTicket ? 52 : 56;
       const fixedTicketOffset = 5;
-      const availableBoardHeight = footerTop - GAP - fixedTicketHeight - fixedTicketOffset -
-        (areaRect.top + resolvedContentTop);
+      const availableBoardHeight = mobileLandscape
+        ? footerTop - GAP - (areaRect.top + resolvedContentTop)
+        : footerTop - GAP - fixedTicketHeight - fixedTicketOffset -
+          (areaRect.top + resolvedContentTop);
       const heightScale = availableBoardHeight / fittedBoardHeight;
       const scale = Math.max(0.1, Math.min(
         compactLandscape ? Number.POSITIVE_INFINITY : 1,
@@ -182,6 +185,24 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
         heightScale,
       ) * 0.995);
       root.style.setProperty("--fluid-content-scale", String(scale));
+      root.style.setProperty("--fluid-landscape-ticket-top", `${50 / scale}px`);
+      root.style.setProperty("--fluid-landscape-ticket-right", `${20 / scale}px`);
+      if (mobileLandscape) {
+        const landscapeTicket = center.querySelector(".grid-bottom-panel");
+        if (landscapeTicket) {
+          const ticketRect = landscapeTicket.getBoundingClientRect();
+          const desiredTop = (header?.getBoundingClientRect().bottom ?? areaRect.top) + 8;
+          const desiredRight = areaRect.right - 20;
+          root.style.setProperty(
+            "--fluid-landscape-ticket-top",
+            `${(50 + desiredTop - ticketRect.top) / scale}px`,
+          );
+          root.style.setProperty(
+            "--fluid-landscape-ticket-right",
+            `${(20 + ticketRect.right - desiredRight) / scale}px`,
+          );
+        }
+      }
       root.style.setProperty("--fluid-ticket-font-size", `${14 / scale}px`);
       root.style.setProperty("--fluid-ticket-min-height", `${56 / scale}px`);
       root.style.setProperty("--fluid-ticket-padding", `${16 / scale}px ${16 / scale}px ${16 / scale}px ${24 / scale}px`);

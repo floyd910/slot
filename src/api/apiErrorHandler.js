@@ -9,7 +9,7 @@ const PUBLIC_MESSAGES = {
   BET_REJECTED: "The partner rejected the bet.",
   GAME_NOT_FOUND: "The requested game was not found.",
   COLLECTION_UNAVAILABLE: "Collection is temporarily unavailable. Your win has not been collected.",
-  ACCESS_DENIED: "Invalid token or access denied. Reopen the game from the partner site.",
+  ACCESS_DENIED: "Authorization failed.",
   BAD_REQUEST: "The request could not be processed.",
   UNAUTHORIZED: "Authorization is required.",
   FORBIDDEN: "Access is forbidden.",
