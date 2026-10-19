@@ -837,11 +837,11 @@
 
 @media (max-width: 440px) and (min-height: 700px) {
   .bottom-bar {
-    bottom: 41px;
+    bottom: 0;
   }
 
   .footer-block-mobile {
-    border-radius: 12px;
+    border-radius: 12px 12px 0 0;
   }
 }
 
@@ -864,6 +864,7 @@
   .footer-block-mobile {
     padding-top: 25px;
     padding-bottom: 14px;
+    border-radius: 12px 12px 0 0;
   }
 
   .footer-block-mobile .footer-flex--mobile-actions {

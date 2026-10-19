@@ -1323,21 +1323,9 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     setSoundEnabled(nextSoundEnabled);
   };
 
-  const toggleVisualMode = async () => {
-    if (viewSwitchDisabled || view2AssetsLoading) return;
+  const toggleVisualMode = () => {
+    if (viewSwitchDisabled) return;
     const nextValue = !visualMode;
-    if (nextValue && !view2AssetsReady) {
-      setView2AssetsLoading(true);
-      try {
-        await preloadGameView2GridAssets(gameDefinition);
-        setView2AssetsReady(true);
-      } catch (error) {
-        console.error(error);
-        return;
-      } finally {
-        setView2AssetsLoading(false);
-      }
-    }
     setExpandedBoard(nextValue);
     liveSpinStateRef.current = { ...liveSpinStateRef.current, visualMode: nextValue };
     setVisualMode(nextValue);
@@ -1369,7 +1357,6 @@ export function useGameController(selectedGameId, gameDefinition = null) {
           (pendingTicketWin && doublingState.step > 0)),
     );
   const viewSwitchDisabled =
-    view2AssetsLoading ||
     Boolean(freeSpinSummary) ||
     status === "processing" ||
     autoPlayOn ||

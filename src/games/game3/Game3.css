@@ -642,7 +642,7 @@ button:disabled {
   }
 
   .bottom-bar {
-    bottom: 41px;
+    bottom: 0;
   }
 }
 

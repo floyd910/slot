@@ -1104,7 +1104,7 @@
   .grid-bottom-panel__draw {
     min-width: 0;
     gap: 10px;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: 700;
     line-height: 22px;
     text-transform: uppercase;
@@ -1224,6 +1224,7 @@
   padding: 16px 16px 16px 24px;
 }
 
+
 @media (max-width: 639px) {
   .grid-bottom-panel,
   .view-2 .grid-bottom-panel {
@@ -1235,7 +1236,7 @@
   .grid-bottom-panel__draw,
   .view-2 .grid-bottom-panel__draw {
     gap: 10px;
-    font-size: 18px;
+    font-size: 14px;
     line-height: 22px;
   }
 
@@ -1308,7 +1309,7 @@
 
   .frame-app[data-fluid-fit="true"].view-2 .grid-bottom-panel__draw {
     gap: var(--fluid-ticket-mobile-gap, 10px);
-    font-size: var(--fluid-ticket-mobile-draw-font-size, 18px);
+    font-size: var(--fluid-ticket-mobile-draw-font-size, 14px);
     line-height: var(--fluid-ticket-mobile-draw-line-height, 22px);
   }
 
@@ -1406,7 +1407,7 @@
 
   .frame-app[data-fluid-fit="true"] .grid-bottom-panel__draw {
     gap: var(--fluid-ticket-mobile-gap, 10px);
-    font-size: var(--fluid-ticket-mobile-draw-font-size, 18px);
+    font-size: var(--fluid-ticket-mobile-draw-font-size, 14px);
     line-height: var(--fluid-ticket-mobile-draw-line-height, 22px);
   }
 
@@ -1465,21 +1466,6 @@
     bottom: auto;
   }
 }
-/* Closed ticket collision contract: it always occupies the fitted gap below
-   the grid. Older per-view/upward-expansion rules must not pull it onto either
-   the grid or the footer. */
-.frame-app .grid-bottom-panel:not(.grid-bottom-panel--expanded)[data-ticket-position="below"] {
-  top: calc(100% + var(--fluid-ticket-gap, 16px));
-  bottom: auto;
-}
-
-@media (max-width: 639px) {
-  .frame-app .grid-bottom-panel:not(.grid-bottom-panel--expanded)[data-ticket-position="below"] {
-    top: calc(100% + var(--fluid-ticket-mobile-gap, 10px));
-    bottom: auto;
-  }
-}
-
 /* Final ticket position: exactly 5px below the grid in both views. Opening
    keeps the same top anchor, so the ticket expands downward without jumping. */
 .frame-app .grid-bottom-panel[data-ticket-position="below"],
@@ -1491,4 +1477,27 @@
       var(--fluid-ticket-offset, 5px)
   );
   bottom: auto;
+}
+
+/* View 1 opens upward while preserving the exact resting position of the
+   collapsed ticket's bottom edge and draw row. */
+.frame-app.view-1
+  .grid-bottom-panel--expanded[data-ticket-position="below"] {
+  top: auto;
+  bottom: calc(
+    0px - var(--fluid-ticket-offset, 5px) -
+      var(--fluid-ticket-min-height, 56px)
+  );
+}
+
+@media (max-width: 639px) {
+  .frame-app.view-1
+    .grid-bottom-panel--expanded[data-ticket-position="below"] {
+    top: auto;
+    bottom: calc(
+      0px - var(--fluid-ticket-offset, 5px) -
+        var(--fluid-ticket-mobile-min-height, 52px)
+    );
+    padding-bottom: var(--fluid-ticket-mobile-row-inset, 13px);
+  }
 }

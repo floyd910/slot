@@ -14,15 +14,12 @@ const getFooterBoundaryTop = (_root, footer, fallback) =>
   isVisible(footer) ? footer.getBoundingClientRect().top : fallback;
 
 const getBounds = (root, center) => {
-  const ticket = center.querySelector(".grid-bottom-panel");
-  // Only the collapsed footer is part of fitting. Opening details is an overlay
-  // and must not change the grid scale.
-  const ticketFootprint = ticket?.classList.contains("grid-bottom-panel--expanded")
-    ? ticket.querySelector(".grid-bottom-panel__footer")
-    : ticket;
+  // Ticket height is reserved separately by the fit calculation. Do not add
+  // its live contents to these bounds: opening the receipt moves its footer
+  // downward and must never rescale or reposition the board.
   const elements = [
     root.querySelector(".main-container__left"), center,
-    root.querySelector(".main-container__right"), ticketFootprint,
+    root.querySelector(".main-container__right"),
   ].filter(isVisible);
   if (!elements.length) return null;
   const rects = elements.map((element) => element.getBoundingClientRect());
@@ -117,9 +114,10 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       root.style.setProperty("--fluid-ticket-icon-size", "24px");
       root.style.setProperty("--fluid-ticket-mobile-min-height", "52px");
       root.style.setProperty("--fluid-ticket-mobile-padding", "10px 12px");
+      root.style.setProperty("--fluid-ticket-mobile-row-inset", "13px");
       root.style.setProperty("--fluid-ticket-mobile-radius", "14px");
-      root.style.setProperty("--fluid-ticket-mobile-draw-font-size", "18px");
-      root.style.setProperty("--fluid-ticket-mobile-draw-line-height", "22px");
+      root.style.setProperty("--fluid-ticket-mobile-draw-font-size", "14px");
+      root.style.setProperty("--fluid-ticket-mobile-draw-line-height", "17px");
       root.style.setProperty("--fluid-ticket-mobile-text-font-size", "14px");
       root.style.setProperty("--fluid-ticket-mobile-gap", "10px");
       root.style.setProperty("--fluid-ticket-mobile-icon-size", "28px");
@@ -136,7 +134,7 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       const activeGrid = center.querySelector(".preloaded-grid-view--active .lottery-grid");
       const activeGridRect = activeGrid?.getBoundingClientRect();
       const centerRect = center.getBoundingClientRect();
-      const ticketGridCorrection = activeGridRect
+      const ticketGridCorrection = root.classList.contains("view-2") && activeGridRect
         ? Math.max(0, centerRect.bottom - activeGridRect.bottom)
         : 0;
       root.style.setProperty("--fluid-ticket-grid-correction", `${ticketGridCorrection}px`);
@@ -192,10 +190,11 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       root.style.setProperty("--fluid-ticket-icon-size", `${24 / scale}px`);
       root.style.setProperty("--fluid-ticket-mobile-min-height", `${52 / scale}px`);
       root.style.setProperty("--fluid-ticket-mobile-padding", `${10 / scale}px ${12 / scale}px`);
+      root.style.setProperty("--fluid-ticket-mobile-row-inset", `${13 / scale}px`);
       root.style.setProperty("--fluid-ticket-mobile-radius", `${14 / scale}px`);
       const ticketVisualWidth = center.querySelector(".grid-bottom-panel")?.getBoundingClientRect().width || areaRect.width;
       const mobileTicketTextSize = Math.max(9, Math.min(14, ticketVisualWidth * 0.042));
-      const mobileTicketDrawSize = Math.max(12, Math.min(18, ticketVisualWidth * 0.055));
+      const mobileTicketDrawSize = 14;
       const mobileTicketDrawLineHeight = mobileTicketDrawSize + 3;
       const mobileTicketIconSize = Math.max(20, Math.min(28, ticketVisualWidth * 0.08));
       root.style.setProperty("--fluid-ticket-mobile-draw-font-size", `${mobileTicketDrawSize / scale}px`);
