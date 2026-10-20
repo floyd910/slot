@@ -103,6 +103,19 @@ test('settlement displays the accumulated series total once, stops autoplay, and
   } finally {globalThis.fetch=originalFetch;globalThis.window=originalWindow;await server.close();}
 });
 
+test('summary display currency overrides stale result currency', async () => {
+  const server=await createServer({configFile:false,esbuild:{jsx:'automatic'},optimizeDeps:{noDiscovery:true,include:[]},cacheDir:'tmp/vite-summary-currency-tests',server:{middlewareMode:true,watch:null,hmr:false},appType:'custom'});
+  try {
+    const React=await import('react');
+    const {renderToStaticMarkup}=await import('react-dom/server');
+    const {LanguageProvider}=await server.ssrLoadModule('/src/i18n.jsx');
+    const {default:Summary}=await server.ssrLoadModule('/src/components/freeSpinsPrompt/FreeSpinsSummary.jsx');
+    const html=renderToStaticMarkup(React.createElement(LanguageProvider,null,
+      React.createElement(Summary,{result:{id:'series',totalWin:'250.00',currency:'USD'},currency:'TJS',onContinue(){}})));
+    assert.match(html,/250\.00 TJS/);
+    assert.doesNotMatch(html,/USD/);
+  } finally { await server.close(); }
+});
 test('summary renders the requested Russian text and explicit zero result', async () => {
   const server=await createServer({configFile:false,esbuild:{jsx:'automatic'},optimizeDeps:{noDiscovery:true,include:[]},cacheDir:'tmp/vite-summary-tests',server:{middlewareMode:true,watch:null,hmr:false},appType:'custom'});
   try {

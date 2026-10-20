@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useLanguage } from '../../i18n.jsx';
-export default function FreeSpinsSummary({ result, onContinue }) {
+export default function FreeSpinsSummary({ result, currency, onContinue }) {
   const { t } = useLanguage();
   const button = useRef(null);
   const continueRef = useRef(onContinue);
@@ -25,7 +25,7 @@ export default function FreeSpinsSummary({ result, onContinue }) {
       <div className="free-spins-modal__card">
         <h2 id="free-spins-summary-title" className="free-spins-modal__title">{t('freeSpinsCompleted')}</h2>
         <p id="free-spins-summary-win" className="free-spins-modal__text">
-          {t(Number(result.totalWin) === 0 ? 'freeSpinsZeroWin' : 'freeSpinsSessionWin')}: <strong>{result.totalWin} {result.currency}</strong>
+          {t(Number(result.totalWin) === 0 ? 'freeSpinsZeroWin' : 'freeSpinsSessionWin')}: <strong>{result.totalWin} {currency ?? result.currency}</strong>
         </p>
         {Number(result.totalWin) > 0 && <p className="free-spins-modal__text">{t('freeSpinsCredited')}</p>}
         <button ref={button} className="free-spins-modal__start" type="button" onClick={onContinue}>{t('freeSpinsContinue')}</button>

@@ -250,7 +250,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
             onClose={() => actions.setShowGameMenu(false)}
           />
         )}
-        {state.freeSpinSummary && <FreeSpinsSummary result={state.freeSpinSummary} onContinue={actions.continueAfterFreeSpins} />}
+        {state.freeSpinSummary && <FreeSpinsSummary result={state.freeSpinSummary} currency={state.player?.currency} onContinue={actions.continueAfterFreeSpins} />}
         {!state.freeSpinSummary && state.showFreeSpinPrompt && !(state.hasRecoveredGrid && derived.pendingTicketWin) && (
           <FreeSpinsPrompt onStart={actions.startFreeSpinRun} count={state.freeSpinsLeft} paidTotal={state.freeSpinsPaidTotal} />
         )}
