@@ -15,7 +15,7 @@ export async function requestBalance({ token, playerId }) {
   const value = payload?.balance;
   if ((typeof value !== "number" && typeof value !== "string") ||
       String(value).trim() === "" || !Number.isFinite(Number(value)) || Number(value) < 0 ||
-      payload.currency !== "USD" ||
+      typeof payload.currency !== "string" || !/^[A-Z]{3}$/i.test(payload.currency.trim()) ||
       String(payload.playerId) !== String(playerId)) {
     throw Object.assign(new Error("Balance API returned invalid player balance data"), { code: "BACKEND_RESPONSE_ERROR" });
   }

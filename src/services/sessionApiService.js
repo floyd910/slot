@@ -161,8 +161,11 @@ export class SessionApiService {
       );
     }
     const wallet = usesStandaloneDemoWallet(params)
-      ? { balance: 1000, currency: "USD", playerId: String(playerId) }
+      ? { balance: 1000, currency: remote.NameValute ?? params.NameValute ?? params.nameValute ?? params.currency ?? "", playerId: String(playerId) }
       : await requestBalance({ token: params.token, playerId });
+    const displayCurrency = typeof remote.NameValute === "string" && remote.NameValute.trim()
+      ? remote.NameValute.trim().toUpperCase()
+      : wallet.currency;
     // No last-spin snapshot means there is no spin history to refresh yet.
     const played = gameState ? await requestFreeSpins(params) : 0;
     let freeSpinState;
@@ -205,6 +208,9 @@ export class SessionApiService {
       playerId,
       userId: playerId,
       idUser: playerId,
+      NameValute: displayCurrency,
+      nameValute: displayCurrency,
+      currency: displayCurrency,
     });
     return {
       paymentRecovered,
@@ -214,8 +220,9 @@ export class SessionApiService {
       player: {
         id: playerId,
         balance: wallet.balance,
-        currency: wallet.currency,
+        currency: displayCurrency,
       },
+      nameValute: displayCurrency,
       games,
       combinations,
       grid:

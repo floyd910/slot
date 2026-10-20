@@ -149,10 +149,11 @@ export const createSpinActions = ({
     const current = liveSpinStateRef.current;
     if (current.balanceRefreshId !== request || current.balanceVersion !== snapshot.balanceVersion ||
         current.context !== context || current.player !== player) return null;
-    const nextPlayer = { ...player, balance: wallet.balance, currency: wallet.currency };
+    const displayCurrency = context.NameValute ?? context.nameValute ?? player.currency;
+    const nextPlayer = { ...player, balance: wallet.balance, currency: displayCurrency };
     liveSpinStateRef.current = { ...current, player: nextPlayer };
     setPlayer(nextPlayer);
-    postEvent("UPDATE_BALANCE", { balance: wallet.balance, currency: wallet.currency });
+    postEvent("UPDATE_BALANCE", { balance: wallet.balance, currency: displayCurrency });
     return wallet;
   };
 

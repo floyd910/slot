@@ -59,6 +59,21 @@ test('real init is required even with supplied session; zero balance is retained
   } finally {globalThis.fetch=original;}
 });
 
+test('NameValute from init is authoritative over balance currency',async()=>{
+  mergeRuntimeConfig({sessionApiBaseUrl:'https://example.invalid'});
+  const original=globalThis.fetch;
+  const service=new SessionApiService();
+  const params={token:'fixture',playerId:1862,gameId:'khiradmandi-makor',initSource:'postMessage'};
+  try {
+    globalThis.fetch=async url=>url.endsWith('/init')
+      ? new Response(JSON.stringify({sessionId:'tjs-session',NameValute:'TJS',idValute:'5',gameState:null}))
+      : new Response(JSON.stringify({balance:250,currency:'USD',playerId:'1862'}));
+    const result=await service.initSession(params);
+    assert.equal(result.player.balance,250);
+    assert.equal(result.player.currency,'TJS');
+    assert.equal(result.nameValute,'TJS');
+  } finally { globalThis.fetch=original; }
+});
 test('standalone uses a fresh 1000 USD page wallet without requesting backend balance',async()=>{
   mergeRuntimeConfig({sessionApiBaseUrl:'https://example.invalid'});
   const originalFetch=globalThis.fetch;
@@ -71,7 +86,7 @@ test('standalone uses a fresh 1000 USD page wallet without requesting backend ba
     globalThis.fetch=async(url)=>{
       calls.push(new URL(url).pathname);
       assert.ok(url.endsWith('/init'));
-      return new Response(JSON.stringify({sessionId:'standalone-session',gameState:null}));
+      return new Response(JSON.stringify({sessionId:'standalone-session',NameValute:'USD',gameState:null}));
     };
     const result=await new SessionApiService().initSession({token:'fixture',playerId:7,gameId:'khiradmandi-makor',initSource:'demo-stand',mode:'standalone'});
     assert.deepEqual(calls,['/init']);

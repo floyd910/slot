@@ -788,6 +788,8 @@ export function useGameController(selectedGameId, gameDefinition = null) {
           idUser: sessionPlayer?.id ?? context.idUser,
           balance: sessionPlayer?.balance ?? context.balance,
           currency: sessionPlayer?.currency ?? context.currency,
+          NameValute: session.nameValute ?? sessionPlayer?.currency ?? context.NameValute,
+          nameValute: session.nameValute ?? sessionPlayer?.currency ?? context.nameValute,
         };
         initializedSessionIdRef.current = session.sessionId;
         partnerApi.configure(initializedContext);
