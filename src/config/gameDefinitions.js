@@ -33,6 +33,7 @@ import {
   GAME2_VIEW1_CELL_AND_VIEW2_SYMBOL_2_BACKGROUND_SRC,
   GAME2_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC,
   GAME3_COVER_SRC,
+  GAME3_DOUBLE_SCENE_BACKGROUND_SRC,
   GAME3_LOGO_ORNAMENT_SRC,
   GAME3_LOGO_SRC,
   GAME4_CHOOSER_TILE_SRC,
@@ -108,6 +109,11 @@ const sharedPlaceholderAssets = Object.freeze({
   logo: GAME3_LOGO_SRC,
   logoOrnament: GAME3_LOGO_ORNAMENT_SRC,
   chooserTile: "/assets/img/chooser/game3.webp",
+});
+
+const GAME3_ASSETS = Object.freeze({
+  ...sharedPlaceholderAssets,
+  doubleSceneBackground: GAME3_DOUBLE_SCENE_BACKGROUND_SRC,
 });
 
 const game2WinFrames = (symbol, frameCount) =>
@@ -386,7 +392,7 @@ const GAME8_ASSETS = Object.freeze({
 export const GAME_DEFINITIONS = Object.freeze([
   createGameDefinition({ id: "ganchina-sokrovishch", title: "Ганчина-Сокровищ", subtitle: "Classic 5-reel slot", assets: GAME1_ASSETS }),
   createGameDefinition({ id: "marvorid-djemchug", title: "Marvorid Djemchug", subtitle: "Classic slot", assets: GAME2_ASSETS }),
-  createGameDefinition({ id: "khiradmandi-makor", title: "Khiradmandi Makor", subtitle: "Coordinate lottery slot" }),
+  createGameDefinition({ id: "khiradmandi-makor", title: "Khiradmandi Makor", subtitle: "Coordinate lottery slot", assets: GAME3_ASSETS }),
   createGameDefinition({ id: "egypt", title: "Egypt", subtitle: "Table-style slot", assets: GAME4_ASSETS }),
   createGameDefinition({ id: "kadima-drevnii", title: "Kadima Drevnii", subtitle: "Ancient adventure", assets: GAME5_ASSETS }),
   createGameDefinition({ id: "khocha-afandi", title: "Khocha Afandi", subtitle: "Number draw game", assets: GAME6_ASSETS }),

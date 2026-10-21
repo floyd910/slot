@@ -91,6 +91,7 @@ function LanguageFlag({ option }) {
   return <span className="lang-chooser__flag-fallback">{option.flagLabel}</span>;
 }
 const Header = ({
+  doublingActive = false,
   menuOpen = false,
   onMenuOpen,
   onBackToSlots,
@@ -173,7 +174,7 @@ const Header = ({
       : null;
 
   return (
-    <header>
+    <header className={doublingActive ? "header--doubling-active" : undefined}>
       <div className="header-left">
         <button
           type="button"

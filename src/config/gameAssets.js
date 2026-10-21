@@ -158,6 +158,8 @@ export const GAME2_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC =
 export const GAME3_COVER_SRC = "/assets/img/game3-background-lossless.webp";
 export const GAME3_LOGO_SRC = "/assets/img/game3-logo-optimized.webp";
 export const GAME3_LOGO_ORNAMENT_SRC = "/assets/img/game3-logo-ornament.webp";
+export const GAME3_DOUBLE_SCENE_BACKGROUND_SRC =
+  "/assets/img/game3-khiradmandi-makor-double-scene-bg.avif";
 export const GAME3_SHELL_ASSETS = [GAME3_COVER_SRC, GAME3_LOGO_SRC];
 export const GAME7_SHELL_ASSETS = [
   GAME7_COVER_SRC,
@@ -183,10 +185,10 @@ export const LANGUAGE_CHOOSER_ASSETS = [
 
 export const DOUBLE_SCENE_ASSET_SOURCES = Object.freeze({
   background: "/assets/img/double-scene-bg-lossless.webp",
-  emptyChest: "/assets/img/double-empty-chest-lossless.webp",
-  leftClosedChest: "/assets/img/double-left-chest-lossless.webp",
-  rightClosedChest: "/assets/img/double-right-chest-lossless.webp",
-  winningChest: "/assets/img/double-winning-chest-lossless.webp",
+  emptyChest: "/assets/img/double-empty-chest-lossless.avif",
+  leftClosedChest: "/assets/img/double-left-chest-lossless.avif",
+  rightClosedChest: "/assets/img/double-right-chest-lossless.avif",
+  winningChest: "/assets/img/double-winning-chest-lossless.avif",
 });
 
 export const DOUBLE_SCENE_ASSETS = Object.values(DOUBLE_SCENE_ASSET_SOURCES);

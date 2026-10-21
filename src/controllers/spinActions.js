@@ -468,6 +468,7 @@ export const createSpinActions = ({
           requestId, partnerRoundId, idCard: result.idCard, roundId: result.idCard, operationType: "SPIN",
           operationStatus: ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION,
           currentWinSum: ticketWinAmount, WasDouble: 0, doubleAvailable: true,
+          autoExpressActive: autoExpressSpin || autoPlayOnRef.current,
           stake, selectedCombinationId: selectedCombination.id,
           spinResult: nextSpinResult, grid: result.grid, doublingState: nextDoublingState, doubleState: createDoubleState(),
         }, context);

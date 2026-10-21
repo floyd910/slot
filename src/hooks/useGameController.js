@@ -315,6 +315,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const autoPlayOnRef = useRef(autoPlayOn);
   const freeSpinRunRef = useRef(false);
   const resumeAutoPlayAfterFreeSpinsRef = useRef(false);
+  const automaticReturnPaymentRef = useRef(null);
   const definitelyOfflineActionRef = useRef(false);
   const liveSpinStateRef = useRef({
     carpetCloseMs,
@@ -807,11 +808,12 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       // NETWORK_UNREACHABLE locks; versioned in-flight failures remain protected.
       stateRecoveryService.clearLegacyOfflinePending(context);
       const pendingRecovery = frameApi.getPendingRequest(context);
+      const locallyRecoveredState = frameApi.recoverState(context);
       const recoveredState = session.gameState
         ? null
         : pendingRecovery?.methodName === "/double" && pendingRecovery.recoveryState
           ? pendingRecovery.recoveryState
-          : frameApi.recoverState(context);
+          : locallyRecoveredState;
       const lastSpinSnapshot = session.gameState ?? stateRecoveryService.getLastSpin(context);
       const confirmedSpinResult = recoveredState?.spinResult ?? recoveredState?.lastConfirmedSpinResult ?? lastSpinSnapshot?.spinResult;
       if (
@@ -828,6 +830,14 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         setDoubleState(createDoubleState());
       }
       const needsRecovery = Boolean(pendingRecovery) || session.gameState?.requiresReconciliation || [ROUND_OPERATION_STATUS.SPIN_PROCESSING, ROUND_OPERATION_STATUS.DOUBLE_PROCESSING].includes(recoveredState?.operationStatus);
+      const restoredRound = recoveredState ?? locallyRecoveredState;
+      const restoredResult = session.gameState?.spinResult ?? confirmedSpinResult;
+      const restoredFreeSpinsLeft = Number(session.freeSpinsLeft ?? session.gameState?.freeSpinsLeft ?? restoredRound?.freeSpinsLeft ?? 0);
+      const hasUnpaidRestoredWin = Boolean(restoredResult?.idCard && restoredResult.creditedToBalance !== true && Number(restoredResult.WinSum ?? 0) > 0);
+      const shouldAutoPayReturnedFreeSpin = Boolean(restoredFreeSpinsLeft > 0 || restoredRound?.freeSpinsActive === true || restoredResult?.freeSpinDeferred === true || restoredResult?.isFreeSpin === true);
+      automaticReturnPaymentRef.current = !needsRecovery && hasUnpaidRestoredWin && (shouldAutoPayReturnedFreeSpin || restoredRound?.autoExpressActive === true)
+        ? { idCard: restoredResult.idCard, resumeAutoExpress: restoredRound?.autoExpressActive === true, hasFreeSpins: shouldAutoPayReturnedFreeSpin }
+        : null;
       if (needsRecovery) {
         // Keep the last confirmed Free Spin result visible while the next
         // request remains unknown and therefore safely blocked.
@@ -1206,6 +1216,22 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     });
 
   liveSpinStateRef.current.settleFreeSpinWins = settleFreeSpinWins;
+  useEffect(() => {
+    const pending = automaticReturnPaymentRef.current;
+    if (!pending || status !== 'ready' || roundRecoveryStatus === ROUND_OPERATION_STATUS.RECOVERY_REQUIRED) return;
+    if (String(spinResult?.idCard ?? '') !== String(pending.idCard ?? '') || stateRecoveryService.getPendingRequest(context)) return;
+    automaticReturnPaymentRef.current = null;
+    void (async () => {
+      const paid = await collectWin();
+      if (!paid || !pending.resumeAutoExpress) return;
+      if (pending.hasFreeSpins && liveSpinStateRef.current.freeSpinsLeft > 0) {
+        resumeAutoPlayAfterFreeSpinsRef.current = true;
+        return;
+      }
+      autoPlayOnRef.current = true;
+      setAutoPlayOn(true);
+    })();
+  }, [collectWin, context, roundRecoveryStatus, spinResult?.idCard, status]);
   useEffect(() => {
     liveSpinStateRef.current.freeSpinSummary = null;
     liveSpinStateRef.current.freeSpinSummaryChecking = false;

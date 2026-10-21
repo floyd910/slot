@@ -13,6 +13,7 @@ export default function Game3({ slotId, onBack }) {
   return (
     <>
       <Header
+        doublingActive={controller.derived.isVisualDoubling}
         menuOpen={controller.state.showGameMenu}
         onMenuOpen={() => controller.actions.setShowGameMenu(true)}
         onBackToSlots={onBack}

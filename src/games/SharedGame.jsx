@@ -15,6 +15,7 @@ export default function SharedGame({ game, onBack }) {
     >
       <div style={{ visibility: controller.state.status !== "guest" && controller.state.startupLoaderVisible ? "hidden" : "visible" }}>
         <Header
+        doublingActive={controller.derived.isVisualDoubling}
         menuOpen={controller.state.showGameMenu}
         onMenuOpen={() => controller.actions.setShowGameMenu(true)}
         onBackToSlots={onBack}
