@@ -5,6 +5,7 @@ const SIDES = ["left", "right"];
 
 export function buildView2DoubleSceneViewModel({
   amount,
+  backgroundSource,
   ladderAmount,
   lastPick,
   lastStatus,
@@ -15,7 +16,7 @@ export function buildView2DoubleSceneViewModel({
   const hasResolvedResult = lastStatus === "win" || lastStatus === "lose";
 
   return {
-    backgroundSource: DOUBLE_SCENE_ASSET_SOURCES.background,
+    backgroundSource: backgroundSource ?? DOUBLE_SCENE_ASSET_SOURCES.background,
     choices: SIDES.map((side) =>
       buildChestChoice({
         hasResolvedResult,

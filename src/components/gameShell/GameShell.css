@@ -1120,6 +1120,17 @@ button:disabled {
   object-fit: contain;
   z-index: 20;
 }
+
+/* Tablet and desktop localized logos need the former artwork's visual presence. */
+@media (min-width: 721px) {
+  .game_area > .header_img,
+  .frame-app[data-fluid-fit="true"] .game_area > .header_img,
+  .frame-app[data-fluid-logo-fit="true"] .game_area > .header_img {
+    width: min(72vw, 600px);
+    min-width: min(72vw, 560px);
+    height: auto;
+  }
+}
 /* Fruits has three chooser cards and eight payout rows: side panels follow their content. */
 .configured-game[data-game-id="fruits"] .view-1 .main-container__left,
 .configured-game[data-game-id="fruits"] .view-1 .main-container__right {
@@ -1245,5 +1256,22 @@ button:disabled {
   .frame-app .game_area {
     box-sizing: border-box;
     padding-inline: 10px;
+  }
+}
+
+/* Desktop View 2: pull the grid closer to the decorative game logo. */
+@media (min-width: 1025px) {
+  .frame-app.view-2:not(.doubling-active):not([data-fluid-fit="true"])
+    .game-main-layout
+    > .frame-content {
+    top: calc(var(--header-content-start, 161px) - 12px);
+  }
+
+  .frame-app[data-fluid-fit="true"].view-2:not(.doubling-active)
+    .game-main-layout
+    > .frame-content {
+    inset-block-start: calc(
+      var(--fluid-content-top, calc(var(--fluid-logo-height) + 10px)) - 12px
+    );
   }
 }

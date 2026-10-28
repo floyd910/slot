@@ -1,7 +1,7 @@
-import { SLOT_CHOOSER_BACKGROUND_SRC } from "../../config/gameAssets.js";
+import { resolveLocalizedAsset, SLOT_CHOOSER_BACKGROUND_SRC } from "../../config/gameAssets.js";
 import { getStartupPresentation } from "../../viewModels/startupPresentation.js";
 import "./GameShell.css";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import BottomBar from "../bottomBar/BottomBar.jsx";
 import GameMenu from "../gameMenu/GameMenu.jsx";
 import Paytable from "../paytable/Paytable.jsx";
@@ -15,6 +15,7 @@ import FreeSpinsPrompt from "../freeSpinsPrompt/FreeSpinsPrompt.jsx";
 import GameContent from "../gameContent/GameContent.jsx";
 import { useResponsiveGameLayout } from "../../hooks/useResponsiveGameLayout.js";
 import { getRuntimeStateStatus } from "../../utils/runtimeStatus.js";
+import { preloadImage } from "../../utils/mediaPreload.js";
 
 export default function GameShell({ controller, game, onBackToSlots }) {
   const shellRef = useRef(null);
@@ -71,6 +72,17 @@ export default function GameShell({ controller, game, onBackToSlots }) {
     };
   }, [game.assets.cover, backgroundAttempt]);
   const { isLanguageChanging, language, t } = useLanguage();
+  useEffect(() => {
+    const alternateLanguage = language === "ru" ? "tg" : "ru";
+    const timer = window.setTimeout(() => {
+      preloadImage(resolveLocalizedAsset(game.assets.logo, alternateLanguage), {
+        decode: false,
+        fetchPriority: "low",
+        rejectOnError: false,
+      });
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [game.assets.logo, language]);
 
   const {guest, showStartupLoader} = getStartupPresentation({
     status:state.status, loaderExitComplete, checkingSession, hasPlayer:Boolean(state.player),
@@ -134,7 +146,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
         <div className="bg-overlay"></div>
         <img
           className="header_img"
-          src={game.assets.logo}
+          src={resolveLocalizedAsset(game.assets.logo, language)}
           alt=""
           aria-hidden="true"
           decoding="sync"

@@ -1,6 +1,7 @@
 import { requestDoubleExit } from "../services/doubleExitService.js";
 import { useEffect, useRef, useState } from "react";
 import {
+  resolveLocalizedAsset,
   SLOT_CHOOSER_BACKGROUND_SRC,
 } from "../config/gameAssets.js";
 import { GAME_DEFINITIONS } from "../config/gameDefinitions.js";
@@ -8,17 +9,19 @@ import { GAME_API_IDS } from "../api/gameApiIds.js";
 import { VIEW2_DICE_PRELOAD_ASSETS } from "../config/view2Assets.js";
 import { notifySlotChooserReady } from "../services/frameReadyNotifier.js";
 import { stateRecoveryService } from "../services/stateRecoveryService.js";
+import { useLanguage } from "../i18n.jsx";
 import {
   preloadGameAssets,
+  preloadImages,
   preloadRequiredImages,
   scheduleDeferredStartupAssets,
 } from "../utils/mediaPreload.js";
 
-const SLOT_CHOOSER_REQUIRED_ASSETS = [
+const getSlotChooserRequiredAssets = (language) => [
   SLOT_CHOOSER_BACKGROUND_SRC,
   ...VIEW2_DICE_PRELOAD_ASSETS,
   ...GAME_DEFINITIONS.filter((game) => game.id !== "double-bonus").map(
-    (game) => game.assets.chooserTile,
+    (game) => resolveLocalizedAsset(game.assets.chooserTile, language),
   ),
 ];
 
@@ -112,6 +115,7 @@ const notifyAfterPaint = () => {
 };
 
 export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
+  const { language } = useLanguage();
   const [chooserAssetsReady, setChooserAssetsReady] = useState(false);
   const [chooserLoadProgress, setChooserLoadProgress] = useState(0);
   const [gameLoadProgress, setGameLoadProgress] = useState(0);
@@ -206,7 +210,7 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
     Promise.all([
       // Decode every chooser card/background image while the initial loader is up.
       preloadRequiredImages(
-        SLOT_CHOOSER_REQUIRED_ASSETS,
+        getSlotChooserRequiredAssets(language),
         setChooserLoadProgress,
       ),
       // Load the chooser JSX and its CSS before its first render.
@@ -236,7 +240,7 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
     return () => {
       active = false;
     };
-  }, [chooserAssetsReady, pendingSlotId, selectedSlotId]);
+  }, [chooserAssetsReady, language, pendingSlotId, selectedSlotId]);
 
   useEffect(() => {
     if (!chooserAssetsReady || chooserReadyNotifiedRef.current)
@@ -244,6 +248,20 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
     chooserReadyNotifiedRef.current = true;
     return notifyAfterPaint();
   }, [chooserAssetsReady]);
+
+  useEffect(() => {
+    if (!chooserAssetsReady || selectedSlotId || pendingSlotId) return undefined;
+    const alternateLanguage = language === "ru" ? "tg" : "ru";
+    const timer = window.setTimeout(() => {
+      preloadImages(
+        GAME_DEFINITIONS.filter((game) => game.id !== "double-bonus").map(
+          (game) => resolveLocalizedAsset(game.assets.chooserTile, alternateLanguage),
+        ),
+        { decode: false, fetchPriority: "low", rejectOnError: false },
+      );
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, [chooserAssetsReady, language, pendingSlotId, selectedSlotId]);
   const openSlot = async (slot) => {
     if (slot.status !== "ready" || selectedSlotId || pendingSlotId) return;
 
@@ -259,7 +277,7 @@ export function useSlotApp({ loadSelectedSlotGame, loadSlotChooser }) {
       // code and first screen assets load together.
       await Promise.all([
         loadSelectedSlotGame(),
-        preloadGameAssets(slot, reportGameLoadProgress),
+        preloadGameAssets(slot, reportGameLoadProgress, language),
       ]);
       if (openRequestRef.current !== requestId) return;
       await waitForDisplayedGameProgress(99);

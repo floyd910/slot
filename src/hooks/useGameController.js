@@ -126,6 +126,34 @@ const normalizeStakeOption = (value, fallback = stakeOptions[0]) => {
   return stakeOptions.includes(numericValue) ? numericValue : fallback;
 };
 
+const findAffordableWager = ({ balance, combinations, currentCombination, currentStake, allowedStakesFor }) => {
+  const availableBalance = Number(balance);
+  const currentLines = Number(currentCombination?.groups?.length ?? 0);
+  if (!Number.isFinite(availableBalance) || availableBalance < 0 || !currentLines) return null;
+
+  const candidates = combinations.flatMap((combination) => {
+    const lines = Number(combination?.groups?.length ?? 0);
+    if (!lines || lines > currentLines) return [];
+    return allowedStakesFor(combination)
+      .filter((option) => option <= currentStake)
+      .map((option) => ({
+        combination,
+        stake: option,
+        total: Number((option * lines).toFixed(2)),
+      }))
+      .filter(({ total }) => total <= availableBalance + 0.000001);
+  });
+
+  return candidates.sort((left, right) => {
+    const leftKeepsCombination = String(left.combination.id) === String(currentCombination.id);
+    const rightKeepsCombination = String(right.combination.id) === String(currentCombination.id);
+    return Number(rightKeepsCombination) - Number(leftKeepsCombination) ||
+      right.combination.groups.length - left.combination.groups.length ||
+      right.stake - left.stake ||
+      right.total - left.total;
+  })[0] ?? null;
+};
+
 export function useGameController(selectedGameId, gameDefinition = null) {
   const { t } = useLanguage();
   const [spinAssetsReady, setSpinAssetsReady] = useState(false);
@@ -317,6 +345,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   const resumeAutoPlayAfterFreeSpinsRef = useRef(false);
   const automaticReturnPaymentRef = useRef(null);
   const definitelyOfflineActionRef = useRef(false);
+  const automaticInsufficientFundsRef = useRef(false);
   const liveSpinStateRef = useRef({
     carpetCloseMs,
     carpetOpenMs,
@@ -1405,6 +1434,70 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     testMode ||
     freeSpinsLeft > 0 ||
     Number(player?.balance ?? 0) >= totalPurchase;
+
+  useEffect(() => {
+    if (
+      testMode ||
+      status !== "ready" ||
+      freeSpinsLeft > 0 ||
+      showFreeSpinPrompt ||
+      freeSpinSummary ||
+      pendingTicketWin ||
+      doublingState.active ||
+      doublingState.loading ||
+      doubleState.loading ||
+      isRoundRecoveryBlocked
+    ) return;
+
+    const balance = Number(player?.balance);
+    if (!Number.isFinite(balance) || !selectedCombination || totalPurchase <= balance) {
+      if (automaticInsufficientFundsRef.current && totalPurchase <= balance) {
+        automaticInsufficientFundsRef.current = false;
+        setError("");
+      }
+      return;
+    }
+
+    const affordable = findAffordableWager({
+      balance,
+      combinations,
+      currentCombination: selectedCombination,
+      currentStake: stake,
+      allowedStakesFor: () => stakeOptions,
+    });
+    if (affordable) {
+      if (affordable.stake !== stake) setStake(affordable.stake);
+      if (String(affordable.combination.id) !== String(selectedCombinationId)) {
+        setSelectedCombinationId(affordable.combination.id);
+      }
+      if (automaticInsufficientFundsRef.current) {
+        automaticInsufficientFundsRef.current = false;
+        setError("");
+      }
+      return;
+    }
+
+    automaticInsufficientFundsRef.current = true;
+    setError(t("insufficientBalance"));
+  }, [
+    combinations,
+    doubleState.loading,
+    doublingState.active,
+    doublingState.loading,
+    freeSpinSummary,
+    freeSpinsLeft,
+    isRoundRecoveryBlocked,
+    pendingTicketWin,
+    player?.balance,
+    selectedCombination,
+    selectedCombinationId,
+    showFreeSpinPrompt,
+    stake,
+    status,
+    t,
+    testMode,
+    totalPurchase,
+  ]);
   const hasFreeSpinsPending = freeSpinsLeft > 0;
   const isVisualDoubling =
     visualMode &&

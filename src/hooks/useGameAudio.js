@@ -76,6 +76,28 @@ const VIEW1_SPIN_SOURCE_BY_GAME = Object.freeze({
   fruits: "/media/game8-view1-reveal-v2.opus",
 });
 
+const VIEW1_WIN_SOURCE_BY_GAME = Object.freeze({
+  "ganchina-sokrovishch": "/media/game1-view1-win-v2.opus",
+  "marvorid-djemchug": "/media/game2-view1-win-v2.opus",
+  "khiradmandi-makor": "/media/game3-view1-win-v2.opus",
+  egypt: "/media/game4-view1-win-v2.opus",
+  "kadima-drevnii": "/media/game5-view1-win-v2.opus",
+  "khocha-afandi": "/media/game6-view1-win-v2.opus",
+  babylon: "/media/game7-view1-win-v2.opus",
+  fruits: "/media/game8-view1-win-v2.opus",
+});
+const VIEW1_WIN_MEDIA_KEYS = new Set([
+  "receiptWin",
+  "win0",
+  "win12",
+  "win3",
+  "win4",
+  "win5",
+  "win6",
+  "win7",
+  "win8",
+]);
+
 const GAME2_BUBBLE_CLICK_SRC = "/media/game2-button-click-v2.opus";
 const GAME2_WATER_SPARKLE_SRC = "/media/game2-water-sparkle.mp3";
 const GAME2_CARPET_REVEAL_SRC = "/media/game2-view2-carpet-reveal-v2.opus";
@@ -143,6 +165,7 @@ export function useGameAudio(gameId) {
   const useGame3Sounds = gameId === "khiradmandi-makor";
   const useGame5Sounds = gameId === "kadima-drevnii";
   const uiClickVolume = EFFECT_VOLUME;
+  const view1WinSource = VIEW1_WIN_SOURCE_BY_GAME[gameId];
   const carpetVolume = useGame2Sounds ? EFFECT_VOLUME * 2 : EFFECT_VOLUME;
   const baseMedia = useGame2Sounds
     ? game2Media
@@ -225,8 +248,15 @@ export function useGameAudio(gameId) {
         ? game5WinSoundBySymbol
         : originalWinSoundBySymbol;
   const effectSources = useMemo(
-    () => [...new Set(Object.values(media))],
-    [media],
+    () => [
+      ...new Set([
+        ...Object.entries(media)
+          .filter(([key]) => !view1WinSource || !VIEW1_WIN_MEDIA_KEYS.has(key))
+          .map(([, src]) => src),
+        view1WinSource,
+      ].filter(Boolean)),
+    ],
+    [media, view1WinSource],
   );
   const cacheRef = useRef(new Map());
   const backgroundRef = useRef(null);
@@ -607,7 +637,9 @@ export function useGameAudio(gameId) {
         }
         const winSrc = hasCustomView2Win
           ? media.view2Win
-          : winSoundBySymbol[firstSymbol] ?? media.receiptWin;
+          : !payload?.visualMode && view1WinSource
+            ? view1WinSource
+            : winSoundBySymbol[firstSymbol] ?? media.receiptWin;
         const usesPerLineView2Win =
           payload?.visualMode &&
           ["egypt", "kadima-drevnii", "babylon"].includes(gameId);
@@ -627,6 +659,7 @@ export function useGameAudio(gameId) {
       stopAllAudio,
       stopBackground,
       uiClickVolume,
+      view1WinSource,
       winSoundBySymbol,
     ],
   );

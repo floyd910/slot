@@ -33,6 +33,7 @@ import {
   GAME2_VIEW1_CELL_AND_VIEW2_SYMBOL_2_BACKGROUND_SRC,
   GAME2_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC,
   GAME3_COVER_SRC,
+  GAME3_CHOOSER_TILE_SRC,
   GAME3_DOUBLE_SCENE_BACKGROUND_SRC,
   GAME3_LOGO_ORNAMENT_SRC,
   GAME3_LOGO_SRC,
@@ -108,7 +109,7 @@ const sharedPlaceholderAssets = Object.freeze({
   cover: GAME3_COVER_SRC,
   logo: GAME3_LOGO_SRC,
   logoOrnament: GAME3_LOGO_ORNAMENT_SRC,
-  chooserTile: "/assets/img/chooser/game3.webp",
+  chooserTile: GAME3_CHOOSER_TILE_SRC,
 });
 
 const GAME3_ASSETS = Object.freeze({

@@ -98,6 +98,7 @@ export default function GameContent({ controller, game, runtimeState }) {
       <section className="view2-double-screen" aria-busy={derived.isBusy}>
         <View2DoubleScene
           gameId={game.id}
+          backgroundSource={game.assets.doubleSceneBackground}
           amount={
             state.doublingState.currentAmount ?? state.spinResult?.WinSum ?? 0
           }

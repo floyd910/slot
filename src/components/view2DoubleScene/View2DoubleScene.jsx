@@ -3,6 +3,7 @@ import "./View2DoubleScene.css";
 
 export default function View2DoubleScene({
   gameId,
+  backgroundSource,
   amount,
   ladderAmount,
   step,
@@ -13,6 +14,7 @@ export default function View2DoubleScene({
 }) {
   const view = useView2DoubleSceneViewModel({
     amount,
+    backgroundSource,
     ladderAmount,
     lastPick,
     lastStatus,

@@ -6,6 +6,7 @@ import {
   DOUBLE_SCENE_ASSET_SOURCES,
   FIRST_PAINT_GAME_IMAGE_ASSETS,
   getGameFirstPaintAssets,
+  resolveLocalizedAsset,
   STARTUP_ASSETS,
 } from "../config/gameAssets.js";
 import {
@@ -400,10 +401,10 @@ export const getGameView2GridAssets = (game) =>
   ]);
 
 // The default loader includes both View 1 and the static View 2 grid.
-export const getRequiredGameMainScreenAssets = (game) => {
+export const getRequiredGameMainScreenAssets = (game, language = "ru") => {
   const gameAssets = [
     game?.assets?.cover,
-    game?.assets?.logo,
+    resolveLocalizedAsset(game?.assets?.logo, language),
     ...getGameFirstPaintAssets(game),
   ].filter((src) => isAssetAllowedForGame(src, game));
 
@@ -455,19 +456,19 @@ export const preloadStartupAssets = (onProgress) => {
   return startupAssetsPromise;
 };
 
-export const preloadGameAssets = (game, onProgress) => {
+export const preloadGameAssets = (game, onProgress, language = "ru") => {
   if (!game) return preloadStartupAssets(onProgress);
   // Each game has distinct View 1 artwork. Do not share a completed preload
   // promise across games, otherwise a later game can mount before its own
   // header and cell background have decoded.
-  const cacheKey = game.id;
+  const cacheKey = `${game.id}:${language}`;
   const cached = gameAssetsPromises.get(cacheKey);
   if (cached) {
     onProgress?.(99, { immediate: true });
     return cached;
   }
 
-  const requiredAssets = getRequiredGameMainScreenAssets(game);
+  const requiredAssets = getRequiredGameMainScreenAssets(game, language);
   const promise = Promise.all([
     // Decode each required image once and report completion immediately.
     // No all-request header barrier: production latency cannot pin progress at 0%.

@@ -1,6 +1,8 @@
+import { resolveLocalizedAsset } from "../config/gameAssets.js";
+
 const PENDING_SLOT_IMAGE = "/assets/img/logo-frame.webp";
 
-export function buildSlotChooserItems({ interactive, slots }) {
+export function buildSlotChooserItems({ interactive, language, slots }) {
   return slots.map((slot) => {
     const ready = slot.status === "ready";
     const enabled = interactive && ready;
@@ -10,7 +12,9 @@ export function buildSlotChooserItems({ interactive, slots }) {
       enabled,
       fetchPriority: ready ? "high" : "low",
       id: slot.id,
-      imageSrc: ready ? slot.assets.chooserTile : PENDING_SLOT_IMAGE,
+      imageSrc: ready
+        ? resolveLocalizedAsset(slot.assets.chooserTile, language)
+        : PENDING_SLOT_IMAGE,
       slot,
     };
   });

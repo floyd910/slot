@@ -5,6 +5,7 @@ const OTHER_CHEST_REVEAL_DELAY_MS = 1000;
 
 export function useView2DoubleSceneViewModel({
   amount,
+  backgroundSource,
   ladderAmount,
   lastPick,
   lastStatus,
@@ -27,12 +28,13 @@ export function useView2DoubleSceneViewModel({
     () =>
       buildView2DoubleSceneViewModel({
         amount,
+        backgroundSource,
         ladderAmount,
         lastPick,
         lastStatus,
         showOtherWinningChest,
         step,
       }),
-    [amount, ladderAmount, lastPick, lastStatus, showOtherWinningChest, step],
+    [amount, backgroundSource, ladderAmount, lastPick, lastStatus, showOtherWinningChest, step],
   );
 }
