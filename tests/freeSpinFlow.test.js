@@ -62,7 +62,7 @@ test('all games and views count 15 per catch, restore, retrigger and finish usin
     assert.ok(url.endsWith('/freespins'));return new Response(JSON.stringify({CountFreeSpin:String(played)}));
    };
    assert.equal(await actions.continueAfterFreeSpins(),true);
-   assert.equal(live.current.player.balance,1503);
+   assert.equal(live.current.player.balance,5858.5,'Continue only closes the modal; /pay already credited the balance');
    assert.equal(live.current.freeSpinsWinTotal,0);
    assert.equal(freeSpinSeries.read(context).freeSpinsWinTotal,5758.5);
    // A successful normal spin may return a counter below the completed series.

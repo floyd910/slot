@@ -115,7 +115,11 @@ export const createSpinActions = ({
     if (freeSpinContinuePromise) return freeSpinContinuePromise;
     freeSpinContinuePromise = (async () => {
       try {
-        await refreshBalance();
+        // The successful /pay response has already supplied and applied the
+        // authoritative balance before the summary is shown. Continue only
+        // acknowledges the dialog; fetching the wallet here made the credit
+        // appear to depend on this button and could overwrite the confirmed
+        // value with a delayed response.
         liveSpinStateRef.current.freeSpinSummary = null;
         // Zero is an explicit display reset; null would reveal the last ticket amount.
         liveSpinStateRef.current.freeSpinsWinTotal = 0;
@@ -127,7 +131,7 @@ export const createSpinActions = ({
         }
         return true;
       } catch (error) {
-        reportOperationError(error, "Unable to refresh balance after free spins");
+        reportOperationError(error, "Unable to close the free-spin summary");
         return false;
       } finally {
         freeSpinContinuePromise = null;
@@ -594,8 +598,17 @@ export const createSpinActions = ({
         if (persistedFreeSpinsLeft <= 0 && !(backendManagedWallet && isDigitWin)) stateRecoveryService.completeRound(context);
       }
 
-      await wait(revealSettleMs);
-      // Reveal the confirmed series total only after the carpet/board finishes opening.
+      const isFinalFreeSpin =
+        isFreeSpin && liveSpinStateRef.current.freeSpinsLeft <= 0;
+      if (isFinalFreeSpin) {
+        // The server has confirmed the last bonus result. Do not postpone the
+        // financial settlement behind a decorative reveal timer: /pay must be
+        // submitted immediately and the completion dialog will still remain
+        // gated by its successful response.
+        setGridAnimation("settled");
+      } else {
+        await wait(revealSettleMs);
+      }
       setFreeSpinsWinTotal(seriesWin);
       liveSpinStateRef.current = {...liveSpinStateRef.current, freeSpinsWinTotal:seriesWin};
       if (shouldCreditWin && authoritativePartnerBalance == null) {

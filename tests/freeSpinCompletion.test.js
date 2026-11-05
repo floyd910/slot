@@ -45,6 +45,7 @@ test('settlement displays the accumulated series total once, stops autoplay, and
   const server=await createServer({configFile:false,optimizeDeps:{noDiscovery:true,include:[]},cacheDir:'tmp/vite-completion-tests',server:{middlewareMode:true,watch:null,hmr:false},appType:'custom'});
   try {
     const {createSpinActions}=await server.ssrLoadModule('/src/controllers/spinActions.js');
+    const {frameApi}=await server.ssrLoadModule('/src/api/frameApi.js');
     const {mergeRuntimeConfig}=await server.ssrLoadModule('/src/api/runtimeConfig.js');
     mergeRuntimeConfig({backendMode:'soap'});
     const {freeSpinSeries}=await server.ssrLoadModule('/src/services/freeSpinSeries.js');
@@ -88,7 +89,7 @@ test('settlement displays the accumulated series total once, stops autoplay, and
       const ledgerBefore=freeSpinSeries.read(context);
       const paymentsBefore=freeSpinSeries.getPayments(context);
       assert.equal(await actions.continueAfterFreeSpins(),true,errors.at(-1)?.message);
-      assert.equal(live.current.player.balance,777);
+      assert.equal(requests,0,'Continue must not fetch or change an already credited balance');
       assert.equal(live.current.freeSpinsWinTotal,0);
       assert.deepEqual(displayedTotals,[0]);
       assert.deepEqual(freeSpinSeries.read(context),ledgerBefore);
@@ -100,6 +101,23 @@ test('settlement displays the accumulated series total once, stops autoplay, and
       assert.equal(summaries[1],null);
       assert.equal(errors.length,0);
     }
+
+    const timingContext={playerId:'completion-timing',gameId:'khiradmandi-makor',token:'fixture'};
+    freeSpinSeries.recordResult(timingContext,{idCard:'timing-award',FreeSpin:1,WinSum:0},false);
+    freeSpinSeries.reconcile(timingContext,100);
+    freeSpinSeries.recordResult(timingContext,{idCard:'timing-win',WinSum:12.34},true);
+    freeSpinSeries.reconcile(timingContext,115);
+    const timingLive={current:{context:timingContext,player:{balance:100,currency:'USD'},status:'ready',freeSpinsLeft:0,freeSpinsTotal:15,freeSpinCountUnknown:false,spinResult:{idCard:'timing-win',WinSum:12.34}}};
+    let payCalls=0,payResolvedAt=0,summaryShownAt=0;
+    frameApi.pay=async()=>{payCalls++;await new Promise(resolve=>setTimeout(resolve,20));payResolvedAt=performance.now();return {balance:112.34};};
+    const timingActions=createSpinActions({liveSpinStateRef:timingLive,autoPlayOnRef:{current:false},resumeAutoPlayAfterFreeSpinsRef:{current:false},
+      setStatus:value=>{timingLive.current.status=value;},setPlayer:value=>{timingLive.current.player=typeof value==='function'?value(timingLive.current.player):value;},
+      setSpinResult:value=>{timingLive.current.spinResult=value;},setDoublingState(){},setFreeSpinsPaidTotal(){},postEvent(){},
+      setFreeSpinSummary:value=>{timingLive.current.freeSpinSummary=value;if(value){assert.equal(timingLive.current.player.balance,112.34);summaryShownAt=performance.now();}},reportOperationError:error=>{throw error;}});
+    assert.equal(await timingActions.settleFreeSpinWins(),true);
+    assert.equal(payCalls,1);
+    assert.ok(payResolvedAt>0 && summaryShownAt>=payResolvedAt);
+    assert.ok(summaryShownAt-payResolvedAt<200,`summary appeared ${summaryShownAt-payResolvedAt} ms after pay`);
   } finally {globalThis.fetch=originalFetch;globalThis.window=originalWindow;await server.close();}
 });
 

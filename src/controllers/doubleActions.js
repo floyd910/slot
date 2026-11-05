@@ -18,6 +18,9 @@ const getChestPick = (side) => (CHEST_SIDES.has(side) ? side : "");
 
 const withMoney = (value) => Number(Number(value ?? 0).toFixed(2));
 
+// The API contract defines WinSum as the confirmed amount: the Spin WinSum for
+// step one and the preceding Double WinSum for later steps. UI state is only a
+// projection and must never override that server-confirmed value.
 const getCurrentCardWin = (spinResult, doublingState) =>
   withMoney(spinResult?.WinSum ?? getTicketWinAmount(spinResult, doublingState));
 
@@ -161,7 +164,7 @@ export const createDoubleActions = ({
 
   const enterVisualDouble = async () => {
     const { doublingState, spinResult, status } = liveSpinStateRef.current;
-    const currentAmount = getTicketWinAmount(spinResult, doublingState);
+    const currentAmount = getCurrentCardWin(spinResult, doublingState);
 
     if (
       currentAmount <= 0 ||
@@ -179,8 +182,13 @@ export const createDoubleActions = ({
     if (
       latestState.status === "processing" ||
       latestState.doublingState.loading ||
-      getTicketWinAmount(latestState.spinResult, latestState.doublingState) <= 0
+      getCurrentCardWin(latestState.spinResult, latestState.doublingState) <= 0
     ) return;
+
+    const latestConfirmedAmount = getCurrentCardWin(
+      latestState.spinResult,
+      latestState.doublingState,
+    );
 
     const nextDoublingState = {
       ...createEmptyDoublingState(),
@@ -188,8 +196,11 @@ export const createDoubleActions = ({
       active: true,
       entered: true,
       loading: false,
-      currentAmount,
-      initialAmount: doublingState.initialAmount || currentAmount,
+      currentAmount: latestConfirmedAmount,
+      initialAmount:
+        doublingState.step > 0
+          ? doublingState.initialAmount || latestConfirmedAmount
+          : latestConfirmedAmount,
       lastPick: "",
       lastStatus: "",
     };
@@ -214,8 +225,7 @@ export const createDoubleActions = ({
       return;
 
     if (visualMode) {
-      enterVisualDouble();
-      return;
+      return enterVisualDouble();
     }
 
     const nextDoubleState = {
@@ -225,8 +235,20 @@ export const createDoubleActions = ({
       step: doubleState.step || 1,
       status: doubleState.status || "Choose left or right",
     };
+    const nextDoublingState = {
+      ...doublingState,
+      currentAmount,
+      initialAmount:
+        doublingState.step > 0
+          ? doublingState.initialAmount || currentAmount
+          : currentAmount,
+    };
     setDoubleState(nextDoubleState);
-    syncLiveState({ doubleState: nextDoubleState });
+    setDoublingState(nextDoublingState);
+    syncLiveState({
+      doubleState: nextDoubleState,
+      doublingState: nextDoublingState,
+    });
   };
   const playFooterDouble = async (side = "x2") => {
     const { doublingState, spinResult, status } = liveSpinStateRef.current;

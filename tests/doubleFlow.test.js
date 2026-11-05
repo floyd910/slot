@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createServer} from 'vite';
 import {webcrypto} from 'node:crypto';
 
-test('both Double paths send the last confirmed win at steps 1–5 and block step 6',async()=>{
+test('both Double paths ignore stale UI winnings, send the last server-confirmed win at steps 1–5 and block step 6',async()=>{
  const storage=new Map(),timers=[];
  globalThis.window={crypto:webcrypto,addEventListener(){},dispatchEvent(){},sessionStorage:{getItem:k=>storage.get(k)??null,setItem:(k,v)=>storage.set(k,v),removeItem:k=>storage.delete(k)},setTimeout:(fn,ms)=>{if(ms<9000)timers.push(fn);return 0;}};
  const server=await createServer({configFile:false,optimizeDeps:{noDiscovery:true,include:[]},cacheDir:'tmp/vite-double-tests',server:{middlewareMode:true,watch:null,hmr:false},appType:'custom'});
@@ -16,7 +16,9 @@ test('both Double paths send the last confirmed win at steps 1–5 and block ste
   partnerApi.getBalance=async()=>null;
   for(const visualMode of [true,false]) {
    const context={token:'fixture',gameId:'babylon',sessionId:'double-'+visualMode};
-   const live={current:{context,visualMode,status:'ready',player:{balance:100},spinResult:{idCard:'card',WinSum:1.5,BaseWinSum:1.5,backendManagedWallet:true},doublingState:{...createWinningDoublingState(1.5),initialAmount:1.5},doubleState:createDoubleState()}};
+   // Reproduce the iframe regression: the server-confirmed Spin win is 1.80,
+   // while the Double UI still contains an unrelated stale 0.39 value.
+   const live={current:{context,visualMode,status:'ready',player:{balance:100},spinResult:{idCard:'card',WinSum:1.8,BaseWinSum:1.8,backendManagedWallet:true},doublingState:{...createWinningDoublingState(0.39),initialAmount:0.39},doubleState:createDoubleState()}};
    const requests=[],errors=[];
    frameApi.double=async params=>{
     requests.push(Object.fromEntries(buildDoubleForm(params,context)));
@@ -28,16 +30,16 @@ test('both Double paths send the last confirmed win at steps 1–5 and block ste
     options['set'+key]=value=>{live.current[prop]=typeof value==='function'?value(live.current[prop]):value;};
    }
    const actions=createDoubleActions(options);
-   actions.enterDoubleScene();
+   await actions.enterDoubleScene();
    for(let i=0;i<6;i++) {
     if(visualMode)await actions.playFooterDouble('left');else await actions.pickDouble('left');
     while(timers.length)await timers.shift()();
    }
    assert.deepEqual(errors,[]);
-   assert.deepEqual(requests.map(r=>r.sum),['1.5','3','6','12','24']);
+   assert.deepEqual(requests.map(r=>r.sum),['1.8','3.6','7.2','14.4','28.8']);
    assert.deepEqual(requests.map(r=>r.wasDouble),['1','2','3','4','5']);
    assert.equal(new Set(requests.map(r=>r.requestId)).size,5);
-   assert.equal(live.current.spinResult.WinSum,48);
+   assert.equal(live.current.spinResult.WinSum,57.6);
    assert.equal(live.current.spinResult.creditedToBalance,false);
    assert.equal(visualMode?live.current.doublingState.active:live.current.doubleState.active,false);
   }
