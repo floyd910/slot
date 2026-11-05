@@ -41,7 +41,8 @@ const messageAttributes = (messageType) =>
 export const buildSpinRequest = ({ stake, lines, isDemo, isFreeSpin } = {}) => {
   const config = getSoapRequestConfig();
   const freeSpin = Boolean(isFreeSpin);
-  const sum = asNumber(stake, 0);
+  // Free Spins are zero-cost actions and must remain playable at balance 0.
+  const sum = freeSpin ? 0 : asNumber(stake, 0);
   const selectedLines = asNumber(lines, 0);
   if (!(sum >= 0)) throw configurationError("stake");
   if (!(selectedLines > 0)) throw configurationError("lines");

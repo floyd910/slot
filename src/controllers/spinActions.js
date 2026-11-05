@@ -24,6 +24,7 @@ import { getNextSpinDelayMs } from "../utils/spinTiming.js";
 import { asNumber } from "../utils/number.js";
 import { createOfflineError, isBrowserOffline } from "../utils/connectivity.js";
 import { preloadResultWinAnimations } from "../utils/mediaPreload.js";
+import { stakeOptions } from "../data/mockData.js";
 
 
 const VALID_FRAME_LINE_COUNTS = new Set([1, 3, 5, 7, 9]);
@@ -71,6 +72,7 @@ export const createSpinActions = ({
   setShowFreeSpinPrompt,
   setSpinHistory,
   setSpinResult,
+  setStake = () => {},
   setStatus,
   showFreeSpinPrompt,
   t,
@@ -149,7 +151,9 @@ export const createSpinActions = ({
     const current = liveSpinStateRef.current;
     if (current.balanceRefreshId !== request || current.balanceVersion !== snapshot.balanceVersion ||
         current.context !== context || current.player !== player) return null;
-    const displayCurrency = context.NameValute ?? context.nameValute ?? player.currency;
+    const displayCurrency = typeof wallet.currency === "string" && wallet.currency.trim()
+      ? wallet.currency.trim().toUpperCase()
+      : context.currency ?? context.NameValute ?? context.nameValute ?? player.currency;
     const nextPlayer = { ...player, balance: wallet.balance, currency: displayCurrency };
     liveSpinStateRef.current = { ...current, player: nextPlayer };
     setPlayer(nextPlayer);
@@ -236,7 +240,7 @@ export const createSpinActions = ({
       isFreeSpin || freeSpinAuto || autoExpressSpin || autoPlayOnRef.current;
     const effectiveDemo = context.demoMode === true;
     const lineCount = selectedCombination.groups.length;
-    const totalStake = Number((stake * lineCount).toFixed(2));
+    let effectiveStake = stake;
     if (!VALID_FRAME_LINE_COUNTS.has(lineCount)) {
       setError(t("invalidLineCount"));
       setLastKnownState("invalid-lines");
@@ -247,6 +251,28 @@ export const createSpinActions = ({
       };
       return null;
     }
+    if (backendManagedWallet && !isFreeSpin) {
+      const availableBalance = Number(player?.balance ?? 0);
+      const affordableStakes = stakeOptions.filter(
+        (option) => Number((option * lineCount).toFixed(2)) <= availableBalance,
+      );
+      if (affordableStakes.length === 0) {
+        autoPlayOnRef.current = false;
+        setAutoPlayOn?.(false);
+        setError("insufficientBalance");
+        setLastKnownState("insufficient-balance");
+        setStatus("ready");
+        liveSpinStateRef.current = { ...liveSpinStateRef.current, status: "ready" };
+        return null;
+      }
+      const maximumAffordableStake = affordableStakes.at(-1);
+      if (effectiveStake > maximumAffordableStake) {
+        effectiveStake = maximumAffordableStake;
+        setStake(effectiveStake);
+        liveSpinStateRef.current = { ...liveSpinStateRef.current, stake: effectiveStake };
+      }
+    }
+    const totalStake = Number((effectiveStake * lineCount).toFixed(2));
     liveSpinStateRef.current = { ...liveSpinStateRef.current, balanceVersion: (liveSpinStateRef.current.balanceVersion ?? 0) + 1 };
     const requestId = buildRequestId("spin");
     const spinStartBalance = Number(player?.balance ?? 0);
@@ -257,7 +283,7 @@ export const createSpinActions = ({
 
     try {
       if (!backendManagedWallet && !isFreeSpin && spinStartBalance < totalStake) {
-        setError(t("insufficientBalance"));
+        setError("insufficientBalance");
         setLastKnownState("insufficient-balance");
         setStatus("ready");
         liveSpinStateRef.current = {
@@ -271,7 +297,7 @@ export const createSpinActions = ({
         requestId,
         playerId: context.userId ?? context.idUser,
         gameId: context.recoveryGameId ?? context.gameId,
-        stake,
+        stake: effectiveStake,
         lines: lineCount,
         totalBet: isFreeSpin ? 0 : totalStake,
         isFreeSpin,
@@ -279,7 +305,7 @@ export const createSpinActions = ({
       if (betRegistration && betRegistration.allowed !== true) {
         setError(
           betRegistration.code === "INSUFFICIENT_FUNDS"
-            ? t("insufficientBalance")
+            ? "insufficientBalance"
             : t("betRejected"),
         );
         setLastKnownState("bet-rejected");
@@ -302,6 +328,7 @@ export const createSpinActions = ({
       stateRecoveryService.saveRound({
         requestId, partnerRoundId, operationType: "SPIN", operationStatus: ROUND_OPERATION_STATUS.SPIN_PROCESSING,
         WasDouble: 0, currentWinSum: 0, doubleAvailable: false,
+        stake: effectiveStake, selectedCombinationId: selectedCombination.id,
         freeSpinsActive: isFreeSpin || freeSpinsLeft > 0,
         freeSpinsTotal,
         freeSpinsLeft,
@@ -339,7 +366,7 @@ export const createSpinActions = ({
             },
       );
       const apiResult = await frameApi.spin({
-          stake,
+          stake: effectiveStake,
           totalStake,
           lines: selectedCombination.groups.length,
           isDemo: isFreeSpin ? false : effectiveDemo,
@@ -469,7 +496,7 @@ export const createSpinActions = ({
           operationStatus: ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION,
           currentWinSum: ticketWinAmount, WasDouble: 0, doubleAvailable: true,
           autoExpressActive: autoExpressSpin || autoPlayOnRef.current,
-          stake, selectedCombinationId: selectedCombination.id,
+          stake: effectiveStake, selectedCombinationId: selectedCombination.id,
           spinResult: nextSpinResult, grid: result.grid, doublingState: nextDoublingState, doubleState: createDoubleState(),
         }, context);
       } else {
@@ -563,7 +590,7 @@ export const createSpinActions = ({
       if (isFreeSpin || awardedFreeSpins > 0 || (backendManagedWallet && liveSpinStateRef.current.freeSpinsLeft > 0)) {
         const persistedFreeSpinsLeft = Number(liveSpinStateRef.current.freeSpinsLeft ?? 0);
         const persistedFreeSpinsTotal = Number(liveSpinStateRef.current.freeSpinsTotal ?? 0);
-        stateRecoveryService.saveRound({ idCard: result.idCard, roundId: result.idCard, requestId, operationType: "FREE_SPIN", operationStatus: (persistedFreeSpinsLeft > 0 || (backendManagedWallet && isDigitWin)) ? ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION : ROUND_OPERATION_STATUS.ROUND_COMPLETED, currentWinSum: getTicketWinAmount(nextSpinResult, nextDoublingState), WasDouble: 0, doubleAvailable: false, freeSpinsActive: persistedFreeSpinsLeft > 0, freeSpinsTotal: persistedFreeSpinsTotal, freeSpinsLeft: persistedFreeSpinsLeft, freeSpinsPlayed: Math.max(0, persistedFreeSpinsTotal - persistedFreeSpinsLeft), spinResult: nextSpinResult, lastConfirmedSpinResult: nextSpinResult, lastConfirmedGrid: liveSpinStateRef.current.grid ?? result.grid, grid: result.grid, doublingState: nextDoublingState }, context);
+        stateRecoveryService.saveRound({ idCard: result.idCard, roundId: result.idCard, requestId, operationType: "FREE_SPIN", operationStatus: (persistedFreeSpinsLeft > 0 || (backendManagedWallet && isDigitWin)) ? ROUND_OPERATION_STATUS.WAITING_FOR_PLAYER_ACTION : ROUND_OPERATION_STATUS.ROUND_COMPLETED, currentWinSum: getTicketWinAmount(nextSpinResult, nextDoublingState), WasDouble: 0, doubleAvailable: false, stake: effectiveStake, selectedCombinationId: selectedCombination.id, freeSpinsActive: persistedFreeSpinsLeft > 0, freeSpinsTotal: persistedFreeSpinsTotal, freeSpinsLeft: persistedFreeSpinsLeft, freeSpinsPlayed: Math.max(0, persistedFreeSpinsTotal - persistedFreeSpinsLeft), spinResult: nextSpinResult, lastConfirmedSpinResult: nextSpinResult, lastConfirmedGrid: liveSpinStateRef.current.grid ?? result.grid, grid: result.grid, doublingState: nextDoublingState }, context);
         if (persistedFreeSpinsLeft <= 0 && !(backendManagedWallet && isDigitWin)) stateRecoveryService.completeRound(context);
       }
 

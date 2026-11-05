@@ -9,6 +9,14 @@ export function buildGameContentViewModel({ derived, state, t = (key) => key }) 
   const restoredUnpaidWin = state.hasRecoveredGrid && Boolean(state.spinResult?.idCard) &&
     state.spinResult?.creditedToBalance !== true && Number(state.spinResult?.WinSum ?? 0) > 0;
   const hideView1Symbols = !state.hasSessionSpin && !restoredUnpaidWin;
+  const insufficientBalanceErrors = new Set([
+    "insufficientBalance",
+    "Недостаточно средств",
+    "Барои комбинатсияи интихобшуда маблағ кофӣ нест",
+  ]);
+  const alertError = insufficientBalanceErrors.has(state.error)
+    ? t("insufficientBalance")
+    : state.error;
 
   return {
     hideView1Symbols,
@@ -20,7 +28,7 @@ export function buildGameContentViewModel({ derived, state, t = (key) => key }) 
       ? null
       : state.spinResult,
     alertMessage:
-      state.error ||
+      alertError ||
       (derived.isRoundRecoveryBlocked ? t("operationPendingRecovery") : "") ||
       (state.freeSpinHistoryMissing ? t("freeSpinHistoryMissing") : "") ||
       (gridMissing ? t("gridOutOfSync") : ""),

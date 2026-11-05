@@ -1,4 +1,4 @@
-import { getPrimaryGameAction } from "../viewModels/primaryGameAction.js";
+import { getPrimaryGameAction, isSpinBlockedByFunds } from "../viewModels/primaryGameAction.js";
 import { hasPendingExitRecovery, createDoubleExitHandler, registerDoubleExit, requestDoubleExit, resolveExitPaidBalance } from "../services/doubleExitService.js";
 import { isStandaloneDemo, requestDemoLaunch, usesStandaloneDemoWallet } from "../api/demoLaunch.js";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -23,7 +23,7 @@ import {
   getInitialGrid,
   stakeOptions,
 } from "../data/mockData.js";
-import { getNotificationKey, useLanguage } from "../i18n.jsx";
+import { getNotificationKey, PARTNER_LANGUAGE_EVENT, useLanguage } from "../i18n.jsx";
 import { wait, withTimeout } from "../utils/async.js";
 import { isEnabled } from "../utils/featureFlags.js";
 import {
@@ -804,6 +804,9 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       // Each HTTP request has its own aborting timeout. A shared timeout would
       // reject a healthy multi-request bootstrap and leave it running behind Retry.
       const session = await frameApi.initSession(context);
+      if (session.language) {
+        window.dispatchEvent(new CustomEvent(PARTNER_LANGUAGE_EVENT, { detail: session.language }));
+      }
       const sessionPlayer = usesStandaloneDemoWallet(context)
         ? { ...session.player, balance: standalonePageBalance }
         : session.player;
@@ -818,6 +821,9 @@ export function useGameController(selectedGameId, gameDefinition = null) {
           idUser: sessionPlayer?.id ?? context.idUser,
           balance: sessionPlayer?.balance ?? context.balance,
           currency: sessionPlayer?.currency ?? context.currency,
+          name: session.name || sessionPlayer?.name || context.name,
+          language: session.language || context.language,
+          locale: session.language || context.locale,
           NameValute: session.nameValute ?? sessionPlayer?.currency ?? context.NameValute,
           nameValute: session.nameValute ?? sessionPlayer?.currency ?? context.nameValute,
         };
@@ -935,11 +941,17 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       setFreeSpinHistoryMissing(session.freeSpinHistoryMissing === true);
       liveSpinStateRef.current = {...liveSpinStateRef.current, freeSpinHistoryMissing:session.freeSpinHistoryMissing === true};
       if (session.freeSpinsLeft != null) {
-        setFreeSpinsLeft(session.freeSpinsLeft);
-        setFreeSpinsTotal(session.freeSpinsTotal ?? 0);
+        const restoredFreeSpinsLeft = Math.max(0, Number(session.freeSpinsLeft) || 0);
+        // Completed server snapshots must not revive an already acknowledged
+        // Free Spins series and show a second zero-value completion summary.
+        const restoredFreeSpinsTotal = restoredFreeSpinsLeft > 0
+          ? Math.max(restoredFreeSpinsLeft, Number(session.freeSpinsTotal) || restoredFreeSpinsLeft)
+          : 0;
+        setFreeSpinsLeft(restoredFreeSpinsLeft);
+        setFreeSpinsTotal(restoredFreeSpinsTotal);
         setFreeSpinRoundStarted(false);
-        setShowFreeSpinPrompt(session.freeSpinsLeft > 0 && !needsRecovery);
-        liveSpinStateRef.current = {...liveSpinStateRef.current, freeSpinsLeft:session.freeSpinsLeft, freeSpinsTotal:session.freeSpinsTotal ?? 0, freeSpinCountUnknown:false};
+        setShowFreeSpinPrompt(restoredFreeSpinsLeft > 0 && !needsRecovery);
+        liveSpinStateRef.current = {...liveSpinStateRef.current, freeSpinsLeft:restoredFreeSpinsLeft, freeSpinsTotal:restoredFreeSpinsTotal, freeSpinCountUnknown:false};
       }
       setPlayer(sessionPlayer);
       setGames(session.games);
@@ -1239,6 +1251,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       setShowFreeSpinPrompt,
       setSpinHistory,
       setSpinResult,
+      setStake,
       setStatus,
       showFreeSpinPrompt,
       t,
@@ -1301,7 +1314,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
   };
 
   const selectCombination = (comboId) => {
-    if (isFruitsGame && Number(comboId) !== 5) return;
+    if (paytableControlsLocked || (isFruitsGame && Number(comboId) !== 5)) return;
     emitSound("buttonPress");
     setSelectedCombinationId(comboId);
   };
@@ -1478,7 +1491,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     }
 
     automaticInsufficientFundsRef.current = true;
-    setError(t("insufficientBalance"));
+    setError("insufficientBalance");
   }, [
     combinations,
     doubleState.loading,
@@ -1518,7 +1531,13 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     status === "initial-loading" ||
     status === "bootstrap-loading" ||
     Boolean(doublingState.loading) ||
-    (!pendingTicketWin && (!canAffordSpin || freeSpinHistoryMissing));
+    freeSpinHistoryMissing ||
+    isSpinBlockedByFunds({
+      canAffordSpin,
+      freeSpinsLeft,
+      pendingTicketWin,
+      showFreeSpinPrompt,
+    });
   const hideHeader =
     context.mode === "embedded" && context.featureFlags?.hiddenHeader !== false;
   const primaryGameAction = (freeSpinsLeft <= 0 && freeSpinsWinTotal > freeSpinsPaidTotal) ? 'collect' : getPrimaryGameAction({isVisualDoubling, pendingTicketWin, hasRecoveredGrid, showFreeSpinPrompt, hasFreeSpinsPending});

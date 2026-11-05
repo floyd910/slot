@@ -165,8 +165,8 @@ export const GAME2_VIEW1_HIGHLIGHT_AND_VIEW2_SYMBOL_5_BACKGROUND_SRC =
   "/assets/img/game2-view1-highlight-and-view2-symbol5-background.webp";
 
 export const GAME3_COVER_SRC = "/assets/img/game3-background-lossless.webp";
-export const GAME3_LOGO_SRC = localizedAsset("/assets/img/localized/game3-header-ru.webp", "/assets/img/localized/game3-header-tg.webp");
-export const GAME3_CHOOSER_TILE_SRC = localizedAsset("/assets/img/chooser/localized/game3-ru.webp", "/assets/img/chooser/localized/game3-tg.webp");
+export const GAME3_LOGO_SRC = localizedAsset("/assets/img/localized/game3-header-ru.png?v=matched-1", "/assets/img/localized/game3-header-tg.png?v=matched-1");
+export const GAME3_CHOOSER_TILE_SRC = localizedAsset("/assets/img/chooser/localized/game3-ru.png?v=matched-2", "/assets/img/chooser/localized/game3-tg.png?v=matched-2");
 export const GAME3_LOGO_ORNAMENT_SRC = "/assets/img/game3-logo-ornament.webp";
 export const GAME3_DOUBLE_SCENE_BACKGROUND_SRC =
   "/assets/img/game3-khiradmandi-makor-double-scene-bg.avif";

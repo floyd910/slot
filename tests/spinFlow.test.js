@@ -22,6 +22,37 @@ test('ordinary remote spins avoid partner mutations and retain unpaid wins',asyn
     partnerApi.registerBet=async()=>{throw new Error('Duplicate partner registration');};
     partnerApi.settleRound=async()=>{throw new Error('Duplicate partner settlement');};
     partnerApi.cancelBet=async()=>{throw new Error('Duplicate partner cancellation');};
+    {
+      const makeOptions=(live,errors)=>{
+        const options={liveSpinStateRef:live,autoPlayOnRef:{current:true},freeSpinRunRef:{current:false},t:k=>k,postEvent(){},reportOperationError:e=>errors.push(e)};
+        for(const name of ['emitLotteryRevealSounds','emitSound','playSpinFeedback','setHasRecoveredGrid','setShowFreeSpinPrompt','onRecoveryRequired']) options[name]=()=>{};
+        for(const key of ['DoubleState','DoublingState','Player','FreeSpinsLeft','FreeSpinsTotal','FreeSpinRoundStarted','Grid','GridAnimation','GridRevealKey','SpinHistory','SpinResult','Stake','Status','Error','LastKnownState']) {
+          const prop=key[0].toLowerCase()+key.slice(1);
+          options['set'+key]=value=>{live.current[prop]=typeof value==='function'?value(live.current[prop]??(key==='SpinHistory'?[]:0)):value;};
+        }
+        return options;
+      };
+      const context={token:'fixture',gameId:'khiradmandi-makor',sessionId:'deposit-preflight',userId:7,mode:'embedded'};
+      mergeRuntimeConfig({...context,playerId:7});
+      const live={current:{context,carpetCloseMs:0,carpetOpenMs:0,doubleState:{},doublingState:{},freeSpinsLeft:0,freeSpinsTotal:0,player:{balance:100,currency:'USD'},selectedCombination:{groups:[{},{},{}],id:'three'},stake:1,status:'ready',visualMode:true}};
+      let spinCalls=0;const errors=[];
+      frameApi.spin=async params=>{spinCalls++;assert.equal(params.stake,0.1);assert.equal(params.totalStake,0.3);return {backendManagedWallet:true,balance:0.05,idCard:'adjusted-round',WinSum:1,FreeSpin:0,Gold:0,grid:{A:[0,0,0,0,0],B:[1,1,1,1,1],C:[2,2,2,2,2]}};};
+      const blocked=createSpinActions(makeOptions(live,errors));
+      live.current.player.balance=0;
+      assert.equal(await blocked.handleSpin(),null);
+      assert.equal(spinCalls,0);
+      assert.equal(live.current.error,'insufficientBalance');
+      assert.equal(live.current.status,'ready');
+
+      live.current={...live.current,status:'ready',stake:1,player:{...live.current.player,balance:0.35}};
+      globalThis.fetch=async()=>new Response(JSON.stringify({CountFreeSpin:'0'}));
+      const adjusted=createSpinActions(makeOptions(live,errors));
+      assert.ok(await adjusted.handleSpin());
+      assert.equal(spinCalls,1);
+      assert.equal(live.current.stake,0.1);
+      assert.equal(errors.length,0);
+      stateRecoveryService.completeRound(context);
+    }
     for(const balance of [undefined,0,95]) {
       // Free-spin payouts have dedicated end-of-series coverage in freeSpinFlow.test.js.
       for(const free of [false]) {

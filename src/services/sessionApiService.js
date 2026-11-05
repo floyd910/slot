@@ -160,12 +160,20 @@ export class SessionApiService {
         pendingAtStart?.isFreeSpin === true || gameState.spinResult.isFreeSpin === true,
       );
     }
+    const hasInitBalanceValue = remote.balance !== null && remote.balance !== undefined && String(remote.balance).trim() !== "";
+    const initBalance = Number(remote.balance);
+    const initCurrency = typeof remote.currency === "string" ? remote.currency.trim().toUpperCase() : "";
+    const hasPartnerWallet = hasInitBalanceValue && Number.isFinite(initBalance) && initBalance >= 0 && /^[A-Z]{3}$/.test(initCurrency);
     const wallet = usesStandaloneDemoWallet(params)
       ? { balance: 1000, currency: remote.NameValute ?? params.NameValute ?? params.nameValute ?? params.currency ?? "", playerId: String(playerId) }
-      : await requestBalance({ token: params.token, playerId });
-    const displayCurrency = typeof remote.NameValute === "string" && remote.NameValute.trim()
-      ? remote.NameValute.trim().toUpperCase()
-      : wallet.currency;
+      : hasPartnerWallet
+        ? { balance: initBalance, currency: initCurrency, playerId: String(remote.playerId ?? playerId) }
+        : await requestBalance({ token: params.token, playerId });
+    const displayCurrency = hasPartnerWallet
+      ? initCurrency
+      : typeof remote.NameValute === "string" && remote.NameValute.trim()
+        ? remote.NameValute.trim().toUpperCase()
+        : String(wallet.currency ?? "").trim().toUpperCase();
     // No last-spin snapshot means there is no spin history to refresh yet.
     const played = gameState ? await requestFreeSpins(params) : 0;
     let freeSpinState;
@@ -211,6 +219,9 @@ export class SessionApiService {
       NameValute: displayCurrency,
       nameValute: displayCurrency,
       currency: displayCurrency,
+      name: remote.name,
+      language: remote.language,
+      locale: remote.language,
     });
     return {
       paymentRecovered,
@@ -219,9 +230,12 @@ export class SessionApiService {
       sessionId: remote.sessionId,
       player: {
         id: playerId,
+        name: typeof remote.name === "string" ? remote.name : "",
         balance: wallet.balance,
         currency: displayCurrency,
       },
+      name: typeof remote.name === "string" ? remote.name : "",
+      language: typeof remote.language === "string" ? remote.language : "",
       nameValute: displayCurrency,
       games,
       combinations,

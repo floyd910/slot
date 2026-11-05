@@ -121,7 +121,14 @@ export default function GameContent({ controller, game, runtimeState }) {
         <CombinationSelector
           combinations={frameCombinations}
           selectedCombinationId={frameSelectedCombinationId}
-          disabled={derived.isBusy || derived.isDoublingLocked}
+          disabled={
+            derived.isBusy ||
+            derived.isDoublingLocked ||
+            state.freeSpinsLeft > 0 ||
+            state.showFreeSpinPrompt ||
+            state.freeSpinRoundStarted ||
+            Boolean(state.freeSpinSummary)
+          }
           onSelect={actions.selectCombination}
         />
       </aside>

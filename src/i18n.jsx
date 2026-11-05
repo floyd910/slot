@@ -93,7 +93,7 @@ const copy = {
     openSignedContext:
       "Откройте модуль с действительным подписанным контекстом.",
     retry: "Повторить",
-    insufficientBalance: "Недостаточно средств для выбранной комбинации",
+    insufficientBalance: "Недостаточно средств на балансе. Пожалуйста, пополните депозит.",
     paytableLoadError: "Не удалось загрузить таблицу выплат",
     loadingGames: "Загрузка игр...",
     play: "Играть",
@@ -230,7 +230,7 @@ const copy = {
     waitingHost: "Интизори оғозёбии хост.",
     openSignedContext: "Модулро бо контексти имзошудаи дуруст кушоед.",
     retry: "Такрор",
-    insufficientBalance: "Барои комбинатсияи интихобшуда маблағ кофӣ нест",
+    insufficientBalance: "Маблағ дар тавозун нокифоя аст. Лутфан, депозитро пур кунед.",
     paytableLoadError: "Ҷадвали пардохт бор нашуд",
     loadingGames: "Боргирии бозиҳо...",
     play: "Бозӣ",
@@ -291,6 +291,14 @@ export const getNotificationKey = (value, fallback) => notificationKey(value, co
 const LanguageContext = createContext(null);
 const LANGUAGE_TRANSITION_SILENCE_MS = 180;
 const LANGUAGE_STORAGE_KEY = "hiranmandi-frame:language:v1";
+export const PARTNER_LANGUAGE_EVENT = "hiranmandi-frame:partner-language";
+
+const normalizePartnerUiLanguage = (value) => {
+  const language = String(value ?? "").trim().toLowerCase().replace("-", "_");
+  if (language === "ru" || language.startsWith("ru_")) return "ru";
+  if (["tg", "tj"].includes(language) || language.startsWith("tg_") || language.startsWith("tj_")) return "tg";
+  return null;
+};
 
 export function LanguageProvider({ children }) {
   const [language, setLanguage] = useState(() => {
@@ -312,6 +320,15 @@ export function LanguageProvider({ children }) {
   const toggleLanguage = useCallback(() => {
     selectLanguage(language === "ru" ? "tg" : "ru");
   }, [language, selectLanguage]);
+
+  useEffect(() => {
+    const applyPartnerLanguage = (event) => {
+      const nextLanguage = normalizePartnerUiLanguage(event.detail);
+      if (nextLanguage) selectLanguage(nextLanguage);
+    };
+    window.addEventListener(PARTNER_LANGUAGE_EVENT, applyPartnerLanguage);
+    return () => window.removeEventListener(PARTNER_LANGUAGE_EVENT, applyPartnerLanguage);
+  }, [selectLanguage]);
 
   useEffect(() => {
     try {

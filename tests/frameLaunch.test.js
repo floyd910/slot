@@ -29,6 +29,15 @@ test('trusted parent requires configured origin, parent window, and contract ver
   assert.equal(readHostMessage(event,parent,origin,false),null);
   assert.equal(readHostMessage({...event,data:{...event.data,contractVersion:'9'}},parent,origin,true),null);
 });
+test('production partner origin resolves for both an explicit and an omitted referrer',()=>{
+  const origin='https://goapi.lostgame.tech';
+  assert.equal(resolveParentOrigin([origin],origin+'/integration/test',true),origin);
+  assert.equal(resolveParentOrigin([origin],'',true),origin);
+});
+test('integration test platform is an approved exact parent origin',()=>{
+  const origins=['https://goapi.lostgame.tech','https://gamesintegration.com'];
+  assert.equal(resolveParentOrigin(origins,'https://gamesintegration.com/auth/test',true),'https://gamesintegration.com');
+});
 test('documented partner event/data envelope and playerID are supported only for trusted parent',()=>{
   const parent={};const origin='https://partner.example';
   const message=readHostMessage({source:parent,origin,data:{event:'INIT_CONTEXT',data:{token:'fixture',playerID:'partner-42',language:'rus'}}},parent,origin,true);
