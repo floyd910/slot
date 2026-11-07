@@ -112,9 +112,30 @@ const sharedPlaceholderAssets = Object.freeze({
   chooserTile: GAME3_CHOOSER_TILE_SRC,
 });
 
+const winVideoPoster = (game, symbol) =>
+  `/assets/img/video-posters/game${game}/${symbol}-static.webp?v=20261104-border-audit-v3`;
+
+const gameWinVideoSymbol = (game, symbol) => Object.freeze({
+  staticImage: winVideoPoster(game, symbol),
+  videoBorderCropInset: game === 3 && (symbol === 0 || (symbol >= 7 && symbol <= 12)) ? 10 : 0,
+  seamlessVideoPoster: game === 3 && symbol === 12,
+  videoSrc: `/assets/video/animations/game${game}/${symbol}-win.webm?v=20261103-gif-source-v1`,
+  videoSrcDesktop: `/assets/video/animations/game${game}/${symbol}-win-desktop.webm?v=20261103-gif-source-v1`,
+  singlePlayMs: 6040,
+});
+
 const GAME3_ASSETS = Object.freeze({
   ...sharedPlaceholderAssets,
   doubleSceneBackground: GAME3_DOUBLE_SCENE_BACKGROUND_SRC,
+  view2Symbols: Object.freeze({
+    0: gameWinVideoSymbol(3, 0),
+    7: gameWinVideoSymbol(3, 7),
+    8: gameWinVideoSymbol(3, 8),
+    9: gameWinVideoSymbol(3, 9),
+    10: gameWinVideoSymbol(3, 10),
+    11: gameWinVideoSymbol(3, 11),
+    12: gameWinVideoSymbol(3, 12),
+  }),
 });
 
 const game2WinFrames = (symbol, frameCount) =>
@@ -125,10 +146,7 @@ const game2WinFrames = (symbol, frameCount) =>
   );
 
 const game2View2Symbol = (symbol, staticImage) =>
-  Object.freeze({
-    staticImage,
-    animatedImage: "/assets/img/animations/game2/" + symbol + "/win.webp",
-  });
+  gameWinVideoSymbol(2, symbol);
 const game1WinFrames = (symbol, frameCount) =>
   Array.from(
     { length: frameCount },
@@ -159,27 +177,17 @@ const fruitsWinFrames = (symbol) => {
 
 const fruitsView2Symbol = (symbol, staticImage) =>
   Object.freeze({
-    staticImage,
-    // Suppress each shared symbol component's Game 3 animated-image fallback.
-    // Fruits uses its own numbered WebP sequence instead.
-    animatedImage: null,
-    // Fruits artwork already contains each complete cell background.
-    fillCell: true,
+    staticImage: winVideoPoster(8, symbol),
+    artworkBorderInset: 0,
+    videoSrc: `/assets/video/animations/game8/${symbol}-win.webm?v=20261103-gif-source-v2`,
+    videoSrcDesktop: `/assets/video/animations/game8/${symbol}-win-desktop.webm?v=20261103-gif-source-v2`,
     isDice: false,
-    winFrames: fruitsWinFrames(symbol),
-    forwardLoop: true,
-    frameMs: 40,
+    singlePlayMs: 6040,
   });
 const game7View2Symbol = (symbol, staticImage) =>
-  Object.freeze({
-    staticImage,
-    animatedImage: "/assets/img/animations/game7/" + symbol + "/win.webp",
-  });
+  gameWinVideoSymbol(7, symbol);
 const game1View2Symbol = (symbol, staticImage) =>
-  Object.freeze({
-    staticImage,
-    animatedImage: "/assets/img/animations/game1/" + symbol + "/win.webp",
-  });
+  gameWinVideoSymbol(1, symbol);
 const GAME1_ASSETS = Object.freeze({
   ...sharedPlaceholderAssets,
   cover: GAME1_COVER_SRC,
@@ -245,8 +253,11 @@ const game6WinFrames = (symbol) =>
 
 const game6View2Symbol = (symbol, staticImage) =>
   Object.freeze({
-    staticImage,
-    animatedImage: "/assets/img/animations/game6/" + symbol + "/win.webp",
+    staticImage: winVideoPoster(6, symbol),
+    artworkBorderInset: 0,
+    videoSrc: `/assets/video/animations/game6/${symbol}-win.webm?v=20261103-gif-source-v1`,
+    videoSrcDesktop: `/assets/video/animations/game6/${symbol}-win-desktop.webm?v=20261103-gif-source-v1`,
+    singlePlayMs: 6040,
   });
 
 const GAME6_ASSETS = Object.freeze({
@@ -281,10 +292,7 @@ const game4WinFrames = (symbol) =>
   );
 
 const game4View2Symbol = (symbol, staticImage) =>
-  Object.freeze({
-    staticImage,
-    animatedImage: "/assets/img/animations/game4/" + symbol + "/win.webp",
-  });
+  gameWinVideoSymbol(4, symbol);
 
 const GAME4_ASSETS = Object.freeze({
   ...sharedPlaceholderAssets,
@@ -310,10 +318,7 @@ const GAME4_ASSETS = Object.freeze({
 });
 
 const game5View2Symbol = (symbol, staticImage) =>
-  Object.freeze({
-    staticImage,
-    animatedImage: `/assets/img/animations/game5/view2-symbol-${symbol}-win.webp`,
-  });
+  gameWinVideoSymbol(5, symbol);
 
 const GAME5_ASSETS = Object.freeze({
   ...sharedPlaceholderAssets,

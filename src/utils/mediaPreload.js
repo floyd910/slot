@@ -1,7 +1,5 @@
-import {
-  GAME3_VIEW2_ASSETS,
-  SHARED_VIEW2_ASSETS,
-} from "../config/view2Assets.js";
+import { getEffectiveView2GridAssets } from "../config/view2Assets.js";
+import { resolveWinVideoSource } from "./winVideoSource.js";
 import {
   DOUBLE_SCENE_ASSET_SOURCES,
   FIRST_PAINT_GAME_IMAGE_ASSETS,
@@ -19,6 +17,7 @@ import {
 const imageLoadEntries = new Map();
 const imageDecodePromises = new Map();
 const videoLoadPromises = new Map();
+const retainedPreloadedVideos = new Map();
 const audioDataPromises = new Map();
 const audioDurationPromises = new Map();
 const requiredAudioPromises = new Map();
@@ -227,6 +226,7 @@ const preloadVideo = (src) => {
   if (!videoLoadPromises.has(normalizedSrc)) {
     videoLoadPromises.set(normalizedSrc, new Promise((resolve) => {
       const video = document.createElement("video");
+      retainedPreloadedVideos.set(normalizedSrc, video);
       let settled = false;
       const done = () => {
         if (settled) return;
@@ -235,8 +235,9 @@ const preloadVideo = (src) => {
       };
       video.muted = true;
       video.playsInline = true;
-      video.preload = "metadata";
-      video.addEventListener("loadedmetadata", done, { once: true });
+      video.preload = "auto";
+      video.addEventListener("canplaythrough", done, { once: true });
+      video.addEventListener("loadeddata", done, { once: true });
       video.addEventListener("error", done, { once: true });
       window.setTimeout(done, 6000);
       video.src = normalizedSrc;
@@ -376,29 +377,12 @@ const isAssetAllowedForGame = (src, game) => {
 
 export const getGameView2Assets = (game) => {
   const configuredSymbols = game?.assets?.view2Symbols;
-
-  // Themed games keep their own backgrounds and static symbols, while the
-  // shared Game 3 animated WebPs provide their lightweight win animation.
-  if (configuredSymbols) {
-    return Object.values(configuredSymbols)
-      .flatMap(({ background, staticImage, animatedImage, winFrames = [] }) => [
-        background,
-        staticImage,
-        animatedImage,
-        ...winFrames,
-      ])
-      .filter(Boolean);
-  }
-
-  return GAME3_VIEW2_ASSETS;
+  return configuredSymbols
+    ? getEffectiveView2GridAssets(configuredSymbols)
+    : [];
 };
 export const getGameView2GridAssets = (game) =>
-  uniqueUrls([
-    ...SHARED_VIEW2_ASSETS,
-    ...getGameView2Assets(game).filter(
-      (src) => !src.includes("/assets/img/animations/"),
-    ),
-  ]);
+  uniqueUrls(getGameView2Assets(game));
 
 // The default loader includes both View 1 and the static View 2 grid.
 export const getRequiredGameMainScreenAssets = (game, language = "ru") => {
@@ -555,6 +539,7 @@ export const getResultWinAnimationSources = (game, result) =>
   getResultWinAnimationSymbols(result).flatMap((symbol) => {
     const assets = game?.assets?.view2Symbols?.[symbol];
     return [
+      resolveWinVideoSource(assets),
       assets?.animatedImage,
       ...(Array.isArray(assets?.winFrames) ? assets.winFrames : []),
     ].filter(Boolean);
@@ -571,13 +556,18 @@ const preloadSymbolWinAnimation = (game, symbol) => {
     // The Spin reveal waits for this promise. Decode the winning artwork here,
     // not after React swaps the visible layer, so the first animation frame is
     // paint-ready and cannot flash the static symbol for an extra frame.
-    const promise = preloadImages(sources, {
+    const imagePromise = preloadImages(sources, {
       decode: true,
       decodeTimeoutMs: 0,
       fetchPriority: "high",
       rejectOnError: false,
       timeoutMs: 30000,
-    }).catch((error) => {
+    });
+    const videoSrc = resolveWinVideoSource(assets);
+    const promise = Promise.all([
+      imagePromise,
+      videoSrc ? preloadVideo(videoSrc) : Promise.resolve(),
+    ]).catch((error) => {
       winAnimationPreloadPromises.delete(key);
       throw error;
     });
@@ -596,18 +586,11 @@ export const preloadResultWinAnimations = (game, result) =>
 // Packaged animations are cheap to warm once. Numbered frame sequences are
 // loaded only for symbols that actually win, after the Spin response arrives.
 export const preloadWinAnimations = (game) =>
-  preloadImages(
-    getGameView2Assets(game).filter(
-      (src) =>
-        src.includes("/assets/img/animations/") &&
-        !src.includes("/frame_"),
-    ),
-    {
-      decode: false,
-      fetchPriority: "low",
-      rejectOnError: false,
-      timeoutMs: IMAGE_PRELOAD_TIMEOUT_MS,
-    },
+  Promise.all(
+    Object.values(game?.assets?.view2Symbols ?? {})
+      .map(resolveWinVideoSource)
+      .filter(Boolean)
+      .map(preloadVideo),
   );
 export const shouldBlockSpinOnOptionalAssets = () => false;
 export const preloadSpinReadyAssets = (game) => {

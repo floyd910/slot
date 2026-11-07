@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import WinLineOverlay from "../winLineOverlay/WinLineOverlay.jsx";
 import { WIN_LINE_HIGHLIGHT_MS } from "../../config/gameSettings.js";
 import { logGameError } from "../../utils/gameErrorDiagnostics.js";
+import { resolveWinVideoSource } from "../../utils/winVideoSource.js";
 
 export const VIEW2_SYMBOL_WIN_FRAME_MS = 85;
 export const VIEW2_SYMBOL_WIN_CYCLE_MS = WIN_LINE_HIGHLIGHT_MS;
@@ -22,6 +23,7 @@ export const view2SymbolAssetSources = (assets) =>
     assets.animatedImage,
     assets.shine,
     assets.videoSrc,
+    assets.videoSrcDesktop,
     assets.winFrames,
   ]
     .flat()
@@ -47,6 +49,11 @@ export function View2SymbolBase({
   symbol,
   staticImage,
   animatedImage = null,
+  videoSrc = null,
+  videoSrcDesktop = null,
+  artworkBorderInset = 0,
+  videoBorderCropInset = 0,
+  seamlessVideoPoster = false,
   background,
   winFrames = [],
   shine = null,
@@ -66,6 +73,9 @@ export function View2SymbolBase({
   winLineOverlay = null,
 }) {
   const animationActive = highlighted || animated;
+  const resolvedVideoSrc = resolveWinVideoSource({ videoSrc, videoSrcDesktop });
+  const hasArtworkBorder = Number(artworkBorderInset) > 0;
+  const videoRef = useRef(null);
   const [animationClockMs, setAnimationClockMs] = useState(() =>
     typeof window === "undefined" ? 0 : window.performance.now(),
   );
@@ -97,6 +107,24 @@ export function View2SymbolBase({
   useEffect(() => {
     setAnimationVisualReady(true);
   }, [animationActive, animationKey, symbol]);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !resolvedVideoSrc) return undefined;
+    if (!animationActive) {
+      video.pause();
+      video.currentTime = 0;
+      return undefined;
+    }
+    setAnimationVisualReady(false);
+    video.currentTime = 0;
+    const playPromise = video.play();
+    playPromise?.catch?.(() => {
+      setAnimationVisualReady(false);
+      logGameError({ operation: "ANIMATION", reason: "asset_play_failed", file: resolvedVideoSrc });
+    });
+    return () => video.pause();
+  }, [animationActive, animationKey, resolvedVideoSrc]);
 
 
   useEffect(() => {
@@ -139,13 +167,39 @@ export function View2SymbolBase({
     inset: 0, width: "100%", height: "100%", maxWidth: "none", maxHeight: "none",
     objectFit: "fill", transform: "none", display: "block",
   } : undefined;
+  // Insets are normalized from the 384x250 source assets, so they preserve
+  // the same artwork crop while the original iframe uses its own cell sizes.
+  const horizontalInset = Number(artworkBorderInset) / 384 * 100;
+  const verticalInset = Number(artworkBorderInset) / 250 * 100;
+  const staticImageStyle = hasArtworkBorder ? {
+    ...fullCellStyle,
+    inset: `${verticalInset}% ${horizontalInset}%`,
+    width: `${100 - horizontalInset * 2}%`,
+    height: `${100 - verticalInset * 2}%`,
+  } : fullCellStyle;
   const animationLayerStyle = {
     ...fullCellStyle,
-    opacity: animationActive && animationVisualReady ? 1 : 0,
-    transition: "none",
+    opacity: (animationActive || seamlessVideoPoster) && animationVisualReady ? 1 : 0,
+    transition: "opacity 100ms ease-out",
     willChange: "opacity",
   };
-  const rootClass = `lottery-grid-view2-cell lottery-grid-view2-cell--symbol-${symbol}${isDice ? " lottery-grid-view2-cell--dice" : ""}${highlighted ? " lottery-grid-view2-cell--highlighted" : ""}${scatterHighlighted ? " lottery-grid-view2-cell--scatter-highlighted" : ""}${winLineDimmed ? " lottery-grid-view2-cell--win-dimmed" : ""}`;
+  const videoCropHorizontal = Number(videoBorderCropInset) / 384 * 100;
+  const videoCropVertical = Number(videoBorderCropInset) / 250 * 100;
+  const croppedVideoWidth = 100 / (1 - videoCropHorizontal * 2 / 100);
+  const croppedVideoHeight = 100 / (1 - videoCropVertical * 2 / 100);
+  const videoStyle = Number(videoBorderCropInset) > 0 ? {
+    inset: "auto",
+    top: `${-(croppedVideoHeight - 100) / 2}%`,
+    left: `${-(croppedVideoWidth - 100) / 2}%`,
+    width: `${croppedVideoWidth}%`,
+    height: `${croppedVideoHeight}%`,
+    maxWidth: "none",
+    maxHeight: "none",
+    objectFit: "fill",
+    transform: "none",
+    display: "block",
+  } : fullCellStyle;
+  const rootClass = `lottery-grid-view2-cell lottery-grid-view2-cell--symbol-${symbol}${isDice ? " lottery-grid-view2-cell--dice" : ""}${hasArtworkBorder ? " lottery-grid-view2-cell--artwork-border" : ""}${highlighted ? " lottery-grid-view2-cell--highlighted" : ""}${scatterHighlighted ? " lottery-grid-view2-cell--scatter-highlighted" : ""}${winLineDimmed ? " lottery-grid-view2-cell--win-dimmed" : ""}`;
 
   return (
     <div className={rootClass}>
@@ -160,7 +214,7 @@ export function View2SymbolBase({
           />
         )}
         {staticImage ? (
-          <span className="lottery-grid-view2-cell__static-layer" aria-label="image">
+          <span className={`lottery-grid-view2-cell__static-layer${resolvedVideoSrc && hasArtworkBorder ? " lottery-grid-view2-cell__static-layer--borderless" : ""}`} aria-label="image">
             <img
               alt=""
               aria-hidden="true"
@@ -176,12 +230,31 @@ export function View2SymbolBase({
                   }),
                 });
               }}
-              style={fullCellStyle}
+              style={staticImageStyle}
             />
           </span>
         ) : null}
 
-        {renderedAnimatedImage ? (
+        {resolvedVideoSrc ? (
+          <span className="lottery-grid-view2-cell__animation" style={animationLayerStyle} aria-label="video">
+            <video
+              ref={videoRef}
+              aria-hidden="true"
+              src={resolvedVideoSrc}
+              className="lottery-grid-view2-cell__image"
+              muted
+              playsInline
+              loop
+              preload={seamlessVideoPoster ? "auto" : "none"}
+              onCanPlay={() => setAnimationVisualReady(true)}
+              onError={() => {
+                setAnimationVisualReady(false);
+                logGameError({ operation: "ANIMATION", reason: "asset_load_failed", file: resolvedVideoSrc });
+              }}
+              style={{ ...videoStyle, opacity: animationVisualReady ? 1 : 0 }}
+            />
+          </span>
+        ) : renderedAnimatedImage ? (
           <span className="lottery-grid-view2-cell__animation" style={animationLayerStyle} aria-label="image">
             <img
               key={renderedAnimatedImage}
