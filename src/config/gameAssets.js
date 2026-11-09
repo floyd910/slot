@@ -128,6 +128,7 @@ export const GAME6_VIEW1_HIGHLIGHT_BACKGROUND_SRC = "/assets/img/game6-view1-hig
 export const GAME6_VIEW2_SYMBOL_0_STATIC_SRC = "/assets/img/game6-view2-symbol0-static.webp";
 export const GAME6_VIEW2_SYMBOL_7_STATIC_SRC = "/assets/img/game6-view2-symbol7-static.webp";
 export const GAME6_VIEW2_SYMBOL_8_STATIC_SRC = "/assets/img/game6-view2-symbol8-static.webp?v=20260804-full-no-crop";
+export const GAME6_VIEW2_SYMBOL_9_STATIC_SRC = "/assets/img/game6-view2-symbol9-static.webp?v=20261103-gif-source-v1";
 export const GAME6_VIEW2_SYMBOL_10_STATIC_SRC = "/assets/img/game6-view2-symbol10-static.webp";
 export const GAME6_VIEW2_SYMBOL_11_STATIC_SRC = "/assets/img/game6-view2-symbol11-static.webp";
 export const GAME6_VIEW2_SYMBOL_12_STATIC_SRC = "/assets/img/game6-view2-symbol12-static.webp";

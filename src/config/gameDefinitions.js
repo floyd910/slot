@@ -74,6 +74,7 @@ import {
   GAME6_VIEW2_SYMBOL_0_STATIC_SRC,
   GAME6_VIEW2_SYMBOL_7_STATIC_SRC,
   GAME6_VIEW2_SYMBOL_8_STATIC_SRC,
+  GAME6_VIEW2_SYMBOL_9_STATIC_SRC,
   GAME6_VIEW2_SYMBOL_10_STATIC_SRC,
   GAME6_VIEW2_SYMBOL_11_STATIC_SRC,
   GAME6_VIEW2_SYMBOL_12_STATIC_SRC,
@@ -128,54 +129,20 @@ const GAME3_ASSETS = Object.freeze({
   ...sharedPlaceholderAssets,
   doubleSceneBackground: GAME3_DOUBLE_SCENE_BACKGROUND_SRC,
   view2Symbols: Object.freeze({
-    0: gameWinVideoSymbol(3, 0),
-    7: gameWinVideoSymbol(3, 7),
-    8: gameWinVideoSymbol(3, 8),
-    9: gameWinVideoSymbol(3, 9),
-    10: gameWinVideoSymbol(3, 10),
-    11: gameWinVideoSymbol(3, 11),
-    12: gameWinVideoSymbol(3, 12),
+    0: gameWinVideoSymbol(3, 0, "/assets/img/view2-symbol-0-static.webp?v=20260711-2"),
+    7: gameWinVideoSymbol(3, 7, "/assets/img/view2-symbol-7-static.webp?v=20260711-2"),
+    8: gameWinVideoSymbol(3, 8, "/assets/img/view2-symbol-8-static.webp?v=20260711-1"),
+    9: gameWinVideoSymbol(3, 9, "/assets/img/view2-symbol-9-static.webp?v=20260711-2"),
+    10: gameWinVideoSymbol(3, 10, "/assets/img/view2-symbol-10-static.webp?v=20260711-1"),
+    11: gameWinVideoSymbol(3, 11, "/assets/img/view2-symbol-11-static.webp?v=20260711-1"),
+    12: gameWinVideoSymbol(3, 12, "/assets/img/view2-symbol-12-static.webp?v=20260711-1"),
   }),
 });
 
-const game2WinFrames = (symbol, frameCount) =>
-  Array.from(
-    { length: frameCount },
-    (_, index) =>
-      `/assets/img/animations/game2/${symbol}/frame_${String(index).padStart(3, "0")}_delay-0.04s.webp`,
-  );
-
 const game2View2Symbol = (symbol, staticImage) =>
-  gameWinVideoSymbol(2, symbol);
-const game1WinFrames = (symbol, frameCount) =>
-  Array.from(
-    { length: frameCount },
-    (_, index) =>
-      `/assets/img/animations/game1/${symbol}/frame_${String(index).padStart(3, "0")}_delay-0.04s.webp`,
-  );
+  gameWinVideoSymbol(2, symbol, staticImage);
 
-const game7WinFrames = (symbol, skippedFrameIndexes = []) => {
-  const skipped = new Set(skippedFrameIndexes);
-
-  return Array.from({ length: 144 }, (_, index) => index)
-    .filter((index) => !skipped.has(index))
-    .map(
-      (index) =>
-        `/assets/img/animations/game7/${symbol}/frame_${String(index).padStart(3, "0")}_delay-0.04s.webp`,
-    );
-};
-
-const fruitsWinFrames = (symbol) => {
-  // Symbol 0 is numbered 000-143; the exported sequences for 1-7 are 001-144.
-  const firstFrame = symbol === 0 ? 0 : 1;
-  return Array.from(
-    { length: 144 },
-    (_, index) =>
-      `/assets/img/animations/game8/${symbol}/frame_${String(index + firstFrame).padStart(3, "0")}_delay-0.04s.webp`,
-  );
-};
-
-const fruitsView2Symbol = (symbol, staticImage) =>
+const fruitsView2Symbol = (symbol) =>
   Object.freeze({
     staticImage: winVideoPoster(8, symbol),
     artworkBorderInset: 0,
@@ -185,9 +152,9 @@ const fruitsView2Symbol = (symbol, staticImage) =>
     singlePlayMs: 6040,
   });
 const game7View2Symbol = (symbol, staticImage) =>
-  gameWinVideoSymbol(7, symbol);
+  gameWinVideoSymbol(7, symbol, staticImage);
 const game1View2Symbol = (symbol, staticImage) =>
-  gameWinVideoSymbol(1, symbol);
+  gameWinVideoSymbol(1, symbol, staticImage);
 const GAME1_ASSETS = Object.freeze({
   ...sharedPlaceholderAssets,
   cover: GAME1_COVER_SRC,
@@ -244,14 +211,7 @@ const GAME2_ASSETS = Object.freeze({
   }),
 });
 
-const game6WinFrames = (symbol) =>
-  Array.from(
-    { length: 144 },
-    (_, index) =>
-      `/assets/img/animations/game6/${symbol}/frame_${String(index).padStart(3, "0")}_delay-0.04s.webp`,
-  );
-
-const game6View2Symbol = (symbol, staticImage) =>
+const game6View2Symbol = (symbol) =>
   Object.freeze({
     staticImage: winVideoPoster(6, symbol),
     artworkBorderInset: 0,
@@ -277,22 +237,15 @@ const GAME6_ASSETS = Object.freeze({
     0: game6View2Symbol(0, GAME6_VIEW2_SYMBOL_0_STATIC_SRC),
     7: game6View2Symbol(7, GAME6_VIEW2_SYMBOL_7_STATIC_SRC),
     8: game6View2Symbol(8, GAME6_VIEW2_SYMBOL_8_STATIC_SRC),
-    9: game6View2Symbol(9, game6WinFrames(9)[0]),
+    9: game6View2Symbol(9, GAME6_VIEW2_SYMBOL_9_STATIC_SRC),
     10: game6View2Symbol(10, GAME6_VIEW2_SYMBOL_10_STATIC_SRC),
     11: game6View2Symbol(11, GAME6_VIEW2_SYMBOL_11_STATIC_SRC),
     12: game6View2Symbol(12, GAME6_VIEW2_SYMBOL_12_STATIC_SRC),
   }),
 });
 
-const game4WinFrames = (symbol) =>
-  Array.from(
-    { length: 144 },
-    (_, index) =>
-      `/assets/img/animations/game4/${symbol}/frame_${String(index).padStart(3, "0")}_delay-0.04s.webp`,
-  );
-
 const game4View2Symbol = (symbol, staticImage) =>
-  gameWinVideoSymbol(4, symbol);
+  gameWinVideoSymbol(4, symbol, staticImage);
 
 const GAME4_ASSETS = Object.freeze({
   ...sharedPlaceholderAssets,
@@ -318,7 +271,7 @@ const GAME4_ASSETS = Object.freeze({
 });
 
 const game5View2Symbol = (symbol, staticImage) =>
-  gameWinVideoSymbol(5, symbol);
+  gameWinVideoSymbol(5, symbol, staticImage);
 
 const GAME5_ASSETS = Object.freeze({
   ...sharedPlaceholderAssets,

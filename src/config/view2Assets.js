@@ -56,16 +56,9 @@ export const SHARED_VIEW2_ASSETS = [
   ),
 ];
 
-export const GAME3_VIEW2_ASSETS = [
-  ...new Set(
-    collectImageSources(
-      SHARED_VIEW2_ASSETS,
-      VIEW2_SYMBOL_ASSET_SOURCES,
-      VIEW2_INFO_ASSETS,
-    ),
-  ),
-];
-
+// Mirror LotteryGrid's base-plus-game override merge so preload requests only
+// the files that can actually render. In particular, games with new poster
+// images must not also fetch the legacy shared static symbol underneath them.
 export const getEffectiveView2GridAssets = (configuredSymbols = {}) => {
   const symbolIds = new Set([
     1, 2, 3, 4, 5, 6,
@@ -75,21 +68,28 @@ export const getEffectiveView2GridAssets = (configuredSymbols = {}) => {
     ...(VIEW2_SYMBOL_CONFIGS[symbol] ?? {}),
     ...(configuredSymbols[symbol] ?? {}),
   }));
+  const usesDiceShine = effectiveSymbols.some(({ isDice }) => isDice === true);
 
   return [
     ...new Set(
       collectImageSources(
-        COMBO_BORDERS,
         VIEW2_CARPET_ASSETS,
-        VIEW2_INFO_ASSETS,
         effectiveSymbols.flatMap(({ background, staticImage }) => [
           background,
           staticImage,
         ]),
-        effectiveSymbols.some(({ isDice }) => isDice)
-          ? VIEW2_DICE_SHINE_SRC
-          : null,
+        usesDiceShine ? VIEW2_DICE_SHINE_SRC : null,
       ),
     ),
   ];
 };
+
+export const GAME3_VIEW2_ASSETS = [
+  ...new Set(
+    collectImageSources(
+      SHARED_VIEW2_ASSETS,
+      VIEW2_SYMBOL_ASSET_SOURCES,
+      VIEW2_INFO_ASSETS,
+    ),
+  ),
+];

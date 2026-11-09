@@ -279,6 +279,9 @@
   position: relative;
   z-index: 2;
   border: 0;
+}
+
+.lottery-grid-view2-cell--highlighted {
   box-shadow: 0 0 10px 0 #facc15;
 }
 
@@ -292,7 +295,9 @@
   box-sizing: border-box;
   border: 2px solid #facc15;
   pointer-events: none;
-}.lottery-grid-view2-cell--symbol-1 .lottery-grid-view2-cell__container {
+}
+
+.lottery-grid-view2-cell--symbol-1 .lottery-grid-view2-cell__container {
   background:
     linear-gradient(145deg, #648ee1 0%, #1116aa 46.63%, #648ee1 100%), #fff;
 }
@@ -996,8 +1001,10 @@
 }
 
 .lottery-grid-view2-cell--win-dimmed .lottery-grid-view2-cell__container {
-  opacity: 0.28;
-  filter: brightness(0.45) saturate(0.55);
+  /* Keep the cell fully opaque. Combining opacity with a filtered, promoted
+     video layer exposes subpixel seams as intermittent black borders. */
+  opacity: 1;
+  filter: brightness(0.28) saturate(0.55);
   transition: none;
 }
 

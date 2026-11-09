@@ -6,15 +6,6 @@ import { resolveWinVideoSource } from "../../utils/winVideoSource.js";
 
 export const VIEW2_SYMBOL_WIN_FRAME_MS = 85;
 export const VIEW2_SYMBOL_WIN_CYCLE_MS = WIN_LINE_HIGHLIGHT_MS;
-export const VIEW2_SYMBOL_ASSETS = "/img/view2-symbols";
-
-export const view2SymbolAsset = (symbol, file) =>
-  `${VIEW2_SYMBOL_ASSETS}/symbol${symbol}/${file}`;
-
-export const view2SymbolFrames = (symbol, count) =>
-  Array.from({ length: count }, (_, index) =>
-    view2SymbolAsset(symbol, `${index + 1}.png`),
-  );
 
 export const view2SymbolAssetSources = (assets) =>
   [
@@ -43,6 +34,16 @@ const getFrameDurationMs = (frameMs, frameCount) => {
     VIEW2_SYMBOL_WIN_FRAME_MS,
     Math.round(VIEW2_SYMBOL_WIN_CYCLE_MS / (frameCount * 2 - 2)),
   );
+};
+
+const sharedVideoStarts = new Map();
+const getSharedVideoStart = (symbol) => {
+  const now = window.performance.now();
+  const existing = sharedVideoStarts.get(symbol);
+  if (existing && now - existing.claimedAt < 200) return existing.startAt;
+  const next = { claimedAt: now, startAt: now + 80 };
+  sharedVideoStarts.set(symbol, next);
+  return next.startAt;
 };
 
 export function View2SymbolBase({
@@ -76,6 +77,7 @@ export function View2SymbolBase({
   const resolvedVideoSrc = resolveWinVideoSource({ videoSrc, videoSrcDesktop });
   const hasArtworkBorder = Number(artworkBorderInset) > 0;
   const videoRef = useRef(null);
+  const videoStartRef = useRef(null);
   const [animationClockMs, setAnimationClockMs] = useState(() =>
     typeof window === "undefined" ? 0 : window.performance.now(),
   );
@@ -114,17 +116,34 @@ export function View2SymbolBase({
     if (!animationActive) {
       video.pause();
       video.currentTime = 0;
+      videoStartRef.current = null;
       return undefined;
     }
+
     setAnimationVisualReady(false);
+    const sharedStart = getSharedVideoStart(symbol);
+    videoStartRef.current = sharedStart;
     video.currentTime = 0;
-    const playPromise = video.play();
-    playPromise?.catch?.(() => {
-      setAnimationVisualReady(false);
-      logGameError({ operation: "ANIMATION", reason: "asset_play_failed", file: resolvedVideoSrc });
-    });
-    return () => video.pause();
-  }, [animationActive, animationKey, resolvedVideoSrc]);
+    const startSynchronizedPlayback = () => {
+      if (videoStartRef.current !== sharedStart) return;
+      const elapsedSeconds = Math.max(0, window.performance.now() - sharedStart) / 1000;
+      const cycleSeconds = Math.max(0.001, Number(singlePlayMs ?? VIEW2_SYMBOL_WIN_CYCLE_MS) / 1000);
+      if (Number.isFinite(video.duration) && video.duration > 0) {
+        video.currentTime = elapsedSeconds % Math.min(video.duration, cycleSeconds);
+      }
+      const playPromise = video.play();
+      playPromise?.catch?.(() => {
+        setAnimationVisualReady(false);
+        logGameError({ operation: "ANIMATION", reason: "asset_play_failed", file: resolvedVideoSrc });
+      });
+    };
+    const delay = Math.max(0, sharedStart - window.performance.now());
+    const timer = window.setTimeout(startSynchronizedPlayback, delay);
+    return () => {
+      window.clearTimeout(timer);
+      video.pause();
+    };
+  }, [animationActive, animationKey, symbol, resolvedVideoSrc, singlePlayMs]);
 
 
   useEffect(() => {
@@ -167,8 +186,6 @@ export function View2SymbolBase({
     inset: 0, width: "100%", height: "100%", maxWidth: "none", maxHeight: "none",
     objectFit: "fill", transform: "none", display: "block",
   } : undefined;
-  // Insets are normalized from the 384x250 source assets, so they preserve
-  // the same artwork crop while the original iframe uses its own cell sizes.
   const horizontalInset = Number(artworkBorderInset) / 384 * 100;
   const verticalInset = Number(artworkBorderInset) / 250 * 100;
   const staticImageStyle = hasArtworkBorder ? {
@@ -180,6 +197,9 @@ export function View2SymbolBase({
   const animationLayerStyle = {
     ...fullCellStyle,
     opacity: (animationActive || seamlessVideoPoster) && animationVisualReady ? 1 : 0,
+    // Keep the decoded static symbol underneath and blend the ready video over
+    // it. An instant opacity swap makes the first encoded video frame look
+    // like a size/resolution jump even though both layers fill the same cell.
     transition: "opacity 100ms ease-out",
     willChange: "opacity",
   };
@@ -246,12 +266,28 @@ export function View2SymbolBase({
               playsInline
               loop
               preload={seamlessVideoPoster ? "auto" : "none"}
-              onCanPlay={() => setAnimationVisualReady(true)}
+              onCanPlay={(event) => {
+                const video = event.currentTarget;
+                const sharedStart = videoStartRef.current;
+                if (animationActive && sharedStart != null && window.performance.now() >= sharedStart) {
+                  const elapsedSeconds = (window.performance.now() - sharedStart) / 1000;
+                  const cycleSeconds = Math.max(0.001, Number(singlePlayMs ?? VIEW2_SYMBOL_WIN_CYCLE_MS) / 1000);
+                  if (Number.isFinite(video.duration) && video.duration > 0) {
+                    video.currentTime = elapsedSeconds % Math.min(video.duration, cycleSeconds);
+                  }
+                  video.play().catch(() => {});
+                }
+                setAnimationVisualReady(true);
+              }}
               onError={() => {
                 setAnimationVisualReady(false);
-                logGameError({ operation: "ANIMATION", reason: "asset_load_failed", file: resolvedVideoSrc });
+                logGameError({
+                  operation: "ANIMATION",
+                  reason: "asset_load_failed",
+                  file: resolvedVideoSrc,
+                });
               }}
-              style={{ ...videoStyle, opacity: animationVisualReady ? 1 : 0 }}
+              style={{...videoStyle, opacity: animationVisualReady ? 1 : 0}}
             />
           </span>
         ) : renderedAnimatedImage ? (

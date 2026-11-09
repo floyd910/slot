@@ -239,7 +239,7 @@ const preloadVideo = (src) => {
       video.addEventListener("canplaythrough", done, { once: true });
       video.addEventListener("loadeddata", done, { once: true });
       video.addEventListener("error", done, { once: true });
-      window.setTimeout(done, 6000);
+      window.setTimeout(done, 30000);
       video.src = normalizedSrc;
       video.load();
     }));
@@ -377,6 +377,9 @@ const isAssetAllowedForGame = (src, game) => {
 
 export const getGameView2Assets = (game) => {
   const configuredSymbols = game?.assets?.view2Symbols;
+
+  // Grid loading is static-only. Winning media is selected separately after
+  // the Spin response so neither responsive WebM variant enters this list.
   return configuredSymbols
     ? getEffectiveView2GridAssets(configuredSymbols)
     : [];
