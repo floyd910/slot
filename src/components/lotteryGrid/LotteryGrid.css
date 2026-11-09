@@ -290,7 +290,9 @@
 .lottery-grid-view2-cell--highlighted::after {
   content: "";
   position: absolute;
-  inset: 0;
+  /* Keep the highlight stroke outside the artwork instead of consuming the
+     inner 2px of the cell, where the bottom edge crosses the symbol art. */
+  inset: -2px;
   z-index: 20;
   box-sizing: border-box;
   border: 2px solid #facc15;
