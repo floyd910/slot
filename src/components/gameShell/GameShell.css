@@ -1278,10 +1278,24 @@ button:disabled {
 /* Give View 1 a little more visual weight on desktop without changing the
    tablet/mobile fit calculations. */
 @media (min-width: 1025px) {
+  .frame-app.view-1 {
+    --view1-component-gap: 64px;
+  }
+
+  .frame-app.view-1:not(.doubling-active) .main-container__left {
+    position: relative !important;
+    left: -60px !important;
+  }
+
+  .frame-app.view-1:not(.doubling-active) .main-container__right {
+    position: relative !important;
+    right: -60px !important;
+  }
+
   .frame-app.view-1:not(.doubling-active) .main-container__center,
   .frame-app[data-fluid-fit="true"].view-1:not(.doubling-active)
     .main-container__center {
-    transform: scale(1.16) !important;
+    transform: scale(1.28) !important;
     transform-origin: top center;
   }
 }
