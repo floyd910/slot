@@ -706,6 +706,17 @@ button:disabled {
   }
 }
 
+/* Give View 1 a little more visual weight on desktop without changing the
+   tablet/mobile fit calculations. */
+@media (min-width: 1025px) {
+  .frame-app.view-1:not(.doubling-active) .main-container__center,
+  .frame-app[data-fluid-fit="true"].view-1:not(.doubling-active)
+    .main-container__center {
+    transform: scale(1.08) !important;
+    transform-origin: top center;
+  }
+}
+
 @media (min-width: 751px) {
   .view-2.doubling-active .main-container__center {
     width: 59.58%;
