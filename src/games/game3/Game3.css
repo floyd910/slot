@@ -712,7 +712,7 @@ button:disabled {
   .frame-app.view-1:not(.doubling-active) .main-container__center,
   .frame-app[data-fluid-fit="true"].view-1:not(.doubling-active)
     .main-container__center {
-    transform: scale(1.08) !important;
+    transform: scale(1.16) !important;
     transform-origin: top center;
   }
 }
