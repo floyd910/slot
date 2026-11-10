@@ -418,6 +418,10 @@
   pointer-events: none;
 }
 
+/* Borderless frame-zero posters are physically cropped by four source pixels.
+   Their image element keeps that same normalized inset, preserving the inner
+   artwork's exact WebM scale and position without showing the artwork rim. */
+
 .lottery-grid-view2-cell__image--static {
   backface-visibility: hidden;
   will-change: opacity;
@@ -702,6 +706,55 @@
   }
 }
 
+/* Game 3's framed symbols use a 10px source inset. Keep the unframed dice
+   (1–6) and symbol 12 in the same visual size class without changing the
+   winning-border behavior. */
+.configured-game[data-game-id="khiradmandi-makor"]
+  :is(
+    .lottery-grid-view2-cell--symbol-1,
+    .lottery-grid-view2-cell--symbol-2,
+    .lottery-grid-view2-cell--symbol-3,
+    .lottery-grid-view2-cell--symbol-4,
+    .lottery-grid-view2-cell--symbol-5,
+    .lottery-grid-view2-cell--symbol-6
+  )
+  .lottery-grid-view2-cell__image {
+  width: 84px;
+  height: 90.72px;
+}
+
+@media (max-width: 1024px) {
+  .configured-game[data-game-id="khiradmandi-makor"]
+    :is(
+      .lottery-grid-view2-cell--symbol-1,
+      .lottery-grid-view2-cell--symbol-2,
+      .lottery-grid-view2-cell--symbol-3,
+      .lottery-grid-view2-cell--symbol-4,
+      .lottery-grid-view2-cell--symbol-5,
+      .lottery-grid-view2-cell--symbol-6
+    )
+    .lottery-grid-view2-cell__image {
+    width: 67.2px;
+    height: 72.576px;
+  }
+}
+
+@media (max-width: 720px) {
+  .configured-game[data-game-id="khiradmandi-makor"]
+    :is(
+      .lottery-grid-view2-cell--symbol-1,
+      .lottery-grid-view2-cell--symbol-2,
+      .lottery-grid-view2-cell--symbol-3,
+      .lottery-grid-view2-cell--symbol-4,
+      .lottery-grid-view2-cell--symbol-5,
+      .lottery-grid-view2-cell--symbol-6
+    )
+    .lottery-grid-view2-cell__image {
+    width: 36.96px;
+    height: 39.9168px;
+  }
+}
+
 .game-main-layout:has(.grid-bottom-panel) {
   z-index: 61;
 }
@@ -718,7 +771,7 @@
   align-items: center;
   box-sizing: border-box;
   transform: translateX(-50%);
-  border-radius: 18px;
+  border-radius: 18px !important;
   background: rgba(13, 13, 13, 0.6);
   box-shadow:
     0 4px 6px 0 var(--game-shadow-soft, rgba(0, 0, 0, 0.1)),
@@ -726,6 +779,27 @@
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   z-index: 2147483000;
+}
+
+.frame-app .grid-bottom-panel--screen-corner {
+  position: absolute;
+  top: 16px;
+  right: auto;
+  bottom: auto;
+  left: 0;
+  display: flex;
+  width: min(420px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
+  min-height: 56px;
+  transform: none;
+  z-index: 2147483646 !important;
+}
+
+.frame-app .grid-bottom-panel--screen-corner:not(.grid-bottom-panel--expanded) {
+  width: 56px;
+  min-width: 56px;
+  padding: 16px;
+  cursor: pointer;
 }
 
 .view-2 .grid-bottom-panel {
@@ -784,7 +858,7 @@
   flex-direction: column;
   align-items: stretch;
   gap: 16px;
-  border-radius: 18px;
+  border-radius: 0 18px 18px 0 !important;
   background: rgba(13, 13, 13, 0.6);
   box-shadow:
     0 4px 6px 0 var(--game-shadow-soft, rgba(0, 0, 0, 0.1)),
@@ -923,15 +997,21 @@
   --win-line-end-gap: 24px;
 }
 
+@media (min-width: 1921px) {
+  .win-line-overlay--view2 {
+    --win-line-end-gap: 12px;
+  }
+}
+
 @media (max-width: 1280px) {
   .win-line-overlay--view2 {
-    --win-line-end-gap: 16px;
+    --win-line-end-gap: 12px;
   }
 }
 
 @media (max-width: 750px) {
   .win-line-overlay--view2 {
-    --win-line-end-gap: 8px;
+    --win-line-end-gap: 5px;
   }
 }
 .win-line-overlay__bridge {
@@ -996,6 +1076,18 @@
   box-shadow: 0 0 10px 0 #facc15;
 }
 
+@media (max-width: 1280px) {
+  .win-line-overlay--view2 .win-line-overlay__number {
+    padding-inline: 3px;
+  }
+}
+
+@media (max-width: 750px) {
+  .win-line-overlay--view2 .win-line-overlay__number {
+    padding-inline: 2px;
+  }
+}
+
 .lottery-grid-view1-cell--win-dimmed .lottery-grid-view1-cell__wrapper {
   opacity: 0.28;
   filter: brightness(0.45) saturate(0.55);
@@ -1038,23 +1130,33 @@
   left: calc(100% + 39px);
 }
 
-@media (max-width: 1280px) {
+@media (min-width: 1921px) {
   .win-line-overlay--view2 .win-line-overlay__number--start {
-    right: calc(100% + 31px);
+    right: calc(100% + 12px);
   }
 
   .win-line-overlay--view2 .win-line-overlay__number--end {
-    left: calc(100% + 31px);
+    left: calc(100% + 12px);
+  }
+}
+
+@media (max-width: 1280px) {
+  .win-line-overlay--view2 .win-line-overlay__number--start {
+    right: calc(100% + 12px);
+  }
+
+  .win-line-overlay--view2 .win-line-overlay__number--end {
+    left: calc(100% + 12px);
   }
 }
 
 @media (max-width: 750px) {
   .win-line-overlay--view2 .win-line-overlay__number--start {
-    right: calc(100% + 23px);
+    right: calc(100% + 5px);
   }
 
   .win-line-overlay--view2 .win-line-overlay__number--end {
-    left: calc(100% + 23px);
+    left: calc(100% + 5px);
   }
 }
 .win-line-overlay__end-bridge {
@@ -1113,7 +1215,7 @@
   .grid-bottom-panel__draw {
     min-width: 0;
     gap: 10px;
-    font-size: 14px;
+    font-size: 18px;
     font-weight: 700;
     line-height: 22px;
     text-transform: uppercase;
@@ -1171,6 +1273,20 @@
   .grid-bottom-panel__receipt {
     font-size: 12px;
     line-height: 16px;
+  }
+}
+
+/* Mobile/tablet ticket follows the live footer boundary instead of the game
+   canvas. --game-footer-reserve is measured by the responsive layout hook. */
+@media (max-width: 1024px) {
+  .frame-app.view-1 .grid-bottom-panel--screen-corner,
+  .frame-app.view-2 .grid-bottom-panel--screen-corner {
+    position: fixed !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: calc(var(--game-footer-reserve, 220px) + 8px) !important;
+    left: 0 !important;
+    transform: none !important;
   }
 }
 
@@ -1233,7 +1349,6 @@
   padding: 16px 16px 16px 24px;
 }
 
-
 @media (max-width: 639px) {
   .grid-bottom-panel,
   .view-2 .grid-bottom-panel {
@@ -1245,7 +1360,7 @@
   .grid-bottom-panel__draw,
   .view-2 .grid-bottom-panel__draw {
     gap: 10px;
-    font-size: 14px;
+    font-size: 18px;
     line-height: 22px;
   }
 
@@ -1318,7 +1433,7 @@
 
   .frame-app[data-fluid-fit="true"].view-2 .grid-bottom-panel__draw {
     gap: var(--fluid-ticket-mobile-gap, 10px);
-    font-size: var(--fluid-ticket-mobile-draw-font-size, 14px);
+    font-size: var(--fluid-ticket-mobile-draw-font-size, 18px);
     line-height: var(--fluid-ticket-mobile-draw-line-height, 22px);
   }
 
@@ -1416,7 +1531,7 @@
 
   .frame-app[data-fluid-fit="true"] .grid-bottom-panel__draw {
     gap: var(--fluid-ticket-mobile-gap, 10px);
-    font-size: var(--fluid-ticket-mobile-draw-font-size, 14px);
+    font-size: var(--fluid-ticket-mobile-draw-font-size, 18px);
     line-height: var(--fluid-ticket-mobile-draw-line-height, 22px);
   }
 
@@ -1475,6 +1590,21 @@
     bottom: auto;
   }
 }
+/* Closed ticket collision contract: it always occupies the fitted gap below
+   the grid. Older per-view/upward-expansion rules must not pull it onto either
+   the grid or the footer. */
+.frame-app .grid-bottom-panel:not(.grid-bottom-panel--expanded)[data-ticket-position="below"] {
+  top: calc(100% + var(--fluid-ticket-gap, 16px));
+  bottom: auto;
+}
+
+@media (max-width: 639px) {
+  .frame-app .grid-bottom-panel:not(.grid-bottom-panel--expanded)[data-ticket-position="below"] {
+    top: calc(100% + var(--fluid-ticket-mobile-gap, 10px));
+    bottom: auto;
+  }
+}
+
 /* Final ticket position: exactly 5px below the grid in both views. Opening
    keeps the same top anchor, so the ticket expands downward without jumping. */
 .frame-app .grid-bottom-panel[data-ticket-position="below"],
@@ -1488,49 +1618,97 @@
   bottom: auto;
 }
 
-/* View 1 opens upward while preserving the exact resting position of the
-   collapsed ticket's bottom edge and draw row. */
-.frame-app.view-1
-  .grid-bottom-panel--expanded[data-ticket-position="below"] {
-  top: auto;
-  bottom: calc(
-    0px - var(--fluid-ticket-offset, 5px) -
-      var(--fluid-ticket-min-height, 56px)
-  );
+/* The shared draw ticket lives in screen coordinates, outside either scaled
+   grid. Keep this final so legacy per-view ticket rules cannot reposition it. */
+.frame-app.view-1 .grid-bottom-panel--screen-corner,
+.frame-app.view-2 .grid-bottom-panel--screen-corner {
+  position: absolute;
+  top: 16px;
+  right: auto;
+  bottom: auto;
+  left: 0;
+  display: flex;
+  width: min(420px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
+  min-height: 56px;
+  padding: 16px 16px 16px 24px;
+  border-radius: 0 18px 18px 0 !important;
+  transform: none;
+  z-index: 2147483646 !important;
+}
+
+.frame-app.view-1 .grid-bottom-panel--screen-corner:not(.grid-bottom-panel--expanded),
+.frame-app.view-2 .grid-bottom-panel--screen-corner:not(.grid-bottom-panel--expanded) {
+  width: 56px;
+  min-width: 56px;
+  min-height: 56px;
+  padding: 16px;
+  transform: none;
+  cursor: pointer;
+}
+
+.frame-app.view-1 .grid-bottom-panel--screen-corner .grid-bottom-panel__draw,
+.frame-app.view-2 .grid-bottom-panel--screen-corner .grid-bottom-panel__draw {
+  gap: 16px;
+  font-size: 14px;
+  line-height: normal;
+}
+
+.frame-app.view-1 .grid-bottom-panel--screen-corner .grid-bottom-panel__receipt,
+.frame-app.view-2 .grid-bottom-panel--screen-corner .grid-bottom-panel__receipt {
+  font-size: 14px;
+  line-height: normal;
+}
+
+.frame-app.view-1 .grid-bottom-panel--screen-corner .grid-bottom-panel__icon,
+.frame-app.view-2 .grid-bottom-panel--screen-corner .grid-bottom-panel__icon,
+.frame-app.view-1 .grid-bottom-panel--screen-corner .grid-bottom-panel__close img,
+.frame-app.view-2 .grid-bottom-panel--screen-corner .grid-bottom-panel__close img {
+  width: 24px;
+  height: 24px;
+}
+
+.frame-app.view-1 .grid-bottom-panel--screen-corner .grid-bottom-panel__icon,
+.frame-app.view-2 .grid-bottom-panel--screen-corner .grid-bottom-panel__icon {
+  flex: 0 0 24px;
+}
+
+.frame-app.view-1 .grid-bottom-panel--screen-corner.grid-bottom-panel--expanded,
+.frame-app.view-2 .grid-bottom-panel--screen-corner.grid-bottom-panel--expanded {
+  width: min(420px, calc(100vw - 32px));
+  min-height: 56px;
+  gap: 16px;
+  padding: 16px 16px 16px 24px;
+  border-radius: 0 18px 18px 0 !important;
+}
+
+.frame-app.view-1 .grid-bottom-panel--screen-corner .grid-bottom-panel__close,
+.frame-app.view-2 .grid-bottom-panel--screen-corner .grid-bottom-panel__close {
+  top: 16px;
+  right: 16px;
 }
 
 @media (max-width: 639px) {
   .frame-app.view-1
-    .grid-bottom-panel--expanded[data-ticket-position="below"] {
-    top: auto;
-    bottom: calc(
-      0px - var(--fluid-ticket-offset, 5px) -
-        var(--fluid-ticket-mobile-min-height, 52px)
-    );
-    padding-bottom: var(--fluid-ticket-mobile-row-inset, 13px);
-  }
-}
-@media (orientation: landscape) and (max-width: 1000px) and (max-height: 500px) {
-  .frame-app .grid-bottom-panel,
-  .frame-app.view-2 .grid-bottom-panel,
-  .frame-app .grid-bottom-panel--expanded,
-  .frame-app.view-2 .grid-bottom-panel--expanded {
-    position: absolute;
-    top: var(--fluid-landscape-ticket-top, 50px) !important;
-    right: var(--fluid-landscape-ticket-right, 20px) !important;
+    .grid-bottom-panel--screen-corner.grid-bottom-panel--expanded
+    .grid-bottom-panel__close,
+  .frame-app.view-2
+    .grid-bottom-panel--screen-corner.grid-bottom-panel--expanded
+    .grid-bottom-panel__close {
+    position: absolute !important;
+    top: 12px !important;
+    right: 12px !important;
     bottom: auto !important;
     left: auto !important;
-    width: max-content;
-    max-width: none;
-    transform: none;
+    z-index: 2;
+    margin: 0 !important;
+    transform: none !important;
   }
+}
 
-  .frame-app.view-1 .grid-bottom-panel {
-    min-width: 100%;
-  }
-
-  .frame-app.view-2 .grid-bottom-panel {
-    min-width: 525px;
-  }
+/* The original project previously rendered a second ticket below the grid.
+   Keep its state logic inert while the shared screen-corner ticket owns the UI. */
+.frame-app .grid-bottom-panel:not(.grid-bottom-panel--screen-corner) {
+  display: none !important;
 }
 

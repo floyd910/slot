@@ -244,3 +244,238 @@
     font-size: 9px;
   }
 }
+.slot-chooser__hud {
+  position: absolute;
+  top: clamp(8px, 1.5vw, 16px);
+  right: clamp(12px, 1.6vw, 24px);
+  left: clamp(12px, 1.6vw, 24px);
+  z-index: 3;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  pointer-events: none;
+}
+
+.slot-chooser__language,
+.slot-chooser__hud-card {
+  box-sizing: border-box;
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  border: 1px solid #e3ae2c;
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(49, 42, 30, 0.96), rgba(15, 15, 15, 0.94));
+  color: #fff;
+  font-family: Roboto, sans-serif;
+  box-shadow: 0 0 12px rgba(255, 177, 25, 0.42), inset 0 0 9px rgba(255, 185, 31, 0.12);
+}
+
+.slot-chooser__language-control {
+  position: relative;
+  pointer-events: auto;
+}
+
+.slot-chooser__language {
+  gap: 10px;
+  padding: 7px 12px;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.slot-chooser__language:disabled {
+  cursor: default;
+}
+
+.slot-chooser__flag {
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.slot-chooser__language-arrow {
+  width: 11px;
+  height: auto;
+  opacity: 0.9;
+  transition: transform 140ms ease;
+}
+
+.slot-chooser__language-arrow.is-open {
+  transform: rotate(180deg);
+}
+
+.slot-chooser__language-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 20;
+  box-sizing: border-box;
+  display: grid;
+  width: 100%;
+  min-width: 148px;
+  padding: 5px;
+  border: 1px solid #e3ae2c;
+  border-radius: 10px;
+  background: rgba(15, 15, 15, 0.97);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.48), 0 0 12px rgba(255, 177, 25, 0.24);
+}
+
+.slot-chooser__language-option {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: #fff;
+  font-family: Roboto, sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  text-align: left;
+  cursor: pointer;
+}
+
+.slot-chooser__language-option:hover,
+.slot-chooser__language-option:focus-visible,
+.slot-chooser__language-option.is-active {
+  background: rgba(227, 174, 44, 0.22);
+  outline: none;
+}
+
+.slot-chooser__account {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slot-chooser__hud-card {
+  min-width: 136px;
+  justify-content: center;
+  gap: 9px;
+  padding: 5px 13px;
+}
+
+.slot-chooser__hud-card--balance {
+  min-width: 162px;
+}
+
+.slot-chooser__hud-icon {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  color: #ffc928;
+  stroke-width: 2.25;
+  text-shadow: 0 0 8px rgba(255, 197, 38, 0.7);
+  filter: drop-shadow(0 0 4px rgba(255, 197, 38, 0.45));
+}
+
+.slot-chooser__hud-copy {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  line-height: 1.05;
+  white-space: nowrap;
+}
+
+.slot-chooser__hud-copy strong {
+  color: #ffd44f;
+  font-size: 14px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+}
+
+.slot-chooser__hud-card--balance strong {
+  color: #69ff4a;
+}
+
+.slot-chooser__hud-copy small {
+  margin-top: 3px;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 760px) {
+  .slot-chooser__hud {
+    top: 6px;
+    right: 8px;
+    left: 8px;
+    gap: 6px;
+  }
+
+  .slot-chooser__language,
+  .slot-chooser__hud-card {
+    min-height: 36px;
+    border-radius: 9px;
+  }
+
+  .slot-chooser__language {
+    gap: 5px;
+    padding: 4px 7px;
+    font-size: 10px;
+  }
+
+  .slot-chooser__flag {
+    width: 22px;
+    height: 22px;
+  }
+
+  .slot-chooser__language-arrow {
+    width: 8px;
+  }
+
+  .slot-chooser__language-menu {
+    min-width: 124px;
+  }
+
+  .slot-chooser__language-option {
+    min-height: 34px;
+    gap: 6px;
+    padding: 4px 6px;
+    font-size: 10px;
+  }
+
+  .slot-chooser__account {
+    gap: 4px;
+  }
+
+  .slot-chooser__hud-card,
+  .slot-chooser__hud-card--balance {
+    min-width: 0;
+    gap: 5px;
+    padding: 4px 7px;
+  }
+
+  .slot-chooser__hud-icon {
+    width: 18px;
+    height: 18px;
+    flex-basis: 18px;
+  }
+
+  .slot-chooser__hud-copy strong {
+    font-size: 10px;
+  }
+
+  .slot-chooser__hud-copy small {
+    font-size: 7px;
+  }
+}
+
+@media (max-width: 430px) {
+  .slot-chooser__language > span,
+  .slot-chooser__hud-icon {
+    display: none;
+  }
+
+  .slot-chooser__hud-card {
+    padding-inline: 6px;
+  }
+}
+

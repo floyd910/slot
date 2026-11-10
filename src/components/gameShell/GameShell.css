@@ -1,7 +1,15 @@
 .configured-game {
+  position: relative;
+  isolation: isolate;
   width: 100vw;
   height: 100vh;
   color: var(--game-text, #fff);
+}
+
+/* Startup is one atomic screen: never expose partially mounted game UI while
+   assets/layout are still becoming ready or while the loader is leaving. */
+.frame-app[data-startup-loading="true"] .game_area > :not(.startup-loader) {
+  visibility: hidden !important;
 }
 
 .frame-app {
@@ -704,10 +712,10 @@ button:disabled {
 
   .view-1 .main-container__right > div {
     width: 100%;
-    min-width: 0;
+    min-width: 300px;
   }
 }
-@media (orientation: landscape) and (max-width: 1280px) and (max-height: 700px) {
+@media (orientation: landscape) and (max-height: 620px) {
   .game_area {
     height: calc(var(--app-viewport-height) - 32px);
     margin-top: 32px;
@@ -787,7 +795,7 @@ button:disabled {
   }
 }
 
-@media (orientation: landscape) and (max-width: 1280px) and (max-height: 700px) {
+@media (orientation: landscape) and (max-height: 620px) {
   .doubling-active .game-main-layout > .frame-content {
     inset: 0 0 70px;
     width: 100%;
@@ -804,7 +812,7 @@ button:disabled {
     transform: none;
   }
 }
-@media (orientation: landscape) and (max-width: 1280px) and (max-height: 700px) {
+@media (orientation: landscape) and (max-height: 620px) {
   .doubling-active .game_area {
     height: calc(var(--app-viewport-height) - 32px);
   }
@@ -1073,7 +1081,7 @@ button:disabled {
   transform-origin: top center;
 }
 
-.frame-app[data-layout-ready="false"]:not([data-guest="true"]) .game-main-layout > .frame-content {
+.frame-app[data-layout-ready="false"] .game-main-layout {
   visibility: hidden;
 }
 
@@ -1224,19 +1232,6 @@ button:disabled {
   cursor: pointer;
 }
 
-/* Fruits images include the cell background, including on compact screens. */
-.configured-game[data-game-id="fruits"] .frame-app.view-2
-  .lottery-grid-view2-cell .lottery-grid-view2-cell__image {
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  max-height: none;
-  object-fit: fill;
-  transform: none;
-}
-
-
 /* Slightly use the spare portrait-mobile height without visibly stretching symbols. */
 @media (orientation: portrait) and (max-width: 639px) {
   .frame-app[data-fluid-fit="true"].view-2:not(.doubling-active)
@@ -1251,27 +1246,32 @@ button:disabled {
     height: 190px;
   }
 }
-/* Mobile portrait breathing room; landscape keeps its full-width layout. */
-@media (orientation: portrait) and (max-width: 639px) {
-  .frame-app .game_area {
-    box-sizing: border-box;
-    padding-inline: 10px;
+/* Keep the app header below the decorative game logo in one stacking context. */
+.configured-game > div > header {
+  z-index: 2 !important;
+}
+.configured-game .game_area > .header_img {
+  z-index: 20 !important;
+}
+
+@media (max-width: 1024px) {
+  .configured-game .frame-app .game_area > .header_img,
+  .configured-game .frame-app[data-fluid-fit="true"] .game_area > .header_img,
+  .configured-game .frame-app[data-fluid-logo-fit="true"] .game_area > .header_img {
+    width: min(
+      var(--fluid-logo-width, 100%),
+      var(--collision-logo-max-width, 100%)
+    );
+    min-width: 0;
+    height: auto;
   }
 }
 
 /* Desktop View 2: pull the grid closer to the decorative game logo. */
 @media (min-width: 1025px) {
-  .frame-app.view-2:not(.doubling-active):not([data-fluid-fit="true"])
+  .frame-app.view-2:not(.doubling-active)
     .game-main-layout
     > .frame-content {
-    top: calc(var(--header-content-start, 161px) - 12px);
-  }
-
-  .frame-app[data-fluid-fit="true"].view-2:not(.doubling-active)
-    .game-main-layout
-    > .frame-content {
-    inset-block-start: calc(
-      var(--fluid-content-top, calc(var(--fluid-logo-height) + 10px)) - 12px
-    );
+    margin-top: -20px !important;
   }
 }

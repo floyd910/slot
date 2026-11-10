@@ -13,6 +13,7 @@ import { buildStandardPaytableViewModel } from "../../viewModels/paytableViewMod
 import FreeSpinsSummary from "../freeSpinsPrompt/FreeSpinsSummary.jsx";
 import FreeSpinsPrompt from "../freeSpinsPrompt/FreeSpinsPrompt.jsx";
 import GameContent from "../gameContent/GameContent.jsx";
+import DrawTicket from "../drawTicket/DrawTicket.jsx";
 import { useResponsiveGameLayout } from "../../hooks/useResponsiveGameLayout.js";
 import { getRuntimeStateStatus } from "../../utils/runtimeStatus.js";
 import { preloadImage } from "../../utils/mediaPreload.js";
@@ -32,6 +33,54 @@ export default function GameShell({ controller, game, onBackToSlots }) {
     shellRef,
     `${state.visualMode ? "view2" : "view1"}:${derived.isVisualDoubling}:${showInlineView2Paytable}:${state.startupAssetsReady}:${gridMounted}:${state.combinations.length}:${checkingSession}`,
   );
+  useLayoutEffect(() => {
+    const shell = shellRef.current;
+    const configuredGame = shell?.closest(".configured-game");
+    const logo = shell?.querySelector(".header_img");
+    if (!shell || !configuredGame || !logo) return undefined;
+
+    let frame = 0;
+    const fitLogoBetweenHeaderControls = () => {
+      frame = 0;
+      if (window.innerWidth > 1024) {
+        shell.style.removeProperty("--collision-logo-max-width");
+        return;
+      }
+
+      const header = configuredGame.querySelector("header");
+      const leftControls = header?.querySelector(".header-left");
+      const rightControls = header?.querySelector(".header-btns");
+      const centerX = window.innerWidth / 2;
+      const safeGap = window.innerWidth <= 440 ? 6 : 10;
+      const leftEdge = leftControls?.getBoundingClientRect().right ?? safeGap;
+      const rightEdge = rightControls?.getBoundingClientRect().left ?? (window.innerWidth - safeGap);
+      const availableHalfWidth = Math.max(
+        0,
+        Math.min(centerX - leftEdge - safeGap, rightEdge - centerX - safeGap),
+      );
+      const maxWidth = Math.max(300, Math.floor(availableHalfWidth * 2));
+      shell.style.setProperty("--collision-logo-max-width", `${maxWidth}px`);
+    };
+    const scheduleFit = () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(fitLogoBetweenHeaderControls);
+    };
+
+    const observer = new ResizeObserver(scheduleFit);
+    const header = configuredGame.querySelector("header");
+    [configuredGame, header, header?.querySelector(".header-left"), header?.querySelector(".header-btns")]
+      .filter(Boolean)
+      .forEach((element) => observer.observe(element));
+    scheduleFit();
+    window.addEventListener("resize", scheduleFit, { passive: true });
+
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener("resize", scheduleFit);
+      shell.style.removeProperty("--collision-logo-max-width");
+    };
+  }, [state.visualMode, state.showGameMenu]);
   useLayoutEffect(() => {
     let active = true;
     const image = backgroundRef.current;
@@ -155,6 +204,10 @@ export default function GameShell({ controller, game, onBackToSlots }) {
           width="3096"
           height="712"
         />
+
+        {!showInlineView2Paytable && !runtimeState && !derived.isVisualDoubling && !state.doubleState.active && (
+          <DrawTicket spinResult={state.spinResult} />
+        )}
 
         {showInlineView2Paytable ? (
           <section className="view2-info-inline" aria-label="View 2 payouts">

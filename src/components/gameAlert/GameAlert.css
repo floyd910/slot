@@ -2,7 +2,7 @@
   position: absolute;
   top: clamp(8px, 1.4vh, 18px);
   left: 50%;
-  z-index: 2147483647;
+  z-index: 30;
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: center;
@@ -114,6 +114,3 @@
     transform: translateX(120%);
   }
 }
-
-.game-alert__retry { flex-shrink: 0; padding: 8px 12px; border: 1px solid currentColor; border-radius: 6px; background: transparent; color: inherit; cursor: pointer; }
-.game-alert__retry:disabled { opacity: .5; cursor: default; }

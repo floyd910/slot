@@ -1,7 +1,13 @@
 .bottom-bar {
   width: 100%;
-  bottom: 24px;
+  bottom: 0;
   position: fixed;
+  z-index: 10000;
+}
+
+/* The active control footer always sits flush with the viewport edge. */
+.frame-app .bottom-bar {
+  bottom: env(safe-area-inset-bottom, 0px) !important;
 }
 
 @media (max-width: 1280px) {
@@ -10,7 +16,7 @@
   }
 }
 
-@media (orientation: landscape) and (max-width: 1280px) and (max-height: 700px) {
+@media (orientation: landscape) and (max-height: 620px) {
   .bottom-bar {
     display: none;
   }
@@ -351,10 +357,10 @@
   cursor: not-allowed;
   opacity: 0.55;
 }
+
 .spin-draw-button.--loading {
   cursor: wait;
 }
-
 
 .spin-draw-button .basic-button__label,
 .take-money .take-money__title {
@@ -705,7 +711,7 @@
 
 
 
-@media (orientation: landscape) and (max-width: 1280px) and (max-height: 700px) {
+@media (orientation: landscape) and (max-height: 620px) {
   .bottom-bar {
     display: block;
     left: 0;
@@ -837,34 +843,19 @@
 
 @media (max-width: 440px) and (min-height: 700px) {
   .bottom-bar {
-    bottom: 0;
+    bottom: 41px;
   }
 
   .footer-block-mobile {
-    border-radius: 12px 12px 0 0;
+    border-radius: 12px;
   }
 }
-
-/* Narrow portrait frames choose their footer by width; compact landscape keeps the desktop footer. */
-@media (orientation: portrait) and (max-width: 651px) {
-  .bottom-bar > .footer-block-desktop { display: none; }
-}
-@media (orientation: portrait) and (max-width: 639px) {
-  .bottom-bar > .footer-block-tablet { display: none; }
-  .bottom-bar > .footer-block-mobile { display: flex; }
-}
-@media (orientation: portrait) and (min-width: 640px) and (max-width: 651px) {
-  .bottom-bar > .footer-block-tablet { display: flex; }
-  .bottom-bar > .footer-block-mobile { display: none; }
-}
-
 
 /* Mobile CTA emphasis: keep stake controls compact while making the spin action dominant. */
 @media (max-width: 639px) {
   .footer-block-mobile {
     padding-top: 25px;
     padding-bottom: 14px;
-    border-radius: 12px 12px 0 0;
   }
 
   .footer-block-mobile .footer-flex--mobile-actions {

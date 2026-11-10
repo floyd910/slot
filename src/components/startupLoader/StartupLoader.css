@@ -158,6 +158,29 @@
   line-height: 1.25;
   text-align: center;
 }
+
+.startup-loader__error {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  color: #fff;
+  font-size: 14px;
+  text-align: center;
+}
+
+.startup-loader__error button {
+  padding: 9px 18px;
+  border: 1px solid #e1bf64;
+  border-radius: 6px;
+  background: #c7aa61;
+  color: #111;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
 /* Shared chooser and in-game loading screen. */
 .startup-loader--brand {
   background: radial-gradient(ellipse at 50% 30%, #33234680 0, transparent 55%),

@@ -445,6 +445,15 @@ button:disabled {
   } */
 }
 
+@media (max-width: 560px) {
+  .configured-game .frame-app .game_area > .header_img {
+    transform: translateY(
+      calc(-1 * var(--game-header-height, 48px) + 30px)
+    ) !important;
+  }
+}
+
+
 /* height 956px */
 
 @media (max-width: 720px) {
@@ -482,7 +491,6 @@ button:disabled {
   width: max-content;
   height: max-content;
 }
-
 
 @media (max-width: 440px) {
   .view-2 .main-container__center {
@@ -642,7 +650,7 @@ button:disabled {
   }
 
   .bottom-bar {
-    bottom: 0;
+    bottom: 41px;
   }
 }
 
@@ -816,7 +824,7 @@ button:disabled {
     min-width: 0;
   }
 }
-@media (orientation: landscape) and (max-width: 1280px) and (max-height: 700px) {
+@media (orientation: landscape) and (max-height: 620px) {
   .game_area {
     height: calc(var(--app-viewport-height) - 32px);
     margin-top: 32px;
@@ -1023,7 +1031,7 @@ button:disabled {
   }
 }
 
-@media (orientation: landscape) and (max-width: 1280px) and (max-height: 700px) {
+@media (orientation: landscape) and (max-height: 620px) {
   .doubling-active .game-main-layout > .frame-content {
     inset: 0 0 70px;
     width: 100%;
@@ -1040,7 +1048,7 @@ button:disabled {
     transform: none;
   }
 }
-@media (orientation: landscape) and (max-width: 1280px) and (max-height: 700px) {
+@media (orientation: landscape) and (max-height: 620px) {
   .doubling-active .game_area {
     height: calc(var(--app-viewport-height) - 32px);
   }
@@ -1326,7 +1334,7 @@ button:disabled {
   transform-origin: top center;
 }
 
-.frame-app[data-layout-ready="false"]:not([data-guest="true"]) .game-main-layout > .frame-content {
+.frame-app[data-layout-ready="false"] .game-main-layout {
   visibility: hidden;
 }
 
@@ -1344,12 +1352,38 @@ button:disabled {
     transform: translateY(calc(-1 * var(--game-header-height, 48px)));
   }
 }
+
+/* The game logo is anchored to viewport top rather than below the app header. */
+.configured-game .frame-app[data-fluid-fit="true"] .header_img {
+  transform: translateY(calc(-1 * var(--game-header-height, 48px)));
+}
+
+.configured-game .frame-app .bottom-bar {
+  bottom: env(safe-area-inset-bottom, 0px) !important;
+}
+
+/* Halve cell spacing and outer padding on both game boards. */
+.configured-game .frame-app .lottery-grid-view1 {
+  border-radius: 0 !important;
+}
+
+.configured-game .frame-app .lottery-grid-view2 {
+  --win-line-gap: 6px !important;
+  column-gap: 6px !important;
+  row-gap: 6px !important;
+  padding: 4px 6px !important;
+  border-radius: 0 !important;
+}
+
+.configured-game .frame-app .lottery-grid-view2-cell {
+  width: 240px;
+  height: 156px;
+}
 /* SharedGame imports this stylesheet for every game. The logo must sit above
    the app header (z-index: 5), independent of stylesheet import order. */
 .game_area > .header_img {
   z-index: 20 !important;
 }
-
 /* Slightly use the spare portrait-mobile height without visibly stretching symbols. */
 @media (orientation: portrait) and (max-width: 639px) {
   .frame-app[data-fluid-fit="true"].view-2:not(.doubling-active)
@@ -1364,17 +1398,18 @@ button:disabled {
     height: 190px;
   }
 }
-/* Mobile portrait breathing room; landscape keeps its full-width layout. */
-@media (orientation: portrait) and (max-width: 639px) {
-  .frame-app .game_area {
-    box-sizing: border-box;
-    padding-inline: 10px;
-  }
-}
-/* Tablet View 2 safe area for the complete grid + ticket group. */
-@media (min-width: 640px) and (max-width: 1024px) {
-  .frame-app.view-2:not(.doubling-active) .game-main-layout > .frame-content {
-    box-sizing: border-box;
-    padding-inline: 48px;
+
+/* Final compact-screen collision contract. This stylesheet loads after the
+   shared shell styles, so the logo cap must live here to beat theme rules. */
+@media (max-width: 1024px) {
+  .configured-game .frame-app .game_area > .header_img,
+  .configured-game .frame-app[data-fluid-fit="true"] .game_area > .header_img,
+  .configured-game .frame-app[data-fluid-logo-fit="true"] .game_area > .header_img {
+    width: min(
+      var(--fluid-logo-width, 100%),
+      var(--collision-logo-max-width, 100%)
+    ) !important;
+    min-width: 300px !important;
+    height: auto !important;
   }
 }
