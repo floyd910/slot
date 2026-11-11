@@ -1295,7 +1295,14 @@ button:disabled {
   .frame-app.view-1:not(.doubling-active) .main-container__center,
   .frame-app[data-fluid-fit="true"].view-1:not(.doubling-active)
     .main-container__center {
-    transform: scale(1.28) !important;
+    transform: scale(var(--desktop-view1-grid-scale-x, 1.28), var(--desktop-view1-grid-scale-y, 1.28)) !important;
     transform-origin: top center;
+  }
+}
+
+@media (min-width: 1900px) and (max-width: 1940px) and (min-height: 1000px) and (max-height: 1100px) {
+  .frame-app.view-1 {
+    --desktop-view1-grid-scale-x: 1.36;
+    --desktop-view1-grid-scale-y: 1.36;
   }
 }
