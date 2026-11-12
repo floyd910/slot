@@ -80,6 +80,15 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       }
       if (!area || !logo || !center || root.classList.contains("doubling-active")) return;
 
+      const desktopView1 = root.classList.contains("view-1") &&
+        window.matchMedia("(min-width: 1025px)").matches;
+      root.dataset.desktopView1Fit = String(desktopView1);
+      root.style.setProperty("--desktop-view1-gap", "64px");
+      root.style.setProperty("--desktop-view1-left-shift", "0px");
+      root.style.setProperty("--desktop-view1-right-shift", "0px");
+      for (const name of ["left", "center", "right"]) {
+        root.style.setProperty(`--desktop-view1-${name}-zoom`, "1");
+      }
       const areaRect = area.getBoundingClientRect();
       const footerTop = getFooterBoundaryTop(root, footer, areaRect.bottom);
       const compactLandscape = areaRect.width > areaRect.height && areaRect.width <= 1280;
@@ -180,7 +189,59 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       const ultraSmallView2Overflow = mobileView2ExactWidth && areaRect.width < 320
         ? 96
         : 0;
-      const scale = mobileView2ExactWidth && mobileGridWidth > 0
+      // Each desktop panel uses the full available height. Zoom participates
+      // in flex layout, so the grid grows proportionally without overlapping
+      // its neighbours. Width is the final limit on unusually tall desktops.
+      let desktopScale = null;
+      if (desktopView1) {
+        const availableHeight = Math.max(1, footerTop - 20 -
+          (areaRect.top + resolvedContentTop));
+        const panels = boardElements.map((element) => ({
+          element,
+          rect: element.getBoundingClientRect(),
+        }));
+        const gap = parseFloat(getComputedStyle(root.querySelector(".frame-content")).columnGap) || 0;
+        const grid = panels.find(({ element }) => element === center);
+        const sideWidth = panels.reduce((sum, { element, rect }) =>
+          sum + (element === center ? 0 : rect.width), 0);
+        const gridWidth = Math.max(1, areaRect.width - 40 - sideWidth -
+          gap * (panels.length - 1));
+        const visibleGridParts = Array.from(center.querySelectorAll(
+          ".lottery-grid-view1, .lottery-grid-view1-cell, .win-line-overlay__number"
+        )).filter(isVisible).map((element) => element.getBoundingClientRect());
+        const overhang = Math.max(0, ...visibleGridParts.flatMap((rect) => [
+          grid.rect.left - rect.left, rect.right - grid.rect.right,
+        ]));
+        const gapCount = panels.length - 1;
+        const gridZoom = Math.min(availableHeight / Math.max(1, grid.rect.height),
+          gridWidth / Math.max(1, grid.rect.width),
+          Math.max(1, areaRect.width - 40 - sideWidth - 60 * gapCount) /
+            Math.max(1, grid.rect.width + overhang * gapCount));
+        root.style.setProperty("--desktop-view1-gap",
+          Math.max(64, 60 + overhang * gridZoom) + "px");
+        root.style.setProperty("--desktop-view1-center-zoom", String(gridZoom));
+        root.style.setProperty("--desktop-view1-panel-height", availableHeight + "px");
+        root.style.setProperty("--fluid-footer-reserve",
+          `${Math.max(20, areaRect.bottom - footerTop + 20)}px`);
+        // Check final screen coordinates after zoom and all breakpoint rules.
+        const renderedParts = [center, ...center.querySelectorAll(
+          ".lottery-grid-view1, .lottery-grid-view1-cell, .win-line-overlay__number"
+        )].filter(isVisible).map((element) => element.getBoundingClientRect());
+        const renderedLeft = Math.min(...renderedParts.map((rect) => rect.left));
+        const renderedRight = Math.max(...renderedParts.map((rect) => rect.right));
+        const leftPanel = root.querySelector(".main-container__left");
+        const rightPanel = root.querySelector(".main-container__right");
+        if (isVisible(leftPanel)) {
+          const gap = renderedLeft - leftPanel.getBoundingClientRect().right;
+          root.style.setProperty("--desktop-view1-left-shift", -Math.max(0, 60 - gap) + "px");
+        }
+        if (isVisible(rightPanel)) {
+          const gap = rightPanel.getBoundingClientRect().left - renderedRight;
+          root.style.setProperty("--desktop-view1-right-shift", Math.max(0, 60 - gap) + "px");
+        }
+        desktopScale = 1;
+      }
+      const scale = desktopScale ?? (mobileView2ExactWidth && mobileGridWidth > 0
         ? Math.max(
             0.05,
             mobileFooterWidth / (mobileGridWidth + ultraSmallView2Overflow),
@@ -190,7 +251,7 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
             (areaRect.width - horizontalGutter * 2) /
               Math.max(1, bounds.right - bounds.left),
             availableBoardHeight / fittedBoardHeight,
-          ) * 0.995);
+          ) * 0.995));
       root.style.setProperty("--fluid-content-scale", String(scale));
       root.style.setProperty("--fluid-ticket-font-size", `${14 / scale}px`);
       root.style.setProperty("--fluid-ticket-min-height", `${56 / scale}px`);
