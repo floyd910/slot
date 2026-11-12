@@ -1309,27 +1309,27 @@ button:disabled {
 
 /* Desktop View 1: fit all three panels to the measured footer boundary. */
 @media (min-width: 1025px) {
-  .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .game-main-layout > .frame-content {
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .game-main-layout > .frame-content {
     transform: none;
     align-items: flex-start;
   }
-  .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__left,
-  .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__center,
-  .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__right {
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__left,
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__center,
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__right {
     display: flex;
     flex-shrink: 0;
     transform: none !important;
     margin-top: 0;
     margin-bottom: 0;
   }
-  .frame-app[data-desktop-view1-fit="true"] .main-container__left { zoom: var(--desktop-view1-left-zoom, 1); }
-  .frame-app[data-desktop-view1-fit="true"] .main-container__center { zoom: var(--desktop-view1-center-zoom, 1); }
-  .frame-app[data-desktop-view1-fit="true"] .main-container__right { zoom: var(--desktop-view1-right-zoom, 1); }
+  .configured-game .frame-app[data-desktop-view1-fit="true"] .main-container__left { zoom: var(--desktop-view1-left-zoom, 1); }
+  .configured-game .frame-app[data-desktop-view1-fit="true"] .main-container__center { zoom: var(--desktop-view1-center-zoom, 1); }
+  .configured-game .frame-app[data-desktop-view1-fit="true"] .main-container__right { zoom: var(--desktop-view1-right-zoom, 1); }
 }
 
 @media (min-width: 1025px) {
-  .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__left,
-  .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__right {
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__left,
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__right {
     height: auto;
     max-height: var(--desktop-view1-panel-height, 540px);
     overflow-y: auto;
@@ -1338,16 +1338,16 @@ button:disabled {
 
 /* Preserve panel padding while preventing extra content-width overflow. */
 @media (min-width: 1025px) {
-  .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__left {
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__left {
     padding-right: 16px;
     overflow-x: hidden;
   }
-  .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__right {
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__right {
     flex-direction: column;
     align-items: stretch;
     overflow-x: hidden;
   }
-  .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__right > .payouts {
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__right > .payouts {
     box-sizing: border-box;
     width: 100%;
     min-width: 0;
@@ -1356,26 +1356,84 @@ button:disabled {
 }
 
 @media (min-width: 1025px) {
-  .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .game-main-layout > .frame-content {
-    column-gap: var(--desktop-view1-gap, 64px);
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .game-main-layout > .frame-content {
+    column-gap: var(--desktop-view1-gap, 20px);
   }
 }
 
 @media (min-width: 1025px) {
-  .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__left {
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__left {
     translate: var(--desktop-view1-left-shift, 0px) 0;
   }
-  .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__right {
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__right {
     translate: var(--desktop-view1-right-shift, 0px) 0;
   }
 }
 
 /* Reserve more grid width on compact desktop screens. */
 @media (min-width: 1025px) and (max-width: 1400px) {
-  .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__left,
-  .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__right {
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__left,
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__right {
     width: clamp(240px, calc(240px + (100vw - 1280px) * 0.23256), 268px);
     min-width: 0;
     box-sizing: border-box;
+  }
+}
+
+/* Desktop cells fill spare horizontal space independently of grid height. */
+@media (min-width: 1025px) {
+  .configured-game .frame-app[data-desktop-view1-fit="true"][style*="--desktop-view1-grid-width:"].view-1:not(.doubling-active) .main-container__center {
+    width: var(--desktop-view1-grid-width);
+  }
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1 .lottery-grid-view1__top,
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1 .lottery-grid-view1__bottom,
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1 .lottery-grid-view1__row {
+    width: 100%;
+    justify-items: stretch;
+  }
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1 .lottery-grid-view1__row {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1 .lottery-grid-view1__column-labels,
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1 .lottery-grid-view1__row-cells {
+    width: 100%;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+/* The fitted desktop row owns horizontal positioning; legacy offsets overflow. */
+@media (min-width: 1025px) {
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__left,
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__right {
+    left: auto !important;
+    right: auto !important;
+    translate: none;
+  }
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__center {
+    min-width: 0;
+    flex-basis: auto;
+  }
+}
+
+/* Payout values determine the desktop panel width, including at high stakes. */
+@media (min-width: 1025px) {
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1:not(.doubling-active) .main-container__right {
+    width: max-content;
+    min-width: 320px;
+  }
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1 .main-container__right > div,
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1 .main-container__right .payouts {
+    box-sizing: border-box;
+    width: max-content;
+    min-width: 100%;
+  }
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1 .main-container__right table {
+    width: max-content;
+    min-width: 100%;
+    table-layout: auto;
+  }
+  .configured-game .frame-app[data-desktop-view1-fit="true"].view-1 .main-container__right .payout-cell {
+    box-sizing: border-box;
+    white-space: nowrap;
   }
 }

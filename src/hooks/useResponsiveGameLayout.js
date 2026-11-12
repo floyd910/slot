@@ -83,7 +83,8 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
       const desktopView1 = root.classList.contains("view-1") &&
         window.matchMedia("(min-width: 1025px)").matches;
       root.dataset.desktopView1Fit = String(desktopView1);
-      root.style.setProperty("--desktop-view1-gap", "64px");
+      root.style.removeProperty("--desktop-view1-grid-width");
+      root.style.setProperty("--desktop-view1-gap", "20px");
       root.style.setProperty("--desktop-view1-left-shift", "0px");
       root.style.setProperty("--desktop-view1-right-shift", "0px");
       for (const name of ["left", "center", "right"]) {
@@ -215,29 +216,42 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
         const gapCount = panels.length - 1;
         const gridZoom = Math.min(availableHeight / Math.max(1, grid.rect.height),
           gridWidth / Math.max(1, grid.rect.width),
-          Math.max(1, areaRect.width - 40 - sideWidth - 60 * gapCount) /
+          Math.max(1, areaRect.width - 40 - sideWidth - 20 * gapCount) /
             Math.max(1, grid.rect.width + overhang * gapCount));
         root.style.setProperty("--desktop-view1-gap",
-          Math.max(64, 60 + overhang * gridZoom) + "px");
+          20 + "px");
         root.style.setProperty("--desktop-view1-center-zoom", String(gridZoom));
+        // Preserve the fitted vertical scale; spend the remaining width on cells.
+        const fittedGap = 20;
+        const maximumGridWidth = Math.max(1,
+          areaRect.width - 40 - sideWidth - fittedGap * gapCount);
+        root.style.setProperty("--desktop-view1-grid-width",
+          maximumGridWidth / Math.max(0.001, gridZoom) + "px");
         root.style.setProperty("--desktop-view1-panel-height", availableHeight + "px");
         root.style.setProperty("--fluid-footer-reserve",
           `${Math.max(20, areaRect.bottom - footerTop + 20)}px`);
-        // Check final screen coordinates after zoom and all breakpoint rules.
-        const renderedParts = [center, ...center.querySelectorAll(
-          ".lottery-grid-view1, .lottery-grid-view1-cell, .win-line-overlay__number"
-        )].filter(isVisible).map((element) => element.getBoundingClientRect());
-        const renderedLeft = Math.min(...renderedParts.map((rect) => rect.left));
-        const renderedRight = Math.max(...renderedParts.map((rect) => rect.right));
+        // Keep panels inside the viewport; only the grid yields width.
         const leftPanel = root.querySelector(".main-container__left");
         const rightPanel = root.querySelector(".main-container__right");
-        if (isVisible(leftPanel)) {
-          const gap = renderedLeft - leftPanel.getBoundingClientRect().right;
-          root.style.setProperty("--desktop-view1-left-shift", -Math.max(0, 60 - gap) + "px");
-        }
-        if (isVisible(rightPanel)) {
-          const gap = rightPanel.getBoundingClientRect().left - renderedRight;
-          root.style.setProperty("--desktop-view1-right-shift", Math.max(0, 60 - gap) + "px");
+        for (let pass = 0; pass < 3; pass += 1) {
+          const parts = [center].map((element) => element.getBoundingClientRect());
+          const gridLeft = Math.min(...parts.map((rect) => rect.left));
+          const gridRight = Math.max(...parts.map((rect) => rect.right));
+          const leftRect = isVisible(leftPanel) ? leftPanel.getBoundingClientRect() : null;
+          const rightRect = isVisible(rightPanel) ? rightPanel.getBoundingClientRect() : null;
+          const gapDeficit = Math.max(0,
+            leftRect ? 20 - (gridLeft - leftRect.right) : 0,
+            rightRect ? 20 - (rightRect.left - gridRight) : 0);
+          const edgeOverflow = Math.max(0,
+            leftRect ? areaRect.left + 20 - leftRect.left : 0,
+            rightRect ? rightRect.right - (areaRect.right - 20) : 0);
+          if (gapDeficit < 0.1 && edgeOverflow < 0.1) break;
+          const currentWidth = parseFloat(root.style.getPropertyValue("--desktop-view1-grid-width"));
+          const currentGap = parseFloat(root.style.getPropertyValue("--desktop-view1-gap"));
+          root.style.setProperty("--desktop-view1-gap", currentGap + gapDeficit + "px");
+          root.style.setProperty("--desktop-view1-grid-width",
+            Math.max(1, currentWidth - (gapDeficit * gapCount + edgeOverflow * 2) /
+              Math.max(0.001, gridZoom)) + "px");
         }
         desktopScale = 1;
       }
@@ -297,7 +311,8 @@ export function useResponsiveGameLayout(rootRef, layoutMode) {
     fit();
     mountObserver = new MutationObserver((records) => {
       if (records.every(({target}) => (target.nodeType === 1 ? target : target.parentElement)?.closest(".grid-bottom-panel"))) return;
-      if (!initialFitStarted) scheduleFit();
+      if (!initialFitStarted || records.some(({ target }) =>
+        (target.nodeType === 1 ? target : target.parentElement)?.closest(".payouts"))) scheduleFit();
     });
     mountObserver.observe(root, { childList: true, subtree: true });
     const observer = new ResizeObserver(fit);
