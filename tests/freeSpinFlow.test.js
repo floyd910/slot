@@ -15,7 +15,7 @@ test('all games and views count 15 per catch, restore, retrigger and finish usin
   const {mergeRuntimeConfig}=await server.ssrLoadModule('/src/api/runtimeConfig.js');
   mergeRuntimeConfig({backendMode:'soap'});
   for(const gameId of ['ganchina-sokrovishch','marvorid-djemchug','khiradmandi-makor','egypt','kadima-drevnii','khocha-afandi','babylon','fruits'])for(const visualMode of [false,true]) {
-   const context={token:'fixture',playerId:'player-'+visualMode,gameId,sessionId:gameId+'-'+visualMode,mode:'standalone',initSource:'demo-stand'};
+   const context={token:'fixture',playerId:'player-'+visualMode,gameId,sessionId:gameId+'-'+visualMode,mode:'embedded',initSource:'postMessage'};
    const live={current:{context,visualMode,carpetCloseMs:0,carpetOpenMs:0,status:'ready',player:{balance:100,currency:'USD'},doubleState:{},doublingState:{},freeSpinsLeft:0,freeSpinsTotal:0,selectedCombination:{groups:[{}],id:1},stake:1}};
    let played=100,calls=0,failCount=false,payCalls=0,expectedMinor=0,paidMinor=0;const cardWins=new Map();const errors=[];
    const options={liveSpinStateRef:live,autoPlayOnRef:{current:false},freeSpinRunRef:{current:false},t:k=>k,reportOperationError:e=>errors.push(e)};
@@ -30,9 +30,11 @@ test('all games and views count 15 per catch, restore, retrigger and finish usin
     payCalls++;
     assert.ok(params.idCard);
     paidMinor+=cardWins.get(params.idCard);
-    return {balance:100+paidMinor/100};
+    return {idCard:params.idCard,paidAt:"confirmed",balance:100+paidMinor/100};
    };
    frameApi.spin=async params=>{
+    if(params.isFreeSpin)assert.equal(live.current.player.balance,100, 'series payouts stay out of the displayed balance until the final spin');
+    assert.ok(freeSpinSeries.getPayments(context).every(card=>card.paid), 'next spin must wait for preceding winning card');
     calls++;const form=buildSpinForm(params,context);assert.equal(form.get('freeSpin'),calls===1?'0':'1');assert.equal(form.get('demoSpin'),'0','standalone production token must never force demo spins');
     const winMinor=params.isFreeSpin?[56350,0,1235][(calls-2)%3]:0;
     expectedMinor+=winMinor;cardWins.set(context.sessionId+'-'+calls,winMinor);
@@ -44,9 +46,9 @@ test('all games and views count 15 per catch, restore, retrigger and finish usin
    await actions.handleSpin();await actions.handleSpin();assert.equal(live.current.freeSpinsLeft,13);
    // Third free spin catches another award, then the count request fails.
    failCount=true;assert.equal(await actions.handleSpin(),null);assert.equal(live.current.freeSpinCountUnknown,true);
-   assert.equal(freeSpinSeries.read(context).freeSpinsTotal,30);assert.equal(live.current.freeSpinsWinTotal,575.85);assert.equal(payCalls,0);assert.equal(live.current.player.balance,100);
+   assert.equal(freeSpinSeries.read(context).freeSpinsTotal,30);assert.equal(live.current.freeSpinsWinTotal,575.85);assert.equal(payCalls,2);assert.equal(live.current.player.balance,100);
    failCount=false;await actions.handleSpin();assert.equal(calls,4);assert.equal(live.current.freeSpinsLeft,27);
-   assert.equal(await actions.settleFreeSpinWins({keepalive:true}),false);assert.equal(payCalls,0);assert.equal(live.current.player.balance,100);assert.equal(freeSpinSeries.getPaidTotal(context),0);
+   assert.equal(await actions.settleFreeSpinWins({keepalive:true}),true);assert.equal(payCalls,2);assert.equal(live.current.player.balance,100);assert.equal(freeSpinSeries.getPaidTotal(context),575.85);
    const restored=freeSpinSeries.reconcile({...context,sessionId:'reopened'},played);
    assert.deepEqual(restored,{freeSpinsWinTotal:575.85,freeSpinsTotal:30,freeSpinsPlayed:3,freeSpinsLeft:27});
    Object.assign(live.current,restored,{visualMode:!visualMode});

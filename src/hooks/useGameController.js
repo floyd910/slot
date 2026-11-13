@@ -3,6 +3,7 @@ import { hasPendingExitRecovery, createDoubleExitHandler, registerDoubleExit, re
 import { isStandaloneDemo, requestDemoLaunch, usesStandaloneDemoWallet } from "../api/demoLaunch.js";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { frameApi } from "../api/frameApi.js";
+import { freeSpinSeries } from "../services/freeSpinSeries.js";
 import {
   CARPET_ANIMATION_HALF_MS,
   CARPET_SOUND_SRC,
@@ -614,9 +615,11 @@ export function useGameController(selectedGameId, gameDefinition = null) {
           initSource: "postMessage",
         });
       if (command === "UPDATE_BALANCE") {
+        const activeContext=liveSpinStateRef.current.context;
+        if(payload.balance != null)freeSpinSeries.rememberConfirmedBalance(activeContext,Number(payload.balance));
         setPlayer((current) => ({
           ...current,
-          balance: payload.balance ?? current?.balance,
+          balance: freeSpinSeries.getHeldDisplayBalance(activeContext) ?? payload.balance ?? current?.balance,
         }));
         setLastKnownState("balance-updated");
       }
@@ -758,7 +761,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         // The operation may have become uncertain while waiting for it to finish.
         if(hasPendingExitRecovery(liveSpinStateRef.current, stateRecoveryService))
           return {handled:true,allowExit:true,pending:true};
-        // Leaving pauses an unfinished series; keep its wins unpaid for continuation.
+        // Leaving pauses the remaining spins; completed cards have already paid.
         if (liveSpinStateRef.current.freeSpinsLeft > 0 || liveSpinStateRef.current.freeSpinCountUnknown)
           return {handled:true,allowExit:true};
         const paid=await liveSpinStateRef.current.settleFreeSpinWins?.(options);
@@ -807,9 +810,11 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       if (session.language) {
         window.dispatchEvent(new CustomEvent(PARTNER_LANGUAGE_EVENT, { detail: session.language }));
       }
-      const sessionPlayer = usesStandaloneDemoWallet(context)
-        ? { ...session.player, balance: standalonePageBalance }
-        : session.player;
+      const sessionPlayer = {
+        ...session.player,
+        balance:session.freeSpinDisplayBalance ?? (usesStandaloneDemoWallet(context)
+          ? standalonePageBalance : session.player.balance),
+      };
       const paymentRows = await withTimeout(frameApi.getPaytable(), "Paytable");
       if (session.sessionId && session.sessionId !== context.sessionId) {
         const initializedContext = {
@@ -868,7 +873,8 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       const restoredRound = recoveredState ?? locallyRecoveredState;
       const restoredResult = session.gameState?.spinResult ?? confirmedSpinResult;
       const restoredFreeSpinsLeft = Number(session.freeSpinsLeft ?? session.gameState?.freeSpinsLeft ?? restoredRound?.freeSpinsLeft ?? 0);
-      const hasUnpaidRestoredWin = Boolean(restoredResult?.idCard && restoredResult.creditedToBalance !== true && Number(restoredResult.WinSum ?? 0) > 0);
+      const hasUnpaidRestoredWin = Boolean(restoredResult?.idCard && restoredResult.creditedToBalance !== true &&
+        (Number(restoredResult.WinSum ?? 0) > 0 || restoredResult.freeSpinDeferred === true));
       const shouldAutoPayReturnedFreeSpin = Boolean(restoredFreeSpinsLeft > 0 || restoredRound?.freeSpinsActive === true || restoredResult?.freeSpinDeferred === true || restoredResult?.isFreeSpin === true);
       automaticReturnPaymentRef.current = !needsRecovery && hasUnpaidRestoredWin && (shouldAutoPayReturnedFreeSpin || restoredRound?.autoExpressActive === true)
         ? { idCard: restoredResult.idCard, resumeAutoExpress: restoredRound?.autoExpressActive === true, hasFreeSpins: shouldAutoPayReturnedFreeSpin }
@@ -937,7 +943,8 @@ export function useGameController(selectedGameId, gameDefinition = null) {
         }
       }
       setFreeSpinsPaidTotal(session.freeSpinsPaidTotal ?? 0);
-      setFreeSpinsWinTotal(session.paymentRecovered && !(session.freeSpinsLeft > 0) ? 0 : session.freeSpinsLeft > 0 || session.gameState?.spinResult?.isFreeSpin ? session.freeSpinsWinTotal ?? null : null);
+      setFreeSpinsWinTotal(session.freeSpinsLeft > 0 || session.gameState?.spinResult?.isFreeSpin
+        ? session.freeSpinsWinTotal ?? null : session.paymentRecovered ? 0 : null);
       setFreeSpinHistoryMissing(session.freeSpinHistoryMissing === true);
       liveSpinStateRef.current = {...liveSpinStateRef.current, freeSpinHistoryMissing:session.freeSpinHistoryMissing === true};
       if (session.freeSpinsLeft != null) {

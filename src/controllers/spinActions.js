@@ -78,6 +78,18 @@ export const createSpinActions = ({
   t,
   onRecoveryRequired,
 }) => {
+  const releaseFreeSpinDisplayBalance = () => {
+    const state=liveSpinStateRef.current;
+    if(state.freeSpinCountUnknown || state.roundRecoveryBlocked || stateRecoveryService.getPendingRequest(state.context))return;
+    const balance=freeSpinSeries.releaseDisplayBalance(state.context,{
+      backendManagedWallet:usesBackendManagedWallet(state.context),fallbackBalance:state.player?.balance,
+    });
+    if(balance == null || !state.player)return;
+    const player={...state.player,balance};
+    liveSpinStateRef.current={...state,player};
+    setPlayer(player);
+    postEvent("UPDATE_BALANCE",{balance,currency:player.currency});
+  };
   const showFreeSpinCompletion = async () => {
     const state = liveSpinStateRef.current;
     if (state.status !== "ready" && !state.freeSpinSettling) return;
@@ -86,6 +98,7 @@ export const createSpinActions = ({
         state.freeSpinSummary || state.freeSpinSummaryChecking ||
         stateRecoveryService.getPendingRequest(state.context) ||
         freeSpinSeries.getPayments(state.context).some(card => !card.paid)) return;
+    releaseFreeSpinDisplayBalance();
     liveSpinStateRef.current.freeSpinSummaryChecking = true;
     try {
       const summary = freeSpinSeries.getCompletionSummary(
@@ -158,10 +171,11 @@ export const createSpinActions = ({
     const displayCurrency = typeof wallet.currency === "string" && wallet.currency.trim()
       ? wallet.currency.trim().toUpperCase()
       : context.currency ?? context.NameValute ?? context.nameValute ?? player.currency;
-    const nextPlayer = { ...player, balance: wallet.balance, currency: displayCurrency };
+    freeSpinSeries.rememberConfirmedBalance(context,wallet.balance);
+    const nextPlayer = { ...player, balance: freeSpinSeries.getHeldDisplayBalance(context) ?? wallet.balance, currency: displayCurrency };
     liveSpinStateRef.current = { ...current, player: nextPlayer };
     setPlayer(nextPlayer);
-    postEvent("UPDATE_BALANCE", { balance: wallet.balance, currency: displayCurrency });
+    postEvent("UPDATE_BALANCE", { balance: nextPlayer.balance, currency: displayCurrency });
     return wallet;
   };
 
@@ -229,9 +243,8 @@ export const createSpinActions = ({
       }
       return null; // This attempt only refreshes the counter, never repeats the completed spin.
     }
-    if (freeSpinsLeft <= 0 && freeSpinSeries.getPayments(context).some(card=>!card.paid)) {
-      await settleFreeSpinWins();
-      return null;
+    if (freeSpinSeries.getPayments(context).some(card=>!card.paid)) {
+      if (!(await settleFreeSpinWins()) || freeSpinsLeft <= 0) return null;
     }
     const previousResult = liveSpinStateRef.current.spinResult;
     if (previousResult?.backendManagedWallet && !previousResult.freeSpinDeferred && !previousResult.creditedToBalance && getTicketWinAmount(previousResult, doublingState) > 0) {
@@ -240,6 +253,7 @@ export const createSpinActions = ({
     }
     // The locally calculated remaining count determines the request flag.
     const isFreeSpin = freeSpinsLeft > 0;
+    if(isFreeSpin)freeSpinSeries.holdDisplayBalance(context,Number(player?.balance));
     const creditWinOnReveal =
       isFreeSpin || freeSpinAuto || autoExpressSpin || autoPlayOnRef.current;
     const effectiveDemo = context.demoMode === true;
@@ -383,6 +397,7 @@ export const createSpinActions = ({
         });
       const result = {
         ...apiResult,
+        isFreeSpin,
         WinSum: asNumber(apiResult.WinSum),
         BaseWinSum: asNumber(apiResult.BaseWinSum, asNumber(apiResult.WinSum)),
         BackendWinSum: asNumber(apiResult.BackendWinSum, asNumber(apiResult.WinSum)),
@@ -395,6 +410,7 @@ export const createSpinActions = ({
         : Promise.resolve();
       // Persist confirmed wins before animation; the ledger deduplicates API records.
       freeSpinSeries.recordResult(context, result, isFreeSpin);
+      if(isFreeSpin && backendManagedWallet)freeSpinSeries.rememberConfirmedBalance(context,result.balance);
       setFreeSpinsPaidTotal(freeSpinSeries.getPaidTotal(context));
       const seriesWin = isFreeSpin || getAwardedFreeSpinCount(result) > 0
         ? freeSpinSeries.read(context)?.freeSpinsWinTotal ?? null : null;
@@ -650,11 +666,11 @@ export const createSpinActions = ({
           ).toFixed(2),
         ),
       });
+      if (isFreeSpin && !(await settleFreeSpinWins())) return null;
       if (countRefreshError) {
         reportOperationError(countRefreshError, "Spin completed, but the free-spin count could not be refreshed. Retry the counter before spinning.");
         return null;
       }
-      if(isFreeSpin && liveSpinStateRef.current.freeSpinsLeft <= 0 && !(await settleFreeSpinWins())) return null;
       return result;
     } catch (spinError) {
       setGridAnimation("settled");
@@ -717,20 +733,24 @@ export const createSpinActions = ({
   const settleFreeSpinWins = ({keepalive=false}={}) => {
     if (liveSpinStateRef.current.freeSpinSettlementPromise) return liveSpinStateRef.current.freeSpinSettlementPromise;
     const state=liveSpinStateRef.current, context=state.context;
-    if (state.freeSpinsLeft !== 0 || state.freeSpinCountUnknown || state.freeSpinHistoryMissing) return Promise.resolve(false);
+    if (state.freeSpinHistoryMissing) return Promise.resolve(false);
     if (state.status !== "ready" || state.roundRecoveryBlocked || stateRecoveryService.getPendingRequest(context)) return Promise.resolve(false);
     const cards=freeSpinSeries.getPayments(context).filter(card=>!card.paid);
+    if(state.freeSpinCountUnknown && !cards.length)return Promise.resolve(false);
     if(!cards.length)return (keepalive ? Promise.resolve() : showFreeSpinCompletion()).then(() => true);
+    freeSpinSeries.holdDisplayBalance(context,Number(state.player?.balance));
     liveSpinStateRef.current={...state,status:"processing",freeSpinSettling:true,balanceVersion:(state.balanceVersion ?? 0)+1};
     setStatus("processing");
     const task=(async()=>{
       try {
         const settled=await settleFreeSpinSeries({context,pay:params=>frameApi.pay(params),requestId:()=>buildRequestId("free-spin-pay"),keepalive});
-        const balance=usesBackendManagedWallet(context) ? settled.balance : Number((Number(state.player?.balance ?? 0)+cards.reduce((sum,card)=>sum+card.winMinor,0)/100).toFixed(2));
+        const balance=freeSpinSeries.getHeldDisplayBalance(context) ?? state.player?.balance;
         const nextPlayer=state.player ? {...state.player,balance:balance ?? state.player.balance} : null;
         setPlayer(nextPlayer);
         setFreeSpinsPaidTotal(settled.paidTotal);
-        const paidResult=state.spinResult ? {...state.spinResult,creditedToBalance:true,freeSpinDeferred:false,WinSum:0} : null;
+        // Preserve this spin's result and highlights; the displayed series total
+        // remains independent of the card's confirmed payment status.
+        const paidResult=state.spinResult ? {...state.spinResult,creditedToBalance:true,freeSpinDeferred:false} : null;
         setSpinResult(paidResult);
         setDoublingState(createEmptyDoublingState());
         liveSpinStateRef.current={...liveSpinStateRef.current,player:nextPlayer,spinResult:paidResult,doublingState:createEmptyDoublingState(),freeSpinsPaidTotal:settled.paidTotal};
@@ -740,8 +760,18 @@ export const createSpinActions = ({
         if (!keepalive) await showFreeSpinCompletion();
         return true;
       } catch(error) {
-        if(stateRecoveryService.getPendingRequest(context)) {
+        const unpaid=freeSpinSeries.getPayments(context).find(card=>!card.paid);
+        if(unpaid) {
+          // Even a rejected/malformed response requires a card-state check
+          // before another spin. Persist its identity across page reloads.
+          if(!stateRecoveryService.getPendingRequest(context)) {
+            stateRecoveryService.rememberPendingRequest({methodName:"/pay",idCard:unpaid.idCard,roundId:unpaid.idCard,requestId:unpaid.paymentRequestId},context);
+          }
+          stateRecoveryService.markRoundRecoveryRequired(error,{operationType:"COLLECT"},context);
           liveSpinStateRef.current={...liveSpinStateRef.current,roundRecoveryBlocked:true};
+          autoPlayOnRef.current=false;
+          setAutoPlayOn?.(false);
+          resumeAutoPlayAfterFreeSpinsRef.current=false;
           onRecoveryRequired?.(error);
         }
         reportOperationError(error,"Unable to settle free-spin winnings");
@@ -763,7 +793,7 @@ export const createSpinActions = ({
     if (liveSpinStateRef.current.freeSpinsLeft <= 0 && freeSpinSeries.getPayments(liveSpinStateRef.current.context).some(card=>!card.paid)) return settleFreeSpinWins();
     if (liveSpinStateRef.current.spinResult?.freeSpinDeferred) return liveSpinStateRef.current.freeSpinsLeft > 0 ? startFreeSpinRun() : settleFreeSpinWins();
     const { doublingState, player, spinResult, status, context } = liveSpinStateRef.current;
-    if (!spinResult?.idCard || getTicketWinAmount(spinResult, doublingState) <= 0 || status !== "ready") return false;
+    if (!spinResult?.idCard || spinResult.creditedToBalance === true || getTicketWinAmount(spinResult, doublingState) <= 0 || status !== "ready") return false;
     if (liveSpinStateRef.current.roundRecoveryBlocked || stateRecoveryService.getPendingRequest(context)) {
       setError(t("resolveBeforeCollect"));
       return false;
@@ -850,7 +880,7 @@ export const createSpinActions = ({
           }),
         );
 
-        // Winning cards remain unpaid until the series ends or the player exits.
+        // handleSpin resolves only after this Free Spin's card is paid.
       }
       completed = liveSpinStateRef.current.freeSpinsLeft <= 0;
       if(completed && !(await settleFreeSpinWins())) completed=false;

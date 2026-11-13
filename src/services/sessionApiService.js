@@ -204,12 +204,22 @@ export class SessionApiService {
         .find(
           (card) => String(card.idCard) === String(gameState.spinResult.idCard),
         );
+      // A reload can land between the confirmed /pay response and the local
+      // ledger write. The validated /init card is sufficient confirmation;
+      // do not send another payment merely because no transport is pending.
+      if (card && !card.paid && gameState.spinResult.creditedToBalance === true) {
+        freeSpinSeries.markPaid(params, card.idCard, wallet.balance);
+      }
       if (card && !card.paid && !gameState.spinResult.creditedToBalance)
         gameState.spinResult.freeSpinDeferred = true;
     }
     if (spinRecovered) stateRecoveryService.completePendingRequest(pendingAtStart.requestId, params);
     const spinRolledBack = false;
     const paymentRecovered = reconcileConfirmedPayment(params, remote, gameState, wallet, pendingAtStart);
+    if(freeSpinsLeft>0 || freeSpinSeries.getPayments(params).some(card=>!card.paid)) {
+      freeSpinSeries.holdDisplayBalance(params,wallet.balance,{subtractPaid:!usesStandaloneDemoWallet(params)});
+    }
+    freeSpinSeries.rememberConfirmedBalance(params,wallet.balance);
     mergeRuntimeConfig({
       ...params,
       sessionId: remote.sessionId,
@@ -224,6 +234,7 @@ export class SessionApiService {
       locale: remote.language,
     });
     return {
+      freeSpinDisplayBalance:freeSpinSeries.getHeldDisplayBalance(params),
       paymentRecovered,
       spinRecovered,
       spinRolledBack,

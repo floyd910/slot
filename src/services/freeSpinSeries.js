@@ -20,6 +20,32 @@ const snapshot = value => {
  return {freeSpinsWinTotal:value ? (value.winMinor == null ? null : value.winMinor / 100) : 0,freeSpinsTotal:total,freeSpinsPlayed:played,freeSpinsLeft:Math.max(0,total-played)};
 };
 export const freeSpinSeries = {
+ holdDisplayBalance(context,balance,{subtractPaid=false}={}) {
+  const value=read(context);
+  if(!value || value.balanceHold || !Number.isFinite(balance))return;
+  const paidMinor=(value.payments ?? []).filter(card=>card.paid).reduce((sum,card)=>sum+card.winMinor,0);
+  save(context,{...value,balanceHold:{baseMinor:Math.max(0,Math.round(balance*100)-(subtractPaid?paidMinor:0)),released:false}});
+ },
+ getHeldDisplayBalance(context) {
+  const hold=read(context)?.balanceHold;
+  return hold && !hold.released ? hold.baseMinor/100 : null;
+ },
+ rememberConfirmedBalance(context,balance) {
+  const value=read(context);
+  if(!value?.balanceHold || !Number.isFinite(balance))return;
+  save(context,{...value,balanceHold:{...value.balanceHold,confirmedMinor:Math.round(balance*100)}});
+ },
+ releaseDisplayBalance(context,{backendManagedWallet=false,fallbackBalance}={}) {
+  const value=read(context),hold=value?.balanceHold;
+  if(!hold || hold.released || snapshot(value).freeSpinsLeft>0 ||
+     (value.payments ?? []).some(card=>card.winMinor>0 && !card.paid))return null;
+  const balance=backendManagedWallet
+   ? hold.confirmedMinor == null ? fallbackBalance : hold.confirmedMinor/100
+   : value.winMinor == null ? null : (hold.baseMinor+value.winMinor)/100;
+  if(!Number.isFinite(balance))return null;
+  save(context,{...value,balanceHold:{...hold,released:true}});
+  return balance;
+ },
  getCompletionSummary(context,currency) {
   const value=read(context);
   const id=value?.awardIds?.[0];
@@ -27,12 +53,21 @@ export const freeSpinSeries = {
      typeof currency !== 'string' || !currency.trim())return null;
   return {id:'local-series:'+id,totalWin:(value.winMinor/100).toFixed(2),currency};
  },
- getPayments(context) {return read(context)?.payments ?? [];},
+ getPayments(context) {return (read(context)?.payments ?? []).filter(card=>card.winMinor>0);},
  getPaidTotal(context) {return (read(context)?.payments ?? []).filter(p=>p.paid).reduce((sum,p)=>sum+p.winMinor,0)/100;},
+ preparePayment(context,id,requestId) {
+  const value=read(context);
+  const card=value?.payments?.find(p=>String(p.idCard)===String(id));
+  if(!card)throw new Error('Unknown free-spin card');
+  if(card.paymentRequestId)return card.paymentRequestId;
+  save(context,{...value,payments:value.payments.map(p=>p===card?{...p,paymentRequestId:requestId}:p)});
+  return requestId;
+ },
  markPaid(context,id,balance) {
   const value=read(context);
   if(!value)return;
   save(context,{...value,payments:(value.payments ?? []).map(p=>String(p.idCard)===String(id)?{...p,paid:true,balance}:p)});
+  this.rememberConfirmedBalance(context,balance);
  },
  read(context) { const value=read(context); return value ? snapshot(value) : null; },
  // Persist confirmed results before refreshing counters; retries must not add them twice.

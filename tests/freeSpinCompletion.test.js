@@ -53,7 +53,7 @@ test('settlement displays the accumulated series total once, stops autoplay, and
       const context={playerId:'completion-'+totalWin+'-'+autoExpress,gameId:'khiradmandi-makor',token:'fixture'};
       if (totalWin !== null) {
         freeSpinSeries.recordResult(context,{idCard:'award',FreeSpin:1,WinSum:99},false);
-        freeSpinSeries.recordResult(context,{idCard:'retrigger',FreeSpin:1,WinSum:0},true);
+        freeSpinSeries.recordResult(context,{idCard:'retrigger',FreeSpin:1,WinSum:0,creditedToBalance:true},true);
         freeSpinSeries.recordResult(context,{idCard:'win',WinSum:totalWin,creditedToBalance:true},true);
       }
       const live={current:{context,player:{currency:'USD'},status:'ready',freeSpinsLeft:15,freeSpinsTotal:30,freeSpinsWinTotal:9999,spinResult:{WinSum:1.23}}};
@@ -69,7 +69,7 @@ test('settlement displays the accumulated series total once, stops autoplay, and
         setFreeSpinsWinTotal:value=>displayedTotals.push(value),
         setAutoPlayOn:()=>{},setPlayer:()=>{},postEvent:()=>{},setFreeSpinSummary:v=>summaries.push(v),reportOperationError:e=>errors.push(e)});
       // Retriggered spins are still pending: neither a request nor a summary is allowed.
-      assert.equal(await actions.settleFreeSpinWins(),false);
+      assert.equal(await actions.settleFreeSpinWins(),true);
       assert.equal(requests,0);
       live.current.freeSpinsLeft=0;
       live.current.freeSpinCountUnknown=true;
@@ -109,7 +109,7 @@ test('settlement displays the accumulated series total once, stops autoplay, and
     freeSpinSeries.reconcile(timingContext,115);
     const timingLive={current:{context:timingContext,player:{balance:100,currency:'USD'},status:'ready',freeSpinsLeft:0,freeSpinsTotal:15,freeSpinCountUnknown:false,spinResult:{idCard:'timing-win',WinSum:12.34}}};
     let payCalls=0,payResolvedAt=0,summaryShownAt=0;
-    frameApi.pay=async()=>{payCalls++;await new Promise(resolve=>setTimeout(resolve,20));payResolvedAt=performance.now();return {balance:112.34};};
+    frameApi.pay=async()=>{payCalls++;await new Promise(resolve=>setTimeout(resolve,20));payResolvedAt=performance.now();return {idCard:'timing-win',paidAt:'confirmed',balance:112.34};};
     const timingActions=createSpinActions({liveSpinStateRef:timingLive,autoPlayOnRef:{current:false},resumeAutoPlayAfterFreeSpinsRef:{current:false},
       setStatus:value=>{timingLive.current.status=value;},setPlayer:value=>{timingLive.current.player=typeof value==='function'?value(timingLive.current.player):value;},
       setSpinResult:value=>{timingLive.current.spinResult=value;},setDoublingState(){},setFreeSpinsPaidTotal(){},postEvent(){},
