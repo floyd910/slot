@@ -1437,3 +1437,11 @@ button:disabled {
     white-space: nowrap;
   }
 }
+
+/* Winning-line numbers extend outside View 1; keep their stacking context above both side panels. */
+.configured-game .frame-app.view-1:not(.doubling-active) .main-container__center {
+  z-index: 8890;
+}
+.configured-game .frame-app.view-1:not(.doubling-active) .win-line-overlay__number {
+  z-index: 31;
+}
