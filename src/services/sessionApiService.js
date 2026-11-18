@@ -142,6 +142,29 @@ export class SessionApiService {
     mergeRuntimeConfig(params);
     validateSessionContext(params);
 
+    // A partner /init may replace the server session for this player.  When a
+    // different browser opens the same embedded player while Free Spins are
+    // already in progress, that browser has no award ledger and cannot derive
+    // the remaining count from CountFreeSpin alone.  Detect that situation
+    // before /init so the observer is rejected without invalidating the browser
+    // that owns the active series.  Standalone demo launches intentionally keep
+    // their existing initialization flow.
+    if (
+      params.mode === "embedded" &&
+      params.initSource === "postMessage" &&
+      freeSpinSeries.read(params) == null
+    ) {
+      const playedBeforeInit = await requestFreeSpins(params);
+      if (playedBeforeInit > 0) {
+        throw Object.assign(
+          new Error(
+            "Free Spins are active in another browser and cannot be restored without the original award history",
+          ),
+          { code: "FREE_SPIN_HISTORY_MISSING" },
+        );
+      }
+    }
+
     const pendingAtStart = stateRecoveryService.getPendingRequest(params);
     const localStateAtStart = stateRecoveryService.getLocalState(params);
     const remote = await requestRemoteSession(params);

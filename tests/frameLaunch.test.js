@@ -68,6 +68,22 @@ test('real init is required even with supplied session; zero balance is retained
   } finally {globalThis.fetch=original;}
 });
 
+test('embedded partner checks active free spins before init so another browser cannot replace the owner session',async()=>{
+  mergeRuntimeConfig({sessionApiBaseUrl:'https://example.invalid'});
+  const original=globalThis.fetch;
+  const calls=[];
+  const params={token:'fixture',playerId:'shared-active-player',gameId:'khiradmandi-makor',initSource:'postMessage',mode:'embedded'};
+  try {
+    globalThis.fetch=async(url)=>{
+      calls.push(new URL(url).pathname);
+      if(url.endsWith('/freespins'))return new Response(JSON.stringify({CountFreeSpin:'3'}));
+      throw new Error('/init must not run while another browser owns the active series');
+    };
+    await assert.rejects(new SessionApiService().initSession(params),{code:'FREE_SPIN_HISTORY_MISSING'});
+    assert.deepEqual(calls,['/freespins']);
+  } finally {globalThis.fetch=original;}
+});
+
 test('NameValute from init is authoritative over balance currency',async()=>{
   mergeRuntimeConfig({sessionApiBaseUrl:'https://example.invalid'});
   const original=globalThis.fetch;
