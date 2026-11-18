@@ -16,7 +16,7 @@ import {
   mergeRuntimeConfig,
 } from "../api/runtimeConfig.js";
 
-import { resolveApiGameId } from "../api/gameApiIds.js";
+import { GAME_API_IDS, resolveApiGameId } from "../api/gameApiIds.js";
 
 const buildApiUrl = (path) =>
   `${getSessionApiBaseUrl().replace(/\/$/, "")}${path}`;
@@ -147,11 +147,11 @@ export class SessionApiService {
     // already in progress, that browser has no award ledger and cannot derive
     // the remaining count from CountFreeSpin alone.  Detect that situation
     // before /init so the observer is rejected without invalidating the browser
-    // that owns the active series.  Standalone demo launches intentionally keep
-    // their existing initialization flow.
+    // that owns the active series. Only Game 3 supports this pre-init check.
     if (
       params.mode === "embedded" &&
       params.initSource === "postMessage" &&
+      String(resolveApiGameId(params)) === GAME_API_IDS["khiradmandi-makor"] &&
       freeSpinSeries.read(params) == null
     ) {
       const playedBeforeInit = await requestFreeSpins(params);

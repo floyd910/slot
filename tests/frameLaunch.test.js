@@ -5,6 +5,7 @@ import { resolveParentOrigin, readHostMessage, normalizeHostInit } from '../src/
 import { SessionApiService, isRollbackEligibleSpin } from '../src/services/sessionApiService.js';
 import { stateRecoveryService } from '../src/services/stateRecoveryService.js';
 import { mergeRuntimeConfig } from '../src/api/runtimeConfig.js';
+import { GAME_API_IDS } from '../src/api/gameApiIds.js';
 
 test('transport failures never unlock a financial Spin without an explicit status contract',()=>{
   const now=Date.parse('2026-10-01T12:00:00.000Z');
@@ -81,6 +82,29 @@ test('embedded partner checks active free spins before init so another browser c
     };
     await assert.rejects(new SessionApiService().initSession(params),{code:'FREE_SPIN_HISTORY_MISSING'});
     assert.deepEqual(calls,['/freespins']);
+  } finally {globalThis.fetch=original;}
+});
+
+test('other embedded games start with init and skip the pre-init free spins check',async()=>{
+  mergeRuntimeConfig({sessionApiBaseUrl:'https://example.invalid'});
+  const original=globalThis.fetch;
+  const service=new SessionApiService();
+  try {
+    for(const [gameId,apiGameId] of Object.entries(GAME_API_IDS)) {
+      if(gameId==='khiradmandi-makor') continue;
+      const calls=[];
+      globalThis.fetch=async(url,options)=>{
+        const path=new URL(url).pathname;
+        calls.push(path);
+        if(path==='/freespins') return new Response(null,{status:404});
+        assert.equal(path,'/init');
+        assert.equal(options.body.get('gameId'),apiGameId);
+        return new Response(JSON.stringify({sessionId:'partner-session',balance:100,currency:'USD'}));
+      };
+      const result=await service.initSession({token:'fixture',playerId:'new-player',gameId,initSource:'postMessage',mode:'embedded'});
+      assert.equal(result.sessionId,'partner-session');
+      assert.deepEqual(calls,['/init']);
+    }
   } finally {globalThis.fetch=original;}
 });
 
