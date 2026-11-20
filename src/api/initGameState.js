@@ -1,6 +1,6 @@
 import { DOUBLE_MAX_STEPS, createDoubleState, createEmptyDoublingState } from "../config/gameSettings.js";
 import { mapJsonSpinPayload } from "./slotPayloadMappers.js";
-import { resolveApiGameId } from "./gameApiIds.js";
+import { areFreeSpinsDisabled, resolveApiGameId } from "./gameApiIds.js";
 
 export function mapInitGameState(state, context) {
   if (state == null) return null;
@@ -23,7 +23,11 @@ export function mapInitGameState(state, context) {
   const payload = {idCard:state.idCard,Number:state.SpinResult.Number,WinSum:paid ? 0 : Number(state.SumPay),FreeSpin:recoveredFreeSpin,Gold:0};
   for(let row=1;row<=3;row++) payload['Line'+row]=Object.fromEntries(rows[row-1].map((value,index)=>['Slot'+(index+1),value]));
   for(let i=1;i<=10;i++) payload['LineWinKoff'+i]={Koff:state.LinesKoff?.['Koff'+i]};
-  const spinResult=mapJsonSpinPayload(payload,{...context,isDemo:truth(state.SlotDemoSpin),isFreeSpin:truth(state.SlotFreeSpin)});
+  const spinResult=mapJsonSpinPayload(payload,{
+    ...context,
+    isDemo:truth(state.SlotDemoSpin),
+    isFreeSpin:!areFreeSpinsDisabled(context) && truth(state.SlotFreeSpin),
+  });
 
   const doublingState = createEmptyDoublingState();
   const doubleState = createDoubleState();

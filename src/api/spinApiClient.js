@@ -1,6 +1,6 @@
 import { buildAuthHeaders } from "./authHeaders.js";
 import { SPIN_REQUEST_TIMEOUT_MS } from "../config/gameSettings.js";
-import { resolveApiGameId } from "./gameApiIds.js";
+import { areFreeSpinsDisabled, resolveApiGameId } from "./gameApiIds.js";
 import { getSessionApiBaseUrl } from "./runtimeConfig.js";
 
 const error = (message, code, extra = {}) => Object.assign(new Error(message), { code, ...extra });
@@ -28,7 +28,7 @@ export const buildSpinForm = (params, context) => {
     sum: params.stake,
     lines: params.lines,
     demoSpin: params.isFreeSpin ? 0 : params.isDemo ? 1 : 0,
-    freeSpin: params.isFreeSpin ? 1 : 0,
+    freeSpin: params.isFreeSpin && !areFreeSpinsDisabled(context) ? 1 : 0,
   };
   for (const key of ["gameId", "playerId", "requestId", "sum", "lines"]) {
     if (fields[key] == null || String(fields[key]).trim() === "") throw error("Missing spin field: " + key, "CONFIGURATION_ERROR");
@@ -69,7 +69,9 @@ export const sendSpinRequest = async (body, {
       const code = getSpinErrorCode(response.status, payload);
       throw error("Spin request failed", code, { status: response.status, backendErrorCode: payload?.error_code });
     }
-    return payload;
+    return areFreeSpinsDisabled({ gameId })
+      ? { ...payload, FreeSpin: "0" }
+      : payload;
   } catch (cause) {
     if (cause.name === 'AbortError') {
       const diagnostic = {

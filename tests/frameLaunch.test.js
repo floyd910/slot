@@ -35,9 +35,10 @@ test('production partner origin resolves for both an explicit and an omitted ref
   assert.equal(resolveParentOrigin([origin],origin+'/integration/test',true),origin);
   assert.equal(resolveParentOrigin([origin],'',true),origin);
 });
-test('integration test platform is an approved exact parent origin',()=>{
-  const origins=['https://goapi.lostgame.tech','https://gamesintegration.com'];
+test('integration test platforms are approved as exact parent origins',()=>{
+  const origins=['https://goapi.lostgame.tech','https://gamesintegration.com','https://test.raxshloto.online'];
   assert.equal(resolveParentOrigin(origins,'https://gamesintegration.com/auth/test',true),'https://gamesintegration.com');
+  assert.equal(resolveParentOrigin(origins,'https://test.raxshloto.online/partner',true),'https://test.raxshloto.online');
 });
 test('documented partner event/data envelope and playerID are supported only for trusted parent',()=>{
   const parent={};const origin='https://partner.example';
@@ -61,27 +62,41 @@ test('real init is required even with supplied session; zero balance is retained
   const service=new SessionApiService();
   const params={token:"fixture",playerId:7,gameId:'khiradmandi-makor',initSource:'postMessage',sessionId:'fake'};
   try {
-    globalThis.fetch=async(url,options)=>{calls++;assert.ok(options.signal instanceof AbortSignal);assert.equal(options.headers.Authorization,"Bearer fixture");if(url.endsWith('/freespins')){assert.deepEqual(Object.fromEntries(options.body),{gameId:'36',playerId:'7'});return new Response(JSON.stringify({CountFreeSpin:'9'}));}if(url.endsWith('/balance')){assert.deepEqual(Object.fromEntries(options.body),{playerId:'7'});return new Response(JSON.stringify({balance:0,currency:'USD',playerId:'7'}));}assert.equal(url,'https://example.invalid/init');assert.deepEqual(Object.fromEntries(options.body),{gameId:'36',playerId:'7'});return new Response(JSON.stringify({sessionId:'real',balance:999,currency:'USD',playerId:7}));};
-    const result=await service.initSession(params);assert.equal(calls,2);assert.equal(result.sessionId,'real');assert.equal(result.player.balance,0);assert.equal(result.freeSpinsLeft,0);
-    for(const initSource of ['query','dev-test','missing']) await assert.rejects(service.initSession({...params,initSource}),{code:'ACCESS_DENIED'});assert.equal(calls,2);
+    globalThis.fetch=async(url,options)=>{calls++;assert.ok(options.signal instanceof AbortSignal);assert.equal(options.headers.Authorization,"Bearer fixture");if(url.endsWith('/freespins')){assert.deepEqual(Object.fromEntries(options.body),{gameId:'36',playerId:'7'});return new Response(JSON.stringify({CountFreeSpin:'9'}));}if(url.endsWith('/balance')){assert.deepEqual(Object.fromEntries(options.body),{playerId:'7'});return new Response(JSON.stringify({balance:0,currency:'USD',playerId:'7'}));}assert.equal(url,'https://example.invalid/init');assert.deepEqual(Object.fromEntries(options.body),{gameId:'36',playerId:'7'});return new Response(JSON.stringify({sessionId:'real',balance:0,currency:'USD',playerId:7}));};
+    const result=await service.initSession(params);assert.equal(calls,1);assert.equal(result.sessionId,'real');assert.equal(result.player.balance,0);assert.equal(result.freeSpinsLeft,0);
+    for(const initSource of ['query','dev-test','missing']) await assert.rejects(service.initSession({...params,initSource}),{code:'ACCESS_DENIED'});assert.equal(calls,1);
     globalThis.fetch=async()=>new Response(JSON.stringify({sessionId:'real',currency:'USD'}));
     await assert.rejects(service.initSession(params),{code:'BACKEND_RESPONSE_ERROR'});
   } finally {globalThis.fetch=original;}
 });
 
-test('embedded partner checks active free spins before init so another browser cannot replace the owner session',async()=>{
+test('second embedded Hiradmandi browser ignores foreign free spins and continues with paid spins',async()=>{
   mergeRuntimeConfig({sessionApiBaseUrl:'https://example.invalid'});
   const original=globalThis.fetch;
   const calls=[];
   const params={token:'fixture',playerId:'shared-active-player',gameId:'khiradmandi-makor',initSource:'postMessage',mode:'embedded'};
+  const freeSpinState={
+    SpinResult:{idCard:'owner-card',LineSum:'1',Lines:'5',WasDouble:'0',Number:'63455094',FreeSpin:'0'},
+    ...Object.fromEntries([[9,9,9,10,11],[5,9,12,12,7],[12,9,3,1,6]].map((row,r)=>['Line'+(r+1),Object.fromEntries(row.map((v,c)=>['Slot'+(r+1)+(c+1),String(v)]))])),
+    LinesKoff:Object.fromEntries(Array.from({length:10},(_,i)=>['Koff'+(i+1),'0'])),
+    idCard:'owner-card',CardSum:'0',SumPay:'10',PayDate:'',idGameType:'36',SlotFreeSpin:'True',SlotDemoSpin:'False',CountFreeSpin:'3',
+  };
   try {
     globalThis.fetch=async(url)=>{
-      calls.push(new URL(url).pathname);
+      const path=new URL(url).pathname;
+      calls.push(path);
+      if(path==='/init')return new Response(JSON.stringify({sessionId:'observer-session',gameState:freeSpinState}));
+      if(path==='/balance')return new Response(JSON.stringify({balance:100,currency:'USD',playerId:params.playerId}));
       if(url.endsWith('/freespins'))return new Response(JSON.stringify({CountFreeSpin:'3'}));
-      throw new Error('/init must not run while another browser owns the active series');
+      throw new Error('unexpected request '+path);
     };
-    await assert.rejects(new SessionApiService().initSession(params),{code:'FREE_SPIN_HISTORY_MISSING'});
-    assert.deepEqual(calls,['/freespins']);
+    const session=await new SessionApiService().initSession(params);
+    assert.equal(session.sessionId,'observer-session');
+    assert.equal(session.gameState,null,'the observer must not inherit the owner free-spin card');
+    assert.equal(session.freeSpinsLeft,0);
+    assert.equal(session.freeSpinsTotal,0);
+    assert.equal(session.freeSpinHistoryMissing,false);
+    assert.deepEqual(calls,['/init','/balance','/freespins']);
   } finally {globalThis.fetch=original;}
 });
 

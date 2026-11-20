@@ -226,7 +226,6 @@ export default function GameShell({ controller, game, onBackToSlots }) {
                   gameId={game.id}
                   selectedCombinationId={state.selectedCombinationId}
                   payoutMultiplier={paytableView.payoutMultiplier}
-                  zeroPayoutMultiplier={paytableView.zeroPayoutMultiplier}
                   symbolAssets={game.assets.view2Symbols}
                   symbolImageOverrides={game.assets.view2Info?.symbolImageOverrides}
                   hiddenPayoutSymbols={game.assets.view2Info?.hiddenPayoutSymbols}

@@ -10,3 +10,6 @@ export const GAME_API_IDS = Object.freeze({
 });
 
 export const resolveApiGameId = (params) => params.apiGameId ?? GAME_API_IDS[params.recoveryGameId] ?? GAME_API_IDS[params.gameId] ?? params.gameId;
+
+export const areFreeSpinsDisabled = (params) =>
+  String(resolveApiGameId(params)) === GAME_API_IDS.fruits;

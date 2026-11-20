@@ -33,6 +33,27 @@ test('provided response preserves backend win even with zero coefficients',()=>{
   assert.equal(result.idCard,'66982076'); assert.equal(result.Number,'37417586');
   assert.equal(result.requestId,params.requestId); assert.deepEqual(result.lineWins,[]);
 });
+test('Fruits always suppresses free spins while preserving the ordinary win',async()=>{
+  const fruits={...params,gameId:'fruits'};
+  const payload={...fixture(),FreeSpin:'1',WinSum:'25'};
+  const mapped=mapJsonSpinPayload(payload,fruits);
+  assert.equal(mapped.FreeSpin,0);
+  assert.equal(mapped.WinSum,25);
+  assert.equal(mapped.hasBackendWin,true);
+  assert.equal(buildSpinForm({...fruits,isFreeSpin:true},{...context,gameId:'fruits'}).get('freeSpin'),'0');
+
+  const original=globalThis.fetch;
+  try {
+    mergeRuntimeConfig({sessionApiBaseUrl:'https://example.invalid/api/'});
+    globalThis.fetch=async()=>new Response(JSON.stringify(payload));
+    const response=await sendSpinRequest(buildSpinForm(fruits,{...context,gameId:'fruits'}),{
+      token:context.token,
+      gameId:'42',
+    });
+    assert.equal(response.FreeSpin,'0');
+    assert.equal(response.WinSum,'25');
+  } finally {globalThis.fetch=original;}
+});
 test('malformed money, symbols and missing result data are rejected',()=>{
   for(const mutate of [p=>delete p.Line2.Slot3,p=>p.Line1.Slot1=null,p=>p.Line1.Slot1='1.5',p=>p.WinSum='oops',p=>delete p.idCard,p=>delete p.LineWinKoff10]) {
     const payload=fixture();mutate(payload);

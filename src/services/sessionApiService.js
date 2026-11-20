@@ -16,7 +16,7 @@ import {
   mergeRuntimeConfig,
 } from "../api/runtimeConfig.js";
 
-import { GAME_API_IDS, resolveApiGameId } from "../api/gameApiIds.js";
+import { areFreeSpinsDisabled, GAME_API_IDS, resolveApiGameId } from "../api/gameApiIds.js";
 
 const buildApiUrl = (path) =>
   `${getSessionApiBaseUrl().replace(/\/$/, "")}${path}`;
@@ -142,34 +142,12 @@ export class SessionApiService {
     mergeRuntimeConfig(params);
     validateSessionContext(params);
 
-    // A partner /init may replace the server session for this player.  When a
-    // different browser opens the same embedded player while Free Spins are
-    // already in progress, that browser has no award ledger and cannot derive
-    // the remaining count from CountFreeSpin alone.  Detect that situation
-    // before /init so the observer is rejected without invalidating the browser
-    // that owns the active series. Only Game 3 supports this pre-init check.
-    if (
-      params.mode === "embedded" &&
-      params.initSource === "postMessage" &&
-      String(resolveApiGameId(params)) === GAME_API_IDS["khiradmandi-makor"] &&
-      freeSpinSeries.read(params) == null
-    ) {
-      const playedBeforeInit = await requestFreeSpins(params);
-      if (playedBeforeInit > 0) {
-        throw Object.assign(
-          new Error(
-            "Free Spins are active in another browser and cannot be restored without the original award history",
-          ),
-          { code: "FREE_SPIN_HISTORY_MISSING" },
-        );
-      }
-    }
-
     const pendingAtStart = stateRecoveryService.getPendingRequest(params);
     const localStateAtStart = stateRecoveryService.getLocalState(params);
+    const hasLocalFreeSpinSeries = freeSpinSeries.read(params) != null;
     const remote = await requestRemoteSession(params);
     const playerId = params.playerId ?? params.userId ?? params.idUser;
-    const gameState = mapInitGameState(remote.gameState, params);
+    let gameState = mapInitGameState(remote.gameState, params);
     const spinRecovered = reconcileConfirmedSpin(
       params,
       pendingAtStart,
@@ -198,21 +176,54 @@ export class SessionApiService {
         ? remote.NameValute.trim().toUpperCase()
         : String(wallet.currency ?? "").trim().toUpperCase();
     // No last-spin snapshot means there is no spin history to refresh yet.
-    const played = gameState ? await requestFreeSpins(params) : 0;
+    const freeSpinsDisabled = areFreeSpinsDisabled(params);
+    const played = gameState && !freeSpinsDisabled ? await requestFreeSpins(params) : 0;
+    const isEmbeddedHiradmandiObserver =
+      params.mode === "embedded" &&
+      params.initSource === "postMessage" &&
+      String(resolveApiGameId(params)) === GAME_API_IDS["khiradmandi-makor"] &&
+      !hasLocalFreeSpinSeries &&
+      played > 0;
     let freeSpinState;
-    try {
-      freeSpinState = freeSpinSeries.reconcile(params, played, {
-        isFreeSpin: gameState?.spinResult?.isFreeSpin === true,
-      });
-    } catch (error) {
-      if (error.code !== "FREE_SPIN_HISTORY_MISSING") throw error;
-      // Missing browser history is not a failed /init. Keep the session and wallet usable.
+    if (freeSpinsDisabled) {
       freeSpinState = {
-        freeSpinsLeft: null,
-        freeSpinsTotal: null,
-        freeSpinsPlayed: played,
-        freeSpinHistoryMissing: true,
+        freeSpinsLeft: 0,
+        freeSpinsTotal: 0,
+        freeSpinsPlayed: 0,
+        freeSpinsWinTotal: 0,
+        freeSpinHistoryMissing: false,
       };
+    } else if (isEmbeddedHiradmandiObserver) {
+      // CountFreeSpin is a played counter and does not expose the award total.
+      // A second partner browser therefore continues with paid spins while the
+      // browser that owns the local award ledger retains and resumes its series.
+      freeSpinState = {
+        freeSpinsLeft: 0,
+        freeSpinsTotal: 0,
+        freeSpinsPlayed: 0,
+        freeSpinsWinTotal: 0,
+        freeSpinHistoryMissing: false,
+      };
+      // Never let the observer collect or continue the owner's latest bonus
+      // card. Its first request must be a clean paid spin.
+      if (gameState?.spinResult?.isFreeSpin === true || Number(gameState?.spinResult?.FreeSpin ?? 0) > 0) {
+        gameState = null;
+      }
+    } else {
+      try {
+        freeSpinState = freeSpinSeries.reconcile(params, played, {
+          isFreeSpin: gameState?.spinResult?.isFreeSpin === true,
+        });
+      } catch (error) {
+        if (error.code !== "FREE_SPIN_HISTORY_MISSING") throw error;
+        // Missing browser history is not a failed /init. Keep the session and wallet usable.
+        freeSpinState = {
+          freeSpinsLeft: null,
+          freeSpinsTotal: null,
+          freeSpinsPlayed: played,
+          freeSpinHistoryMissing: true,
+        };
+      }
     }
     const {
       freeSpinsLeft,

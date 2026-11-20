@@ -5,12 +5,13 @@ const standalone=(origin='https://raxshloto.online',hash='#/slots',search='')=>{
 test('demo is restricted to standalone stand routes',()=>{
  assert.equal(isStandaloneDemo(standalone()),true);
  assert.equal(isStandaloneDemo(standalone('https://www.raxshloto.online')),true);
+ assert.equal(isStandaloneDemo(standalone('https://test.raxshloto.online')),true);
  assert.equal(isStandaloneDemo(standalone(undefined,'#/games/babylon')),true);
  assert.equal(isStandaloneDemo(standalone(undefined,'','?gameId=36')),true);
  assert.equal(isStandaloneDemo(standalone(undefined,'','?gameId=khiradmandi-makor')),true);
  assert.equal(isStandaloneDemo(standalone('https://casino.example')),false);
  assert.equal(isStandaloneDemo(standalone(undefined,'#/other')),false);
- for(const origin of ['https://raxshloto.online','https://casino.example']){const framed=standalone(origin);framed.parent={};assert.equal(isStandaloneDemo(framed),false);}
+ for(const origin of ['https://raxshloto.online','https://test.raxshloto.online','https://casino.example']){const framed=standalone(origin);framed.parent={};assert.equal(isStandaloneDemo(framed),false);}
 });
 test('embedded sessions cannot use standalone credentials',async()=>{
  const previous=globalThis.window;

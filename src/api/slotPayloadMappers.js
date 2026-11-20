@@ -2,6 +2,7 @@ import { symbolMap } from "../data/mockData.js";
 import { getScatterCells } from "../gameLogic/coordinateLottery.js";
 import { asNumber } from "../utils/number.js";
 import { findNode, readAttributes } from "./soapClient.js";
+import { areFreeSpinsDisabled } from "./gameApiIds.js";
 
 const DEFAULT_BALANCE = 10000;
 
@@ -201,7 +202,7 @@ const mapSpinValues = (attrs, grid, backendKoffs, params) => {
   const gameId = params.recoveryGameId ?? params.gameId;
   const wildSymbol = gameId === "babylon" || String(gameId) === "43" ? 9 : 12;
   const backendLineWins = mapBackendLineWins(backendKoffs, grid, wildSymbol);
-const freeSpin = asNumber(attrs.FreeSpin);
+  const freeSpin = areFreeSpinsDisabled(params) ? 0 : asNumber(attrs.FreeSpin);
   const gold = asNumber(attrs.Gold);
   const detectedScatterCells = getScatterCells(grid);
   const scatterCells = detectedScatterCells.length >= 2 ? detectedScatterCells : [];

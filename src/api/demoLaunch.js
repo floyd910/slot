@@ -1,7 +1,10 @@
 import { getDemoPlayerId } from './demoIdentity.js';
 
-const PUBLIC_DEMO_ORIGIN = 'https://raxshloto.online';
-const PUBLIC_DEMO_ORIGINS = new Set([PUBLIC_DEMO_ORIGIN, 'https://www.raxshloto.online']);
+const PUBLIC_DEMO_ORIGINS = new Set([
+  'https://raxshloto.online',
+  'https://www.raxshloto.online',
+  'https://test.raxshloto.online',
+]);
 
 const isLocalDevelopmentOrigin = (origin) => {
   if (!import.meta.env?.DEV) return false;
