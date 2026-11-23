@@ -10,6 +10,7 @@ import {
 } from "../../viewModels/bottomBarControls.js";
 
 export default function BottomBar(inputProps) {
+  const [showAllLineWins, setShowAllLineWins] = useState(false);
   const freeSpinControlsLocked = Boolean(inputProps.freeSpinRoundStarted);
   const props = { ...inputProps, disabled: inputProps.disabled || freeSpinControlsLocked };
   const shortLandscape = useShortLandscape();
@@ -33,7 +34,12 @@ export default function BottomBar(inputProps) {
   // player starts the bonus (or Auto Express starts it after the prompt).
   const isFreeSpinResultForWinDisplay =
     props.spinResult?.isFreeSpin === true;
+  const awaitingNormalSpinFreeSpinReveal =
+    props.revealComplete === false &&
+    props.spinResult?.isFreeSpin !== true &&
+    Number(props.spinResult?.FreeSpin ?? 0) > 0;
   const showFreeSpinsTotal =
+    !awaitingNormalSpinFreeSpinReveal &&
     props.freeSpinsWinTotal != null &&
     (props.freeSpinRoundStarted ||
       isFreeSpinResultForWinDisplay ||
@@ -57,6 +63,24 @@ export default function BottomBar(inputProps) {
       ? visibleFreeSpinsTotal
       : (props.revealComplete === false ? 0 : ticketWinAmount),
   );
+  const confirmedLineWins = (props.lineWins ?? []).map((line) => ({
+    ...line,
+    totalWin: getConfirmedLineWinAmount(line, props.stake),
+  })).filter((line) => line.totalWin > 0);
+  const activeLineAmount = getConfirmedLineWinAmount(props.activeWinLine, props.stake);
+  const activeLineWin = props.revealComplete !== false && activeLineAmount > 0
+    ? { ...props.activeWinLine, totalWin: activeLineAmount }
+    : null;
+  const currency = props.player?.currency ?? "";
+  const lineWord = language === "tg" ? "Хат" : "Линия";
+  const activeWinTitle = winLabel;
+  const activeWinDetail = activeLineWin
+    ? `${lineWord} ${activeLineWin.lineId} — ${formatMoney(activeLineWin.totalWin)} ${currency}`.trim()
+    : "";
+  const activeWinValue = props.revealComplete !== false && confirmedLineWins.length > 0 && !activeLineWin
+    ? formatMoney(0)
+    : currentWin;
+  useEffect(() => setShowAllLineWins(false), [props.spinResult?.idCard]);
   const normalSpinWinAmount = getTicketWinAmount(props.spinResult, null);
   const isFreeSpinResult =
     props.spinResult?.isFreeSpin === true ||
@@ -71,14 +95,17 @@ export default function BottomBar(inputProps) {
         normalSpinWinAmount > 0));
   const chooserDisabled = props.disabled || props.paytableControlsLocked;
   const showFreeSpinCounter =
-    hasFreeSpins;
+    !awaitingNormalSpinFreeSpinReveal && hasFreeSpins;
 
   return (
     <footer className="bottom-bar">
       <div className="footer-block footer-block-desktop">
         <BottomBarMetric title={t("balance")} value={balance} />
         <BottomBarMetric title={t("purchaseAmount")} value={totalPurchase} />
-        <BottomBarMetric title={winLabel} value={currentWin} accent />
+        <WinningMetric title={activeWinTitle} detail={activeWinDetail} value={activeWinValue} totalTitle={t("totalWinning")}
+          totalValue={`${currentWin} ${currency}`.trim()} showTotal={false}
+          lineWins={confirmedLineWins} lineWord={lineWord} currency={currency}
+          open={showAllLineWins} onToggle={() => setShowAllLineWins((value) => !value)} />
         {props.isVisualDoubling ? (
           <DoubleScenePickButtons
             disabled={props.disabled || props.doublingState?.loading}
@@ -144,7 +171,10 @@ export default function BottomBar(inputProps) {
             label={t("info")}
             onClick={props.onInfo}
           />
-          <BottomBarMetric title={winLabel} value={currentWin} accent />
+          <WinningMetric title={activeWinTitle} detail={activeWinDetail} value={activeWinValue} totalTitle={t("totalWinning")}
+            totalValue={`${currentWin} ${currency}`.trim()} showTotal={false}
+            lineWins={confirmedLineWins} lineWord={lineWord} currency={currency}
+            open={showAllLineWins} onToggle={() => setShowAllLineWins((value) => !value)} />
           <BottomBarMetric title={t("balance")} value={balance} />
           <BottomBarMetric title={t("purchaseAmount")} value={totalPurchase} />
         </div>
@@ -208,7 +238,10 @@ export default function BottomBar(inputProps) {
           label={t("info")}
           onClick={props.onInfo}
         />
-        <BottomBarMetric title={winLabel} value={currentWin} accent />
+        <WinningMetric title={activeWinTitle} detail={activeWinDetail} value={activeWinValue} totalTitle={t("totalWinning")}
+          totalValue={`${currentWin} ${currency}`.trim()} showTotal={false}
+          lineWins={confirmedLineWins} lineWord={lineWord} currency={currency}
+          open={showAllLineWins} onToggle={() => setShowAllLineWins((value) => !value)} />
         <div className="footer-flex footer-flex--mobile-metrics">
           <BottomBarMetric title={t("balance")} value={balance} />
           <BottomBarMetric title={t("purchaseAmount")} value={totalPurchase} />
@@ -462,6 +495,42 @@ function BottomBarMetric({ title, value, accent = false }) {
       <div className="bottom-bar-metric__value">{value}</div>
     </div>
   );
+}
+
+function WinningMetric({ title, detail, value, totalTitle, totalValue, showTotal, lineWins, lineWord, currency, open, onToggle }) {
+  const canOpen = lineWins.length > 1;
+  return (
+    <div className="winning-metric-wrap">
+      <button type="button" className="bottom-bar-metric --accent winning-metric"
+        aria-expanded={canOpen ? open : undefined} onClick={canOpen ? onToggle : undefined}>
+        <span className="bottom-bar-metric__title winning-metric__title">{title}</span>
+        <span className="bottom-bar-metric__value"><span>{value}</span>{detail && <span className="winning-metric__desktop-detail">{detail}</span>}</span>
+        {detail && <span className="winning-metric__detail">{detail}</span>}
+        {showTotal && <span className="winning-metric__total">{totalTitle}: {totalValue}</span>}
+      </button>
+      {canOpen && open && (
+        <div className="winning-lines-popover" role="list">
+          {lineWins.map((line) => (
+            <div className="winning-lines-popover__row" role="listitem" key={line.lineId}>
+              <span>{lineWord} {line.lineId}</span>
+              <strong>{formatMoney(line.totalWin)} {currency}</strong>
+            </div>
+          ))}
+          <div className="winning-lines-popover__row winning-lines-popover__total">
+            <span>{totalTitle}</span><strong>{totalValue}</strong>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function getConfirmedLineWinAmount(line, stake) {
+  const coefficient = Number(line?.coefficient ?? line?.backendValue);
+  const lineStake = Number(stake);
+  return Number.isFinite(coefficient) && coefficient > 0 && Number.isFinite(lineStake) && lineStake >= 0
+    ? Number((coefficient * lineStake).toFixed(2))
+    : 0;
 }
 
 function formatCombinationValue(selectedCombination) {

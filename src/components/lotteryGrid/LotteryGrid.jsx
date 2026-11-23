@@ -18,6 +18,7 @@ export default function LotteryGrid({
   winningCells = [],
   winningGroups = [],
   onActiveWinGroupChange,
+  onActiveWinGroupVisualChange,
   winLineHighlightMs,
   scatterCells = [],
   doublingState,
@@ -37,6 +38,7 @@ export default function LotteryGrid({
     winningCells,
     winningGroups,
     onActiveWinGroupChange,
+    onActiveWinGroupVisualChange,
     winLineHighlightMs,
   });
 

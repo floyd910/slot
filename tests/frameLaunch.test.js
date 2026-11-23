@@ -100,6 +100,34 @@ test('second embedded Hiradmandi browser ignores foreign free spins and continue
   } finally {globalThis.fetch=original;}
 });
 
+test('second embedded browser ignores foreign free spins and continues normally for every game',async()=>{
+  mergeRuntimeConfig({sessionApiBaseUrl:'https://example.invalid'});
+  const original=globalThis.fetch;
+  try {
+    for(const [gameId,apiGameId] of Object.entries(GAME_API_IDS)) {
+      const params={token:'fixture',playerId:'shared-'+apiGameId,gameId,initSource:'postMessage',mode:'embedded'};
+      const freeSpinState={
+        SpinResult:{idCard:'owner-'+apiGameId,LineSum:'1',Lines:'5',WasDouble:'0',Number:'63455094',FreeSpin:'1'},
+        ...Object.fromEntries([[9,9,9,10,11],[5,9,12,12,7],[12,9,3,1,6]].map((row,r)=>['Line'+(r+1),Object.fromEntries(row.map((v,c)=>['Slot'+(r+1)+(c+1),String(v)]))])),
+        LinesKoff:Object.fromEntries(Array.from({length:10},(_,i)=>['Koff'+(i+1),'0'])),
+        idCard:'owner-'+apiGameId,CardSum:'0',SumPay:'10',PayDate:'',idGameType:apiGameId,SlotFreeSpin:'True',SlotDemoSpin:'False',CountFreeSpin:'3',
+      };
+      globalThis.fetch=async(url)=>{
+        const path=new URL(url).pathname;
+        if(path==='/init')return new Response(JSON.stringify({sessionId:'observer-'+apiGameId,gameState:freeSpinState}));
+        if(path==='/balance')return new Response(JSON.stringify({balance:100,currency:'USD',playerId:params.playerId}));
+        if(path==='/freespins')return new Response(JSON.stringify({CountFreeSpin:'3'}));
+        throw new Error('unexpected request '+path);
+      };
+      const session=await new SessionApiService().initSession(params);
+      assert.equal(session.gameState,null,gameId+' must not inherit the owner free-spin card');
+      assert.equal(session.freeSpinsLeft,0);
+      assert.equal(session.freeSpinsTotal,0);
+      assert.equal(session.freeSpinHistoryMissing,false);
+    }
+  } finally {globalThis.fetch=original;}
+});
+
 test('other embedded games start with init and skip the pre-init free spins check',async()=>{
   mergeRuntimeConfig({sessionApiBaseUrl:'https://example.invalid'});
   const original=globalThis.fetch;
@@ -214,9 +242,10 @@ test('startup skips freespins before the first spin and refreshes returning play
       const history=await service.initSession({...params,playerId:'history-player'});
       assert.equal(history.sessionId,'history');
       assert.equal(history.player.balance,100);
-      assert.equal(history.freeSpinHistoryMissing,true);
-      assert.equal(history.freeSpinsLeft,null,'Unknown remaining spins must not be presented as zero');
-      assert.equal(history.gameState.spinResult.idCard,'123');
+      assert.equal(history.freeSpinHistoryMissing,false);
+      assert.equal(history.freeSpinsLeft,0,'A browser without award history continues with normal spins');
+      assert.equal(history.freeSpinsTotal,0);
+      assert.equal(history.gameState,null,'The other browser must not inherit the owner free-spin card');
     }
   } finally {globalThis.fetch=original;}
 });

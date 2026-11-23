@@ -26,6 +26,11 @@ export default function GameShell({ controller, game, onBackToSlots }) {
   const [backgroundAttempt, setBackgroundAttempt] = useState(0);
   const [loaderExitComplete, setLoaderExitComplete] = useState(false);
   const { actions, derived, state } = controller;
+  const [activeWinLine, setActiveWinLine] = useState(null);
+  useEffect(() => setActiveWinLine(null), [state.gridRevealKey]);
+  const handleActiveWinGroupChange = (groupIndex, meta = {}) => {
+    if (!meta.isScatter && meta.lineWin) setActiveWinLine(meta.lineWin);
+  };
   const checkingSession = ["initial-loading", "bootstrap-loading"].includes(state.status) && !derived.isRoundRecoveryBlocked;
   const showInlineView2Paytable = state.showPaytable && state.visualMode;
   const gridMounted = Boolean(state.grid?.A?.length && state.grid?.B?.length && state.grid?.C?.length);
@@ -241,6 +246,7 @@ export default function GameShell({ controller, game, onBackToSlots }) {
                 controller={controller}
                 game={game}
                 runtimeState={runtimeState}
+                onActiveWinGroupChange={handleActiveWinGroupChange}
               />
             </div>
             {!runtimeState && (
@@ -251,6 +257,8 @@ export default function GameShell({ controller, game, onBackToSlots }) {
                   selectedCombination={derived.selectedCombination}
                   totalPurchase={derived.totalPurchase}
                   spinResult={state.spinResult}
+                  activeWinLine={activeWinLine}
+                  lineWins={state.spinResult?.lineWins}
                   revealComplete={state.hasRecoveredGrid || state.gridAnimation === "settled"}
                   disabled={derived.isBusy}
                   spinAssetsLoading={derived.spinAssetsLoading}

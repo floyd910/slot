@@ -21,6 +21,7 @@ export function useLotteryGridViewModel({
   winningCells,
   winningGroups,
   onActiveWinGroupChange,
+  onActiveWinGroupVisualChange,
   winLineHighlightMs = VIEW1_WIN_LINE_HIGHLIGHT_MS,
 }) {
   const lineWinningGroups = useMemo(
@@ -57,6 +58,17 @@ export function useLotteryGridViewModel({
     revealKey,
     visualMode,
   ]);
+
+  useEffect(() => {
+    if (activeWinGroup == null) return;
+    const lineWin = winningGroups.filter((group) =>
+      Array.isArray(group?.winningCells) && group.winningCells.length > 0,
+    )[activeWinGroup] ?? null;
+    onActiveWinGroupVisualChange?.(activeWinGroup, {
+      isScatter: activeWinGroup >= lineWinningGroups.length,
+      lineWin,
+    });
+  }, [activeWinGroup, lineWinningGroups.length, onActiveWinGroupVisualChange, winningGroups]);
   const winningLineIds = useMemo(
     () =>
       winningGroups

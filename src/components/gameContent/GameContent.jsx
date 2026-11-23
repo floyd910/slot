@@ -33,7 +33,7 @@ const TICKET_COPY = {
 };
 const SHOW_TICKET_PANEL = true;
 
-export default function GameContent({ controller, game, runtimeState }) {
+export default function GameContent({ controller, game, runtimeState, onActiveWinGroupChange }) {
   const { language, t } = useLanguage();
   const ticketCopy = TICKET_COPY[language] ?? TICKET_COPY.ru;
   const [drawDetailsExpanded, setDrawDetailsExpanded] = useState(false);
@@ -161,6 +161,7 @@ export default function GameContent({ controller, game, runtimeState }) {
                 scatterCells={
                   (state.visualMode || view.hideView1Symbols) ? [] : scatterCells
                 }
+                onActiveWinGroupVisualChange={onActiveWinGroupChange}
                 doublingState={view.hideView1Symbols ? undefined : state.doublingState}
               />
             </div>
@@ -190,6 +191,7 @@ export default function GameContent({ controller, game, runtimeState }) {
                   state.visualMode ? scatterCells : []
                 }
                 onActiveWinGroupChange={actions.playView2WinLine}
+                onActiveWinGroupVisualChange={onActiveWinGroupChange}
                 winLineHighlightMs={
                   ["egypt", "kadima-drevnii"].includes(game.id)
                     ? 1000
