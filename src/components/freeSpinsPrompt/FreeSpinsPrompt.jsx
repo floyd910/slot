@@ -11,7 +11,7 @@ export default function FreeSpinsPrompt({ onStart, count, paidTotal = 0 }) {
   const { t } = useLanguage();
 
   return (
-    <div className="free-spins-modal" role="dialog" aria-modal="true">
+    <div className="free-spins-modal" popover="manual" ref={element => element?.showPopover?.()} role="dialog" aria-modal="true">
       <div className="free-spins-modal__card">
         <h2 className="free-spins-modal__title">
           {t("bonusRoundTitle")}

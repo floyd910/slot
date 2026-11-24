@@ -455,3 +455,60 @@ test('interrupted auto-express trigger rebuilds its missed 15-spin award',async(
     stateRecoveryService.clearLocalState(params);
   }} finally {globalThis.fetch=original;}
 });
+
+for (const scenario of [
+  { name: 'paid', payDate: '2026-11-24T08:00:00Z', sumPay: 0, balance: 1000.80, resolved: true },
+  { name: 'unpaid', payDate: '', sumPay: 1.8, balance: 999, resolved: true },
+  { name: 'missing unpaid amount', payDate: '', sumPay: 0, balance: 999, resolved: false },
+  { name: 'different paid card', payDate: '2026-11-24T08:00:00Z', sumPay: 0, balance: 1000.80, resolved: false, card: 'another-card' },
+]) {
+  test('PAY timeout recovery: ' + scenario.name, async () => {
+    mergeRuntimeConfig({sessionApiBaseUrl:'https://example.invalid'});
+    const service = new SessionApiService();
+    const context = {token:'fixture', playerId:'pay-recovery-' + scenario.name, gameId:'khiradmandi-makor', initSource:'postMessage'};
+    const idCard = 'timeout-card';
+    const requestId = 'timeout-pay';
+    const grid = {A:[3,3,3,4,5], B:[6,7,8,9,10], C:[11,12,8,1,2]};
+    const spinResult = {idCard, WinSum:1.8, grid, creditedToBalance:false};
+    const remoteCard = scenario.card ?? idCard;
+    const gameState = {
+      SpinResult:{idCard:remoteCard, LineSum:'1', Lines:'5', WasDouble:'0', Number:'7'},
+      ...Object.fromEntries(Object.values(grid).map((row,r) => ['Line'+(r+1), Object.fromEntries(row.map((v,c) => ['Slot'+(r+1)+(c+1), String(v)]))])),
+      LinesKoff:Object.fromEntries(Array.from({length:10},(_,i) => ['Koff'+(i+1),'0'])),
+      idCard:remoteCard, CardSum:'1', SumPay:String(scenario.sumPay), PayDate:scenario.payDate,
+      idGameType:'36', SlotFreeSpin:'False', SlotDemoSpin:'False', CountFreeSpin:'0',
+    };
+    const originalFetch = globalThis.fetch;
+    try {
+      stateRecoveryService.saveRound({idCard,spinResult,grid,currentWinSum:1.8,operationStatus:'WAITING_FOR_COLLECT'},context);
+      stateRecoveryService.rememberPendingRequest({requestId,methodName:'/pay',idCard},context);
+      const requests = [];
+      globalThis.fetch = async url => {
+        const path = new URL(url).pathname;
+        requests.push(path);
+        if (path === '/init') return Response.json({sessionId:'recovery-session', balance:String(scenario.balance), NameValute:'USD', gameState});
+        if (path === '/freespins') return Response.json({CountFreeSpin:'0'});
+        throw new Error('Unexpected request ' + path);
+      };
+      const result = await service.initSession(context);
+      assert.equal(result.player.balance,scenario.balance);
+      assert.equal(result.recoveringPayment,true);
+      assert.equal(result.paymentRecovered,scenario.name === 'paid');
+      assert.deepEqual(requests,['/init','/freespins']);
+      if (!scenario.resolved) {
+        assert.equal(result.gameState,null);
+        assert.equal(stateRecoveryService.getPendingRequest(context).idCard,idCard);
+        assert.equal(stateRecoveryService.getLocalState(context).spinResult.WinSum,1.8);
+      } else {
+        assert.equal(stateRecoveryService.getPendingRequest(context),null);
+        assert.equal(result.gameState.spinResult.creditedToBalance,scenario.name === 'paid');
+        assert.equal(result.gameState.spinResult.WinSum,scenario.name === 'paid' ? 0 : 1.8);
+        if (scenario.name === 'unpaid') assert.equal(stateRecoveryService.getLocalState(context).operationStatus,'WAITING_FOR_COLLECT');
+      }
+    } finally {
+      globalThis.fetch = originalFetch;
+      stateRecoveryService.completePendingRequest(requestId,context);
+      stateRecoveryService.clearLocalState(context);
+    }
+  });
+}

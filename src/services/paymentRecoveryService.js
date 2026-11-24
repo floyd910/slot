@@ -35,8 +35,18 @@ export function reconcileConfirmedPayment(context, remote, gameState, wallet, ex
    gameState.spinResult.creditedToBalance !== true;
  if (!paymentNotApplied) return false;
 
+ const previousRound = recovery.getLocalState(context);
+ const previousSpin = previousRound?.spinResult ?? recovery.getLastSpin(context)?.spinResult;
+ // An empty PayDate with a zero SumPay cannot replace a known positive win.
+ // Retain the pending request until /init confirms either outcome.
+ if (Number(gameState.spinResult.WinSum) === 0 &&
+     String(previousSpin?.idCard) === String(pending.idCard) &&
+     previousSpin.creditedToBalance !== true &&
+     Math.max(Number(previousSpin.WinSum ?? 0), Number(previousRound?.currentWinSum ?? 0)) > 0) {
+   return false;
+ }
+
  const unpaidSpin={...gameState.spinResult,creditedToBalance:false};
- recovery.completePendingRequest(pending.requestId,context);
  recovery.saveLastSpin({grid:gameState.grid,spinResult:unpaidSpin},context);
  recovery.saveRound({
    requestId:null,
@@ -49,7 +59,9 @@ export function reconcileConfirmedPayment(context, remote, gameState, wallet, ex
    grid:gameState.grid,
    lastConfirmedGrid:gameState.grid,
    doubleAvailable:Number(unpaidSpin.WinSum ?? 0) > 0,
+   autoExpressActive:false,
    recoveryError:null,
  },context);
+ recovery.completePendingRequest(pending.requestId,context);
  return false;
 }

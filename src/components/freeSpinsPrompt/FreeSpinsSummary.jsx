@@ -16,7 +16,7 @@ export default function FreeSpinsSummary({ result, currency, onContinue }) {
     return () => previous?.focus?.();
   }, []);
   return (
-    <div className="free-spins-modal" role="dialog" aria-modal="true"
+    <div className="free-spins-modal" popover="manual" ref={element => element?.showPopover?.()} role="dialog" aria-modal="true"
       aria-labelledby="free-spins-summary-title" aria-describedby="free-spins-summary-win"
       onKeyDown={event => {
         event.stopPropagation();

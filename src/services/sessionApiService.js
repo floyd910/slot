@@ -141,6 +141,7 @@ export class SessionApiService {
 
     const pendingAtStart = stateRecoveryService.getPendingRequest(params);
     const localStateAtStart = stateRecoveryService.getLocalState(params);
+    const recoveringPayment = pendingAtStart?.methodName === "/pay";
     const hasLocalFreeSpinSeries = freeSpinSeries.read(params) != null;
     const remote = await requestRemoteSession(params);
     const playerId = params.playerId ?? params.userId ?? params.idUser;
@@ -161,12 +162,15 @@ export class SessionApiService {
     const hasInitBalanceValue = remote.balance !== null && remote.balance !== undefined && String(remote.balance).trim() !== "";
     const initBalance = Number(remote.balance);
     const initCurrency = typeof remote.currency === "string" ? remote.currency.trim().toUpperCase() : "";
-    const hasPartnerWallet = hasInitBalanceValue && Number.isFinite(initBalance) && initBalance >= 0 && /^[A-Z]{3}$/.test(initCurrency);
+    const hasInitBalance = hasInitBalanceValue && Number.isFinite(initBalance) && initBalance >= 0;
+    const hasPartnerWallet = hasInitBalance && /^[A-Z]{3}$/.test(initCurrency);
     const wallet = usesStandaloneDemoWallet(params)
       ? { balance: 1000, currency: remote.NameValute ?? params.NameValute ?? params.nameValute ?? params.currency ?? "", playerId: String(playerId) }
       : hasPartnerWallet
         ? { balance: initBalance, currency: initCurrency, playerId: String(remote.playerId ?? playerId) }
-        : await requestBalance({ token: params.token, playerId });
+        : recoveringPayment && hasInitBalance
+          ? { balance: initBalance, currency: remote.NameValute ?? params.currency ?? "", playerId: String(remote.playerId ?? playerId) }
+          : await requestBalance({ token: params.token, playerId });
     const displayCurrency = hasPartnerWallet
       ? initCurrency
       : typeof remote.NameValute === "string" && remote.NameValute.trim()
@@ -185,6 +189,7 @@ export class SessionApiService {
           : gameState?.raw?.SlotFreeSpin,
       );
     const isEmbeddedFreeSpinObserver =
+      !recoveringPayment &&
       params.mode === "embedded" &&
       params.initSource === "postMessage" &&
       !hasLocalFreeSpinSeries &&
@@ -228,8 +233,8 @@ export class SessionApiService {
           freeSpinsWinTotal: 0,
           freeSpinHistoryMissing: false,
         };
-        if (gameState?.spinResult?.isFreeSpin === true ||
-            Number(gameState?.spinResult?.FreeSpin ?? 0) > 0) {
+        if (!recoveringPayment && (gameState?.spinResult?.isFreeSpin === true ||
+            Number(gameState?.spinResult?.FreeSpin ?? 0) > 0)) {
           gameState = null;
         }
       }
@@ -259,6 +264,8 @@ export class SessionApiService {
     if (spinRecovered) stateRecoveryService.completePendingRequest(pendingAtStart.requestId, params);
     const spinRolledBack = false;
     const paymentRecovered = reconcileConfirmedPayment(params, remote, gameState, wallet, pendingAtStart);
+    const unresolvedPayment = recoveringPayment && stateRecoveryService.getPendingRequest(params)?.requestId === pendingAtStart.requestId;
+
     if(freeSpinsLeft>0 || freeSpinSeries.getPayments(params).some(card=>!card.paid)) {
       freeSpinSeries.holdDisplayBalance(params,wallet.balance,{subtractPaid:!usesStandaloneDemoWallet(params)});
     }
@@ -279,6 +286,7 @@ export class SessionApiService {
     return {
       freeSpinDisplayBalance:freeSpinSeries.getHeldDisplayBalance(params),
       paymentRecovered,
+      recoveringPayment,
       spinRecovered,
       spinRolledBack,
       sessionId: remote.sessionId,
@@ -294,9 +302,9 @@ export class SessionApiService {
       games,
       combinations,
       grid:
-        gameState?.grid ??
+        (unresolvedPayment ? null : gameState?.grid) ??
         getInitialGrid(params.recoveryGameId ?? params.gameId),
-      gameState,
+      gameState: unresolvedPayment ? null : gameState,
       freeSpinsLeft,
       freeSpinsTotal,
       freeSpinsPlayed,

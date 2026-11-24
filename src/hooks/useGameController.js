@@ -849,11 +849,17 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       stateRecoveryService.clearLegacyOfflinePending(context);
       const pendingRecovery = frameApi.getPendingRequest(context);
       const locallyRecoveredState = frameApi.recoverState(context);
+      // While PAY is unresolved, render only the local result for that card.
+      const pendingPaymentSnapshot = pendingRecovery?.methodName === "/pay"
+        ? stateRecoveryService.getLastSpin(context) : null;
+      const matchingPaymentSnapshot = pendingPaymentSnapshot &&
+        String(pendingPaymentSnapshot.spinResult?.idCard) === String(pendingRecovery.idCard)
+        ? pendingPaymentSnapshot : null;
       const recoveredState = session.gameState
         ? null
         : pendingRecovery?.methodName === "/double" && pendingRecovery.recoveryState
           ? pendingRecovery.recoveryState
-          : locallyRecoveredState;
+          : locallyRecoveredState ?? matchingPaymentSnapshot;
       const lastSpinSnapshot = session.gameState ?? stateRecoveryService.getLastSpin(context);
       const confirmedSpinResult = recoveredState?.spinResult ?? recoveredState?.lastConfirmedSpinResult ?? lastSpinSnapshot?.spinResult;
       if (
@@ -876,7 +882,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       const hasUnpaidRestoredWin = Boolean(restoredResult?.idCard && restoredResult.creditedToBalance !== true &&
         (Number(restoredResult.WinSum ?? 0) > 0 || restoredResult.freeSpinDeferred === true));
       const shouldAutoPayReturnedFreeSpin = Boolean(restoredFreeSpinsLeft > 0 || restoredRound?.freeSpinsActive === true || restoredResult?.freeSpinDeferred === true || restoredResult?.isFreeSpin === true);
-      automaticReturnPaymentRef.current = !needsRecovery && hasUnpaidRestoredWin && (shouldAutoPayReturnedFreeSpin || restoredRound?.autoExpressActive === true)
+      automaticReturnPaymentRef.current = !session.recoveringPayment && !needsRecovery && hasUnpaidRestoredWin && (shouldAutoPayReturnedFreeSpin || restoredRound?.autoExpressActive === true)
         ? { idCard: restoredResult.idCard, resumeAutoExpress: restoredRound?.autoExpressActive === true, hasFreeSpins: shouldAutoPayReturnedFreeSpin }
         : null;
       if (needsRecovery) {
