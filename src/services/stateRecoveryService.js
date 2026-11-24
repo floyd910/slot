@@ -97,6 +97,20 @@ const isUnfinishedRound = (round) =>
       round.operationStatus !== ROUND_OPERATION_STATUS.ROUND_COMPLETED,
   );
 
+const sanitizeRecoveryState = (state) => {
+  if (!state || typeof state !== "object") return {};
+  const allowedKeys = [
+    "idCard", "roundId", "operationStatus", "stake", "selectedCombinationId",
+    "grid", "lastConfirmedGrid", "spinResult", "lastConfirmedSpinResult",
+    "freeSpinsActive", "freeSpinsTotal", "freeSpinsPlayed", "freeSpinsLeft",
+    "freeSpinsWinTotal", "currentWinSum", "doubleAvailable", "doublingState",
+    "doubleState",
+  ];
+  return Object.fromEntries(
+    allowedKeys.filter((key) => state[key] !== undefined).map((key) => [key, state[key]]),
+  );
+};
+
 export class StateRecoveryService {
   constructor() {
     removeStorage(LEGACY_PENDING_KEY);
@@ -112,7 +126,7 @@ export class StateRecoveryService {
       // response /init can then prove that the server advanced to a new card
       // and the complete result (including SumPay) can be restored safely.
       recoveryState: ["/spin", "/double"].includes(request.methodName)
-        ? (this.getLocalState(context) ?? {})
+        ? sanitizeRecoveryState(this.getLocalState(context))
         : undefined,
       status: "pending",
       createdAt: new Date().toISOString(),

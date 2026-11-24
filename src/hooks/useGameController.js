@@ -1109,8 +1109,8 @@ export function useGameController(selectedGameId, gameDefinition = null) {
     let timer = null;
 
     const schedule = () => {
-      if (stopped) return;
-      const delay = delays[Math.min(attempt, delays.length - 1)];
+      if (stopped || attempt >= delays.length) return;
+      const delay = delays[attempt];
       attempt += 1;
       timer = window.setTimeout(run, delay);
     };
@@ -1128,6 +1128,24 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       if (timer != null) window.clearTimeout(timer);
     };
   }, [pendingRecoveryActive, roundRecoveryStatus]);
+
+  const restartRecoveryUI = useCallback(async () => {
+    autoPlayOnRef.current = false;
+    freeSpinRunRef.current = false;
+    resumeAutoPlayAfterFreeSpinsRef.current = false;
+    if (spinFeedbackTimerRef.current) {
+      window.clearTimeout(spinFeedbackTimerRef.current);
+      spinFeedbackTimerRef.current = null;
+    }
+    setAutoPlayOn(false);
+    setSpinFeedbackActive(false);
+    setShowPaytable(false);
+    setShowGameMenu(false);
+    setGridRevealKey((key) => key + 1);
+    setGridAnimation(liveSpinStateRef.current.grid ? "settled" : "idle");
+    setError("");
+    return retryInitialization();
+  }, [retryInitialization]);
   useEffect(() => {
     if (roundRecoveryStatus !== ROUND_OPERATION_STATUS.RECOVERY_REQUIRED) return undefined;
 
@@ -1582,6 +1600,7 @@ export function useGameController(selectedGameId, gameDefinition = null) {
       handleSpin,
       init,
       retryInitialization,
+      restartRecoveryUI,
       loadPaytable,
       pickDouble,
       playFooterDouble,

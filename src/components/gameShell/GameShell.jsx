@@ -160,6 +160,8 @@ export default function GameShell({ controller, game, onBackToSlots }) {
         error={state.error}
         mode={state.context.mode}
         onRetry={actions.retryInitialization}
+        onRestart={actions.restartRecoveryUI}
+        onExit={onBackToSlots}
       />
     ) : null;
 

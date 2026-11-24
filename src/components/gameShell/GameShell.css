@@ -1445,3 +1445,10 @@ button:disabled {
 .configured-game .frame-app.view-1:not(.doubling-active) .win-line-overlay__number {
   z-index: 31;
 }
+.runtime-state__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+

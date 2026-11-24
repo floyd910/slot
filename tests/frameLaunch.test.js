@@ -285,11 +285,15 @@ test('init restores the complete unpaid result of a confirmed interrupted spin',
   }
 });
 
-test('init restores an interrupted first spin when no earlier card exists',async()=>{
+test('first-spin pending storage contains no player or session identifiers',async()=>{
   const params={token:'fixture',playerId:'first-spin-player',gameId:'khiradmandi-makor',initSource:'postMessage'};
+  stateRecoveryService.saveRound({ownerPlayerId:params.playerId,sessionId:'secret-session',operationStatus:'SPIN_PROCESSING'},params);
   stateRecoveryService.rememberPendingRequest({requestId:'first-lost-spin',methodName:'/spin'},params);
-  assert.deepEqual(stateRecoveryService.getPendingRequest(params).recoveryState,{});
+  const pending=stateRecoveryService.getPendingRequest(params);
+  assert.equal(pending.recoveryState.ownerPlayerId,undefined);
+  assert.equal(pending.recoveryState.sessionId,undefined);
   stateRecoveryService.completePendingRequest('first-lost-spin',params);
+  stateRecoveryService.clearLocalState(params);
 });
 
 test('init keeps interrupted spin blocked when server returns the old card',async()=>{
@@ -397,7 +401,8 @@ test('network-failed first spin stays blocked when init has no operation status'
   const service=new SessionApiService();
   const params={token:'fixture',playerId:'first-rollback-player',gameId:'khiradmandi-makor',initSource:'postMessage'};
   try {
-    stateRecoveryService.saveRound({operationStatus:'SPIN_PROCESSING'},params);
+    const previous={idCard:'before-award-'+interruption,WinSum:0,grid:{A:[1],B:[2],C:[3]}};
+    stateRecoveryService.saveRound({idCard:previous.idCard,spinResult:previous,lastConfirmedSpinResult:previous,grid:previous.grid,lastConfirmedGrid:previous.grid,operationStatus:'SPIN_PROCESSING'},params);
     stateRecoveryService.rememberPendingRequest({requestId:'first-network-spin',methodName:'/spin'},params);
     stateRecoveryService.markRecoveryRequired({code:'NETWORK_ERROR'}, {}, params);
     globalThis.fetch=async(url)=>url.endsWith('/init')

@@ -12,7 +12,7 @@ const stateKeys = {
   "configuration-error": "configurationError", "recovery-required": "recoveryRequired",
 };
 
-export default function RuntimeState({ status, error, mode, onRetry }) {
+export default function RuntimeState({ status, error, mode, onRetry, onRestart, onExit }) {
   const { t } = useLanguage();
   const canRetry = ["network-error", "error", "configuration-error", "initial-loading", "recovery-required"].includes(status);
   return (
@@ -24,11 +24,19 @@ export default function RuntimeState({ status, error, mode, onRetry }) {
       <p>{error || (status === "recovery-required"
         ? t("operationPendingRecovery")
         : mode === "embedded" ? t("waitingHost") : t("openSignedContext"))}</p>
-      {canRetry && (
-        <button type="button" className="primary-button" onClick={onRetry}>
-          <RotateCcw size={18} /> {t("retry")}
-        </button>
-      )}
+      <div className="runtime-state__actions">
+        {canRetry && (
+          <button type="button" className="primary-button" onClick={onRetry}>
+            <RotateCcw size={18} /> {t(status === "recovery-required" ? "retryCheck" : "retry")}
+          </button>
+        )}
+        {status === "recovery-required" && (
+          <>
+            <button type="button" className="primary-button" onClick={onRestart}>{t("restartGame")}</button>
+            <button type="button" className="primary-button" onClick={onExit}>{t("backToGames")}</button>
+          </>
+        )}
+      </div>
     </main>
   );
 }

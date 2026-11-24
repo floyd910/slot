@@ -88,14 +88,11 @@ const getConfirmedCardId = (state) =>
 const reconcileConfirmedSpin = (context, pending, localState, gameState) => {
   if (pending?.methodName !== "/spin" || !gameState?.spinResult?.idCard) return false;
   const previousCardId = getConfirmedCardId(pending.recoveryState) ?? getConfirmedCardId(localState);
-  // A different card proves the uncertain request completed.  With no prior
-  // card, only a snapshot captured with the request can safely establish that
-  // this is the first spin's result.
-  const capturedBeforeDispatch = pending.recoveryState != null;
+  // Only a card newer than the last confirmed card is usable evidence. With
+  // no previous card the existing API cannot correlate the first lost request.
   const returnedCardId = String(gameState.spinResult.idCard);
-  const isConfirmedResult = previousCardId != null
-    ? returnedCardId !== String(previousCardId)
-    : capturedBeforeDispatch;
+  const isConfirmedResult = previousCardId != null &&
+    returnedCardId !== String(previousCardId);
   return isConfirmedResult;
 };
 

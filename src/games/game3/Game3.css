@@ -445,6 +445,53 @@ button:disabled {
   } */
 }
 
+/* Geo View 2 fills the measured logo-to-footer height at every breakpoint. */
+.configured-game
+  .frame-app[data-fluid-fit="true"].view-2:not(.doubling-active)
+  .main-container__center,
+.configured-game
+  .frame-app[data-fluid-fit="true"].view-2:not(.doubling-active)
+  .lottery-grid--view2,
+.configured-game
+  .frame-app[data-fluid-fit="true"].view-2:not(.doubling-active)
+  .lottery-grid-view2 {
+  height: var(--fluid-view2-grid-height) !important;
+  min-height: 0 !important;
+  max-height: none !important;
+}
+
+.configured-game
+  .frame-app[data-fluid-fit="true"].view-2:not(.doubling-active)
+  .lottery-grid-view2 {
+  grid-template-rows: repeat(3, minmax(0, 1fr)) !important;
+  align-content: stretch !important;
+  align-items: stretch !important;
+}
+
+.configured-game
+  .frame-app[data-fluid-fit="true"].view-2:not(.doubling-active)
+  .lottery-grid-view2
+  > .lottery-grid-view2-cell {
+  height: auto !important;
+  min-height: 0 !important;
+}
+
+.configured-game
+  .frame-app[data-balance-desktop-grid="true"][data-fluid-fit="true"].view-2:not(.doubling-active)
+  .lottery-grid-view2 {
+  grid-template-rows: repeat(
+    3,
+    var(--fluid-view2-cell-height)
+  ) !important;
+}
+
+.configured-game
+  .frame-app[data-balance-desktop-grid="true"][data-fluid-fit="true"].view-2:not(.doubling-active)
+  .lottery-grid-view2
+  > .lottery-grid-view2-cell {
+  height: var(--fluid-view2-cell-height) !important;
+}
+
 @media (max-width: 560px) {
   .configured-game .frame-app .game_area > .header_img {
     transform: translateY(
@@ -453,6 +500,65 @@ button:disabled {
   }
 }
 
+
+/* Tall View 2 layouts can spend their unused vertical room on the logo. */
+@media (orientation: portrait) and (max-width: 1024px) {
+  .configured-game
+    .frame-app[data-fluid-fit="true"].view-2
+    .game_area
+    > .header_img,
+  .configured-game
+    .frame-app[data-fluid-logo-fit="true"].view-2
+    .game_area
+    > .header_img {
+    width: var(--fluid-logo-width) !important;
+    min-width: 0 !important;
+    height: var(--fluid-logo-height) !important;
+  }
+}
+
+@media (orientation: portrait) and (max-width: 560px) {
+  .configured-game
+    .frame-app[data-fluid-fit="true"].view-2
+    .game_area
+    > .header_img {
+    transform: translateY(
+      calc(
+        -1 * var(--game-header-height, 48px) + 30px +
+          var(--fluid-logo-offset-y, 0px)
+      )
+    ) !important;
+  }
+}
+
+@media (orientation: portrait) and (min-width: 561px) and (max-width: 1024px) {
+  .configured-game
+    .frame-app[data-fluid-fit="true"].view-2
+    .game_area
+    > .header_img {
+    transform: translateY(
+      calc(
+        -1 * var(--game-header-height, 48px) +
+          var(--fluid-logo-offset-y, 0px)
+      )
+    ) !important;
+  }
+}
+
+@media (orientation: landscape) and (max-width: 1024px) {
+  .configured-game
+    .frame-app[data-fluid-fit="true"].view-2
+    .game_area
+    > .header_img,
+  .configured-game
+    .frame-app[data-fluid-logo-fit="true"].view-2
+    .game_area
+    > .header_img {
+    width: var(--fluid-logo-width) !important;
+    min-width: 0 !important;
+    height: var(--fluid-logo-height) !important;
+  }
+}
 
 /* height 956px */
 
@@ -1387,7 +1493,12 @@ button:disabled {
 
 /* The game logo is anchored to viewport top rather than below the app header. */
 .configured-game .frame-app[data-fluid-fit="true"] .header_img {
-  transform: translateY(calc(-1 * var(--game-header-height, 48px)));
+  transform: translateY(
+    calc(
+      -1 * var(--game-header-height, 48px) +
+        var(--fluid-logo-offset-y, 0px)
+    )
+  );
 }
 
 .configured-game .frame-app .bottom-bar {
@@ -1400,37 +1511,30 @@ button:disabled {
 }
 
 .configured-game .frame-app .lottery-grid-view2 {
-  --win-line-gap: 6px !important;
-  column-gap: 6px !important;
-  row-gap: 6px !important;
+  --win-line-gap: var(--fluid-view2-grid-gap, 4px) !important;
+  column-gap: var(--fluid-view2-grid-gap, 4px) !important;
+  row-gap: var(--fluid-view2-grid-gap, 4px) !important;
   padding: 4px 6px !important;
   border-radius: 0 !important;
 }
 
-.configured-game .frame-app .lottery-grid-view2-cell {
-  width: 240px;
-  height: 156px;
+.configured-game .frame-app .lottery-grid-view2 > .lottery-grid-view2-cell {
+  --view2-cell-width: 240px;
+  --view2-cell-height: 156px;
+  width: var(--view2-cell-width);
+  height: var(--view2-cell-height);
+  margin: 0;
+}
+
+.configured-game .frame-app .lottery-grid-view2 > .lottery-grid-view2-cell .win-line-overlay__bridge {
+  width: var(--win-line-gap);
+  height: var(--win-line-gap);
 }
 /* SharedGame imports this stylesheet for every game. The logo must sit above
    the app header (z-index: 5), independent of stylesheet import order. */
 .game_area > .header_img {
   z-index: 20 !important;
 }
-/* Slightly use the spare portrait-mobile height without visibly stretching symbols. */
-@media (orientation: portrait) and (max-width: 639px) {
-  .frame-app[data-fluid-fit="true"].view-2:not(.doubling-active)
-    .lottery-grid-view2-cell {
-    height: 207px;
-  }
-}
-
-@media (orientation: portrait) and (max-width: 486px) {
-  .frame-app[data-fluid-fit="true"].view-2:not(.doubling-active)
-    .lottery-grid-view2-cell {
-    height: 190px;
-  }
-}
-
 /* Final compact-screen collision contract. This stylesheet loads after the
    shared shell styles, so the logo cap must live here to beat theme rules. */
 @media (max-width: 1024px) {
