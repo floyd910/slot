@@ -1276,20 +1276,6 @@
   }
 }
 
-/* Mobile/tablet ticket follows the live footer boundary instead of the game
-   canvas. --game-footer-reserve is measured by the responsive layout hook. */
-@media (max-width: 1024px) {
-  .frame-app.view-1 .grid-bottom-panel--screen-corner,
-  .frame-app.view-2 .grid-bottom-panel--screen-corner {
-    position: fixed !important;
-    top: auto !important;
-    right: auto !important;
-    bottom: calc(var(--game-footer-reserve, 220px) + 8px) !important;
-    left: 0 !important;
-    transform: none !important;
-  }
-}
-
 /* Keep expanded mobile ticket spacing consistent across both view modes. */
 @media (max-width: 639px) {
   .grid-bottom-panel--expanded,
@@ -1641,8 +1627,8 @@
 .frame-app.view-2 .grid-bottom-panel--screen-corner:not(.grid-bottom-panel--expanded) {
   width: 56px;
   min-width: 56px;
-  min-height: 56px;
-  padding: 16px;
+  min-height: 48px;
+  padding: 12px 16px;
   transform: none;
   cursor: pointer;
 }
@@ -1679,7 +1665,7 @@
   min-height: 56px;
   gap: 16px;
   padding: 16px 16px 16px 24px;
-  border-radius: 18px !important;
+  border-radius: 0 18px 18px 0 !important;
 }
 
 .frame-app.view-1 .grid-bottom-panel--screen-corner .grid-bottom-panel__close,
